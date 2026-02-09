@@ -1,0 +1,135 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+  width: inherit;
+  font-size: 12px;
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background-color: $color-text-bg-light;
+  border: 1px solid $color-borders;
+  max-height: 96%;
+  box-sizing: border-box;
+
+  .mat-expansion-panel-header {
+    line-height: 20px;
+    height: 19px;
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 5px;
+
+    .mat-expansion-indicator {
+      display: flex !important;
+    }
+
+  }
+
+  ::ng-deep .mat-expansion-panel-content {
+
+    font-size: 12px;
+    overflow-y: scroll;
+    height: 300px;
+
+    .mat-expansion-panel-body {
+      padding-top: 5px;
+      padding-left: 5px;
+    }
+  }
+
+}
+
+td.pointer {
+  cursor: pointer;
+}
+
+.selector-toggle {
+  width: 100%;
+  font-size: 1.2em;
+  font-weight: bold;
+  border: none;
+}
+
+// popout menu not in component
+::ng-deep {
+  & .graph-visualization-sub-menu {
+    padding: 2px;
+
+    & .heading {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    & button {
+      height: auto;
+      border: 2px solid $color-primary-l;
+      padding: 0;
+      margin-top: 6px;
+      box-sizing: border-box;
+    }
+
+    & li {
+      line-height: 1rem;
+      padding: 5px;
+      margin: 0;
+    }
+  }
+}
+
+.distribution-list {
+  & li {
+    margin: 0;
+  }
+}
+
+.style-indicator {
+  width: 8px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.group-row {
+  font-weight: bold;
+}
+
+.plot-item {
+  & i {
+    cursor: pointer;
+  }
+
+  &.add-disabled .add-button {
+    cursor: auto;
+    color: #a5a5a5;
+    pointer-events: none;
+  }
+
+  & td {
+    &:not(:last-of-type) {
+      text-align: center;
+      min-width: 1rem;
+    }
+
+    &.double-cell {
+      min-width: 2rem;
+    }
+  }
+}
+
+.traces-from-configurable {
+  margin-left: 5px;
+}
+
+caption,
+thead {
+  display: none;
+}
+
+.mat-icon {
+  font-size: 14px;
+  color: $color-primary;
+
+  &.yellow {
+    color: rgb(253, 178, 0);
+  }
+}

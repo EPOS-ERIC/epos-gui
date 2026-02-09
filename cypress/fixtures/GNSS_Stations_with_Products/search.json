@@ -1,0 +1,124 @@
+{
+  "filters": [
+    {
+      "children": [
+        {
+          "id": "Y29tcHV0ZWQ=",
+          "name": "computed"
+        },
+        {
+          "id": "Y29vcmRpbmF0ZXM=",
+          "name": "coordinates"
+        },
+        {
+          "id": "ZXN0aW1hdGVk",
+          "name": "estimated"
+        },
+        {
+          "id": "Z2VvZGVzeQ==",
+          "name": "geodesy"
+        },
+        {
+          "id": "Z25zcw==",
+          "name": "gnss"
+        },
+        {
+          "id": "Z25zcyBnZW9qc29uIHByb2R1Y3Rz",
+          "name": "gnss geojson products"
+        },
+        {
+          "id": "Z25zcyBzdGF0aW9u",
+          "name": "gnss station"
+        },
+        {
+          "id": "cG9zaXRpb24=",
+          "name": "position"
+        },
+        {
+          "id": "cHJvZHVjdHM=",
+          "name": "products"
+        },
+        {
+          "id": "dGltZSBzZXJpZXM=",
+          "name": "time series"
+        },
+        {
+          "id": "dmVsb2NpdGllcw==",
+          "name": "velocities"
+        }
+      ],
+      "name": "keywords"
+    },
+    {
+      "children": [
+        {
+          "id": "dfe3643c-6d66-49cf-a249-dc4c70b3ed4f",
+          "name": "ORB - Observatoire royal de Belgique"
+        },
+        {
+          "id": "2f96f31e-5c82-46e1-877f-be595f68cd86",
+          "name": "UBI - University of Beira Interior"
+        }
+      ],
+      "name": "organisations"
+    },
+    {
+      "children": [
+        {
+          "id": "71bda735-a1ee-4f82-ad00-f916a553e96c",
+          "name": "Station Information"
+        }
+      ],
+      "name": "sciencedomains"
+    },
+    {
+      "name": "servicetypes"
+    }
+  ],
+  "results": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "ddss": "category:statiinfmati",
+                "distributions": [
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/epos.geo+json",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/6b4f5899-edfa-4739-a20b-55be5088a825?format=application/geo+json",
+                        "label": "GEOJSON",
+                        "originalFormat": "application/geo+json",
+                        "type": "ORIGINAL"
+                      }
+                    ],
+                    "description": " Displays the GNSS stations that provide GNSS Products on the map. Returns their metadata as a json, geojson, or csv file.",
+                    "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/6b4f5899-edfa-4739-a20b-55be5088a825",
+                    "hrefExtended": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/6b4f5899-edfa-4739-a20b-55be5088a825?extended=true",
+                    "id": "6b4f5899-edfa-4739-a20b-55be5088a825",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "GNSS Stations with Products",
+                    "uid": "GlassFramework/webresources/stations/v2/station/bbox/Distribution/001"
+                  }
+                ],
+                "name": "Station Information"
+              }
+            ],
+            "ddss": "category:products",
+            "name": "Products"
+          }
+        ],
+        "code": "GNSS",
+        "color": "#941d7f",
+        "id": "3",
+        "imgUrl": "assets/img/logo/GNSS_logo.png",
+        "linkUrl": "https://www.epos-eu.org/tcs/gnss-data-and-products",
+        "name": "GNSS Data and Products"
+      }
+    ],
+    "name": "domains"
+  }
+}

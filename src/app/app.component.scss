@@ -1,0 +1,59 @@
+@import 'src/sassFramework/variables.scss';
+
+h1 {
+  color: #369;
+  font-size: 250%;
+}
+
+.body-content {
+  app-header-bar {
+    display: none;
+  }
+
+  &.show-header {
+    app-header-bar {
+      display: initial;
+    }
+  }
+}
+
+::ng-deep {
+  .cdk-overlay-connected-position-bounding-box {
+    top: $header-height !important; // menu top
+    #cdk-overlay-0 {
+      background: $color-background-panel;
+      padding: $padding-background-panel;
+    }
+  }
+
+  & .warning-message {
+    height: 1em;
+    color: #dd4b39;
+
+    & span:before {
+      content: '*';
+    }
+  }
+
+  & ._hj_feedback_container ._hj-1qvel__Feedback__feedback > div:first-child {
+    left: 10px;
+
+    & > button {
+      transform: scale(0.5);
+      transform-origin: left;
+
+      & + div {
+        margin-left: -35px;
+      }
+    }
+  }
+}
+
+.no-view {
+  width: 100%;
+  height: 100%;
+  background: darkgray;
+  position: fixed;
+  top: 0;
+  left: 0;
+}

@@ -1,0 +1,14 @@
+<div class="new-feature-popup">
+  <h2 class="title">**NEW FEATURES** <br>V.<span class="version">{{ data.version }}</span></h2>
+
+  <div class="features-container" *ngIf="data.features.length>0">
+    <p class="subtitle">What’s new in this version:</p>
+    <ul class="features-list">
+      <li *ngFor="let feature of data.features" [innerHTML]="feature"></li>
+    </ul>
+  </div>
+
+  <div class="actions">
+    <button class="epos-close-btn" (click)="close()">Close</button>
+  </div>
+</div>

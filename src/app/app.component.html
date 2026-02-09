@@ -1,0 +1,13 @@
+<div class="body-content" [ngClass]="pageCssClass" [class.show-header]="!hideHeader">
+  <app-page-loading></app-page-loading>
+  <app-header-bar></app-header-bar>
+  <div class="flex flex-col full-page" [ngStyle]="{'display': (mobile === true) ? 'none': 'block'}">
+    <div appRouterOutlet></div>
+  </div>
+
+  <!-- Powered by EPOS (desktop only) -->
+  <app-powered-by *ngIf="!mobile"></app-powered-by>
+
+  <div class="no-view" *ngIf="mobile">
+  </div>
+</div>

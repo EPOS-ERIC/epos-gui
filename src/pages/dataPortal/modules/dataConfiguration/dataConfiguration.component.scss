@@ -1,0 +1,234 @@
+@import 'src/sassFramework/variables.scss';
+
+mat-icon.share {
+  color: $color-tertiary;
+}
+
+.spat-temp-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 100%;
+  align-items: center;
+  margin-bottom: 15px;
+
+  & > div {
+    align-items: center;
+
+    .label {
+      margin-right: 5px;
+    }
+  }
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.centred {
+  text-align: center;
+}
+
+.no-documentation {
+  opacity: 0.5;
+  cursor: default;
+}
+
+mat-slide-toggle {
+  margin: 0 5px 0 5px;
+}
+
+app-info-tool-tip ::ng-deep i {
+  margin-top: 0;
+}
+
+.params-wrapper {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 0.5em 1em;
+
+  & label {
+    font-weight: bold;
+  }
+}
+
+.service-config-wrapper {
+  & .warning {
+    text-align: center;
+    color: #dd4b39;
+    font-weight: bold;
+
+    &.hidden {
+      visibility: hidden;
+    }
+  }
+}
+
+span.counter {
+  color: rgb(118, 118, 118);
+  font-weight: normal;
+  font-size: 13px;
+}
+
+.advanced-search-container {
+  margin-top: 10px;
+  padding: 5px;
+  height: auto;
+  overflow: auto;
+  display: block;
+
+  div.form-header {
+    display: flex;
+    min-height: 36px;
+    padding-right: 0;
+  }
+
+  p.form-title {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  div.form-header-actions {
+    display: flex;
+    text-align: right;
+    white-space: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 10px;
+
+    .mat-icon {
+      margin-right: 10px;
+    }
+
+    &:last-child {
+      margin-left: auto;
+    }
+  }
+
+  div.form-actions {
+    display: flex;
+    text-align: right;
+    white-space: nowrap;
+    align-items: center;
+    width: 100%;
+    justify-content: flex-end;
+
+    .mat-icon {
+      margin-right: 10px;
+    }
+  }
+
+  .form-fields {
+    display: flex;
+    flex-flow: row wrap;
+    align-content: flex-start;
+
+    .form-field {
+      margin-bottom: 20px;
+      flex: 30%;
+    }
+  }
+}
+
+.mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  color: $color-primary;
+}
+
+.config-control {
+  .mat-icon {
+    color: white;
+  }
+}
+
+::ng-deep .mat-placeholder-required {
+  display: none;
+}
+
+::ng-deep .button-label {
+  vertical-align: initial !important;
+}
+
+::ng-deep .mat-select-panel {
+  max-width: fit-content;
+}
+
+::ng-deep .mat-checkbox-layout{
+  white-space: normal;
+
+  .mat-checkbox-label{
+    line-height: 16px;
+  }
+}
+
+::ng-deep .mat-checkbox-inner-container {
+  margin-right: 4px;
+}
+
+/* Firefox */
+input[type='float'] {
+  -moz-appearance: textfield;
+}
+
+.mat-checkbox {
+  width: 180px;
+}
+
+.mat-checkbox-layout {
+  display: flex;
+
+  .mat-checkbox-inner-container {
+    margin-left: 0px;
+  }
+}
+
+.mat-checkbox-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgba(0, 0, 0, 0.6);
+}
+/* Make sure panel allows content before options */
+::ng-deep .mat-select-panel {
+  max-height: 300px !important;
+  overflow-y: auto !important;
+}
+
+// scss for the advanced search bar inside the card
+::ng-deep .search-option {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0 !important;
+  height: 48px;
+  display: flex;
+  align-items: center; 
+  &:hover {
+    background-color: #ffffff !important;
+  }
+}
+
+::ng-deep .mat-option-search {
+  width: 100%;
+  height: 36px; 
+  padding: 0 16px;
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+  outline: none;
+  background-color: transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+::ng-deep .mat-option.search-option .mat-pseudo-checkbox {
+  display: none !important;
+}

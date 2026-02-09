@@ -1,0 +1,691 @@
+{
+  "@epos_style": {
+    "station": {
+      "label": "GNSS Station",
+      "marker": {
+        "character": "S",
+        "clustering": "false",
+        "pin": "true"
+      }
+    }
+  },
+  "features": [
+    {
+      "geometry": {
+        "coordinates": [
+          3.4664,
+          43.2964
+        ],
+        "type": "Point"
+      },
+      "id": "AGDE00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/AGDE",
+            "label": "AGDE TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 67.0,
+        "City": "Cap D'Agde - Agde",
+        "Country": "France",
+        "Data Providers": "Observatoire de Recherche M\u00e9diterran\u00e9en de l\u2019Environnement",
+        "GNSS Station ID": "AGDE00FRA",
+        "GNSS Station Marker": "AGDE",
+        "Installed at": "2006-09-04 12:00:00",
+        "Latitude": 43.2964,
+        "Links TimeSeries": {
+          "INGV": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/AGDE/INGV/daily/xyz/covjson",
+          "SGO-EPND": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/AGDE/SGO-EPND/weekly/xyz/covjson",
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/AGDE/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": 3.4664,
+        "Networks": "RENAG",
+        "TimeSeries Data Providers": "INGV SGO-EPND UGA-CNRS",
+        "x": 4640976.6768385,
+        "y": 281124.85699022,
+        "z": 4351571.1698476
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          3.5813,
+          44.1214
+        ],
+        "type": "Point"
+      },
+      "id": "AIGL00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/AIGL",
+            "label": "AIGL TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 1618.81,
+        "City": "Valleraugue",
+        "Country": "France",
+        "Data Providers": "Observatoire de Recherche M\u00e9diterran\u00e9en de l\u2019Environnement",
+        "GNSS Station ID": "AIGL00FRA",
+        "GNSS Station Marker": "AIGL",
+        "Installed at": "2001-06-01 00:00:00",
+        "Latitude": 44.1214,
+        "Links TimeSeries": {
+          "INGV": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/AIGL/INGV/daily/xyz/covjson",
+          "SGO-EPND": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/AIGL/SGO-EPND/weekly/xyz/covjson",
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/AIGL/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": 3.5813,
+        "Networks": "RENAG",
+        "TimeSeries Data Providers": "SGO-EPND INGV UGA-CNRS",
+        "x": 4578300.2853211,
+        "y": 286538.58502009,
+        "z": 4418911.552312
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          -0.4311,
+          43.0995
+        ],
+        "type": "Point"
+      },
+      "id": "ARUF00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/ARUF",
+            "label": "ARUF TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 482.01,
+        "City": "Arudy",
+        "Country": "France",
+        "Data Providers": "Observatoire Midi-Pyr\u00e9n\u00e9es",
+        "GNSS Station ID": "ARUF00FRA",
+        "GNSS Station Marker": "ARUF",
+        "Installed at": "2014-03-13 00:00:00",
+        "Latitude": 43.0995,
+        "Links TimeSeries": {
+          "INGV": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/ARUF/INGV/daily/xyz/covjson",
+          "SGO-EPND": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/ARUF/SGO-EPND/weekly/xyz/covjson",
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/ARUF/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": -0.4311,
+        "Networks": "UNKNOWN",
+        "TimeSeries Data Providers": "INGV SGO-EPND UGA-CNRS",
+        "x": 4664623.8434371,
+        "y": -35100.48409727,
+        "z": 4335912.7108605
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          4.1563,
+          44.3692
+        ],
+        "type": "Point"
+      },
+      "id": "BANN00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/BANN",
+            "label": "BANN TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 357.6,
+        "City": "Banne",
+        "Country": "France",
+        "Data Providers": "Observatoire des Sciences de l'Univers de Grenoble ",
+        "GNSS Station ID": "BANN00FRA",
+        "GNSS Station Marker": "BANN",
+        "Installed at": "2003-07-03 00:00:00",
+        "Latitude": 44.3692,
+        "Links TimeSeries": {
+          "INGV": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/BANN/INGV/daily/xyz/covjson",
+          "SGO-EPND": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/BANN/SGO-EPND/weekly/xyz/covjson",
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/BANN/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": 4.1563,
+        "Networks": "RENAG",
+        "TimeSeries Data Providers": "INGV SGO-EPND UGA-CNRS",
+        "x": 4555127.8744215,
+        "y": 331016.29692336,
+        "z": 4437759.9559153
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          3.9769,
+          43.8769
+        ],
+        "type": "Point"
+      },
+      "id": "BAUB00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/BAUB",
+            "label": "BAUB TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 623.03,
+        "City": "Brouzet-Les-Quissac",
+        "Country": "France",
+        "Data Providers": "Observatoire de Recherche M\u00e9diterran\u00e9en de l\u2019Environnement",
+        "GNSS Station ID": "BAUB00FRA",
+        "GNSS Station Marker": "BAUB",
+        "Installed at": "2006-09-04 12:00:00",
+        "Latitude": 43.8769,
+        "Links TimeSeries": {
+          "INGV": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/BAUB/INGV/daily/xyz/covjson",
+          "SGO-EPND": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/BAUB/SGO-EPND/weekly/xyz/covjson",
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/BAUB/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": 3.9769,
+        "Networks": "RENAG",
+        "TimeSeries Data Providers": "INGV SGO-EPND UGA-CNRS",
+        "x": 4594322.9997132,
+        "y": 319408.99998006,
+        "z": 4398677.9997236
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.3667,
+          43.8735
+        ],
+        "type": "Point"
+      },
+      "id": "BLIX00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/BLIX",
+            "label": "BLIX TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 1077.09,
+        "City": "Blieux",
+        "Country": "France",
+        "Data Providers": "Observatoire de la C\u00f4te d'Azur",
+        "GNSS Station ID": "BLIX00FRA",
+        "GNSS Station Marker": "BLIX",
+        "Installed at": "2009-04-24 00:00:00",
+        "Latitude": 43.8735,
+        "Links TimeSeries": {
+          "INGV": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/BLIX/INGV/daily/xyz/covjson",
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/BLIX/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": 6.3667,
+        "Networks": "RENAG",
+        "TimeSeries Data Providers": "INGV UGA-CNRS",
+        "x": 4577595.0217266,
+        "y": 510765.33196949,
+        "z": 4398719.8635666
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          6.9271,
+          44.2484
+        ],
+        "type": "Point"
+      },
+      "id": "CLAP00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/CLAP",
+            "label": "CLAP TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 1369.85,
+        "City": "Saint Etienne De Tinee",
+        "Country": "France",
+        "Data Providers": "Observatoire de la C\u00f4te d'Azur",
+        "GNSS Station ID": "CLAP00FRA",
+        "GNSS Station Marker": "CLAP",
+        "Installed at": "2003-04-05 00:00:00",
+        "Latitude": 44.2484,
+        "Links TimeSeries": {
+          "INGV": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/CLAP/INGV/daily/xyz/covjson",
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/CLAP/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": 6.9271,
+        "Networks": "RENAG",
+        "TimeSeries Data Providers": "INGV UGA-CNRS",
+        "x": 4543826.0441073,
+        "y": 552040.54001304,
+        "z": 4428864.2067366
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          0.3672,
+          43.1284
+        ],
+        "type": "Point"
+      },
+      "id": "CRAL00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/CRAL",
+            "label": "CRAL TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 654.0,
+        "City": "Lannemezan",
+        "Country": "France",
+        "Data Providers": "Observatoire Midi-Pyr\u00e9n\u00e9es",
+        "GNSS Station ID": "CRAL00FRA",
+        "GNSS Station Marker": "CRAL",
+        "Installed at": "2010-02-09 00:00:00",
+        "Latitude": 43.1284,
+        "Links TimeSeries": {
+          "INGV": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/CRAL/INGV/daily/xyz/covjson",
+          "SGO-EPND": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/CRAL/SGO-EPND/weekly/xyz/covjson",
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/CRAL/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": 0.3672,
+        "Networks": "UNKNOWN",
+        "TimeSeries Data Providers": "INGV SGO-EPND UGA-CNRS",
+        "x": 4662593.4530199,
+        "y": 29882.505000128,
+        "z": 4338371.7910187
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          2.0258,
+          43.2074
+        ],
+        "type": "Point"
+      },
+      "id": "FAJP00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/FAJP",
+            "label": "FAJP TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 367.97,
+        "City": "Fanjeaux",
+        "Country": "France",
+        "Data Providers": "Observatoire Midi-Pyr\u00e9n\u00e9es",
+        "GNSS Station ID": "FAJP00FRA",
+        "GNSS Station Marker": "FAJP",
+        "Installed at": "2002-04-12 00:00:00",
+        "Latitude": 43.2074,
+        "Links TimeSeries": {
+          "INGV": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/FAJP/INGV/daily/xyz/covjson",
+          "SGO-EPND": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/FAJP/SGO-EPND/weekly/xyz/covjson",
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/FAJP/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": 2.0258,
+        "Networks": "UNKNOWN",
+        "TimeSeries Data Providers": "SGO-EPND INGV UGA-CNRS",
+        "x": 4653568.657076,
+        "y": 164607.61600269,
+        "z": 4344574.3100714
+      },
+      "type": "Feature"
+    },
+    {
+      "geometry": {
+        "coordinates": [
+          2.4171,
+          42.5603
+        ],
+        "type": "Point"
+      },
+      "id": "FILF00FRA",
+      "properties": {
+        "@epos_data_keys": [
+          "GNSS Station ID",
+          "GNSS Station Marker",
+          "Country",
+          "TimeSeries Data Providers",
+          "Latitude",
+          "Longitude",
+          "Networks",
+          "Data Providers",
+          "City",
+          "Installed at",
+          "Altitude",
+          "x",
+          "y",
+          "z",
+          "longitude , latitude"
+        ],
+        "@epos_links": [
+          {
+            "href": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/time-series-plot/ICS/FILF",
+            "label": "FILF TS Image",
+            "type": "image/png"
+          }
+        ],
+        "@epos_map_keys": [
+          "GNSS Station ID",
+          "Country",
+          "City",
+          "Latitude",
+          "Longitude",
+          "Installed at",
+          "Data Providers",
+          "Networks",
+          "@epos_links"
+        ],
+        "@epos_type": "station",
+        "Altitude": 903.32,
+        "City": "Fillols",
+        "Country": "France",
+        "Data Providers": "Observatoire de Recherche M\u00e9diterran\u00e9en de l\u2019Environnement",
+        "GNSS Station ID": "FILF00FRA",
+        "GNSS Station Marker": "FILF",
+        "Installed at": "2014-09-03 00:00:00",
+        "Latitude": 42.5603,
+        "Links TimeSeries": {
+          "UGA-CNRS": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/products/timeseries/FILF/UGA-CNRS/daily/xyz/covjson"
+        },
+        "Longitude": 2.4171,
+        "Networks": "RENAG",
+        "TimeSeries Data Providers": "UGA-CNRS",
+        "x": 4701610.5803518,
+        "y": 198457.92001485,
+        "z": 4292258.2003234
+      },
+      "type": "Feature"
+    }
+  ],
+  "type": "FeatureCollection"
+}

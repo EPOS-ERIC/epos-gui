@@ -1,0 +1,69 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+
+  padding: $padding-background-panel;
+  background-color: $color-background-panel;
+
+  ::ng-deep {
+    & .mat-button-toggle-appearance-standard ::ng-deep .mat-button-toggle-label-content {
+      line-height: 20px;
+    }
+  }
+}
+
+.top-menu {
+  justify-content: space-between;
+
+  & .data-trace-selector-wrapper {
+    width: 200px;
+  }
+
+  mat-icon {
+    cursor: pointer;
+  }
+}
+
+.empty-message {
+  background-color: $color-main-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $padding-background-panel;
+  opacity: 0.85;
+  font-size: 2vh;
+}
+
+.display-type-selector {
+  text-align: right;
+
+  & .display-type-item {
+    margin-right: 1em;
+  }
+
+  & .selector-label {
+    font-weight: bold;
+  }
+}
+
+button {
+  padding: 0px;
+  min-width: 26px;
+  position: absolute;
+  z-index: 1;
+
+  &.data {
+    right: 1em;
+    top: 1px;
+  }
+
+  &.no-data {
+    right: 1em;
+    top: 10.5em;
+  }
+}

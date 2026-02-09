@@ -1,0 +1,15 @@
+:host ::ng-deep {
+  /* change the default rectangle icon for a dotted box */
+  & .leaflet-touch .leaflet-draw-toolbar .leaflet-draw-draw-rectangle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: none;
+    & .dotted-square {
+      width: 68%;
+      height: 68%;
+      border: 2px dashed #2b2b2b;
+      border-radius: 2px;
+    }
+  }
+}

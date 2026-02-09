@@ -1,0 +1,64 @@
+{
+  "id": "dist_0_0_0",
+  "description": "Description of an example distribution. (id is same as first item from search results!)",
+  "type": "WEB_SERVICE",
+  "title": "Distribution Details Example",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "keywords": [
+    "multiservice",
+    "research environment",
+    "is-epos platform",
+    "tcs ah",
+    "episode",
+    "anthropogenic hazards",
+    "document repository",
+    "applications",
+    "workspace",
+    "web platform"
+  ],
+  "dataProvider": [
+    "Data provider of an example distribution"
+  ],
+  "internalID": [
+    "WP00-DDSS-000"
+  ],
+  "DOI": "000-0000-0000-00000-0",
+  "spatial": {},
+  "temporalCoverage": {
+    "startDate": "1956-06-01T00:00:00Z"
+  },
+  "availableFormats": [
+    {
+      "label": "GEOJSON",
+      "format": "application/epos.geo+json",
+      "href": "exampleGeoJsonUrl",
+      "type": "converted"
+    }
+  ],
+  "serviceName": "Service Name of an example distribution",
+  "serviceDescription": "Service Description of an example distribution",
+  "serviceProvider": "Service provider of an example distribution",
+  "serviceSpatial": {},
+  "serviceTemporalCoverage": {},
+  "serviceEndpoint": "https://some.url.com",
+  "serviceDocumentation": "http://Documentation/url/of/an/example/distribution",
+  "endpoint": "https://some.url.com{?impactingFactor}",
+  "serviceParameters": [
+    {
+      "name": "param_0",
+      "label": "Param 0",
+      "type": "string",
+      "Enum": [
+        "Value 0",
+        "Value 1",
+        "Value 2",
+        "Value 3",
+        "Value 4",
+        "Value 5",
+        "Value 6",
+        "Value 7"
+      ],
+      "required": false
+    }
+  ]
+}

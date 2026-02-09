@@ -1,0 +1,81 @@
+# Apple crud
+.DS_Store
+
+# No Vagrant Files
+.vagrant
+
+# Ansible Retry Files
+*.retry
+
+# Dependency directory
+# https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
+node_modules
+
+#vscode directory if you have one
+.vscode
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+.grunt
+
+dist/
+
+#################angular specific
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+
+# dependencies
+/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.angular/cache
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/typings
+/temp
+
+# e2e
+/e2e/*.js
+/e2e/*.map
+
+# System Files
+.DS_Store
+Thumbs.db
+/*.stackdump
+
+# Locally generated documentation
+/documentation
+
+# cypress e2e test screenshots and vids
+/cypress/screenshots
+/cypress/videos
+
+# sonarqube
+.scannerwork

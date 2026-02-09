@@ -1,0 +1,466 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+  mat-icon.share {
+    color: $color-tertiary;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: $padding-background-panel;
+    padding-top: 0em;
+    background-color: $color-background-panel;
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+  }
+
+  tr {
+    border-bottom: 3px solid rgb(201, 201, 201);
+  }
+
+  div.container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    background-color: white !important;
+
+    div.item-header {
+      display: flex;
+      padding-right: 0;
+      &.selected {
+        padding: 10px;
+
+        .item-name > p {
+          // text-decoration: underline;
+          font-size: 14px;
+          color: $color-primary;
+        }
+      }
+
+      img {
+        margin-right: 7px;
+        margin-left: 7px;
+      }
+
+      img.icon {
+        cursor: pointer;
+        height: 18px;
+        padding-bottom: 3px;
+      }
+    }
+
+    div.informations {
+      padding-right: 0;
+
+      &.selected {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      div.informations-bottom {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .informations-bottom-left {
+          width: 100%;
+        }
+
+        .informations-bottom-right {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-end;
+        }
+      }
+    }
+
+    div.item-name {
+      display: flex;
+      flex-direction: row;
+      margin-right: 20px;
+
+      .mat-icon {
+        font-size: 0.9em;
+      }
+
+      p {
+        cursor: pointer;
+        font-weight: bold;
+      }
+    }
+
+    div.item-crumb {
+      font-size: small;
+      font-style: oblique;
+      cursor: pointer;
+    }
+
+    div.item-actions {
+      text-align: right;
+      margin-left: auto;
+      white-space: nowrap;
+
+      .status{
+        padding-bottom: 16px;
+        
+        .pointer {
+          cursor: pointer;
+        }
+    
+        .icon {
+
+          margin-right: 5px;
+          
+          mat-icon {
+            font-size: 14px !important;
+            height: 14px !important;
+            width: 14px !important;
+    
+            &.grey {
+              color: grey;
+            }
+    
+            &.green {
+              color: green;
+            }
+    
+            &.orange {
+              color: orange;
+            }
+    
+            &.red {
+              color: red;
+            }
+          }
+        }
+      
+      }
+    }
+  }
+
+  table.mat-table {
+    overflow-x: hidden;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mat-icon {
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    color: $color-primary;
+
+    &.disabled {
+      color: rgba(black, 0.2);
+    }
+
+    &.yellow {
+      color: rgb(253, 178, 0);
+    }
+
+    &.icon-up {
+      transition: 0.3s;
+      transform: rotate(180deg);
+    }
+
+    &.icon-down {
+      transition: 0.3s;
+      transform: rotate(0deg);
+    }
+  }
+  .expand-item{
+    margin-left: 7px;
+  }
+
+  .display-inline {
+    display: inline;
+  }
+
+  .mat-paginator {
+    color: black;
+    background-color: white;
+    border-top: 1px solid grey;
+  }
+
+  ::ng-deep .mat-paginator-range-label {
+    margin: 0 16px 0 10px;
+  }
+
+  .metadata-published-status{
+    background-color: $color-primary-l;
+    color: white;
+  }
+  .metadata-submitted-status{
+    background-color: $color-secondary;
+    color: white;
+  }
+  .metadata-draft-status{
+    background-color: $color-yellow;
+    color: white;
+  }
+  .metadata-archived-status{
+    background-color: grey;
+    color: white;
+  }
+  
+
+  ::ng-deep .mat-paginator-range-actions {
+    button {
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      color: rgb(0, 0, 0, 0.5);
+    }
+  }
+
+  .results-title {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    height: $results-item-height;
+    cursor: pointer;
+    padding: 0.5rem 0;
+
+    .facet-expand {
+      mat-icon {
+        line-height: 1;
+        opacity: 70%;
+      }
+    }
+
+    .filter-cat-button {
+      width: 24px;
+      height: 24px;
+    }
+
+    p {
+      font-size: $results-title-font-size;
+      font-weight: bold;
+      text-align: right;
+      padding-right: 10px;
+      padding-left: 10px;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    p.last {
+      margin-left: auto;
+    }
+  }
+
+  .results-buttons {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: right;
+    padding: 0.5rem 0;
+  }
+
+  .results-container {
+    height: 100%;
+    width: auto;
+    overflow: auto;
+
+    .results-no-data {
+      background-color: white;
+      padding: 10px;
+      height: 100%;
+    }
+
+    .header-favourites {
+      display: flex;
+      justify-content: right;
+      margin-bottom: 5px;
+    }
+
+    .results-table {
+      height: 100%;
+      background-color: white;
+    }
+  }
+
+  tr.mat-header-row {
+    height: 0;
+  }
+
+  th.mat-header-cell,
+  td.mat-cell,
+  td.mat-footer-cell {
+    border-bottom-width: 0;
+  }
+
+  tr {
+    display: flex;
+    height: auto;
+
+    td {
+      width: 100%;
+      vertical-align: top;
+      padding-left: 10px;
+      padding-right: 0px;
+      min-height: 80px;
+    }
+
+    td.cell-result {
+      border-left: 6px solid;
+    }
+  }
+
+  tr.hidden {
+    display: none !important;
+  }
+
+  .results-element-detail {
+    overflow: hidden;
+  }
+
+  .mat-button-toggle {
+    &.image {
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center center;
+      border: transparent;
+    }
+  }
+
+  .item-icon {
+    cursor: pointer;
+  }
+
+  .bottom-elements td {
+    padding: 10px 0;
+  }
+
+  .bottom-elements tr {
+    display: table;
+  }
+
+  .advanced-search-container {
+    padding: 5px;
+    height: auto;
+    overflow: auto;
+    display: block;
+
+    div.message {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: absolute;
+      background-color: #d1e9c4;
+      left: 5%;
+      right: 5%;
+      margin: 10px;
+      padding: 10px;
+      z-index: 1000;
+      text-align: justify;
+      margin-top: 50px;
+
+      div.actions {
+        display: flex;
+        justify-content: space-between;
+
+        .title {
+          font-weight: bold;
+        }
+
+        .normal {
+          cursor: initial;
+        }
+      }
+    }
+
+    div.form-header {
+      display: flex;
+      min-height: 36px;
+      padding-right: 0;
+    }
+
+    p.form-title {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      font-style: italic;
+      font-size: 15px;
+    }
+
+    div.form-actions {
+      display: flex;
+      text-align: right;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    .form-fields {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      margin-top: 20px;
+
+      .form-field {
+        margin-bottom: 20px;
+        flex: 40%;
+      }
+    }
+  }
+
+  .advanced-search-container-min {
+    min-height: 500px;
+  }
+
+  .apply-table {
+    margin-left: 168px;
+    display: inline;
+  }
+
+  .mat-form-field {
+    min-width: 190px;
+  }
+
+  ::ng-deep .mat-badge-content {
+    z-index: 1;
+    top: 1px !important;
+    left: 26px !important;
+    background-color: $color-secondary;
+    font-weight: 400;
+    font-family: 'Open Sans';
+  }
+}
+
+app-data-configuration.disabled {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+app-facet-dropdown {
+  border-bottom: 1px solid #efefef;
+}
+
+//if height more than 1300px
+@media screen and (min-height: 1300px) {
+  .results-title {
+    p {
+      font-size: $results-title-max-font-size !important;
+    }
+  }
+}
+
+//if height less than 800px
+@media screen and (max-height: 800px) {
+  ::ng-deep .mat-badge-content {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 10px !important;
+    line-height: 22px !important;
+  }
+}

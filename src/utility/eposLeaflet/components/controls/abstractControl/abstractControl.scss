@@ -1,0 +1,110 @@
+@import "src/sassFramework/variables.scss";
+
+:host ::ng-deep {
+  .control-wrapper {
+    display: flex;
+    line-height: 18px;
+    color: #555555;
+    user-select: none;
+    border: none;
+    position: relative;
+
+    & .control-content {
+      display: none;
+      flex-direction: column;
+      justify-content: space-evenly;
+      padding: 3px;
+      min-height: 40px;
+      position: absolute;
+    }
+
+    & .bordered {
+      background-color: #ffffff;
+      border: 2px solid rgba(0, 0, 0, 0.2);
+      background-clip: padding-box;
+      border-radius: 4px;
+    }
+
+    & .control-expander-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    & .control-expander {
+      display: flex;
+      align-items: stretch;
+    }
+
+    & .icon-wrapper {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 16px;
+      box-sizing: content-box;
+      background-color: #ffffff;
+    }
+
+    &.control-expanded {
+      & .icon-wrapper {
+        color: #ffffff;
+        background-color: #555555;
+      }
+
+      & .border-obscurer {
+        display: initial;
+      }
+
+      & .control-content {
+        display: flex;
+      }
+    }
+  }
+
+  // change some flows depending on control position
+  .leaflet-left {
+    & .control-wrapper {
+      flex-direction: row;
+    }
+
+    & .control-content {
+      left: 32px;
+      margin-left: 2px;
+    }
+  }
+
+  .leaflet-right {
+    & .control-wrapper {
+      flex-direction: row-reverse;
+    }
+
+    & .control-content {
+      right: 32px;
+      margin-right: 2px;
+    }
+  }
+
+  .leaflet-bottom {
+    & .control-expander-wrapper {
+      justify-content: flex-end;
+    }
+
+    & .control-content {
+      bottom: 0px;
+    }
+  }
+
+  .leaflet-top {
+    top: $sidenav-left-top;
+
+    & .control-expander-wrapper {
+      justify-content: flex-start;
+    }
+
+    & .control-content {
+      top: 0px;
+    }
+  }
+}

@@ -1,0 +1,79 @@
+:host ::ng-deep { 
+  & .leaflet-container.force-cursor-on-slide {
+    &, & * { // self and all children
+      cursor: ew-resize !important;
+    }
+  }
+  #layer-control {
+    & .control-content {
+      & .layers-section-wrapper {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        max-width: 250px;
+        &.order-reverse {
+          flex-direction: column-reverse;
+        }
+      }
+      & ul {
+        list-style: none;
+        margin: 0;
+        border: 1px solid rgba(0,0,0,0.2);
+        border-radius: 4px;
+        padding: 2px;
+        & li {
+          display: flex;
+          align-items: center;
+          &>* {
+            display:inline-block;
+            text-align: center;
+            white-space: nowrap;
+            flex-shrink: 0;
+            &:nth-child(1),
+            &:nth-child(2) {
+              width: 1em;
+            }
+            &:nth-child(3),
+            &:nth-child(4) {
+              margin-left: 8px;
+            }
+          }
+        }
+        & .handle {
+          cursor: ns-resize;
+        }
+        & .hider-toggle {
+          cursor: pointer;
+        }
+        & .ui-slider {
+          margin-left: 0.4em;
+          width: 30px;
+          height: 2px;
+          border-color: #9c9c9c;
+          &-handle {
+            top: -0.5em;
+            border-radius: 50%;
+            outline: none;
+            cursor: ew-resize;
+            background-color: #2692ff;
+          }
+        }
+        & .layer-name {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          flex-shrink: 1;
+        }
+      }
+      & .layers-section-0 { background-color: #fff0e9; order: 0; }
+      & .layers-section-1 { background-color: #e8ffff; order: 1; }
+      & .layers-section-2 { background-color: #f3dcfd; order: 2; }
+      & .layers-section-3 { background-color: #e3fad6; order: 3; }
+      & .layers-section-4 { background-color: #fdfcc0; order: 4; }
+      & .layers-section-5 { background-color: #fdefc0; order: 5; }
+      & .layers-section-6 { background-color: #c0e5fd; order: 6; }
+      & .layers-section-7 { background-color: #fcd5d5; order: 7; }
+      & .layers-section-8 { background-color: #fdc0f5; order: 8; }
+      & .layers-section-9 { background-color: #c0fdcf; order: 9; }
+    }
+  }
+}

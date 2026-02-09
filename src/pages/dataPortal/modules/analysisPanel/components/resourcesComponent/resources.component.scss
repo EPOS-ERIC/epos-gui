@@ -1,0 +1,63 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+
+  .mat-icon {
+    color: $color-primary;
+
+    &.pointer {
+      cursor: pointer;
+    }
+
+    &.status {
+      display: flex;
+      align-items: center;
+      font-size: 14px !important;
+    }
+
+    &.loaded {
+      color: green;
+    }
+
+    &.not_loaded {
+      color: grey;
+    }
+
+    &.disabled {
+      color: grey;
+      cursor: unset;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    gap: 5px;
+  }
+
+  table {
+    width: 100%;
+    // table-layout: fixed;
+
+    tr:nth-child(even) {
+      background: whitesmoke;
+    }
+
+    .row:hover {
+      background: lightgray;
+    }
+
+    td,
+    th {
+      border-right: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    th {
+      background: whitesmoke;
+      font-weight: bold;
+      flex: none;
+    }
+
+  }
+}

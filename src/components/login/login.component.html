@@ -1,0 +1,12 @@
+<div class="content flex flex-col">
+  <button mat-flat-button color="secondary" (click)="logInOut()">
+    {{(user !== null) ? 'Logout' : 'Login / Register'}}
+  </button>
+
+  <a class="manage-link" target="_blank" [href]="manageUrl">{{(user !== null) ? '' : 'Forgotten Password/'}}Manage
+    Account</a>
+
+  <div class="login-disclaimer">By using EPOS Platform you accept the EPOS terms and conditions.
+    <a (click)="openTermsAndConditions()">More Detail</a>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+@import 'src/sassFramework/variables';
+
+:host {
+  .menu-item-root {
+    font-weight: bold;
+    padding-left: 0px;
+  }
+}
+
+.menu-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}

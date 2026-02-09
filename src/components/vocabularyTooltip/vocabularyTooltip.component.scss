@@ -1,0 +1,29 @@
+@import '/src/sassFramework/variables.scss';
+
+ 
+.list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 5px;
+  width: 100%;
+}
+
+span.keyword {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.mat-icon {
+  font-size: 15px;
+  height: 15px;
+  width: 15px;
+  cursor: pointer;
+  color: $color-primary;
+}
+
+::ng-deep .vocabulary-tooltip-definition {
+  font-size: 1.1em;
+}

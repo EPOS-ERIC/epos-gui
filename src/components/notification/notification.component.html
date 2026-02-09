@@ -1,0 +1,16 @@
+<div class="message mat-elevation-z8 {{ type }}" *ngIf="showMessage">
+  <div class="actions">
+    <mat-icon class="normal"></mat-icon>
+    <span class="title" [innerHTML]="title"></span>
+    <mat-icon class="normal">{{ icon }}</mat-icon>
+  </div>
+  <div class="body nice-scrollbar" [innerHTML]="message"></div>
+  <div class="actions">
+    <button [color]="'primary'" mat-flat-button (click)="handleClose()" data-cy="app-notification-ok-button">
+      Ok
+    </button>
+    <mat-checkbox color="primary" (change)="handleShowAgain($event.checked)" *ngIf="checkShowAgain">
+      Don't show this again
+    </mat-checkbox>
+  </div>
+</div>

@@ -1,0 +1,239 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+  .mat-button-toggle {
+    background-color: $color-background-panel;
+    border-radius: 0%;
+    border: none;
+    overflow: visible;
+
+    .mat-icon {
+      font-weight: bold;
+      color: white;
+
+      &.selected {
+        color: $color-secondary;
+      }
+    }
+
+    ::ng-deep.mat-badge-content {
+      right: -11px;
+      background-color: $color-secondary;
+    }
+  }
+
+  mat-sidenav {
+    width: 30vh;
+    min-width: 30vh;
+  }
+
+  .sidenav-container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    ::ng-deep .mat-drawer-content {
+      position: initial;
+    }
+
+    ::ng-deep .mat-drawer-content .mat-drawer-inner-container {
+      overflow: hidden;
+    }
+  }
+
+  .left-sidenav-data-toggle,
+  .left-sidenav-analysis-toggle,
+  .left-sidenav-registry-toggle,
+  .left-sidenav-software-toggle {
+    position: absolute;
+    z-index: 3;
+    top: $sidenav-left-top;
+    left: 0;
+    height: $sidenav-button-height;
+    width: $sidenav-button-width;
+    transition-property: top;
+    transition-duration: 3s, 5s;
+  }
+
+  .sidenav-left {
+    display: table;
+    width: 25vw;
+    min-width: 500px;
+    max-width: 600px;
+    top: $sidenav-left-top;
+    left: $sidenav-margin;
+    transition: left 0.4s ease-out;
+  }
+
+  .sidenav-left-close-analysis {
+    left: -700px;
+  }
+
+  .sidenav-left-close {
+    left: -40px;
+  }
+
+  .left-sidenav-registry-toggle {
+    height: 11vh !important;
+
+    .button-text {
+      margin-top: 5px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .sidnav-opener-right {
+    z-index: 1;
+    position: absolute;
+    right: 0;
+    top: $sidenav-right-top;
+  }
+
+  .right-sidenav-toggle {
+    position: absolute;
+    z-index: 3;
+    top: $sidenav-right-top;
+    right: 0;
+    height: $sidenav-button-height;
+    width: $sidenav-button-width;
+  }
+
+  ::ng-deep .mat-button-toggle-label-content {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-around;
+
+    .mat-icon {
+      margin-top: 5px;
+    }
+  }
+
+  .bottom-sidenav-toggle {
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    top: $sidenav-bottom-top;
+    height: $sidenav-button-height;
+    width: $sidenav-button-width;
+  }
+
+  .left-sidenav-data-toggle,
+  .left-sidenav-analysis-toggle,
+  .left-sidenav-registry-toggle,
+  .left-sidenav-software-toggle,
+  .right-sidenav-toggle,
+  .bottom-sidenav-toggle {
+    background-color: $header-background-color;
+    color: white;
+    height: $button-toggle-height;
+    min-height: 90px;
+    font-size: 1.2em;
+
+    .button-text {
+      font-weight: bold;
+      transform: rotate(-90deg);
+      margin-bottom: 15px;
+      font-size: 1.2vh;
+    }
+
+    .selected {
+      color: $color-secondary;
+    }
+  }
+
+  .mat-drawer.sidenav,
+  .mat-drawer.sidenavsoftware,
+  .mat-drawer.sidenavregistry {
+    background-color: #00000000;
+    border: 0;
+
+    ::ng-deep .mat-drawer-inner-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &.sidenav-right {
+      right: $sidenav-margin;
+      top: $sidenav-right-top;
+      height: fit-content;
+      z-index: 4;
+
+      ::ng-deep .mat-drawer-inner-container {
+        align-items: flex-end;
+        height: auto;
+      }
+    }
+
+    &.sidenav-right-close {
+      right: -35px;
+    }
+
+    &.sidenav-bottom {
+      display: table;
+      position: absolute;
+      right: $sidenav-margin;
+      top: $sidenav-bottom-top;
+      width: 62%;
+
+      ::ng-deep .mat-drawer-inner-container {
+        align-items: flex-end;
+      }
+    }
+
+    .h1 {
+      position: absolute;
+    }
+  }
+
+  .sidenavanalysis {
+    z-index: 1;
+  }
+
+  .analysis-panel-button-wrapper,
+  .registry-panel-button-wrapper,
+  .software-panel-button-wrapper {
+    position: absolute;
+    transition-property: top;
+    transition-duration: 0.2s;
+  }
+
+  .analysisPanel {
+    position: absolute;
+    min-width: 40vw;
+    transition-property: top, left;
+    transition-duration: 0.2s;
+  }
+
+  .right-sidenav-header {
+    background-color: $color-background-panel;
+    padding: $padding-background-panel;
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+
+    .mat-icon {
+      cursor: pointer;
+    }
+  }
+
+  .left-sidenav-software-toggle {
+    height: 11.5vh !important;
+
+    .button-text {
+      margin-bottom: 20px;
+      margin-top: 5px;
+    }
+  }
+
+  .left-sidenav-analysis-toggle {
+    height: 10vh !important;
+
+    .button-text {
+      margin-top: 5px;
+    }
+  }
+}

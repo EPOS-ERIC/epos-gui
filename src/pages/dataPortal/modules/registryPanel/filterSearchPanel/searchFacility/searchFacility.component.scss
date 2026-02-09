@@ -1,0 +1,156 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5vh;
+  height: 100%;
+  width: 100%;
+
+  ::ng-deep .text-search .mat-form-field-flex {
+    background-color: white;
+    padding: 0.5vh 0.5vh 0 0.75em !important;
+    max-height: 50px;
+  }
+
+  .text-search {
+    ::ng-deep .mat-form-field-underline {
+      display: none;
+    }
+
+    ::ng-deep .mat-chip-list-wrapper .mat-standard-chip {
+      margin-top: 0px !important;
+      margin-bottom: 0px !important;
+    }
+
+    ::ng-deep .mat-form-field-wrapper {
+      padding-bottom: 0px;
+      flex-wrap: unset !important;
+      width: 100%;
+      overflow-x: auto;
+      background-color: white;
+    }
+
+    ::ng-deep .mat-form-field-infix {
+      flex: none;
+    }
+  }
+
+  ::ng-deep .mat-expansion-panel-header-title {
+    display: flex;
+    flex-direction: row;
+
+    .mat-chip-list {
+      margin-left: 10px;
+    }
+  }
+
+  ::ng-deep .mat-expansion-panel {
+    padding-left: 10px;
+
+    .mat-expansion-panel-header {
+      padding-left: 0px;
+    }
+
+    .mat-expansion-panel-body {
+      padding: 0 10px 10px 0;
+    }
+  }
+
+  .mat-chip {
+    min-height: 24px;
+    border-radius: 0px;
+    padding: 5px;
+    justify-content: space-between;
+    background-color: #c69436;
+    white-space: nowrap;
+
+    @media (max-height: 1300px) {
+      font-size: 12px !important;
+    }
+  }
+
+  .mat-chip-remove {
+    border: none;
+    padding-top: 2px;
+    background-color: transparent;
+  }
+
+  ::ng-deep .mat-chip-list-wrapper {
+    flex-wrap: initial;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .select-wrapper {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-grow: 1;
+      grid-gap: 3px;
+      gap: 3px;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      flex-grow: 1;
+      flex-basis: 50%;
+
+      .half {
+        flex-grow: 1;
+        flex-basis: 50%;
+      }
+    }
+
+    .location-select {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      // width: min-content;
+      .radio {
+        width: 20%;
+        margin-right: 10px;
+      }
+
+      .coords {
+        display: flex;
+        justify-content: space-around;
+        flex-grow: 1;
+        grid-gap: 3px;
+        gap: 3px;
+
+        .small-button {
+          margin-top: 15px;
+        }
+      }
+    }
+
+    ::ng-deep mat-form-field,
+    .countrySelect,
+    .dataProviderSelect {
+      width: 100%;
+    }
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    margin-top: 15px;
+
+    &.reverse {
+      flex-direction: row;
+      flex-direction: row-reverse;
+    }
+
+    button {
+      margin-right: 0px;
+    }
+  }
+}

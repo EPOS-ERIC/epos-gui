@@ -1,0 +1,61 @@
+:host ::ng-deep {
+    .leaflet-ruler {
+        height: 30px;
+        width: 30px;
+        background-image: url("../../../../../../src/assets/img/ruler-white.svg"); 
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: #0000004D;
+        mix-blend-mode: difference;
+        background-size: 18px 18px;
+      }
+      
+    .leaflet-ruler:hover {
+        background-image: url("../../../../../../src/assets/img/ruler-white.svg"); 
+        cursor: pointer;
+        background-size: 18px 18px;
+    }
+      
+    .leaflet-ruler-clicked {
+        height: 30px;
+        width: 30px;
+        background-color: rgba(198, 148, 54, 1);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: url("../../../../../../src/assets/img/ruler-white.svg");
+      background-size: 18px 18px;
+    }
+    
+    .leaflet-control {
+        cursor: pointer;
+    }
+      .result-tooltip{
+        background-color: white;
+        border-width: smaller;
+        border-color: black;
+        font-size: smaller;
+    }
+      .moving-tooltip{
+        background-color: rgba(255, 255, 255, .7);
+        background-clip: padding-box;
+        opacity: 0.5;
+        border: dotted;
+        border-color:red;
+        font-size: smaller;
+    }
+      .plus-length{
+        padding-left: 45px;
+    }
+    .lineStyle {
+        color: red;
+    }
+    
+    .leaflet-ruler-tooltip {
+        position: absolute;
+        background: red;
+        padding: 2px 5px;
+        border-radius: 3px;
+        font-size: 12px;
+    }
+    
+}

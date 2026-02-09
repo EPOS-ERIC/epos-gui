@@ -1,0 +1,34 @@
+<div class="custom-divider"></div>
+<div class="content-section">
+  <h5 class="section-title">
+    <mat-icon>layers</mat-icon>
+    <span>Arctic Overlays</span>
+  </h5>
+
+  <mat-accordion>
+    <div class="layer-list">
+
+      <div class="layer" *ngFor="let layer of layers">
+
+        <mat-expansion-panel>
+          <mat-expansion-panel-header class="layer-header">
+            <mat-panel-title>
+
+              <span class="layer-title">{{ layer.name }}</span>
+
+              <span class="layer-toggle" (click)="$event.stopPropagation()">
+                <app-layer-toggle [layer]="layer"></app-layer-toggle>
+              </span>
+
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <div class="layer-container" (mousedown)="$event.stopPropagation()">
+            <app-layer-tabs-control [layer]="layer"></app-layer-tabs-control>
+          </div>
+
+        </mat-expansion-panel>
+      </div>
+    </div>
+  </mat-accordion>
+</div>

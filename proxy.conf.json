@@ -1,0 +1,11 @@
+{
+  "/testpath/api": {
+    "target": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/testpath": ""
+    }
+  }
+}

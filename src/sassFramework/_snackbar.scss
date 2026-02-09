@@ -1,0 +1,79 @@
+@import './_variables.scss';
+
+.snackbar {
+  padding: 0.5rem 1rem !important;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  color: #191919;
+
+  &.snackbar-success {
+    background: #d7ffeb;
+    border-left: 4px solid $color-icon-success;
+
+    .icon {
+      color: $color-icon-success;
+    }
+  }
+
+  &.snackbar-error {
+    background: #ffdadf;
+    border-left: 4px solid $color-icon-error;
+
+    .icon {
+      color: $color-icon-error;
+    }
+  }
+
+  &.snackbar-warning {
+    background: #ffebcf;
+    border-left: 4px solid $color-icon-warning;
+
+    .icon {
+      color: $color-icon-warning;
+    }
+  }
+
+  &.snackbar-info {
+    background: #f1f4ff;
+    border-left: 4px solid $color-icon-info;
+
+    .icon {
+      color: $color-icon-info;
+    }
+  }
+
+  &.snackbar-loading-distribution {
+    background: white;
+    border-left: 4px solid $color-primary;
+
+    .icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .custom-icon {
+      height: 40px;
+      width: auto;
+    }
+  }
+  
+  &.snackbar-available-guided-tour {
+    background: white;
+    border-left: 4px solid $color-primary;
+
+    .icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .custom-icon {
+      height: 40px;
+      width: auto;
+    }
+  }
+}
+
+.mat-snack-bar-container {
+  border-radius: 0 !important;
+}

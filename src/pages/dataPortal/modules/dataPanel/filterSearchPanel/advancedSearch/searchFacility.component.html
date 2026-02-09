@@ -1,0 +1,69 @@
+<mat-form-field
+  appTour
+  tourName="EPOS Overview"
+  tourStage="0"
+  tourDescription="Use the free text search to constrain the results."
+  tourTitle="Free Text Search"
+  tourPosition="right"
+  (tourEnterFunction)="handleFreeTextEnter(filterPanel)"
+  class="text-search mat-elevation-z2">
+  <mat-label>Free text search</mat-label>
+  <mat-chip-list #chipList>
+    <mat-chip *ngFor="let key of listKeyString" (removed)="removeKeyString(key)">
+      <span matTooltip="{{ key.length > 15 ? key : '' }}">{{ key.length > 15 ? (key | slice : 0 : 15) + '...' : key }}</span>
+      <button matChipRemove matTooltip="remove '{{ key }}'">
+        <i class="fas fa-times icon" aria-hidden="true"></i>
+      </button>
+    </mat-chip>
+    <input
+      #matInput
+      type="text"
+      [matAutocomplete]="auto"
+      [formControl]="autoCompleteFormControl"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="addKeyString($event)"
+      data-cy="search-panel-free-text-input" />
+  </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayLeafItem" class="nice-scrollbar" (optionSelected)="selectedKey($event)">
+    <mat-option *ngFor="let leafItem of filteredKeys | async" [value]="leafItem">
+      {{ leafItem.label }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+<mat-expansion-panel
+  appTour
+  tourName="EPOS Overview"
+  tourStage="1"
+  tourDescription="Filters can be applied within this panel to constrain the results."
+  tourTitle="Filters"
+  tourPosition="right"
+  (afterCollapse)="toggleFilterPanel()"
+  (afterExpand)="toggleFilterPanel()"
+  #filterPanel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <span>Filters</span>
+      <mat-chip-list
+        #chipFiltersList
+        appTour
+        tourName="EPOS Overview"
+        tourStage="6"
+        tourDescription="Applied Filters can be viewed here and removed here."
+        tourTitle="Filters"
+        tourPosition="right"
+        (tourEnterFunction)="filterPanel.close()"
+        (tourBackwardFunction)="filterPanel.open()"
+        data-cy="search-panel-filters-mat-chip-list">
+        <mat-chip *ngFor="let filter of typeFilters" (removed)="removeFilter(filter)">
+          {{ filter }}
+          <button matChipRemove matTooltip="Clear {{ filter }}">
+            <i class="fas fa-times icon" aria-hidden="true"></i>
+          </button>
+        </mat-chip>
+      </mat-chip-list>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <app-data-facets (applyEmit)="triggerAdvancedSearch()" (clearEmit)="clearClicked()" [clearEnabled]="clearEnabled"></app-data-facets>
+</mat-expansion-panel>

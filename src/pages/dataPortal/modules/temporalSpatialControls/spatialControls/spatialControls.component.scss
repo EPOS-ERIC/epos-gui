@@ -1,0 +1,42 @@
+@import "src/sassFramework/variables.scss";
+
+.spatio-temporal-control {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: stretch;
+  flex-grow: 1;
+
+  // gap: 3px;
+  .button-wrapper {
+    display: flex;
+    flex-flow: row;
+    grid-gap: 3px;
+    gap: 3px;
+    align-items: center;
+
+    .mat-button-base {
+      margin: 0px !important;
+    }
+  }
+}
+
+app-simple-spatial-control {
+  flex-grow: 1;
+
+  &.north-change ::ng-deep #north-coord {
+    color: $color-primary-l;
+  }
+
+  &.east-change ::ng-deep #east-coord {
+    color: $color-primary-l;
+  }
+
+  &.south-change ::ng-deep #south-coord {
+    color: $color-primary-l;
+  }
+
+  &.west-change ::ng-deep #west-coord {
+    color: $color-primary-l;
+  }
+}

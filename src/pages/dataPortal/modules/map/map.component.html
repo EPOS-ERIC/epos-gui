@@ -1,0 +1,10 @@
+<app-epos-leaflet-map 
+  [initialLatLng]="initialLatLng" 
+  [initialZoom]="initialZoom" 
+  [minZoom]="minZoom"
+  [maxZoom]="maxZoom" 
+  [crs]="crs" 
+  [restoreViewFromStorage]="shouldRestoreView"
+  (onload)="leafletMapObjReady($event)" 
+  data-cy="epos-leaflet-map">
+</app-epos-leaflet-map>

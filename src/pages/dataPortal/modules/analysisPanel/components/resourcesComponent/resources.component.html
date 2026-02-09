@@ -1,0 +1,71 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <ng-container matColumnDef="resource">
+    <th mat-header-cell *matHeaderCellDef>Resource name</th>
+    <td mat-cell *matCellDef="let element" matTooltip="{{ element.description }}">
+      {{ element.name }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="format">
+    <th mat-header-cell *matHeaderCellDef>Format</th>
+    <td mat-cell *matCellDef="let element">
+      {{ element.format }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let element">
+      <mat-icon matTooltip="{{ element.status === environmentResourceStatus.NOT_LOADED ? ' Not loaded on environment' : 'Loaded on environment' }}" class="status {{ element.status | lowercase }}">
+        {{ element.status === environmentResourceStatus.NOT_LOADED ? 'schedule' : 'check_circle' }}
+      </mat-icon>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let element">
+      <div class="actions">
+        <mat-icon
+          class="pointer"
+          [class]="{
+            disabled: element.status !== environmentResourceStatus.NOT_LOADED || environment.status === environmentStatus.CREATING || environment.status === environmentStatus.UPDATING
+          }"
+          matTooltip="Edit resource configuration"
+          (click)="
+            element.status !== environmentResourceStatus.NOT_LOADED || environment.status === environmentStatus.CREATING || environment.status === environmentStatus.UPDATING
+              ? false
+              : openParametersDialog(element)
+          ">
+          edit
+        </mat-icon>
+        <mat-icon class="pointer" matTooltip="Url resource" (click)="openInBrowser(element.url)">link</mat-icon>
+        <mat-icon
+          class="pointer"
+          [class]="{
+            disabled: environment.status === environmentStatus.CREATING || environment.status === environmentStatus.UPDATING
+          }"
+          matTooltip="Duplicate resource"
+          (click)="cloneResource(element)">
+          control_point_duplicate
+        </mat-icon>
+        <mat-icon
+          class="pointer"
+          [class]="{
+            disabled: element.status !== environmentResourceStatus.NOT_LOADED || environment.status === environmentStatus.CREATING || environment.status === environmentStatus.UPDATING
+          }"
+          matTooltip="Delete resource"
+          (click)="
+            element.status !== environmentResourceStatus.NOT_LOADED || environment.status === environmentStatus.CREATING || environment.status === environmentStatus.UPDATING
+              ? false
+              : deleteResource(element)
+          ">
+          remove_circle_outline
+        </mat-icon>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

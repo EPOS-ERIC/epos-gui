@@ -1,0 +1,32 @@
+<div #wrapper class='date-input-wrapper'>
+
+  <button [disabled]="temporalInputsDisabled" class="small-button" mat-flat-button color="primary"
+    matTooltip="Start Date (local)" id="daterangepickerstart" data-cy="date-range-picker-start-button">
+    <i class="far fa-calendar left-icon" aria-hidden="true"></i><i class="fas fa-caret-right icon"
+      aria-hidden="true"></i>
+  </button>
+  <mat-form-field appearance="fill">
+    <input matInput [disabled]="temporalInputsDisabled" id="daterangepickerstart-input" type="text"
+      [placeholder]="DATE_FORMAT" [(ngModel)]="startDisplayDate" (change)="startDateChange()" autocomplete="off"
+      size="15" matTooltip="Start Date (local)" data-cy="date-range-picker-start"/>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <input matInput [disabled]="temporalInputsDisabled" id="daterangepickerend-input" type="text"
+      [placeholder]="DATE_FORMAT" [(ngModel)]="endDisplayDate" (change)="endDateChange()" autocomplete="off" size="15"
+      matTooltip="End Date (local)" data-cy="date-range-picker-end"/>
+  </mat-form-field>
+
+
+  <button [disabled]="temporalInputsDisabled" class="small-button" mat-flat-button color="primary"
+    matTooltip="End Date (local)" id="daterangepickerend" data-cy="date-range-picker-end-button">
+    <i class="fas fa-caret-left left-icon" aria-hidden="true"></i><i class="far fa-calendar icon"
+      aria-hidden="true"></i>
+  </button>
+
+</div>
+<mat-radio-group *ngIf="!disabledRadioButton" (change)="setRadioDate($event)" [(ngModel)]="radioControlDate">
+  <mat-radio-button value="30" data-cy="date-radio-picker-month">Last Month</mat-radio-button>
+  <mat-radio-button value="7" data-cy="date-radio-picker-week">Last Week</mat-radio-button>
+  <mat-radio-button value="1" data-cy="date-radio-picker-day">Last Day</mat-radio-button>
+</mat-radio-group>

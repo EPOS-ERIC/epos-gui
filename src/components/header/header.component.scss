@@ -1,0 +1,237 @@
+@import 'src/sassFramework/variables';
+
+:host {
+  ::ng-deep{
+    // Metadata Preview label (when feature not enabled)
+    & .metadata-toggle-label-span{
+      font-weight: bold;
+    }
+
+    & mat-slide-toggle{
+      margin-right: 8px;
+    }
+    //styling for 'Metadata Preview' select-option
+    & .mat-select-arrow{
+      color: white;
+    }
+    & .mat-select-value-text{
+      color: white;
+    }
+    .mat-form-field{
+      // background color for when hovering over the 'Metadata Status' header button
+      &:hover{
+        transition: background-color 0.5s ease;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      &:active{
+        transition: background-color 0.2s;
+        background-color: rgba(255, 255, 255, 0.4);
+      }
+      .mat-form-field-underline {
+        display: none;
+        /* background-color: white !important; */ /* Change the underline color */
+      }
+    
+      .mat-form-field-ripple {
+        background-color: white !important; /* Change the ripple color on focus */
+      }
+      .mat-form-field-label{
+        color: rgba(255, 255, 255, 0.677);
+      }
+    }
+  }
+  .header {
+    color: white;
+    height: $header-height;
+    background: $header-background-color;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    z-index: 100;
+    position: fixed;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    a {
+      color: white;
+    }
+
+    &-logo-wrapper {
+      display: flex;
+      height: $header-height;
+      margin-left: $sidenav-margin;
+      margin-right: 5px;
+      min-width: 110px;
+
+      & > a {
+        height: $header-height;
+        display: flex;
+        vertical-align: middle;
+        padding: 0.5em 0 0.5em 0;
+
+        img {
+          width: 110px;
+        }
+      }
+
+      .title {
+        display: flex;
+        flex-direction: row;
+        height: $header-height;
+
+        p.main {
+          font-weight: bold;
+          padding-bottom: 2px;
+          font-size: 45px;
+        }
+        
+        p.version {
+          padding-top: 5px;
+          font-weight: bold;
+          font-size: 18px;
+          color: orange;
+          margin-left: 5px;
+
+
+          span {
+            font-size: 15px;
+          }
+          sup {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    &-logo {
+      padding-left: $sidenav-margin;
+    }
+
+    &-actions-wrapper {
+      display: flex;
+      margin-right: $sidenav-margin;
+      vertical-align: middle;
+      justify-content: right;
+
+      ul {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        li {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          margin-left: 20px;
+          height: 36px;
+
+          & > a {
+            color: white;
+            font-weight: bold;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+          }
+        }
+      }
+    }
+  }
+
+  a.nav-top-items-item-text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+
+    span.text {
+      font-weight: bold;
+      padding-top: 2px;
+    }
+  }
+
+  .dropdown-menu {
+    min-width: 160px;
+
+    background: $color-background-panel;
+    background-clip: padding-box;
+    line-height: normal;
+    z-index: 100;
+    position: absolute;
+    right: $sidenav-margin;
+    left: auto;
+    top: $header-height;
+
+    &--userdropdown {
+      padding: $padding-background-panel;
+      max-width: 280px;
+    }
+
+    &-header {
+      padding: 7px 10px;
+      border-bottom: 1px solid $color-text-bg;
+      color: $color-dark-text;
+      font-size: 14px;
+      background: $color-primary;
+
+      &-userimage {
+        display: block;
+        margin: 0 auto;
+        z-index: 5;
+        height: 90px;
+        width: 90px;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+      }
+
+      &-username {
+        text-align: center;
+        font-weight: 800;
+        color: $color-text-bg;
+      }
+    }
+
+    &-body {
+      background: white;
+      color: black;
+
+      & .wrapper {
+        .menuitem {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          cursor: pointer;
+          height: 30px;
+          padding-left: 20px;
+          padding-right: 20px;
+          border-bottom: 1px solid rgb(128, 128, 128);
+
+          &:hover {
+            background-color: $color-secondary;
+            font-weight: bold;
+          }
+
+          span {
+            text-align: right;
+          }
+        }
+      }
+    }
+
+    &-footer {
+      background: white;
+      color: black;
+      padding: 10px;
+
+      & .btn-default {
+        color: $color-text-bg-dark;
+      }
+
+      &:after {
+        content: ' ';
+        display: table;
+        clear: both;
+      }
+    }
+  }
+}

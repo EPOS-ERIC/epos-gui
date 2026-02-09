@@ -1,0 +1,29 @@
+.main-text {
+  font-size: 1.3rem;
+}
+
+.login-disclaimer {
+  font-size: 1.1rem;
+  padding: 1rem 0;
+
+  a {
+    color: rgb(99, 192, 253);
+  }
+}
+
+
+.close-button {
+  margin: 5px 5px 0 0;
+}
+
+.button-wrapper {
+  width: 70%;
+  display: flex;
+  justify-content: space-evenly;
+  .login-button {
+    margin: 15px 0 0 0;
+  }
+  a {
+    line-height: 2;
+  }
+}

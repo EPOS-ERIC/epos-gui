@@ -1,0 +1,16 @@
+@import 'src/sassFramework/variables.scss';
+
+app-select-check-all .mat-option {
+  display: flex;
+  width: 100%;
+}
+
+app-select-check-all .mat-checkbox-layout,
+app-select-check-all .mat-checkbox-label {
+  width: 100% !important;
+  color: rgba(0, 0, 0, 0.87);
+
+  .mat-checkbox-inner-container {
+    margin-right: 8px !important;
+  }
+}

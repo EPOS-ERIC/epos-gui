@@ -1,0 +1,149 @@
+// ==========================================================
+// New Feature Popup — Modern & Improved Styles
+// ----------------------------------------------------------
+// Popup più grande, design pulito e moderno, scrolling
+// elegante per la lista delle feature, spazi ottimizzati.
+// ==========================================================
+
+.new-feature-popup {
+  padding: 32px 36px;
+  max-width: 550px;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  background: #ffffff;
+
+  // ---------- Title ----------
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 26px;
+    text-align: center;
+    color: #00371c;
+    letter-spacing: 0.6px;
+    line-height: 1.3;
+
+    strong {
+      color: #007a42;
+    }
+  }
+   .version {
+    color : #ffa500;
+    font-weight: 700;
+  }
+
+  // ---------- Features Section ----------
+  .features-container {
+    margin-bottom: 28px;
+    max-height: 400px;         
+    overflow-y: auto;          
+    padding-right: 6px;        
+
+    // Custom scrollbar
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #b9b9b9;
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: #9a9a9a;
+    }
+    &::-webkit-scrollbar-track {
+      background: #efefef;
+      border-radius: 4px;
+    }
+
+    // Subtitle above the list
+    .subtitle {
+      font-size: 16px;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 16px;
+    }
+
+    // Feature list
+    .features-list {
+      list-style-type: disc;
+      padding-left: 26px;
+      margin: 0;
+
+      li {// text inside the list
+        margin-bottom: 14px;
+        font-size: 15px;
+        line-height: 1.65;
+        color: #2a2a2a;
+        letter-spacing: 0.25px;
+
+        &::marker {
+          color: #004926;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  // ---------- Actions ----------
+  .actions {
+    text-align: center;
+
+    button {
+      min-width: 150px;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 14px 32px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: #004926;
+      color: white;
+      border: none;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+
+      &:hover {
+        background: #00633b;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+}
+
+::ng-deep .changelog-link {
+  display: inline-flex;       
+  align-items: center;        
+  vertical-align: middle;     
+  
+  font-family: 'Inter', sans-serif; 
+  font-size: 0.8em;           
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;       
+
+  color: #007a42;             
+  background-color: rgba(0, 122, 66, 0.08); 
+  border: 1px solid rgba(0, 122, 66, 0.2);  
+  
+  margin-left: 4px;           
+  padding: 1px 8px 1px 6px;   
+  border-radius: 12px;        
+  
+  transition: all 0.2s ease-in-out;
+  opacity: 0.9;              
+
+  &:hover {
+    background-color: rgba(0, 122, 66, 0.15);
+    border-color: rgba(0, 122, 66, 0.5);
+    color: #004926;
+    opacity: 1;
+    box-shadow: 0 2px 4px rgba(0, 122, 66, 0.1);
+  }
+
+  span {
+    position: relative;
+    top: 1px;
+  }
+}

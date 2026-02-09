@@ -1,0 +1,68 @@
+<mat-expansion-panel [(expanded)]="traceSelectorExpanded">
+  <mat-expansion-panel-header>
+    <mat-panel-title>Trace Selector</mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="distribution-list flex flex-col flex-shrink nice-scrollbar">
+    <ul *ngFor="let configurable of configurables">
+      <li class="distribution-item flex">
+        <table class="traces-from-configurable">
+          <caption>Trace Selector</caption>
+          <thead>
+            <tr>
+              <th colspan="2" scope="col">Add/Remove</th>
+              <th scope="col">Group/Trace Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="group-row">
+              <td colspan="99">
+                {{ configurable.name }}
+                <mat-icon *ngIf="$any(configurable.pinnedObs | async)" class="yellow">star</mat-icon>
+              </td>
+            </tr>
+            <tr *ngIf="null === (traceRecord[configurable.id] ?? null) || traceRecord[configurable.id]?.length === 0; else gotTraces">
+              <td colspan="99">** {{ null === (traceRecord[configurable.id] ?? null) ? 'Requesting Data...' : 'No Traces Found' }} **</td>
+            </tr>
+            <ng-template #gotTraces>
+              <tr *ngFor="let trace of traceRecord[configurable.id]" class="plot-item" [class.add-disabled]="addIsDisabled" [style.color]="$any(trace.styleObs | async)?.color1CssString">
+                <td *ngIf="null !== (_selectedTraces[trace.id] ?? null); else traceNotSelected" colspan="2" class="double-cell">
+                  <i (click)="selectTrace(configurable.id, trace, false)" class="remove-button fas fa-minus-circle" matTooltip="Remove" aria-hidden="true"></i>
+                </td>
+                <ng-template #traceNotSelected>
+                  <ng-container *ngIf="(_selectedTraces | reusableYAxes : trace).length > 0; else noReusableYAxis">
+                    <td>
+                      <i (click)="selectTrace(configurable.id, trace, true)" class="add-button fas fa-plus-circle" aria-hidden="true" matTooltip="Add with new y-axis"></i>
+                    </td>
+                    <td>
+                      <i class="add-button fas fa-plus-square" [matMenuTriggerData]="{ trace: trace }" aria-hidden="true" [matMenuTriggerFor]="yAxisMenu" matTooltip="Add with shared y-axis"></i>
+                    </td>
+                  </ng-container>
+                  <ng-template #noReusableYAxis>
+                    <td colspan="2" class="double-cell">
+                      <i (click)="selectTrace(configurable.id, trace, true)" class="fas fa-plus-circle" matTooltip="Add with new y-axis" aria-hidden="true"></i>
+                    </td>
+                  </ng-template>
+                </ng-template>
+                <td>{{ trace.name }}</td>
+              </tr>
+            </ng-template>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+  </div>
+</mat-expansion-panel>
+
+<mat-menu #yAxisMenu="matMenu" class="graph-visualization-sub-menu">
+  <ng-template matMenuContent let-trace="trace">
+    <h5 class="heading">Share y-axis with:</h5>
+    <button mat-menu-item *ngFor="let yAxis of _selectedTraces | reusableYAxes : trace" class="flex flex-col" (click)="setSelected(trace, true, yAxis)">
+      <ul>
+        <!-- this is a popup menu that gets populated after a click, so binding efficiency not really an issue -->
+        <li *ngFor="let axisTrace of getTracesForYAxis(yAxis)" [style.color]="$any(axisTrace.styleObs | async)?.color1CssString">
+          {{ axisTrace.name }}
+        </li>
+      </ul>
+    </button>
+  </ng-template>
+</mat-menu>

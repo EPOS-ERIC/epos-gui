@@ -1,0 +1,9 @@
+export enum DataType {
+  UNKNOWN,
+  PERSON,
+  ORGANISATION,
+  WEBSERVICE,
+  EQUIPMENT,
+  DATASET,
+  FACILITY,
+}

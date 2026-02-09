@@ -1,0 +1,32 @@
+@import 'src/sassFramework/variables';
+
+.wrapper {
+  max-height: 40vh;
+  overflow: auto;
+}
+
+mat-radio-group {
+  display: flex;
+  flex-direction: column;
+  ::ng-deep .mat-radio-label-content {
+    padding: 5px;
+  }
+}
+
+.option-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 500px;
+  img {
+    width: 60%;
+  }
+  .title {
+    width: 50%;
+  }
+  .img-wrapper {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}

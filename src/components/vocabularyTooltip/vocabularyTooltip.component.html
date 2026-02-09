@@ -1,0 +1,9 @@
+<div class="list">
+  <div *ngFor="let keyword of results">
+    <span class="keyword">
+      {{ keyword.keyword }}
+      <mat-icon *ngIf="keyword.definition !== ''" matTooltipClass="vocabulary-tooltip-definition" matTooltip="{{ keyword.keyword }}: {{ keyword.definition }}'">help</mat-icon>
+      ;
+    </span>
+  </div>
+</div>

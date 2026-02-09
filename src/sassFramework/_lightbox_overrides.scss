@@ -1,0 +1,30 @@
+span.lb-caption {
+  font-size: 16px !important;
+}
+
+.lightbox {
+  top: 50% !important;
+  left: 50% !important;
+  margin-right: -50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.lightbox,
+.lb-image,
+.lb-outerContainer,
+.lb-container,
+.lb-dataContainer {
+  width: auto !important;
+  max-height: 600px !important;
+  background-color: black !important;
+}
+
+.lightboxOverlay {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: grey !important;
+}
+
+.lb-dataContainer {
+  background-color: black !important;
+}

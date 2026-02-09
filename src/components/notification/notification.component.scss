@@ -1,0 +1,50 @@
+@import "src/sassFramework/variables.scss";
+
+:host {
+
+  div.info {
+    background-color: #d1e9c4;
+  }
+
+  div.warning {
+    background-color: #ffebcf;
+  }
+
+  div.error {
+    background-color: #e9c4c4;
+  }
+
+  div.message {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    margin: 10px;
+    padding: 10px;
+    z-index: 1000;
+    text-align: justify;
+    margin-top: 50px;
+    max-height: 400px;
+
+    div.body {
+      word-break: break-word;
+      overflow: auto;
+    }
+
+    div.actions {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row-reverse;
+
+      .title {
+        font-weight: bold;
+      }
+
+      .normal {
+        cursor: initial;
+      }
+    }
+  }
+}

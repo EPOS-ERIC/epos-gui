@@ -1,0 +1,38 @@
+// NEEDS EXPANDING
+.epos-tabs .tabs-headers {
+  & > li {
+    padding: 2px 5px;
+    margin: 0;
+    margin-right: 3px;
+    cursor: pointer;
+    background-color: $label-default-bg;
+    color: $color-dark-text;
+    box-shadow: none;
+  }
+  & .selected {
+    background-color: $color-primary-l;
+    color: $color-light-text;
+    cursor: default;
+    box-shadow: 1px -1px 5px 0px rgba(0,0,0,.6);
+    
+    &:first-child {
+      margin-left: 0;
+    }
+
+  }
+
+  &.left-tabs li {
+    border-top-right-radius: 10px;
+  }
+
+  &.right-tabs li {
+    border-top-left-radius: 10px;
+  }
+}
+
+.epos-tabs .tabs-contents {
+  border-top: 1px solid $color-primary-l;
+  &>*:not(.selected) {
+    display: none;
+  }
+}

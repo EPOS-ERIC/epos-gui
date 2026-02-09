@@ -1,0 +1,22 @@
+<div>
+  <table mat-table [dataSource]="citations">
+    <tr mat-row *matRowDef="let citation; columns: displayColumns"></tr>
+    <ng-container matColumnDef="title">
+      <th *matCellDef="let citation; let i = index" data-cy="details-dialog-how-to-cite-key">
+        {{ citation.purpose }}
+      </th>
+    </ng-container>
+    <ng-container matColumnDef="citation">
+      <td mat-cell *matCellDef="let citation; let i = index" data-cy="details-dialog-how-to-cite-value">
+        <span [innerHTML]="citation.citation" #citationEl></span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="copyButton">
+      <td mat-cell *matCellDef="let citation; let i = index">
+        <button mat-icon-button (click)="copyCitationToClipboard(citation.citation)">
+          <mat-icon matTooltip="Copy to clipboard">content_copy</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+  </table>
+</div>

@@ -1,0 +1,43 @@
+<h1>EPOS POLICIES</h1>
+<div class="policies-grid nice-scrollbar">
+  <mat-checkbox #toggleTerms [checked]="false" data-cy="toggle-terms-checkbox"></mat-checkbox>
+  <label id="terms-checkbox-label" [for]="toggleTerms.inputId">I consent to Terms and Conditions</label>
+  <p class="details">
+    Here you will find the conditions under which you use the EPOS Platform. This includes acceptable use
+    and liability disclaimer. If you do not consent to such use of the platform, further access to the platform is
+    denied.
+    <a target="_blank" rel="noopener noreferrer"
+      href="https://www.epos-eu.org/media/67">
+      <mat-icon aria-hidden="false">description</mat-icon>
+    </a>
+  </p>
+
+  <mat-checkbox #togglePrivacy [checked]="false" data-cy="toggle-privacy-checkbox"></mat-checkbox>
+  <label id="privacy-checkbox-label" [for]="togglePrivacy.inputId">I understand and acknowledge the Privacy Policy
+    document</label>
+  <p class="details">
+    The Privacy policy explains how EPOS ERIC manages and protects personal data, particularly in the sense of
+    GDPR (General Data Protection Regulation).
+    If you do not consent to such use of your personal data, further access to the platform is denied.
+    <a target="_blank" rel="noopener noreferrer" href="https://www.epos-eu.org/sites/default/files/Privacy_Policy.pdf">
+      <mat-icon aria-hidden="false">description</mat-icon>
+    </a>
+  </p>
+
+  <mat-slide-toggle #cookiesToggle [(ngModel)]="cookiePolicy"></mat-slide-toggle>
+  <label [for]="cookiesToggle.inputId">COOKIES</label>
+  <p class="details">
+    Websites utilise cookies to store certain information. EPOS Platform uses cookies only to monitor
+    performance anonymously, information used in improving the platform. You may choose to allow these cookies or
+    not. Either choice does not prevent use of the platform.
+    <a target="_blank" rel="noopener noreferrer" href="https://www.epos-eu.org/sites/default/files/Cookie_Policy.pdf">
+      <mat-icon aria-hidden="false">description</mat-icon>
+    </a>
+  </p>
+
+  <div class="actions">
+    <button class="submit-butt" mat-flat-button color="primary"
+      [disabled]="!toggleTerms.checked || !togglePrivacy.checked" (click)="setStorage()" data-cy="accept-terms-button">Submit</button>
+  </div>
+
+</div>

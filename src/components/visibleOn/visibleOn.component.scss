@@ -1,0 +1,72 @@
+@import "src/sassFramework/variables.scss";
+
+:host {
+
+  div.visibility,
+  div.status {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    font-size: 13px;
+    margin-bottom: 3px;
+
+    .hflex {
+      display: flex;
+      flex-direction: row;
+      column-gap: 3px;
+    }
+
+    .link {
+      text-decoration: underline;
+    }
+
+    .label {
+      width: 23%;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: row;
+      column-gap: 10px;
+      width: 100%;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+
+    .icon {
+
+      display: flex;
+      flex-direction: row;
+      column-gap: 10px;
+      width: 100%;
+
+
+      mat-icon {
+
+        font-size: 14px !important;
+        height: 14px !important;
+        width: 14px !important;
+
+        &.grey {
+          color: grey;
+        }
+
+        &.green {
+          color: green;
+        }
+
+        &.orange {
+          color: orange;
+        }
+
+        &.red {
+          color: red;
+        }
+      }
+    }
+
+  }
+
+}

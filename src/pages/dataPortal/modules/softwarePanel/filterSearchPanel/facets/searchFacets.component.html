@@ -1,0 +1,65 @@
+<div class="wrapper">
+  <div
+    class="location-select">
+    <span class="radio">
+      <mat-form-field>
+        <mat-select [(ngModel)]="locationRadioSelect" data-cy="spatial-filter-selector">
+          <mat-option value="coordinates">Coordinates</mat-option>
+          <mat-option value="geolocation">Geolocation</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </span>
+    <span class="coords">
+      <app-country-select
+        class="countrySelect"
+        *ngIf="locationRadioSelect === locationRadioSelectTypeGeolocation"
+        [countryDefault]="countrySelected"
+        (countrySelected)="geolocationSelection($event)"></app-country-select>
+
+      <app-spatial-controls
+        *ngIf="locationRadioSelect === locationRadioSelectTypeCoordinates"
+        class="flex-grow"
+        [bbox]="bBoxFromModel"
+        (setBBox)="setBBoxFromControl($event)"
+        (setEditableBBox)="setEditableBBoxFromControl($event)"
+        (clearCountriesSelect)="clearCountriesSelect()"
+        (resetGeolocation)="resetGeolocation()"></app-spatial-controls>
+    </span>
+  </div>
+  <app-temporal-controls
+    class="flex-grow"
+    [temporalRangeSource]="temporalRangeSource"></app-temporal-controls>
+
+  <div
+    class="organisation-wrapper">
+    <app-data-provider-filter
+      class="dataProviderSelect"
+      *ngIf="dataProviders !== undefined"
+      [dataProviders]="dataProviders"
+      [dataProvidersSelected]="organisationsSelected"
+      [title]="'Filter by Data and Service Providers'"
+      [label]="'Data and Service Providers'"
+      [model]="organisationsModel"
+      (newDataProvidersSelected)="dataProviderSelected($event)"
+      data-cy="data-provider-filter"></app-data-provider-filter>
+  </div>
+  <div class="row">
+    <div class="type-wrapper half" data-cy="data-visibility-selector">
+      <mat-form-field>
+        <mat-label>{{ searchFacetTypeLabel }}</mat-label>
+        <mat-select #typesSelect multiple [(ngModel)]="selectedTypes" (openedChange)="typesToggleSelected($event)">
+          <mat-select-trigger>{{ numberTypeSelected }} item(s) selected</mat-select-trigger>
+          <mat-option *ngFor="let type of types" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="button-container half">
+      <button [disabled]="!clearEnabled" class="adv-search-buttons" mat-flat-button color="primary" (click)="clearAll()" matTooltip="Clear all filters" data-cy="clear-all-filters">
+        Clear All
+        <i class="fas fa-times icon" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</div>

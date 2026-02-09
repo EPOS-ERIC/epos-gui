@@ -1,0 +1,7 @@
+<mat-form-field (click)="openFilter()">
+  <mat-label>{{ label }}</mat-label>
+  <mat-select #organisationsSelect multiple>
+    <mat-select-trigger *ngIf="dataProvidersSelected.length > 0" data-cy="data-provider-filter-text">{{ dataProvidersSelected.length }} item(s) selected</mat-select-trigger>
+    <mat-option *ngFor="let item of dataProviders" [value]="item" style="display: none">{{ item.getName() }}</mat-option>
+  </mat-select>
+</mat-form-field>

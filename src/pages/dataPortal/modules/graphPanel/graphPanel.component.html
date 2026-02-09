@@ -1,0 +1,21 @@
+<app-loading [visible]="loading" [scale]="4"></app-loading>
+<div *ngIf="currentTraces.size === 0; else gotGraphableConfigurables" class="empty-message">Data cannot be visualised in a graphable format.</div>
+<ng-template #gotGraphableConfigurables>
+  <div class="data-trace-selector-wrapper flex-shrink-no">
+    <app-data-trace-selector [traceMap]="currentTraces" (loading)="setLoading($event)" (selectedTraces)="setSelectedTraces($event)"></app-data-trace-selector>
+  </div>
+  <div class="top-menu flex">
+    <div class="flex-shrink flex-grow">
+      <!-- intentionally empty -->
+    </div>
+
+    <div class="display-type-selector flex-shrink-no flex-grow">
+      <span class="selector-label display-type-item">Y-axes:</span>
+      <mat-button-toggle-group aria-label="Display Type" [value]="selectedDisplayType" class="display-type-item" (change)="setDisplayType($event)">
+        <mat-button-toggle class="primary" [value]="DISPLAY_TYPES.STACK">Stack</mat-button-toggle>
+        <mat-button-toggle class="primary" [value]="DISPLAY_TYPES.OVERLAY">Overlay</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+  </div>
+  <app-data-graph-display class="nice-scrollbar flex flex-grow" [traces]="selectedTraces" [selectedDisplayType]="selectedDisplayType" [plotlyVHeight]="plotlyVHeight"></app-data-graph-display>
+</ng-template>

@@ -1,0 +1,8 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+  ::ng-deep mat-form-field,
+  .select {
+    width: 100%;
+  }
+}

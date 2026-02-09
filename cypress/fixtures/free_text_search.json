@@ -1,0 +1,379 @@
+{
+  "filters": [
+    {
+      "children": [
+        {
+          "id": "YWNjZWxlcm9ncmFtcw==",
+          "name": "accelerograms"
+        },
+        {
+          "id": "YW50aHJvcG9nZW5pYyBoYXphcmRz",
+          "name": "anthropogenic hazards"
+        },
+        {
+          "id": "YW50aHJvcG9nZW5pYyBzZWlzbWljaXR5",
+          "name": "anthropogenic seismicity"
+        },
+        {
+          "id": "Ym9yZWhvbGU=",
+          "name": "borehole"
+        },
+        {
+          "id": "Y2F0YWxvZ3Vl",
+          "name": "catalogue"
+        },
+        {
+          "id": "ZXBpc29kZQ==",
+          "name": "episode"
+        },
+        {
+          "id": "ZXBpc29kZXMgcGxhdGZvcm0=",
+          "name": "episodes platform"
+        },
+        {
+          "id": "ZmF1bHRz",
+          "name": "faults"
+        },
+        {
+          "id": "Z2VvZGV0aWMgZGF0YQ==",
+          "name": "geodetic data"
+        },
+        {
+          "id": "Z2VvbG9neQ==",
+          "name": "geology"
+        },
+        {
+          "id": "Z2Vvc2NpbWw=",
+          "name": "geosciml"
+        },
+        {
+          "id": "Z2VvdGhlcm1hbCBlbmVyZ3kgcHJvZHVjdGlvbg==",
+          "name": "geothermal energy production"
+        },
+        {
+          "id": "Z25zcyBzdGF0aW9ucw==",
+          "name": "gnss stations"
+        },
+        {
+          "id": "Z3JhdmltZXRyaWMgbWVhc3VyZW1lbnRz",
+          "name": "gravimetric measurements"
+        },
+        {
+          "id": "Z3JhdmltZXRyaWMgc3RhdGlvbnM=",
+          "name": "gravimetric stations"
+        },
+        {
+          "id": "Z3JvdW5kIG1vdGlvbg==",
+          "name": "ground motion"
+        },
+        {
+          "id": "Z3JvdW5kIHdhdGVyIGxldmVs",
+          "name": "ground water level"
+        },
+        {
+          "id": "aW5qZWN0aW9uIGluZHVzdHJpYWwgZGF0YQ==",
+          "name": "injection industrial data"
+        },
+        {
+          "id": "aW5zcGlyZTpnZQ==",
+          "name": "inspire:ge"
+        },
+        {
+          "id": "bWluZSBpbmR1c3RyaWFsIGRhdGE=",
+          "name": "mine industrial data"
+        },
+        {
+          "id": "bWluaW5nIGZyb250IGFkdmFuY2U=",
+          "name": "mining front advance"
+        },
+        {
+          "id": "cm90YXRpb25hbCBncm91bmQgbW90aW9uIHBhcmFtZXRlcnM=",
+          "name": "rotational ground motion parameters"
+        },
+        {
+          "id": "c2Vpc21pYyB3YXZlZm9ybQ==",
+          "name": "seismic waveform"
+        },
+        {
+          "id": "c2hlYXIgd2F2ZSB2ZWxvY2l0eQ==",
+          "name": "shear wave velocity"
+        },
+        {
+          "id": "c3RhdGlvbiBpbmZvcm1hdGlvbg==",
+          "name": "station information"
+        },
+        {
+          "id": "dGNzIGFo",
+          "name": "tcs ah"
+        },
+        {
+          "id": "dW5kZXJncm91bmQgbWluaW5n",
+          "name": "underground mining"
+        },
+        {
+          "id": "dmVsb2NpdHkgbW9kZWw=",
+          "name": "velocity model"
+        },
+        {
+          "id": "d2F0ZXIgc3RhdGlvbnM=",
+          "name": "water stations"
+        }
+      ],
+      "name": "keywords"
+    },
+    {
+      "children": [
+        {
+          "id": "515c76fa-065c-470d-beb2-856c6878f2a1",
+          "name": "BRGM - Bureau de Recherches G\u00e9ologiques et Mini\u00e8res"
+        },
+        {
+          "id": "5d6ff378-5f15-42e6-acb2-0982a989075e",
+          "name": "EOST - \u00c9cole et Observatoire des Sciences de la Terre"
+        },
+        {
+          "id": "9fc63a61-8342-48d1-af38-753981d0bb71",
+          "name": "GIG - G\u0142\u00f3wny Instytut G\u00f3rnictwa"
+        },
+        {
+          "id": "da5e96aa-d2e0-4ca6-912b-55277f927c46",
+          "name": "IGF PAN - Instytut Geofizyki Polskiej Akademii Nauk"
+        },
+        {
+          "id": "2b604018-73af-4bd4-b6e8-47cc1903c2cd",
+          "name": "Q-con GmbH"
+        },
+        {
+          "id": "894a7787-b884-4eb9-9899-e16ee632a72a",
+          "name": "UoO - University of Oulu"
+        }
+      ],
+      "name": "organisations"
+    },
+    {
+      "children": [
+        {
+          "id": "8b4ee645-4458-4389-b00b-f38d015a244d",
+          "name": "Geothermal energy production"
+        },
+        {
+          "id": "621efaf0-41d0-4d42-92e6-efe6156eb87d",
+          "name": "Underground mining"
+        },
+        {
+          "id": "0334464c-55a9-4aa2-9fe2-b7d5f803db0e",
+          "name": "Boreholes"
+        }
+      ],
+      "name": "sciencedomains"
+    },
+    {
+      "name": "servicetypes"
+    }
+  ],
+  "results": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "ddss": "category:undergroundmg",
+                "distributions": [
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/d9cf45ad-1bc6-4d97-91e3-d4afa9007984?format=application/json",
+                        "label": "APPLICATION/JSON",
+                        "originalFormat": "application/json",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "application/epos.geo+json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/d9cf45ad-1bc6-4d97-91e3-d4afa9007984?format=application/epos.geo+json",
+                        "label": "GEOJSON",
+                        "originalFormat": "application/epos.geo+json",
+                        "type": "CONVERTED"
+                      }
+                    ],
+                    "description": "Enables to list data items contained in the episode (dataset) as \u2018Catalog', 'Seismic Network', 'Event related waveforms', 'Velocity model' and some 'Industrial data', features filtering. Episode comprehensively describes a geophysical process induced or triggered by human technological activity, which could pose a hazard for populations, infrastructure and environment. Pyhasalmi mine, Central Finland, is an underground mine which produces copper, zinc and pyrite. A seismic network was installed underground in 2002 to monitor and locate frequently occurring microseismic scale events. Main target in Pyhasalmi episode is to: 1. Compare microseismic networks detected events with observations with national permanent seismic stations observations. 2. Correlate mining related microseismic events with the production data of the Pyhasalmi mine. 3. Analyze regions, where events concentrate and compare the locations with known geology. Pyhasalmi Episode consists of various data in order to track relation between seismicity and Pyhasalmi mine production. Data consists of seismic waverform and catalog, borehole information and basemaps.",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/d9cf45ad-1bc6-4d97-91e3-d4afa9007984",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/d9cf45ad-1bc6-4d97-91e3-d4afa9007984?extended=true",
+                    "id": "d9cf45ad-1bc6-4d97-91e3-d4afa9007984",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "Episode PYHASALMI MINE: in situ underground laboratory - dataset",
+                    "uid": "anthropogenic_hazards/distribution/episode-elements/PYHASALMI_MINE"
+                  },
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/7affeed4-813c-4cbd-9b0d-a1c2b6691aa2?format=application/json",
+                        "label": "APPLICATION/JSON",
+                        "originalFormat": "application/json",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "application/epos.geo+json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/7affeed4-813c-4cbd-9b0d-a1c2b6691aa2?format=application/epos.geo+json",
+                        "label": "GEOJSON",
+                        "originalFormat": "application/epos.geo+json",
+                        "type": "CONVERTED"
+                      }
+                    ],
+                    "description": "Enables to list data items contained in the episode (dataset) as \u2018Catalog' and some 'Industrial data' and 'Geodata', features filtering. Episode comprehensively describes a geophysical process induced or triggered by human technological activity, which could pose a hazard for populations, infrastructure and environment. The Multidisciplinary Upper Silesia Episode (MUSE) presents the results of local monitoring of induced seismicity during the extraction of coal seams at depths between 960m to 1230m below ground level in the ROW_RYDULTOWY Mine, Upper Silesian Coal Basin, southern Poland. Production at the mine lasted over 215 years. In 2016-2021, mining seismic tremors were registered and catalogs were prepared for 13 coal longwalls in operation. More than 24000 tremors with seismic energies from 100J to 9.8E7J (local magnitude from 0.1 to 3.2) were recorded. The catalogs are updated on an ongoing operation of new coal longwalls. From June 2020, seismic observations are carried out dedicated to the monitoring of vibrations in the near wave field, which allowed to obtain unclipped recordings of the PPV (peak particle velocity) parameter, directly in the vicinity of underground headings (NearWaveField Catalog) and the parameters of the seismic source were determined according to the Brune model. On the surface in the area of the longwall VIII-E-E1 / 703, continuous measurements of displacements were also made using the GNSS technique at four points, continuous measurement of changes in the gravity with the gPhone gravimeter, continuous measurement of the quaternary water table in two boreholes and measurement of the velocity of rotational vibrations and vibration acceleration translational (at one point). In addition, over the area of the longwall VIII-E-E1 / 703, periodic measurements of land surface deformation using the GNSS (Global Navigation Satelite System) technique and measurements of relative changes in gravity at 95 benchmark points (12 series from 2018 to 2021) were performed.",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/7affeed4-813c-4cbd-9b0d-a1c2b6691aa2",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/7affeed4-813c-4cbd-9b0d-a1c2b6691aa2?extended=true",
+                    "id": "7affeed4-813c-4cbd-9b0d-a1c2b6691aa2",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "Episode MUSE2 KWK ROW - Rydu\u0142towy: underground coal mining - dataset",
+                    "uid": "anthropogenic_hazards/distribution/episode-elements/KWK_ROW_Rydultowy"
+                  }
+                ],
+                "name": "Underground mining"
+              },
+              {
+                "ddss": "category:geothermalenergyproducti",
+                "distributions": [
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/79c57cff-c3f9-400f-b1b3-43494bd57d08?format=application/json",
+                        "label": "APPLICATION/JSON",
+                        "originalFormat": "application/json",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "application/epos.geo+json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/79c57cff-c3f9-400f-b1b3-43494bd57d08?format=application/epos.geo+json",
+                        "label": "GEOJSON",
+                        "originalFormat": "application/epos.geo+json",
+                        "type": "CONVERTED"
+                      }
+                    ],
+                    "description": "Enables to list data items contained in the episode (dataset) as \u2018Catalog' and some 'Industrial data', features filtering. Episode comprehensively describes a geophysical process induced or triggered by human technological activity, which could pose a hazard for populations, infrastructure and environment. The Cooper Basin geothermal field is located in the northeast of South Australia near the Queensland border. Geothermal exploration started in 2002, and to date six deep wells have been drilled into the granite to a depth level of 3629\u20134852 m. Four of these wells are located in the Habanero field, the other two wells are at distances of 9 and 18 km, respectively, in the Jolokia and Savina fields. Several hydraulic stimulations were conducted to enhance the hydraulic conductivity in the subsurface. Stimulation activities in the Habanero field were accompanied by pronounced seismic activity occurring on a single, subhorizontal fault, which existed prior to geothermal exploration (Baisch et al., 2006, 2009). The Habanero 4 well was drilled in the year 2012 to a total depth of 4204 m. It intersects the previously stimulated reservoir at a depth level of 4160 m, which is within 20 m of the predicted intersection depth based on previous seismicity (Baisch et al., 2006, 2009). The data provided here refers to the stimulation of Habanero#4. Following previous stimulations in the Habanero reservoir, Habanero 4 was hydraulically stimulated by injecting a total quantity of 34,000 m3 of water starting on 14 November 2012. Maximum flow rates exceeded 60 L/s, and the wellhead pressure reached peak values in the order of 50 MPa. Previous hydraulic testing of the reservoir revealed an extremely high artesian pressure of about 35 MPa above hydrostatic (Baisch et al., 2009). Immediately before the injection, a slightly lower overpressure of about 34 MPa was observed. For monitoring the stimulation of Habanero 4, a 24-station network was installed. The network includes the permanent stations installed around the Habanero, Jolokia, and Savina wellsites, consisting of three-component geophones deployed in boreholes at depth levels of 78\u2013370 m and one surface seismometer (Baisch et al., 2015). Additionally, nine stations equipped with three-component 1 Hz surface seismometers were temporarily deployed to improve the coverage to the east and northwest, respectively. Each seismic station was equipped with a three-channel 24-bit digitizer recording continuously at a sampling rate of 500 Hz. Continuous waveform recordings were stored locally on a hard disk, and the seven live stations additionally transmitted data by a WLAN to the central data acquisition office located at the Habanero campsite.",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/79c57cff-c3f9-400f-b1b3-43494bd57d08",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/79c57cff-c3f9-400f-b1b3-43494bd57d08?extended=true",
+                    "id": "79c57cff-c3f9-400f-b1b3-43494bd57d08",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "Episode COOPER BASIN: geothermal energy production - dataset",
+                    "uid": "anthropogenic_hazards/distribution/episode-elements/COOPER_BASIN"
+                  },
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/15fb11a6-d42e-4cab-8558-e1209e42baa9?format=application/json",
+                        "label": "APPLICATION/JSON",
+                        "originalFormat": "application/json",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "application/epos.geo+json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/15fb11a6-d42e-4cab-8558-e1209e42baa9?format=application/epos.geo+json",
+                        "label": "GEOJSON",
+                        "originalFormat": "application/epos.geo+json",
+                        "type": "CONVERTED"
+                      }
+                    ],
+                    "description": "Enables to list data items contained in the episode (dataset) as 'Catalog', 'Seismic Stations' and some 'Industrial data', features filtering. Episode comprehensively describes a geophysical process induced or triggered by human technological activity, which could pose a hazard for populations, infrastructure and environment. The 2004 stimulation was aimed at improving the hydraulic performances of the well GPK4. This borehole was stimulated twice. The present test corresponds to the first stimulation of GPK4. The data from a pre-stimulation low flow injection test performed to evaluate the initial injectivity of GPK4 are included.",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/15fb11a6-d42e-4cab-8558-e1209e42baa9",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/15fb11a6-d42e-4cab-8558-e1209e42baa9?extended=true",
+                    "id": "15fb11a6-d42e-4cab-8558-e1209e42baa9",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "Episode SOULTZ-SOUS-FORETS 2004 STIMULATION - dataset",
+                    "uid": "anthropogenic_hazards/distribution/episode-elements/SSFS2004"
+                  }
+                ],
+                "name": "Geothermal energy production"
+              }
+            ],
+            "ddss": "category:multidisciplaryahdata",
+            "name": "Multidisciplinary AH data"
+          }
+        ],
+        "code": "ANT",
+        "color": "#06a8e2",
+        "id": "7",
+        "imgUrl": "assets/img/logo/ANTHROPO_logo.png",
+        "linkUrl": "https://www.epos-eu.org/tcs/anthropogenic-hazards",
+        "name": "Anthropogenic Hazards"
+      },
+      {
+        "children": [
+          {
+            "ddss": "category:beholes",
+            "distributions": [
+              {
+                "availableFormats": [
+                  {
+                    "format": "application/epos.geo+json",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/execute/7490b607-3cb1-4946-a295-156107e77171?format=json",
+                    "label": "GEOJSON (json)",
+                    "originalFormat": "json",
+                    "type": "ORIGINAL"
+                  }
+                ],
+                "description": "This service enables to search for existing Boreholes through spatial and attribute based queries (names, drilling method, ...) and download the corresponding data subset of interest. It is not meant for just browsing the map, for this, please use the Borehole View Service",
+                "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/7490b607-3cb1-4946-a295-156107e77171",
+                "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/7490b607-3cb1-4946-a295-156107e77171?extended=true",
+                "id": "7490b607-3cb1-4946-a295-156107e77171",
+                "status": 1,
+                "statusTimestamp": "1970-01-01T12:00:00Z",
+                "title": "Borehole Download Service",
+                "uid": "https://data.geoscience.earth/id/dataset/borehole/distributionWfs"
+              },
+              {
+                "availableFormats": [
+                  {
+                    "format": "application/vnd.ogc.wms_xml",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/ogcexecute/d280b66f-91c9-4fdf-aa98-c89caa4b0bb9",
+                    "label": "WMS",
+                    "originalFormat": "image/jpeg",
+                    "type": "ORIGINAL"
+                  },
+                  {
+                    "format": "application/vnd.ogc.wms_xml",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/ogcexecute/d280b66f-91c9-4fdf-aa98-c89caa4b0bb9",
+                    "label": "WMS",
+                    "originalFormat": "image/geotiff",
+                    "type": "ORIGINAL"
+                  },
+                  {
+                    "format": "application/vnd.ogc.wms_xml",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/ogcexecute/d280b66f-91c9-4fdf-aa98-c89caa4b0bb9",
+                    "label": "WMS",
+                    "originalFormat": "image/png",
+                    "type": "ORIGINAL"
+                  }
+                ],
+                "description": "This service allows visualization of available Boreholes in a given area of Europe.",
+                "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/d280b66f-91c9-4fdf-aa98-c89caa4b0bb9",
+                "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/d280b66f-91c9-4fdf-aa98-c89caa4b0bb9?extended=true",
+                "id": "d280b66f-91c9-4fdf-aa98-c89caa4b0bb9",
+                "status": 1,
+                "statusTimestamp": "1970-01-01T12:00:00Z",
+                "title": "Borehole View Service",
+                "uid": "https://data.geoscience.earth/id/dataset/borehole/distributionWms"
+              }
+            ],
+            "name": "Boreholes"
+          }
+        ],
+        "code": "GIM",
+        "color": "#fe4b3a",
+        "id": "8",
+        "imgUrl": "assets/img/logo/MODELING_logo.png",
+        "linkUrl": "https://www.epos-eu.org/tcs/geological-information-and-modeling",
+        "name": "Geological Information and Modeling"
+      }
+    ],
+    "name": "domains"
+  }
+}

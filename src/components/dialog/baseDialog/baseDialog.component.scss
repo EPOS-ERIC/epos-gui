@@ -1,0 +1,122 @@
+@import 'src/sassFramework/variables';
+
+::ng-deep {
+  & .dialog-custom-backdrop-wrapper {
+    position: relative;
+  }
+
+  & .dialog-custom-backdrop {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, .32); // same as .cdk-overlay-dark-backdrop
+  }
+}
+
+::ng-deep .epos-dialog {
+
+  & .mat-dialog-container,
+  & .mat-dialog-container>*,
+  & .mat-dialog-container>*>app-base-dialog {
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+    flex-shrink: 1;
+    flex-grow: 1;
+    min-height: 1px;
+  }
+}
+
+::ng-deep .epos-dialog {
+  background: rgba(255, 255, 255, .3);
+  padding: $padding-background-panel;
+  resize: both;
+  overflow: auto;
+}
+
+::ng-deep .epos-dialog-resizable {
+  background: rgba(255, 255, 255, .3);
+  padding: $padding-background-panel;
+  resize: both;
+  overflow: auto;
+}
+
+::ng-deep .no-resize {
+
+  & .mat-dialog-container,
+  & .mat-dialog-container>*,
+  & .mat-dialog-container>*>app-base-dialog {
+    display: flex;
+    flex-direction: column;
+    // align-items: center;
+    flex-shrink: 1;
+    flex-grow: 1;
+    min-height: 1px;
+  }
+}
+
+::ng-deep .no-resize {
+  background: rgba(255, 255, 255, .3);
+  padding: $padding-background-panel;
+  resize: none;
+  overflow: auto;
+}
+
+::ng-deep .mat-dialog-container {
+  overflow: hidden;
+  padding: 15px;
+}
+
+:host {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 1;
+  min-height: 1px;
+
+  & ::ng-deep .buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid grey;
+  cursor: move;
+}
+
+h1 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 0;
+  line-height: 25px;
+}
+
+.mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-height: 1px;
+  margin: 0 -10px;
+  padding: 0 10px;
+}
+
+.mat-dialog-close {
+  position: absolute;
+  right: -1em;
+  top: -1em;
+}
+
+button {
+  padding: 0px;
+  min-width: 26px;
+}

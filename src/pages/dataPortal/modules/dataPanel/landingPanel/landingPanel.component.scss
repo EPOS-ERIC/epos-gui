@@ -1,0 +1,144 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+
+  .mat-badge-content {
+    top: 0px;
+    right: -11px;
+    background-color: $color-secondary;
+  }
+
+  .wrapper {
+    margin-top: $panel-gap;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    .domain-list {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      gap: $panel-gap;
+      width: 100%;
+
+      .domain-box {
+        display: flex;
+        align-items: center;
+        height: $results-item-height;
+
+        &.disabled {
+          img {
+            -webkit-filter: grayscale(100%);
+            filter: grayscale(100%);
+          }
+
+          .domain-item {
+            p {
+              color: rgb(90, 90, 90);
+            }
+          }
+
+          &.domain-box:hover {
+            cursor: default;
+            background-color: initial;
+
+            .domain-icon {
+              background-color: initial;
+            }
+          }
+        }
+
+        .domain-separator {
+          width: 10px;
+          height: $results-item-height;
+        }
+
+        .domain-icon {
+          height: $results-item-height;
+          display: flex;
+
+          transition: transform .3s;
+          overflow: visible;
+          z-index: 100;
+
+          img {
+            overflow: visible;
+            padding: 0.3vh;
+            height: $results-item-height;
+            width: $results-item-height;
+          }
+        }
+
+        .domain-item {
+          display: flex;
+          justify-content: center;
+          align-content: flex-end;
+          flex-direction: column;
+          width: 100%;
+          height: 100%;
+          background-color: $color-background-panel;
+
+          p {
+            font-weight: bold;
+            font-size: $results-title-font-size;
+            text-align: right;
+            padding-right: 10px;
+            padding-left: 10px;
+            display: flex;
+            justify-content: space-between;
+            flex-direction: row;
+          }
+        }
+      }
+
+      .domain-icon-selected,
+      .domain-separator-selected {
+        background-color: $color-background-panel;
+      }
+
+      .domain-box:hover {
+        cursor: pointer;
+        background-color: $color-background-panel;
+
+        .domain-icon,
+        .domain-separator {
+          background-color: $color-background-panel;
+        }
+      }
+
+    }
+
+    .domain-list-results {
+      width: auto;
+    }
+
+    .domain-list-loading {
+      width: auto;
+    }
+
+    .domain-results {
+      width: 100%;
+      height: 100%;
+      align-self: stretch;
+    }
+
+    .loading {
+      background-color: $color-background-panel;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 5px;
+    }
+
+  }
+}
+
+//if height more than 1300px
+@media screen and (min-height: 1300px) {
+  .domain-item {
+    p {
+      font-size: $results-title-max-font-size !important;
+    }
+  }
+}

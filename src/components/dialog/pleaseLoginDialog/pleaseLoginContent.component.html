@@ -1,0 +1,14 @@
+<app-base-dialog [data]="data" [title]="title">
+  <ng-container class="content">
+    <p class="main-text">{{ message }}</p>
+    <div class="flex flex-col">
+      <button class="login-button" mat-flat-button color="primary" (click)="login()">Login / Register</button>
+      <br />
+      <a class="manage-link" target="_blank" [href]="manageUrl">{{ user !== null ? '' : 'Forgotten Password/' }}Manage Account</a>
+    </div>
+    <div class="login-disclaimer">
+      By using EPOS Platform you accept the EPOS terms and conditions.
+      <a (click)="openTermsAndConditions()">More Detail</a>
+    </div>
+  </ng-container>
+</app-base-dialog>

@@ -1,0 +1,45 @@
+@import "src/sassFramework/variables.scss";
+
+:host {
+  ul.list-options {
+
+    height: 30vh;
+
+    li.option {
+
+      display: flex;
+      flex-direction: row;
+      height: 40px;
+      border-bottom: 1px solid lightgrey;
+
+      .label {
+        display: flex;
+        align-items: center;
+        width: 25%;
+      }
+
+      .content {
+        display: flex;
+        align-items: center;
+        width: 75%;
+        gap: 5px;
+
+        .mat-form-field {
+          width: 100%;
+        }
+
+        .buttons {
+          margin-left: auto;
+          display: flex;
+          flex-direction: row;
+          gap: 2px;
+        }
+      }
+    }
+
+    li.option:last-child {
+      border-bottom: none;
+    }
+
+  }
+}

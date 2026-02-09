@@ -1,0 +1,3055 @@
+{
+  "filters": [
+    {
+      "children": [
+        {
+          "id": "ZGF0YSBhdmFpbGFiaWxpdHk=",
+          "name": "data availability"
+        },
+        {
+          "id": "ZGF0YXF1YWxpdHk=",
+          "name": "dataquality"
+        },
+        {
+          "id": "ZGF0YXNlbGVjdA==",
+          "name": "dataselect"
+        },
+        {
+          "id": "ZWFydGggc3RydWN0dXJl",
+          "name": "earth structure"
+        },
+        {
+          "id": "ZWFydGhxdWFrZQ==",
+          "name": "earthquake"
+        },
+        {
+          "id": "ZWFydGhxdWFrZSBpbnRlbnNpdHk=",
+          "name": "earthquake intensity"
+        },
+        {
+          "id": "ZWFydGhxdWFrZXM=",
+          "name": "earthquakes"
+        },
+        {
+          "id": "ZWlkYQ==",
+          "name": "eida"
+        },
+        {
+          "id": "ZWlkYS13cw==",
+          "name": "eida-ws"
+        },
+        {
+          "id": "ZXBpY2VudHJhbCBkaXN0YW5jZQ==",
+          "name": "epicentral distance"
+        },
+        {
+          "id": "ZXZlbnQ=",
+          "name": "event"
+        },
+        {
+          "id": "ZmRzbi13cw==",
+          "name": "fdsn-ws"
+        },
+        {
+          "id": "ZmVkZXJhdG9y",
+          "name": "federator"
+        },
+        {
+          "id": "Z2Z6",
+          "name": "gfz"
+        },
+        {
+          "id": "aHlwb2NlbnRyYWwgZGlzdGFuY2U=",
+          "name": "hypocentral distance"
+        },
+        {
+          "id": "aW5ndg==",
+          "name": "ingv"
+        },
+        {
+          "id": "am95bmVyLWJvb3JlIGRpc3RhbmNl",
+          "name": "joyner-boore distance"
+        },
+        {
+          "id": "bWFjcm9zZWlzbWlj",
+          "name": "macroseismic"
+        },
+        {
+          "id": "bWFjcm9zZWlzbWljIGluZm9ybWF0aW9u",
+          "name": "macroseismic information"
+        },
+        {
+          "id": "bWV0cmlj",
+          "name": "metric"
+        },
+        {
+          "id": "cGdh",
+          "name": "pga"
+        },
+        {
+          "id": "cGdk",
+          "name": "pgd"
+        },
+        {
+          "id": "cGd2",
+          "name": "pgv"
+        },
+        {
+          "id": "cmVzcG9uc2Ugc3BlY3RydW0=",
+          "name": "response spectrum"
+        },
+        {
+          "id": "cnVwdHVyZSBkaXN0YW5jZQ==",
+          "name": "rupture distance"
+        },
+        {
+          "id": "c2Vpc21pYyBoYXphcmQ=",
+          "name": "seismic hazard"
+        },
+        {
+          "id": "c2Vpc21pYyBzdGF0aW9u",
+          "name": "seismic station"
+        },
+        {
+          "id": "c2Vpc21pYyB3YXZlZm9ybQ==",
+          "name": "seismic waveform"
+        },
+        {
+          "id": "c2Vpc21pY2l0eQ==",
+          "name": "seismicity"
+        },
+        {
+          "id": "c2Vpc21vbG9neQ==",
+          "name": "seismology"
+        },
+        {
+          "id": "c2hha2VtYXA=",
+          "name": "shakemap"
+        },
+        {
+          "id": "c3RhdGlvbg==",
+          "name": "station"
+        },
+        {
+          "id": "c3RhdGlvbiBpbmZvcm1hdGlvbg==",
+          "name": "station information"
+        },
+        {
+          "id": "d2F2ZWZvcm0=",
+          "name": "waveform"
+        },
+        {
+          "id": "d2F2ZWZvcm0gbW9kZWxpbmc=",
+          "name": "waveform modeling"
+        },
+        {
+          "id": "d2ZjYXRhbG9n",
+          "name": "wfcatalog"
+        }
+      ],
+      "name": "keywords"
+    },
+    {
+      "children": [
+        {
+          "id": "b7b5dfa1-35fc-4795-b375-84c3db511489",
+          "name": "EIDA node BGR (Federal Institute for Geosciences and Natural Resources, Germany)"
+        },
+        {
+          "id": "405ebe77-e38f-4510-b869-f9b092a78de7",
+          "name": "Bensberg Earthquake Network, University of Cologne,BQ,https://doi.org/10.7914/SN/BQ"
+        },
+        {
+          "id": "dffad95a-2d34-47a6-a051-f683a51b5ece",
+          "name": "CAU Kiel,KQ,https://doi.org/10.7914/SN/KQ"
+        },
+        {
+          "id": "ed4f06d7-495f-45ca-9bb2-2cd05f9a11ed",
+          "name": "German Regional Seismic Network, BGR Hannover,GR,https://doi.org/10.25928/mbx6-hr74"
+        },
+        {
+          "id": "d7aaf7bb-ec73-4c93-9ff6-bb1a75edd316",
+          "name": "HLNUGNetz,HS,https://doi.org/10.7914/SN/HS"
+        },
+        {
+          "id": "92c58882-a685-4298-b9f2-09bbc17da6cf",
+          "name": "LE: Erdbebendienst Südwest,https://doi.org/10.7914/SN/LE"
+        },
+        {
+          "id": "c707399c-af5a-4c97-8391-b37463319745",
+          "name": "RuhrNet - Ruhr-University Bochum, Germany,RN,https://doi.org/10.7914/SN/RN"
+        },
+        {
+          "id": "6440aba2-8b56-43d8-8d66-7c7da878e65f",
+          "name": "Sachsennetz,SX,https://doi.org/10.7914/SN/SX"
+        },
+        {
+          "id": "67f94973-c6a1-473d-b8c2-2ad5eab4abe9",
+          "name": "Thuringia Seismic Network, Uni Jena,TH,https://doi.org/10.7914/SN/TH"
+        },
+        {
+          "id": "4726f747-0c18-4b34-9924-b87a78828c4f",
+          "name": "temp. Infrasound Network, BGR Hannover,YA,https://doi.org/10.7914/SN/YA_1998"
+        },
+        {
+          "id": "405ebe77-e38f-4510-b869-f9b092a78de7",
+          "name": "Bensberg Earthquake Network, University of Cologne,BQ,https://doi.org/10.7914/SN/BQ"
+        },
+        {
+          "id": "dffad95a-2d34-47a6-a051-f683a51b5ece",
+          "name": "CAU Kiel,KQ,https://doi.org/10.7914/SN/KQ"
+        },
+        {
+          "id": "ed4f06d7-495f-45ca-9bb2-2cd05f9a11ed",
+          "name": "German Regional Seismic Network, BGR Hannover,GR,https://doi.org/10.25928/mbx6-hr74"
+        },
+        {
+          "id": "d7aaf7bb-ec73-4c93-9ff6-bb1a75edd316",
+          "name": "HLNUGNetz,HS,https://doi.org/10.7914/SN/HS"
+        },
+        {
+          "id": "92c58882-a685-4298-b9f2-09bbc17da6cf",
+          "name": "LE: Erdbebendienst Südwest,https://doi.org/10.7914/SN/LE"
+        },
+        {
+          "id": "c707399c-af5a-4c97-8391-b37463319745",
+          "name": "RuhrNet - Ruhr-University Bochum, Germany,RN,https://doi.org/10.7914/SN/RN"
+        },
+        {
+          "id": "6440aba2-8b56-43d8-8d66-7c7da878e65f",
+          "name": "Sachsennetz,SX,https://doi.org/10.7914/SN/SX"
+        },
+        {
+          "id": "67f94973-c6a1-473d-b8c2-2ad5eab4abe9",
+          "name": "Thuringia Seismic Network, Uni Jena,TH,https://doi.org/10.7914/SN/TH"
+        },
+        {
+          "id": "4726f747-0c18-4b34-9924-b87a78828c4f",
+          "name": "temp. Infrasound Network, BGR Hannover,YA,https://doi.org/10.7914/SN/YA_1998"
+        },
+        {
+          "id": "1b16570a-30c7-4fe5-85e6-26e44017ffd0",
+          "name": "EIDA node GFZ (German Research Centre for Geosciences, Germany)"
+        },
+        {
+          "id": "893daf27-3f64-482a-bf55-352f33b09595",
+          "name": " TIPTEQ-Seismology (North), ZW_2004,https://doi.org/10.14470/MJ7559637482"
+        },
+        {
+          "id": "673d26be-5174-4b3e-b1ea-4766f7c69e85",
+          "name": "1 year seismological experiment at Strokkur in 2017/18, Iceland, 7L_2017,https://doi.org/10.14470/2Y7562610816"
+        },
+        {
+          "id": "61dad1e3-7ef8-40d0-8815-912f41d0e8ad",
+          "name": "ACROSS Central Asia Strong Motion Network,AD,https://doi.org/10.14470/NQ293785"
+        },
+        {
+          "id": "09977360-3e58-4bd4-b322-30f0e52059f7",
+          "name": "AWI Network Antarctica (AWI-Net),AW,https://doi.org/10.14470/NJ617293"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "4025ccb8-39e7-4ed2-a817-19b1c45b32a8",
+          "name": "AlpArray Seismic Network (SwathD) temporary component\t,ZS_2017,https://doi.org/10.14470/MF7562601148"
+        },
+        {
+          "id": "521c80a6-7800-4495-a8b8-4123d8a680bd",
+          "name": "Anillo, Y6_2020,https://doi.org/10.14470/L17575324477"
+        },
+        {
+          "id": "b041c0a7-2982-46af-9a65-b66f9190407b",
+          "name": "Archimedes - OBS stations in the Lau basin,3S_2018,https://doi.org/10.14470/8F7563441145"
+        },
+        {
+          "id": "ccfe00a6-5889-4d38-8461-57846560af13",
+          "name": "BravoSeis, 5M_2018,https://doi.org/10.14470/0Z7563857972"
+        },
+        {
+          "id": "606fcf24-e234-45f8-8a4c-25f6361d90dc",
+          "name": "CAIAG Network Kyrgyzstan (CAIAG-Net),KC,https://doi.org/10.7914/SN/KC"
+        },
+        {
+          "id": "2bd4c52f-69ff-40cf-a2bd-87a249474775",
+          "name": "COBO Network, Cape Verde\t,9A_2007,https://doi.org/10.14470/4N7552467332"
+        },
+        {
+          "id": "ce7d65d8-04e9-48e0-9179-108ed027ae2a",
+          "name": "Canadian National Seismograph Network,CN,https://doi.org/10.7914/SN/CN"
+        },
+        {
+          "id": "8ac8db40-06dd-425c-9674-34e656f37ab1",
+          "name": "Crust under the Oman Ophiolites and its Lithosphere (COOL),5H_2013,https://doi.org/10.7914/SN/5H_2013"
+        },
+        {
+          "id": "3d30f825-faa3-4c44-be2c-bb3508674b33",
+          "name": "Crustal Seismicity along for the Southern Andes Volcanic Zone (LOFS),3H_2014,https://doi.org/10.14470/8U7569253520"
+        },
+        {
+          "id": "ad16e8df-b600-4258-8aad-04cb6895b5d5",
+          "name": "Cyclades project and Libyan Sea offshore project, RUB Bochum, Germany\t,ZZ_2002,https://doi.org/10.14470/MM7557265463"
+        },
+        {
+          "id": "14448a15-6984-4297-a4f1-b3272e7ab376",
+          "name": "Czech Regional Seismic Network,CZ,https://doi.org/10.7914/SN/CZ"
+        },
+        {
+          "id": "dbe75b26-e609-4599-8be7-f682f51b817d",
+          "name": "DARE: Dense ARray for seismic site effect Estimation\t,Y7_2020,https://doi.org/10.14470/L27575187372"
+        },
+        {
+          "id": "8a82c3f8-7c3b-493b-852a-b45fde86a426",
+          "name": "DEEP-TEE Phase 1,1P_2014,https://doi.org/10.14470/6C709520"
+        },
+        {
+          "id": "4becf859-e969-434d-8e47-5546626c9451",
+          "name": "DESTRESS - Demonstration of soft stimulation treatments of geothermal reservoirs ,2D_2018,https://doi.org/10.14470/7Q7563484600"
+        },
+        {
+          "id": "37dd6e2b-ab48-4aa5-8628-6f3779a7ec58",
+          "name": "DESTRESS, YG_2019,https://doi.org/10.14470/LT7563229248"
+        },
+        {
+          "id": "3636007a-47ea-4da7-b199-0d8ca3b166b3",
+          "name": "Dataset of the 6G seismic network at Los Humeros, 2017-2018,6G_2017,https://doi.org/10.14470/1T7562235078"
+        },
+        {
+          "id": "ecc110d0-883f-4eeb-bdab-cb5bc989690d",
+          "name": "Decentralized onsite earthquake early warning network Bishkek,KD,https://doi.org/10.14470/XQ297301"
+        },
+        {
+          "id": "ada5fa51-9906-4779-9bc2-fe49229cc94a",
+          "name": "Desire Seismology, GFZ-Potsdam,Germany, Z4_2006,https://doi.org/10.14470/M97551339354"
+        },
+        {
+          "id": "a9a3f30c-2051-4af7-a45b-e63de60e6a60",
+          "name": "Dublin train experiment phase I,3Q_2019,https://doi.org/10.14470/8D7564413901"
+        },
+        {
+          "id": "be7f16b1-1499-4e3c-bac3-663ff012e17b",
+          "name": "Dublin train experiment phase II,3Q_2021,https://doi.org/10.14470/8D7576413905"
+        },
+        {
+          "id": "27838eba-0796-48db-9f54-1db462a5f29b",
+          "name": "Durres, Albania earthquake aftershock campaign (AlbACa), 9K_2019,https://doi.org/10.14470/4X7564679396"
+        },
+        {
+          "id": "c8ac85b6-a274-4615-bc16-ec899feee8bf",
+          "name": "East Pamir Seismic Experiment\t,8H_2015,https://doi.org/10.14470/3U7560589977"
+        },
+        {
+          "id": "bc50d9ba-6b4b-45ec-9289-41a35de0e1ca",
+          "name": "East Pollino Experiment\t,YZ_2017,https://doi.org/10.14470/LM582526 "
+        },
+        {
+          "id": "a0ec3db4-bb9f-4dff-9296-fec8060c514e",
+          "name": "Egelados project, RUB Bochum, Germany\t,Z3_2005,https://doi.org/10.14470/M87550267382"
+        },
+        {
+          "id": "91d6efb0-60c0-4883-835c-528a0322b44c",
+          "name": "Etna rotation experiment 2019\t,ZR_2019,https://doi.org/10.14470/ME7564062119"
+        },
+        {
+          "id": "00a5d53a-2475-4e66-aec7-21cb41088d35",
+          "name": "EvK2-CNR Pyramid Laboratory - Mount Everest,IO,https://doi.org/10.7914/SN/IO"
+        },
+        {
+          "id": "e3d11769-3cec-4d45-9b67-5ae31c1c9f71",
+          "name": "Extended Pollino Seismic Experiment, GFZ Potsdam (FEFI, CCMP-Pompei, NERA projects),Y4_2014,https://doi.org/10.14470/L9180569"
+        },
+        {
+          "id": "8826cbfb-71f4-4ea9-a948-0ade64a54575",
+          "name": "FOSA, 5M_2015,https://doi.org/10.14470/0Z7560909466"
+        },
+        {
+          "id": "93b0ba59-2ffd-4e6f-8b1d-857a0927b6be",
+          "name": "Fibre-optic distributed acoustic sensing, seismological and infrasonic data from Etna, Italy\t,9N_2018,https://doi.org/10.14470/4A7563971328"
+        },
+        {
+          "id": "ccf9f68b-9ed5-4724-8461-e507062b8813",
+          "name": "Finnish National Seismic Network,HE,https://doi.org/10.14470/UR044600"
+        },
+        {
+          "id": "5e79ec73-a9f0-4a4e-99d3-2b59218dc925",
+          "name": "FoMaPS, JWG University Frankfurt, Germany\t,9J_2017,https://doi.org/10.14470/4W7562667842"
+        },
+        {
+          "id": "d49324a3-6d10-46a8-bdec-c34b9990956c",
+          "name": "GAKKELDEEP: DEPAS ocean-bottom seismometer operations at the Gakkel Ridge in 2018-2019, 8F_2018,https://doi.org/10.14470/3S7563492742"
+        },
+        {
+          "id": "607e4c4c-f56b-4a6c-b5aa-659b3a235a36",
+          "name": "GEOFON Program, GFZ Potsdam, Germany,GE,https://doi.org/10.14470/TR560404"
+        },
+        {
+          "id": "095e00fa-96cc-4a31-bc35-0d7779513d84",
+          "name": "GFZ contribution to the COSEISMIQ seismic network\t,4Q_2019,https://doi.org/10.14470/9D7564946595"
+        },
+        {
+          "id": "4b93cdcd-ff56-4436-a1a7-7e7823359d17",
+          "name": "Geyer seismic array, XF_2020,https://doi.org/10.14470/KS7575632014"
+        },
+        {
+          "id": "c224c9a0-7fe6-4707-80ee-2f7f7edc39af",
+          "name": "HART-Gorkha earthquake, GFZ, Germany\t,XN_2015,https://doi.org/10.14470/KA7560056170"
+        },
+        {
+          "id": "fd33c917-242c-4db7-a4e6-416fb21fd3fa",
+          "name": "HART-La Palma volcanic eruption, 9A_2021,https://doi.org/10.14470/4N7576350874"
+        },
+        {
+          "id": "b9b7aacb-af83-465e-b76c-6c088f604bab",
+          "name": "HART-PISAGUA Project Chile, GFZ Potsdam, Germany,3D_2014,https://doi.org/10.14470/8Q7569558037"
+        },
+        {
+          "id": "31190f3f-8c09-4747-98f1-504439380431",
+          "name": "HERSK - Hekla Real-Time Seismic Network\t,XE_2021,https://doi.org/10.14470/KR7576456252"
+        },
+        {
+          "id": "2cc5bf0d-78d7-400c-ace6-5f95844e72b8",
+          "name": "HIRE Network, Spain, 9C_2010,https://doi.org/10.14470/4P7565788335"
+        },
+        {
+          "id": "944f07de-4a75-465f-8437-9aa565761ebb",
+          "name": "HIRE-II,3J_2013,https://doi.org/10.14470/8W7568280780"
+        },
+        {
+          "id": "f68fb3b3-8a36-43ce-99cc-dca484e899c5",
+          "name": "Huddle Test Fuerstenfeldbruck\t,X3_2019,https://doi.org/10.14470/K87564381089"
+        },
+        {
+          "id": "cccddab7-e9d2-4a43-949c-af765862972a",
+          "name": "Hungarian National Infrasound Network,HN,https://doi.org/10.14470/UA114590"
+        },
+        {
+          "id": "e37eaf3a-e84c-4889-828b-8e4da9e50af9",
+          "name": "Hungarian National Seismological Network, MTA CSFK GGI (GGI_Net),HU,https://doi.org/10.14470/UH028726"
+        },
+        {
+          "id": "617db9a4-4d06-4daa-82ee-a53613385e23",
+          "name": "IPOC Seismic Network (Integrated Plate boundary Observatory Chile),CX,https://doi.org/10.14470/PK615318"
+        },
+        {
+          "id": "5f82415c-a678-47df-a16a-0b165246bc51",
+          "name": "ISLE/ISUME,1M_2003,https://doi.org/10.14470/6Z7558576550"
+        },
+        {
+          "id": "c5542f03-fa02-4a1e-964a-aed9e18cab3e",
+          "name": "Iceland Reykjanes experiment 2021\t,9F_2021,https://doi.org/10.14470/4S7576570845"
+        },
+        {
+          "id": "6b803e1e-d05e-4d77-94b8-b214dbfda2d4",
+          "name": "Ireland Array, 5T_2010,https://doi.org/10.14470/0G7565901444"
+        },
+        {
+          "id": "a31b6deb-37da-4f33-b15b-22ffd9325aa1",
+          "name": "Irish National Seismic Network, DIAS, Dublin, Ireland,EI,https://doi.org/10.7914/SN/EI"
+        },
+        {
+          "id": "b4105091-49d7-4733-8f07-6dbf3fb9458d",
+          "name": "Jailolo network, West Halmahera - Indonesia,7G_2016,https://doi.org/10.14470/2T7561654577"
+        },
+        {
+          "id": "26337182-ddd1-4a21-bf40-bfa04da4d286",
+          "name": "Jasmund seismic cliff erosion monitoring network,4K_2017,https://doi.org/10.14470/9X7562122052"
+        },
+        {
+          "id": "616c3735-afcc-476f-97be-e12d4667095b",
+          "name": "Klyuchevskoy volcanic group experiment (KISS)\t,X9_2015,https://doi.org/10.14470/K47560642124"
+        },
+        {
+          "id": "23624666-eec5-482a-84d1-95b9cd5d1ba0",
+          "name": "Korea Polar Seismic Network,KP,https://doi.org/10.7914/SN/KP"
+        },
+        {
+          "id": "8513ca7f-77c2-436a-bfc2-8e6db13b12c1",
+          "name": "LONGMEN Temporary seismological network in Longmenshan,2F_2012,https://doi.org/10.14470/7S7567431325"
+        },
+        {
+          "id": "edc851d9-351e-4dde-bc7a-8c1551a41cfc",
+          "name": "LONGMEN-P\t,4O_2018,https://doi.org/10.14470/9B7563261622"
+        },
+        {
+          "id": "d8d405ee-1044-4b4d-b7d7-0a471e5181c7",
+          "name": "Lake Toba project, GIPP GFZ Potsdam, Germany,7A_2008,https://doi.org/10.14470/2N934755"
+        },
+        {
+          "id": "4e2964ad-fed4-4a39-b8ce-de7c5d5ae14d",
+          "name": "Laptev Sea Rift Seismological Network (SIOLA) Part I, 8B_2016,https://doi.org/10.14470/3O7561738646"
+        },
+        {
+          "id": "a7490961-76ce-4646-80f2-31671a109edc",
+          "name": "Lastarria volcano experiment, Northern Chile,2G_2016,https://doi.org/10.14470/7T7561754109"
+        },
+        {
+          "id": "857cf859-6562-401f-9cba-8f89f6c18bb7",
+          "name": "MAGIC (Magma Iceland),5J_2020,https://doi.org/10.14470/0W7575244885"
+        },
+        {
+          "id": "ba495b08-1d6b-4b2e-85e1-8605d875f799",
+          "name": "MAGma in ICeland, 9H_2020,https://doi.org/10.14470/4U7575229166"
+        },
+        {
+          "id": "c8631cc9-8b8d-47c7-ac5e-7f8cb8de28a6",
+          "name": "MEJIPE (MJ), Northern Chile\t,8G_2013,https://doi.org/10.7914/SN/8G_2013"
+        },
+        {
+          "id": "c7f60870-db1f-424c-9261-4ae220ec9137",
+          "name": "MIDAM\t,1M_2018,https://doi.org/10.14470/6Z7563484593"
+        },
+        {
+          "id": "8da329bf-e068-4ba8-8a5a-74c004ea7aad",
+          "name": "MINAS Project, 5E_2011,https://doi.org/10.14470/ab466166"
+        },
+        {
+          "id": "b178edb4-5844-4486-8d7e-f3dea1da5d85",
+          "name": "MONET IPE MU Brno,M1,https://doi.org/10.14470/Z6115722"
+        },
+        {
+          "id": "a2b90b55-e789-43c2-8c19-f54e58c00a13",
+          "name": "MOROCCO Network, University Muenster, Morocco,3D_2010,https://doi.org/10.7914/SN/3D_2010"
+        },
+        {
+          "id": "969070a9-c215-4389-a9ee-772fd2ce15fa",
+          "name": "Monitoring the unrest of ElHierro Island with seismic observations, El Hierro, Spain ,2L_2015,https://doi.org/10.14470/7Y7560573304"
+        },
+        {
+          "id": "ddfbaa51-c041-4998-aef1-ba64c0892768",
+          "name": "Multi-scale imaging of the Main Pamir Thrust faults within the framework of CaTeNA project – Climatic and Tectonic Natural Hazards in Central Asia\t,7A_2019,https://doi.org/10.14470/2N7564774946"
+        },
+        {
+          "id": "b54bdfe6-b463-4cdc-bb86-80763d320116",
+          "name": "Namibia Temporary GEOFON Network, XC_1998,https://doi.org/10.14470/KP6443475642"
+        },
+        {
+          "id": "272c259a-e725-4b64-a372-194807c3f37d",
+          "name": "Nicaragua National Seismological Network (NU-Net),NU,https://doi.org/10.7914/SN/NU"
+        },
+        {
+          "id": "d7fe63c7-2c46-41e9-a8a6-cbdf21c464e1",
+          "name": "Norcia basin (Italy) temporary seismic network,3H_2009,https://doi.org/10.14470/8U7554472182"
+        },
+        {
+          "id": "5a23bc1a-c895-4eec-8c87-6014ec4e4586",
+          "name": "Northern Finland Seismological Network ,FN,https://doi.org/10.14470/SA879454"
+        },
+        {
+          "id": "02c87627-0f62-4b91-b3b2-b1ed32f7d405",
+          "name": "PIRES: Princes Islands Real-time Earthquake monitoring System,PZ,https://doi.org/10.7914/SN/PZ"
+        },
+        {
+          "id": "0cc8daf7-6814-4432-8cb2-8b71d6f2c0db",
+          "name": "PUDEL Network, Argentina,2B_2007,https://doi.org/10.14470/7O092361"
+        },
+        {
+          "id": "3d3b6497-2d90-46d6-a50f-0ea5745f99fb",
+          "name": "PUNA Project Western Argentina, GFZ Potsdam, ZB_1997,https://doi.org/10.14470/MO6442843258"
+        },
+        {
+          "id": "48475842-583f-4250-aeef-4c22c4bd1563",
+          "name": "Passeq project, Univ. Warsaw, Poland/AWI/GFZ,7E_2006,https://doi.org/10.14470/2R383989"
+        },
+        {
+          "id": "0fa398ae-8df8-4c0c-b8f1-a72488949e59",
+          "name": "Plate Boundary Project Iquique, GFZ Potsdam, Germany,IQ,https://doi.org/10.14470/VD070092"
+        },
+        {
+          "id": "4531ca9c-8d8f-4e19-b4f7-ea5987db10c7",
+          "name": "Pollino Seismic Experiment, GFZ Potsdam (FEFI, CCMP-Pompeii, NERA projects),4A_2012,https://doi.org/10.14470/9N904956"
+        },
+        {
+          "id": "ebee2f9e-4e1a-4961-9a4a-90255df2fa84",
+          "name": "Portugese National Seismic Network (IM_Net),PM,https://doi.org/10.7914/SN/PM"
+        },
+        {
+          "id": "39bcbbb3-11da-4dbc-aebe-12b9b30ef573",
+          "name": "REFUCA Project Central Andes, GFZ Potsdam, ZA_2002,https://doi.org/10.14470/MN7557778612"
+        },
+        {
+          "id": "03e124d1-3550-4f6b-8d59-45876c1e2e6c",
+          "name": "RHUM-RUM Network, Goethe University Frankfurt, Seychelles\t,X1_2013,https://doi.org/10.14470/K67568473685"
+        },
+        {
+          "id": "443f33e0-bd98-460d-84d2-75743eb62985",
+          "name": "Renland experiment,3H_2016,https://doi.org/10.14470/8U7561563769"
+        },
+        {
+          "id": "54bcf1cd-6a8f-4a23-8fa2-7815c48faaaa",
+          "name": "Reykjanes seismic network (IMAGE Project),4L_2014,https://doi.org/10.14470/9Y7569325908"
+        },
+        {
+          "id": "89ac17ab-3a15-44bd-b647-b04bfba2ee7e",
+          "name": "Rohrbach/Vogtland Seismic Array, U. Potsdam\t,6A_2008,https://doi.org/10.14470/1N934013"
+        },
+        {
+          "id": "2a013cbd-bc30-41fd-915e-0c4945524b5c",
+          "name": "SEISVOL, 9J_2019,https://doi.org/10.14470/4W7564850022"
+        },
+        {
+          "id": "e078bfe9-75c5-4d96-9bd9-f5e3173367ea",
+          "name": "SELASOMA Project, Madagascar\t,ZE_2012,https://doi.org/10.14470/MR7567431421"
+        },
+        {
+          "id": "d970b9c6-76ba-4a78-af03-35a1dcca4a9a",
+          "name": "SISLACQ2021, 5M_2021,https://doi.org/10.14470/0Z082998"
+        },
+        {
+          "id": "b8cc9008-af6c-4ddc-a2ba-08c36f43db75",
+          "name": "Sarez Pamir aftershock seismic network, 9H_2016,https://doi.org/10.14470/4U7561589984"
+        },
+        {
+          "id": "2d1121f7-8937-49ad-8bd2-61591fc1a3ab",
+          "name": "ScanArray Core ,1G_2012,https://doi.org/10.14470/6T569239"
+        },
+        {
+          "id": "31f66d3c-03ac-4be3-b675-ff56dc087c30",
+          "name": "Seismic Monitoring And Research of Wind Turbine Induced Emissions 1 (SMARTIE1) ,X8_2018,https://doi.org/10.14470/K37563128245"
+        },
+        {
+          "id": "437afd96-e72b-4b90-aed5-de106319f1e8",
+          "name": "Seismic array data for monitoring and tracking tremor sources during subglacial floods and volcanic eruptions at Vatnajoekull\t,5L_2013,https://doi.org/10.14470/0Y7568667884"
+        },
+        {
+          "id": "1d81e10c-7763-490f-8ee9-16cf19c892c2",
+          "name": "Seismic monitoring at Lascar volcano after 2014 Iquique earthquake, N. Chile\t,8E_2014,https://doi.org/10.14470/3R7569753098"
+        },
+        {
+          "id": "f033477a-95f7-4466-a10a-902bc9e5efa9",
+          "name": "Seismic sensing of hydraulic and sediment transport patterns below frozen subarctic river\t,8E_2018,https://doi.org/10.14470/3R7563203557"
+        },
+        {
+          "id": "0c71b02c-91c6-46ee-bb34-a32743fc9c4e",
+          "name": "Serbian Network of Seismic Stations (SJ-Net),SJ,https://doi.org/10.7914/SN/SJ"
+        },
+        {
+          "id": "46f3e83c-ff55-49ab-9176-090e9168e05b",
+          "name": "Slovak National Network of Seismic Stations (SK-Net),SK,https://doi.org/10.14470/FX099882"
+        },
+        {
+          "id": "17e57d37-a1f4-43a6-8b41-bae37f417d81",
+          "name": "Smartnet, 9P_2019,https://doi.org/10.14470/4C7564613852"
+        },
+        {
+          "id": "20f7b34f-c7dc-453e-9e76-9eb120b150d5",
+          "name": "South Africa National Seismograph Network (SANSN-Net),AF,https://doi.org/10.7914/SN/AF"
+        },
+        {
+          "id": "5d973910-00b1-48c5-adef-8fc4a65e6270",
+          "name": "Southwest Indian Ridge Earthquakes and Hydrothermal Plumes (SWEAP),2E_2012,https://doi.org/10.14470/7R7567193925"
+        },
+        {
+          "id": "f31939b4-919a-4ba2-a894-085c6829171a",
+          "name": "Sri Lanka temporary broadband network\t,1A_2016,https://doi.org/10.14470/6N7561723039"
+        },
+        {
+          "id": "35ab179c-95da-4bf5-b448-eaa05c9a7354",
+          "name": "Swedish National Seismic Network,UP,https://doi.org/10.18159/SNSN"
+        },
+        {
+          "id": "e18cc917-13d2-4600-a601-97e1355c171a",
+          "name": "TIPAGE Network, Tadjikistan/Kirgistan,7B_2008,https://doi.org/10.14470/2O097102"
+        },
+        {
+          "id": "96fc6016-708c-4627-bd53-44d2aac10db4",
+          "name": "TIPTIMON (Tien Shan-Pamir Monitoring Program) AFGHANISTAN\t,6C_2013,https://doi.org/10.14470/1P7568352842"
+        },
+        {
+          "id": "70432527-d0d3-4fef-86c2-8099ffe37372",
+          "name": "TIPTIMON (Tien Shan-Pamir Monitoring Program) AFGHANISTAN II,4C_2017,https://doi.org/10.14470/9P7562848989"
+        },
+        {
+          "id": "173c9a48-9aa8-462f-b191-9b035516a561",
+          "name": "TIPTIMON TAJIKISTAN,5C_2012,https://doi.org/10.14470/0P7567352807"
+        },
+        {
+          "id": "b57d25f7-d5c4-4aa9-8e14-397b1fd2a88d",
+          "name": "TRANsecta Sismica CORdillera BEtica (TRANSCORBE), 9H_2013,https://doi.org/10.14470/4U7568470291"
+        },
+        {
+          "id": "9c2db43f-e7f3-474f-bd49-71f80b55f675",
+          "name": "Taiwan multi-parametric environmental seismic network,TQ,https://doi.org/10.14470/GD993669"
+        },
+        {
+          "id": "a210889d-961e-4e31-9d97-e8302cac217b",
+          "name": "Temporary networks on Crete, RUB Bochum, Germany,YU_1996,https://doi.org/10.14470/LH6441260253"
+        },
+        {
+          "id": "2a6ae8bf-85d7-44bd-a27f-4777006dbce8",
+          "name": "The ANCORP Seismic Network-Seismology\t,ZE_1996,https://doi.org/10.14470/MR6441682066"
+        },
+        {
+          "id": "49f889f8-c127-4208-a07a-48d41f265d35",
+          "name": "The Irpinia seismic Array\t,ZK_2021,https://doi.org/10.14470/MX7576871994"
+        },
+        {
+          "id": "d2f7f0a4-500e-471c-bee3-804e81d3a45f",
+          "name": "The Jutland to Lower Saxony (JULS) profile, ZW_2010,https://doi.org/10.14470/MJ7565224230"
+        },
+        {
+          "id": "b68ae290-9c87-48ef-82a6-b5d52c7598e5",
+          "name": "Theistareykir seismic network\t,3P_2017,https://doi.org/10.14470/8C7562967492"
+        },
+        {
+          "id": "4a875c28-5d1a-4589-9515-c8b25e0c3498",
+          "name": "Tocopilla Project, TaskForce GFZ Potsdam\t,Y9_2007,https://doi.org/10.14470/L47552843299"
+        },
+        {
+          "id": "48fcc0fc-04c4-4acd-b87b-1a45f1b6f222",
+          "name": "TomoEtna, UGR-Granada, Spain,1T_2014,https://doi.org/10.14470/6G7569676919"
+        },
+        {
+          "id": "14d418af-9130-4788-b588-8463bba8e685",
+          "name": "WALPASS Network, Namibia, 6A_2010,https://doi.org/10.14470/1N134371"
+        },
+        {
+          "id": "b0dde352-c641-4acf-97b2-1d3b47d66265",
+          "name": "WILAS-West Iberia Lithosphere and Astenosphere, 8A_2010,https://doi.org/10.14470/3N7565750319"
+        },
+        {
+          "id": "fcb60e8f-6864-4ff6-82ad-c2023ca98a1d",
+          "name": "Wanrong Network ,5K_2015,https://doi.org/10.14470/0X7560499728"
+        },
+        {
+          "id": "3d99faeb-4851-48b1-8fe8-6512532d56b4",
+          "name": "West--Fissure- and Atacama-Fault Seismic Network, Northern Chile, 8F_2005,https://doi.org/10.14470/3S7550699980"
+        },
+        {
+          "id": "1ccebedf-6098-43bf-a3e4-3483a8772302",
+          "name": "Western Mediterranea Seismic Network (WM-Net),WM,https://doi.org/10.14470/JZ581150"
+        },
+        {
+          "id": "057a5ed2-d319-4785-9943-ef03ce41150d",
+          "name": "Wittewierum Array, Netherlands,1C_2016,https://doi.org/10.14470/6P7561560569"
+        },
+        {
+          "id": "893daf27-3f64-482a-bf55-352f33b09595",
+          "name": " TIPTEQ-Seismology (North), ZW_2004,https://doi.org/10.14470/MJ7559637482"
+        },
+        {
+          "id": "673d26be-5174-4b3e-b1ea-4766f7c69e85",
+          "name": "1 year seismological experiment at Strokkur in 2017/18, Iceland, 7L_2017,https://doi.org/10.14470/2Y7562610816"
+        },
+        {
+          "id": "61dad1e3-7ef8-40d0-8815-912f41d0e8ad",
+          "name": "ACROSS Central Asia Strong Motion Network,AD,https://doi.org/10.14470/NQ293785"
+        },
+        {
+          "id": "09977360-3e58-4bd4-b322-30f0e52059f7",
+          "name": "AWI Network Antarctica (AWI-Net),AW,https://doi.org/10.14470/NJ617293"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "4025ccb8-39e7-4ed2-a817-19b1c45b32a8",
+          "name": "AlpArray Seismic Network (SwathD) temporary component\t,ZS_2017,https://doi.org/10.14470/MF7562601148"
+        },
+        {
+          "id": "521c80a6-7800-4495-a8b8-4123d8a680bd",
+          "name": "Anillo, Y6_2020,https://doi.org/10.14470/L17575324477"
+        },
+        {
+          "id": "b041c0a7-2982-46af-9a65-b66f9190407b",
+          "name": "Archimedes - OBS stations in the Lau basin,3S_2018,https://doi.org/10.14470/8F7563441145"
+        },
+        {
+          "id": "ccfe00a6-5889-4d38-8461-57846560af13",
+          "name": "BravoSeis, 5M_2018,https://doi.org/10.14470/0Z7563857972"
+        },
+        {
+          "id": "606fcf24-e234-45f8-8a4c-25f6361d90dc",
+          "name": "CAIAG Network Kyrgyzstan (CAIAG-Net),KC,https://doi.org/10.7914/SN/KC"
+        },
+        {
+          "id": "2bd4c52f-69ff-40cf-a2bd-87a249474775",
+          "name": "COBO Network, Cape Verde\t,9A_2007,https://doi.org/10.14470/4N7552467332"
+        },
+        {
+          "id": "ce7d65d8-04e9-48e0-9179-108ed027ae2a",
+          "name": "Canadian National Seismograph Network,CN,https://doi.org/10.7914/SN/CN"
+        },
+        {
+          "id": "8ac8db40-06dd-425c-9674-34e656f37ab1",
+          "name": "Crust under the Oman Ophiolites and its Lithosphere (COOL),5H_2013,https://doi.org/10.7914/SN/5H_2013"
+        },
+        {
+          "id": "3d30f825-faa3-4c44-be2c-bb3508674b33",
+          "name": "Crustal Seismicity along for the Southern Andes Volcanic Zone (LOFS),3H_2014,https://doi.org/10.14470/8U7569253520"
+        },
+        {
+          "id": "ad16e8df-b600-4258-8aad-04cb6895b5d5",
+          "name": "Cyclades project and Libyan Sea offshore project, RUB Bochum, Germany\t,ZZ_2002,https://doi.org/10.14470/MM7557265463"
+        },
+        {
+          "id": "14448a15-6984-4297-a4f1-b3272e7ab376",
+          "name": "Czech Regional Seismic Network,CZ,https://doi.org/10.7914/SN/CZ"
+        },
+        {
+          "id": "dbe75b26-e609-4599-8be7-f682f51b817d",
+          "name": "DARE: Dense ARray for seismic site effect Estimation\t,Y7_2020,https://doi.org/10.14470/L27575187372"
+        },
+        {
+          "id": "8a82c3f8-7c3b-493b-852a-b45fde86a426",
+          "name": "DEEP-TEE Phase 1,1P_2014,https://doi.org/10.14470/6C709520"
+        },
+        {
+          "id": "4becf859-e969-434d-8e47-5546626c9451",
+          "name": "DESTRESS - Demonstration of soft stimulation treatments of geothermal reservoirs ,2D_2018,https://doi.org/10.14470/7Q7563484600"
+        },
+        {
+          "id": "37dd6e2b-ab48-4aa5-8628-6f3779a7ec58",
+          "name": "DESTRESS, YG_2019,https://doi.org/10.14470/LT7563229248"
+        },
+        {
+          "id": "3636007a-47ea-4da7-b199-0d8ca3b166b3",
+          "name": "Dataset of the 6G seismic network at Los Humeros, 2017-2018,6G_2017,https://doi.org/10.14470/1T7562235078"
+        },
+        {
+          "id": "ecc110d0-883f-4eeb-bdab-cb5bc989690d",
+          "name": "Decentralized onsite earthquake early warning network Bishkek,KD,https://doi.org/10.14470/XQ297301"
+        },
+        {
+          "id": "ada5fa51-9906-4779-9bc2-fe49229cc94a",
+          "name": "Desire Seismology, GFZ-Potsdam,Germany, Z4_2006,https://doi.org/10.14470/M97551339354"
+        },
+        {
+          "id": "a9a3f30c-2051-4af7-a45b-e63de60e6a60",
+          "name": "Dublin train experiment phase I,3Q_2019,https://doi.org/10.14470/8D7564413901"
+        },
+        {
+          "id": "be7f16b1-1499-4e3c-bac3-663ff012e17b",
+          "name": "Dublin train experiment phase II,3Q_2021,https://doi.org/10.14470/8D7576413905"
+        },
+        {
+          "id": "27838eba-0796-48db-9f54-1db462a5f29b",
+          "name": "Durres, Albania earthquake aftershock campaign (AlbACa), 9K_2019,https://doi.org/10.14470/4X7564679396"
+        },
+        {
+          "id": "c8ac85b6-a274-4615-bc16-ec899feee8bf",
+          "name": "East Pamir Seismic Experiment\t,8H_2015,https://doi.org/10.14470/3U7560589977"
+        },
+        {
+          "id": "bc50d9ba-6b4b-45ec-9289-41a35de0e1ca",
+          "name": "East Pollino Experiment\t,YZ_2017,https://doi.org/10.14470/LM582526 "
+        },
+        {
+          "id": "a0ec3db4-bb9f-4dff-9296-fec8060c514e",
+          "name": "Egelados project, RUB Bochum, Germany\t,Z3_2005,https://doi.org/10.14470/M87550267382"
+        },
+        {
+          "id": "91d6efb0-60c0-4883-835c-528a0322b44c",
+          "name": "Etna rotation experiment 2019\t,ZR_2019,https://doi.org/10.14470/ME7564062119"
+        },
+        {
+          "id": "00a5d53a-2475-4e66-aec7-21cb41088d35",
+          "name": "EvK2-CNR Pyramid Laboratory - Mount Everest,IO,https://doi.org/10.7914/SN/IO"
+        },
+        {
+          "id": "e3d11769-3cec-4d45-9b67-5ae31c1c9f71",
+          "name": "Extended Pollino Seismic Experiment, GFZ Potsdam (FEFI, CCMP-Pompei, NERA projects),Y4_2014,https://doi.org/10.14470/L9180569"
+        },
+        {
+          "id": "8826cbfb-71f4-4ea9-a948-0ade64a54575",
+          "name": "FOSA, 5M_2015,https://doi.org/10.14470/0Z7560909466"
+        },
+        {
+          "id": "93b0ba59-2ffd-4e6f-8b1d-857a0927b6be",
+          "name": "Fibre-optic distributed acoustic sensing, seismological and infrasonic data from Etna, Italy\t,9N_2018,https://doi.org/10.14470/4A7563971328"
+        },
+        {
+          "id": "ccf9f68b-9ed5-4724-8461-e507062b8813",
+          "name": "Finnish National Seismic Network,HE,https://doi.org/10.14470/UR044600"
+        },
+        {
+          "id": "5e79ec73-a9f0-4a4e-99d3-2b59218dc925",
+          "name": "FoMaPS, JWG University Frankfurt, Germany\t,9J_2017,https://doi.org/10.14470/4W7562667842"
+        },
+        {
+          "id": "d49324a3-6d10-46a8-bdec-c34b9990956c",
+          "name": "GAKKELDEEP: DEPAS ocean-bottom seismometer operations at the Gakkel Ridge in 2018-2019, 8F_2018,https://doi.org/10.14470/3S7563492742"
+        },
+        {
+          "id": "607e4c4c-f56b-4a6c-b5aa-659b3a235a36",
+          "name": "GEOFON Program, GFZ Potsdam, Germany,GE,https://doi.org/10.14470/TR560404"
+        },
+        {
+          "id": "095e00fa-96cc-4a31-bc35-0d7779513d84",
+          "name": "GFZ contribution to the COSEISMIQ seismic network\t,4Q_2019,https://doi.org/10.14470/9D7564946595"
+        },
+        {
+          "id": "4b93cdcd-ff56-4436-a1a7-7e7823359d17",
+          "name": "Geyer seismic array, XF_2020,https://doi.org/10.14470/KS7575632014"
+        },
+        {
+          "id": "c224c9a0-7fe6-4707-80ee-2f7f7edc39af",
+          "name": "HART-Gorkha earthquake, GFZ, Germany\t,XN_2015,https://doi.org/10.14470/KA7560056170"
+        },
+        {
+          "id": "fd33c917-242c-4db7-a4e6-416fb21fd3fa",
+          "name": "HART-La Palma volcanic eruption, 9A_2021,https://doi.org/10.14470/4N7576350874"
+        },
+        {
+          "id": "b9b7aacb-af83-465e-b76c-6c088f604bab",
+          "name": "HART-PISAGUA Project Chile, GFZ Potsdam, Germany,3D_2014,https://doi.org/10.14470/8Q7569558037"
+        },
+        {
+          "id": "31190f3f-8c09-4747-98f1-504439380431",
+          "name": "HERSK - Hekla Real-Time Seismic Network\t,XE_2021,https://doi.org/10.14470/KR7576456252"
+        },
+        {
+          "id": "2cc5bf0d-78d7-400c-ace6-5f95844e72b8",
+          "name": "HIRE Network, Spain, 9C_2010,https://doi.org/10.14470/4P7565788335"
+        },
+        {
+          "id": "944f07de-4a75-465f-8437-9aa565761ebb",
+          "name": "HIRE-II,3J_2013,https://doi.org/10.14470/8W7568280780"
+        },
+        {
+          "id": "f68fb3b3-8a36-43ce-99cc-dca484e899c5",
+          "name": "Huddle Test Fuerstenfeldbruck\t,X3_2019,https://doi.org/10.14470/K87564381089"
+        },
+        {
+          "id": "cccddab7-e9d2-4a43-949c-af765862972a",
+          "name": "Hungarian National Infrasound Network,HN,https://doi.org/10.14470/UA114590"
+        },
+        {
+          "id": "e37eaf3a-e84c-4889-828b-8e4da9e50af9",
+          "name": "Hungarian National Seismological Network, MTA CSFK GGI (GGI_Net),HU,https://doi.org/10.14470/UH028726"
+        },
+        {
+          "id": "617db9a4-4d06-4daa-82ee-a53613385e23",
+          "name": "IPOC Seismic Network (Integrated Plate boundary Observatory Chile),CX,https://doi.org/10.14470/PK615318"
+        },
+        {
+          "id": "5f82415c-a678-47df-a16a-0b165246bc51",
+          "name": "ISLE/ISUME,1M_2003,https://doi.org/10.14470/6Z7558576550"
+        },
+        {
+          "id": "c5542f03-fa02-4a1e-964a-aed9e18cab3e",
+          "name": "Iceland Reykjanes experiment 2021\t,9F_2021,https://doi.org/10.14470/4S7576570845"
+        },
+        {
+          "id": "6b803e1e-d05e-4d77-94b8-b214dbfda2d4",
+          "name": "Ireland Array, 5T_2010,https://doi.org/10.14470/0G7565901444"
+        },
+        {
+          "id": "a31b6deb-37da-4f33-b15b-22ffd9325aa1",
+          "name": "Irish National Seismic Network, DIAS, Dublin, Ireland,EI,https://doi.org/10.7914/SN/EI"
+        },
+        {
+          "id": "b4105091-49d7-4733-8f07-6dbf3fb9458d",
+          "name": "Jailolo network, West Halmahera - Indonesia,7G_2016,https://doi.org/10.14470/2T7561654577"
+        },
+        {
+          "id": "26337182-ddd1-4a21-bf40-bfa04da4d286",
+          "name": "Jasmund seismic cliff erosion monitoring network,4K_2017,https://doi.org/10.14470/9X7562122052"
+        },
+        {
+          "id": "616c3735-afcc-476f-97be-e12d4667095b",
+          "name": "Klyuchevskoy volcanic group experiment (KISS)\t,X9_2015,https://doi.org/10.14470/K47560642124"
+        },
+        {
+          "id": "23624666-eec5-482a-84d1-95b9cd5d1ba0",
+          "name": "Korea Polar Seismic Network,KP,https://doi.org/10.7914/SN/KP"
+        },
+        {
+          "id": "8513ca7f-77c2-436a-bfc2-8e6db13b12c1",
+          "name": "LONGMEN Temporary seismological network in Longmenshan,2F_2012,https://doi.org/10.14470/7S7567431325"
+        },
+        {
+          "id": "edc851d9-351e-4dde-bc7a-8c1551a41cfc",
+          "name": "LONGMEN-P\t,4O_2018,https://doi.org/10.14470/9B7563261622"
+        },
+        {
+          "id": "d8d405ee-1044-4b4d-b7d7-0a471e5181c7",
+          "name": "Lake Toba project, GIPP GFZ Potsdam, Germany,7A_2008,https://doi.org/10.14470/2N934755"
+        },
+        {
+          "id": "4e2964ad-fed4-4a39-b8ce-de7c5d5ae14d",
+          "name": "Laptev Sea Rift Seismological Network (SIOLA) Part I, 8B_2016,https://doi.org/10.14470/3O7561738646"
+        },
+        {
+          "id": "a7490961-76ce-4646-80f2-31671a109edc",
+          "name": "Lastarria volcano experiment, Northern Chile,2G_2016,https://doi.org/10.14470/7T7561754109"
+        },
+        {
+          "id": "857cf859-6562-401f-9cba-8f89f6c18bb7",
+          "name": "MAGIC (Magma Iceland),5J_2020,https://doi.org/10.14470/0W7575244885"
+        },
+        {
+          "id": "ba495b08-1d6b-4b2e-85e1-8605d875f799",
+          "name": "MAGma in ICeland, 9H_2020,https://doi.org/10.14470/4U7575229166"
+        },
+        {
+          "id": "c8631cc9-8b8d-47c7-ac5e-7f8cb8de28a6",
+          "name": "MEJIPE (MJ), Northern Chile\t,8G_2013,https://doi.org/10.7914/SN/8G_2013"
+        },
+        {
+          "id": "c7f60870-db1f-424c-9261-4ae220ec9137",
+          "name": "MIDAM\t,1M_2018,https://doi.org/10.14470/6Z7563484593"
+        },
+        {
+          "id": "8da329bf-e068-4ba8-8a5a-74c004ea7aad",
+          "name": "MINAS Project, 5E_2011,https://doi.org/10.14470/ab466166"
+        },
+        {
+          "id": "b178edb4-5844-4486-8d7e-f3dea1da5d85",
+          "name": "MONET IPE MU Brno,M1,https://doi.org/10.14470/Z6115722"
+        },
+        {
+          "id": "a2b90b55-e789-43c2-8c19-f54e58c00a13",
+          "name": "MOROCCO Network, University Muenster, Morocco,3D_2010,https://doi.org/10.7914/SN/3D_2010"
+        },
+        {
+          "id": "969070a9-c215-4389-a9ee-772fd2ce15fa",
+          "name": "Monitoring the unrest of ElHierro Island with seismic observations, El Hierro, Spain ,2L_2015,https://doi.org/10.14470/7Y7560573304"
+        },
+        {
+          "id": "ddfbaa51-c041-4998-aef1-ba64c0892768",
+          "name": "Multi-scale imaging of the Main Pamir Thrust faults within the framework of CaTeNA project – Climatic and Tectonic Natural Hazards in Central Asia\t,7A_2019,https://doi.org/10.14470/2N7564774946"
+        },
+        {
+          "id": "b54bdfe6-b463-4cdc-bb86-80763d320116",
+          "name": "Namibia Temporary GEOFON Network, XC_1998,https://doi.org/10.14470/KP6443475642"
+        },
+        {
+          "id": "272c259a-e725-4b64-a372-194807c3f37d",
+          "name": "Nicaragua National Seismological Network (NU-Net),NU,https://doi.org/10.7914/SN/NU"
+        },
+        {
+          "id": "d7fe63c7-2c46-41e9-a8a6-cbdf21c464e1",
+          "name": "Norcia basin (Italy) temporary seismic network,3H_2009,https://doi.org/10.14470/8U7554472182"
+        },
+        {
+          "id": "5a23bc1a-c895-4eec-8c87-6014ec4e4586",
+          "name": "Northern Finland Seismological Network ,FN,https://doi.org/10.14470/SA879454"
+        },
+        {
+          "id": "02c87627-0f62-4b91-b3b2-b1ed32f7d405",
+          "name": "PIRES: Princes Islands Real-time Earthquake monitoring System,PZ,https://doi.org/10.7914/SN/PZ"
+        },
+        {
+          "id": "0cc8daf7-6814-4432-8cb2-8b71d6f2c0db",
+          "name": "PUDEL Network, Argentina,2B_2007,https://doi.org/10.14470/7O092361"
+        },
+        {
+          "id": "3d3b6497-2d90-46d6-a50f-0ea5745f99fb",
+          "name": "PUNA Project Western Argentina, GFZ Potsdam, ZB_1997,https://doi.org/10.14470/MO6442843258"
+        },
+        {
+          "id": "48475842-583f-4250-aeef-4c22c4bd1563",
+          "name": "Passeq project, Univ. Warsaw, Poland/AWI/GFZ,7E_2006,https://doi.org/10.14470/2R383989"
+        },
+        {
+          "id": "0fa398ae-8df8-4c0c-b8f1-a72488949e59",
+          "name": "Plate Boundary Project Iquique, GFZ Potsdam, Germany,IQ,https://doi.org/10.14470/VD070092"
+        },
+        {
+          "id": "4531ca9c-8d8f-4e19-b4f7-ea5987db10c7",
+          "name": "Pollino Seismic Experiment, GFZ Potsdam (FEFI, CCMP-Pompeii, NERA projects),4A_2012,https://doi.org/10.14470/9N904956"
+        },
+        {
+          "id": "ebee2f9e-4e1a-4961-9a4a-90255df2fa84",
+          "name": "Portugese National Seismic Network (IM_Net),PM,https://doi.org/10.7914/SN/PM"
+        },
+        {
+          "id": "39bcbbb3-11da-4dbc-aebe-12b9b30ef573",
+          "name": "REFUCA Project Central Andes, GFZ Potsdam, ZA_2002,https://doi.org/10.14470/MN7557778612"
+        },
+        {
+          "id": "03e124d1-3550-4f6b-8d59-45876c1e2e6c",
+          "name": "RHUM-RUM Network, Goethe University Frankfurt, Seychelles\t,X1_2013,https://doi.org/10.14470/K67568473685"
+        },
+        {
+          "id": "443f33e0-bd98-460d-84d2-75743eb62985",
+          "name": "Renland experiment,3H_2016,https://doi.org/10.14470/8U7561563769"
+        },
+        {
+          "id": "54bcf1cd-6a8f-4a23-8fa2-7815c48faaaa",
+          "name": "Reykjanes seismic network (IMAGE Project),4L_2014,https://doi.org/10.14470/9Y7569325908"
+        },
+        {
+          "id": "89ac17ab-3a15-44bd-b647-b04bfba2ee7e",
+          "name": "Rohrbach/Vogtland Seismic Array, U. Potsdam\t,6A_2008,https://doi.org/10.14470/1N934013"
+        },
+        {
+          "id": "2a013cbd-bc30-41fd-915e-0c4945524b5c",
+          "name": "SEISVOL, 9J_2019,https://doi.org/10.14470/4W7564850022"
+        },
+        {
+          "id": "e078bfe9-75c5-4d96-9bd9-f5e3173367ea",
+          "name": "SELASOMA Project, Madagascar\t,ZE_2012,https://doi.org/10.14470/MR7567431421"
+        },
+        {
+          "id": "d970b9c6-76ba-4a78-af03-35a1dcca4a9a",
+          "name": "SISLACQ2021, 5M_2021,https://doi.org/10.14470/0Z082998"
+        },
+        {
+          "id": "b8cc9008-af6c-4ddc-a2ba-08c36f43db75",
+          "name": "Sarez Pamir aftershock seismic network, 9H_2016,https://doi.org/10.14470/4U7561589984"
+        },
+        {
+          "id": "2d1121f7-8937-49ad-8bd2-61591fc1a3ab",
+          "name": "ScanArray Core ,1G_2012,https://doi.org/10.14470/6T569239"
+        },
+        {
+          "id": "31f66d3c-03ac-4be3-b675-ff56dc087c30",
+          "name": "Seismic Monitoring And Research of Wind Turbine Induced Emissions 1 (SMARTIE1) ,X8_2018,https://doi.org/10.14470/K37563128245"
+        },
+        {
+          "id": "437afd96-e72b-4b90-aed5-de106319f1e8",
+          "name": "Seismic array data for monitoring and tracking tremor sources during subglacial floods and volcanic eruptions at Vatnajoekull\t,5L_2013,https://doi.org/10.14470/0Y7568667884"
+        },
+        {
+          "id": "1d81e10c-7763-490f-8ee9-16cf19c892c2",
+          "name": "Seismic monitoring at Lascar volcano after 2014 Iquique earthquake, N. Chile\t,8E_2014,https://doi.org/10.14470/3R7569753098"
+        },
+        {
+          "id": "f033477a-95f7-4466-a10a-902bc9e5efa9",
+          "name": "Seismic sensing of hydraulic and sediment transport patterns below frozen subarctic river\t,8E_2018,https://doi.org/10.14470/3R7563203557"
+        },
+        {
+          "id": "0c71b02c-91c6-46ee-bb34-a32743fc9c4e",
+          "name": "Serbian Network of Seismic Stations (SJ-Net),SJ,https://doi.org/10.7914/SN/SJ"
+        },
+        {
+          "id": "46f3e83c-ff55-49ab-9176-090e9168e05b",
+          "name": "Slovak National Network of Seismic Stations (SK-Net),SK,https://doi.org/10.14470/FX099882"
+        },
+        {
+          "id": "17e57d37-a1f4-43a6-8b41-bae37f417d81",
+          "name": "Smartnet, 9P_2019,https://doi.org/10.14470/4C7564613852"
+        },
+        {
+          "id": "20f7b34f-c7dc-453e-9e76-9eb120b150d5",
+          "name": "South Africa National Seismograph Network (SANSN-Net),AF,https://doi.org/10.7914/SN/AF"
+        },
+        {
+          "id": "5d973910-00b1-48c5-adef-8fc4a65e6270",
+          "name": "Southwest Indian Ridge Earthquakes and Hydrothermal Plumes (SWEAP),2E_2012,https://doi.org/10.14470/7R7567193925"
+        },
+        {
+          "id": "f31939b4-919a-4ba2-a894-085c6829171a",
+          "name": "Sri Lanka temporary broadband network\t,1A_2016,https://doi.org/10.14470/6N7561723039"
+        },
+        {
+          "id": "35ab179c-95da-4bf5-b448-eaa05c9a7354",
+          "name": "Swedish National Seismic Network,UP,https://doi.org/10.18159/SNSN"
+        },
+        {
+          "id": "e18cc917-13d2-4600-a601-97e1355c171a",
+          "name": "TIPAGE Network, Tadjikistan/Kirgistan,7B_2008,https://doi.org/10.14470/2O097102"
+        },
+        {
+          "id": "96fc6016-708c-4627-bd53-44d2aac10db4",
+          "name": "TIPTIMON (Tien Shan-Pamir Monitoring Program) AFGHANISTAN\t,6C_2013,https://doi.org/10.14470/1P7568352842"
+        },
+        {
+          "id": "70432527-d0d3-4fef-86c2-8099ffe37372",
+          "name": "TIPTIMON (Tien Shan-Pamir Monitoring Program) AFGHANISTAN II,4C_2017,https://doi.org/10.14470/9P7562848989"
+        },
+        {
+          "id": "173c9a48-9aa8-462f-b191-9b035516a561",
+          "name": "TIPTIMON TAJIKISTAN,5C_2012,https://doi.org/10.14470/0P7567352807"
+        },
+        {
+          "id": "b57d25f7-d5c4-4aa9-8e14-397b1fd2a88d",
+          "name": "TRANsecta Sismica CORdillera BEtica (TRANSCORBE), 9H_2013,https://doi.org/10.14470/4U7568470291"
+        },
+        {
+          "id": "9c2db43f-e7f3-474f-bd49-71f80b55f675",
+          "name": "Taiwan multi-parametric environmental seismic network,TQ,https://doi.org/10.14470/GD993669"
+        },
+        {
+          "id": "a210889d-961e-4e31-9d97-e8302cac217b",
+          "name": "Temporary networks on Crete, RUB Bochum, Germany,YU_1996,https://doi.org/10.14470/LH6441260253"
+        },
+        {
+          "id": "2a6ae8bf-85d7-44bd-a27f-4777006dbce8",
+          "name": "The ANCORP Seismic Network-Seismology\t,ZE_1996,https://doi.org/10.14470/MR6441682066"
+        },
+        {
+          "id": "49f889f8-c127-4208-a07a-48d41f265d35",
+          "name": "The Irpinia seismic Array\t,ZK_2021,https://doi.org/10.14470/MX7576871994"
+        },
+        {
+          "id": "d2f7f0a4-500e-471c-bee3-804e81d3a45f",
+          "name": "The Jutland to Lower Saxony (JULS) profile, ZW_2010,https://doi.org/10.14470/MJ7565224230"
+        },
+        {
+          "id": "b68ae290-9c87-48ef-82a6-b5d52c7598e5",
+          "name": "Theistareykir seismic network\t,3P_2017,https://doi.org/10.14470/8C7562967492"
+        },
+        {
+          "id": "4a875c28-5d1a-4589-9515-c8b25e0c3498",
+          "name": "Tocopilla Project, TaskForce GFZ Potsdam\t,Y9_2007,https://doi.org/10.14470/L47552843299"
+        },
+        {
+          "id": "48fcc0fc-04c4-4acd-b87b-1a45f1b6f222",
+          "name": "TomoEtna, UGR-Granada, Spain,1T_2014,https://doi.org/10.14470/6G7569676919"
+        },
+        {
+          "id": "14d418af-9130-4788-b588-8463bba8e685",
+          "name": "WALPASS Network, Namibia, 6A_2010,https://doi.org/10.14470/1N134371"
+        },
+        {
+          "id": "b0dde352-c641-4acf-97b2-1d3b47d66265",
+          "name": "WILAS-West Iberia Lithosphere and Astenosphere, 8A_2010,https://doi.org/10.14470/3N7565750319"
+        },
+        {
+          "id": "fcb60e8f-6864-4ff6-82ad-c2023ca98a1d",
+          "name": "Wanrong Network ,5K_2015,https://doi.org/10.14470/0X7560499728"
+        },
+        {
+          "id": "3d99faeb-4851-48b1-8fe8-6512532d56b4",
+          "name": "West--Fissure- and Atacama-Fault Seismic Network, Northern Chile, 8F_2005,https://doi.org/10.14470/3S7550699980"
+        },
+        {
+          "id": "1ccebedf-6098-43bf-a3e4-3483a8772302",
+          "name": "Western Mediterranea Seismic Network (WM-Net),WM,https://doi.org/10.14470/JZ581150"
+        },
+        {
+          "id": "057a5ed2-d319-4785-9943-ef03ce41150d",
+          "name": "Wittewierum Array, Netherlands,1C_2016,https://doi.org/10.14470/6P7561560569"
+        },
+        {
+          "id": "c479672e-8677-4aae-9006-8b573090eef9",
+          "name": "EIDA node ICGC (Cartographic and Geological Institute of Catalonia, Spain)"
+        },
+        {
+          "id": "14ff0013-2d63-482b-854f-b99d231e1e2f",
+          "name": "Catalan Seismic Network ,CA,https://doi.org/10.7914/SN/CA"
+        },
+        {
+          "id": "1766100a-44e9-4559-884c-637c79f932a1",
+          "name": "Ebre Observatory Seismic Network,EB,https://doi.org/10.7914/SN/EB"
+        },
+        {
+          "id": "ca0b2b48-2353-4268-b995-19cf3d1d13a3",
+          "name": "POCRISC Project ,YK_2019,https://doi.org/10.7914/SN/YK_2019"
+        },
+        {
+          "id": "8e358b87-f27a-4f1e-b83e-44b985dd2bbd",
+          "name": "SANIMS Project ,YS_2019,https://doi.org/10.7914/SN/YS_2019"
+        },
+        {
+          "id": "d474b728-f6b9-4636-86f8-148cf4f9694d",
+          "name": "Spanish Digital Seismic Network,ES,https://doi.org/10.7914/SN/ES"
+        },
+        {
+          "id": "14ff0013-2d63-482b-854f-b99d231e1e2f",
+          "name": "Catalan Seismic Network ,CA,https://doi.org/10.7914/SN/CA"
+        },
+        {
+          "id": "1766100a-44e9-4559-884c-637c79f932a1",
+          "name": "Ebre Observatory Seismic Network,EB,https://doi.org/10.7914/SN/EB"
+        },
+        {
+          "id": "ca0b2b48-2353-4268-b995-19cf3d1d13a3",
+          "name": "POCRISC Project ,YK_2019,https://doi.org/10.7914/SN/YK_2019"
+        },
+        {
+          "id": "8e358b87-f27a-4f1e-b83e-44b985dd2bbd",
+          "name": "SANIMS Project ,YS_2019,https://doi.org/10.7914/SN/YS_2019"
+        },
+        {
+          "id": "d474b728-f6b9-4636-86f8-148cf4f9694d",
+          "name": "Spanish Digital Seismic Network,ES,https://doi.org/10.7914/SN/ES"
+        },
+        {
+          "id": "b89b7c37-79e0-4771-b7d5-20e4d558904f",
+          "name": "EIDA node INGV (Istituto Nazionale di Geofisica e Vulcanologia, Italy)"
+        },
+        {
+          "id": "5857cf13-224d-4aa0-8daa-8f7accf95996",
+          "name": "Albanian Seismic Network ,AC,https://doi.org/10.7914/SN/AC"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "25432e67-2737-47e5-bcfb-3638b962126c",
+          "name": "Dynamic Planet Multiparametric Northern Italy Seismic Network , ZO_2021,https://doi.org/10.13127/SD/yhCFOMCBo_"
+        },
+        {
+          "id": "2f96f4e3-3daf-4217-ada7-073b3368ea0a",
+          "name": "EMERSITO Seismic Network, 2016 Central Italy, XO_2016,https://doi.org/10.13127/SD/7TXeGdo5X8"
+        },
+        {
+          "id": "7dcca4ea-a5c7-4910-9a94-81556cc43caa",
+          "name": "Emersito Seismic Network for Site Effect Studies in L'Aquila town, Central Italy ,4A_2009,https://doi.org/10.7914/SN/4A_2009"
+        },
+        {
+          "id": "c1ad504d-cd64-4a4b-8ddc-adf00e49925c",
+          "name": "FocusX temporary land-network, 1J_2021,https://doi.org/10.13127/sd/o5qwm6wjcd"
+        },
+        {
+          "id": "269e6f1c-29a7-4483-ae39-446529b68233",
+          "name": "Friuli Venezia Giulia Accelerometric Network, Italy,RF,https://doi.org/10.7914/SN/RF"
+        },
+        {
+          "id": "6d7cd8f8-5bff-4378-804f-eb0456394324",
+          "name": "INGV SISMIKO Emergency Seismic Network, ZH_2022,https://doi.org/10.13127/sd/jhggg3bnlq"
+        },
+        {
+          "id": "afa9e04a-93e3-4dcd-abae-d34ff595594a",
+          "name": "INGV SISMIKO emergency seismic network for Salemi-Italy, X3_2020,https://doi.org/10.13127/sd/ljfpeosek0"
+        },
+        {
+          "id": "49dc6e7a-15b7-468c-8d3d-a08a000552a6",
+          "name": "INGV temporary network for seismic monitoring of the island of Vulcano to increase volcanic activity (Sicily, Italy), 3D_2021,https://doi.org/10.13127/sd/cfz7ftsw-y"
+        },
+        {
+          "id": "6a5979d6-a518-44c9-8895-3838b1bab013",
+          "name": "Italian Seismic Network ,IV,https://doi.org/10.13127/SD/X0FXnH7QfY"
+        },
+        {
+          "id": "2820c741-4453-4c2e-9136-12009f421581",
+          "name": "Malta Seismic Network (ML),ML,https://doi.org/10.7914/SN/ML"
+        },
+        {
+          "id": "acc7fa7b-5832-41e9-b63b-a740bb44ae05",
+          "name": "Mediterranean Very Broadband Seismographic Network,MN,https://doi.org/10.13127/SD/fBBBtDtd6q"
+        },
+        {
+          "id": "f1ba6703-a14c-4189-9667-2237ddeddb55",
+          "name": "North-East Italy Broadband Network,NI,https://doi.org/10.7914/SN/NI"
+        },
+        {
+          "id": "e1132554-578b-41ff-899d-a90f1921fe7e",
+          "name": "North-East Italy Seismic Network,OX,https://doi.org/10.7914/SN/OX"
+        },
+        {
+          "id": "b8dffcd0-3ca4-4342-b88b-6b1e7cbdea72",
+          "name": "OTRIONS Local Seismic Network, Apulia, Italy,OT,https://doi.org/10.7914/SN/OT"
+        },
+        {
+          "id": "ce4d72b7-97ab-4de1-a40c-83cfe56f4e68",
+          "name": "POLLINO - Near Fault Observatories, XE_2022,https://doi.org/10.13127/sd/ns6hb3q8ve"
+        },
+        {
+          "id": "64b36678-4056-4af0-ac19-c0340a46114d",
+          "name": "Regional Seismic Network of North Western Italy,GU,https://doi.org/10.7914/SN/GU"
+        },
+        {
+          "id": "073307fb-59a2-4897-b440-33cde3ecd744",
+          "name": "Rete Universita Calabria ,IY,https://doi.org/10.7914/SN/IY"
+        },
+        {
+          "id": "b30addfb-1626-4c09-b208-c3e9fc0bdc5f",
+          "name": "Seismic Emergency for Ischia by Sismiko\t,ZM_2017,https://doi.org/10.13127/sd/u0j8hsaevf"
+        },
+        {
+          "id": "53244749-f36c-49a6-b04a-a7eba075a793",
+          "name": "Seismic Emergency for Molise-Italy by Sismiko, YD_2018,https://doi.org/10.13127/SD/FIR72ChywU"
+        },
+        {
+          "id": "2aacd54a-f6f8-43eb-975f-a70af4da3ae8",
+          "name": "Seismic Microzonation Network, 2016 Central Italy\t,3A_2016,https://doi.org/10.13127/SD/ku7Xm12Yy9"
+        },
+        {
+          "id": "ab1124be-d4fc-4728-ad74-3512e7c48871",
+          "name": "Snow Avalanche Seismic Monitoring around Sibilla Mount (Central Italy)\t,7F_2021,https://doi.org/10.13127/sd/fcjdr8key3"
+        },
+        {
+          "id": "92581b43-86ab-4b83-b3b6-91175b7ed5ff",
+          "name": "The Sardinia Passive Array experiment, 5J_2014,https://doi.org/10.7914/SN/5J_2014"
+        },
+        {
+          "id": "0b9eb4f6-b37f-41ac-a1d9-8f1633b6a73f",
+          "name": "Trentino Seismic Network, Italy,ST,https://doi.org/10.7914/SN/ST"
+        },
+        {
+          "id": "532ed06e-0286-4732-8df5-ecbcc9130b83",
+          "name": "Urban Seismic Network (RUSN-CAL-INGV)\t,7C_2021,https://doi.org/10.13127/sd/o5nrhmp9n7"
+        },
+        {
+          "id": "89d17ce8-5a89-4ed8-972b-8b3c3cb4357a",
+          "name": "Virgo Interferometric Antenna for Gravitational Waves Detection,VR,https://doi.org/10.7914/SN/VR"
+        },
+        {
+          "id": "96b09d25-90ae-4be4-b0f8-3ee2a9d3aa22",
+          "name": "XVII-INGV SISMIKO Emergency Seismic Network (ISESN) (XVII-ISESN), Y1_2022,https://doi.org/10.13127/sd/tblkba-3u6"
+        },
+        {
+          "id": "5857cf13-224d-4aa0-8daa-8f7accf95996",
+          "name": "Albanian Seismic Network ,AC,https://doi.org/10.7914/SN/AC"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "25432e67-2737-47e5-bcfb-3638b962126c",
+          "name": "Dynamic Planet Multiparametric Northern Italy Seismic Network , ZO_2021,https://doi.org/10.13127/SD/yhCFOMCBo_"
+        },
+        {
+          "id": "2f96f4e3-3daf-4217-ada7-073b3368ea0a",
+          "name": "EMERSITO Seismic Network, 2016 Central Italy, XO_2016,https://doi.org/10.13127/SD/7TXeGdo5X8"
+        },
+        {
+          "id": "7dcca4ea-a5c7-4910-9a94-81556cc43caa",
+          "name": "Emersito Seismic Network for Site Effect Studies in L'Aquila town, Central Italy ,4A_2009,https://doi.org/10.7914/SN/4A_2009"
+        },
+        {
+          "id": "c1ad504d-cd64-4a4b-8ddc-adf00e49925c",
+          "name": "FocusX temporary land-network, 1J_2021,https://doi.org/10.13127/sd/o5qwm6wjcd"
+        },
+        {
+          "id": "269e6f1c-29a7-4483-ae39-446529b68233",
+          "name": "Friuli Venezia Giulia Accelerometric Network, Italy,RF,https://doi.org/10.7914/SN/RF"
+        },
+        {
+          "id": "6d7cd8f8-5bff-4378-804f-eb0456394324",
+          "name": "INGV SISMIKO Emergency Seismic Network, ZH_2022,https://doi.org/10.13127/sd/jhggg3bnlq"
+        },
+        {
+          "id": "afa9e04a-93e3-4dcd-abae-d34ff595594a",
+          "name": "INGV SISMIKO emergency seismic network for Salemi-Italy, X3_2020,https://doi.org/10.13127/sd/ljfpeosek0"
+        },
+        {
+          "id": "49dc6e7a-15b7-468c-8d3d-a08a000552a6",
+          "name": "INGV temporary network for seismic monitoring of the island of Vulcano to increase volcanic activity (Sicily, Italy), 3D_2021,https://doi.org/10.13127/sd/cfz7ftsw-y"
+        },
+        {
+          "id": "6a5979d6-a518-44c9-8895-3838b1bab013",
+          "name": "Italian Seismic Network ,IV,https://doi.org/10.13127/SD/X0FXnH7QfY"
+        },
+        {
+          "id": "2820c741-4453-4c2e-9136-12009f421581",
+          "name": "Malta Seismic Network (ML),ML,https://doi.org/10.7914/SN/ML"
+        },
+        {
+          "id": "acc7fa7b-5832-41e9-b63b-a740bb44ae05",
+          "name": "Mediterranean Very Broadband Seismographic Network,MN,https://doi.org/10.13127/SD/fBBBtDtd6q"
+        },
+        {
+          "id": "f1ba6703-a14c-4189-9667-2237ddeddb55",
+          "name": "North-East Italy Broadband Network,NI,https://doi.org/10.7914/SN/NI"
+        },
+        {
+          "id": "e1132554-578b-41ff-899d-a90f1921fe7e",
+          "name": "North-East Italy Seismic Network,OX,https://doi.org/10.7914/SN/OX"
+        },
+        {
+          "id": "b8dffcd0-3ca4-4342-b88b-6b1e7cbdea72",
+          "name": "OTRIONS Local Seismic Network, Apulia, Italy,OT,https://doi.org/10.7914/SN/OT"
+        },
+        {
+          "id": "ce4d72b7-97ab-4de1-a40c-83cfe56f4e68",
+          "name": "POLLINO - Near Fault Observatories, XE_2022,https://doi.org/10.13127/sd/ns6hb3q8ve"
+        },
+        {
+          "id": "64b36678-4056-4af0-ac19-c0340a46114d",
+          "name": "Regional Seismic Network of North Western Italy,GU,https://doi.org/10.7914/SN/GU"
+        },
+        {
+          "id": "073307fb-59a2-4897-b440-33cde3ecd744",
+          "name": "Rete Universita Calabria ,IY,https://doi.org/10.7914/SN/IY"
+        },
+        {
+          "id": "b30addfb-1626-4c09-b208-c3e9fc0bdc5f",
+          "name": "Seismic Emergency for Ischia by Sismiko\t,ZM_2017,https://doi.org/10.13127/sd/u0j8hsaevf"
+        },
+        {
+          "id": "53244749-f36c-49a6-b04a-a7eba075a793",
+          "name": "Seismic Emergency for Molise-Italy by Sismiko, YD_2018,https://doi.org/10.13127/SD/FIR72ChywU"
+        },
+        {
+          "id": "2aacd54a-f6f8-43eb-975f-a70af4da3ae8",
+          "name": "Seismic Microzonation Network, 2016 Central Italy\t,3A_2016,https://doi.org/10.13127/SD/ku7Xm12Yy9"
+        },
+        {
+          "id": "ab1124be-d4fc-4728-ad74-3512e7c48871",
+          "name": "Snow Avalanche Seismic Monitoring around Sibilla Mount (Central Italy)\t,7F_2021,https://doi.org/10.13127/sd/fcjdr8key3"
+        },
+        {
+          "id": "92581b43-86ab-4b83-b3b6-91175b7ed5ff",
+          "name": "The Sardinia Passive Array experiment, 5J_2014,https://doi.org/10.7914/SN/5J_2014"
+        },
+        {
+          "id": "0b9eb4f6-b37f-41ac-a1d9-8f1633b6a73f",
+          "name": "Trentino Seismic Network, Italy,ST,https://doi.org/10.7914/SN/ST"
+        },
+        {
+          "id": "532ed06e-0286-4732-8df5-ecbcc9130b83",
+          "name": "Urban Seismic Network (RUSN-CAL-INGV)\t,7C_2021,https://doi.org/10.13127/sd/o5nrhmp9n7"
+        },
+        {
+          "id": "89d17ce8-5a89-4ed8-972b-8b3c3cb4357a",
+          "name": "Virgo Interferometric Antenna for Gravitational Waves Detection,VR,https://doi.org/10.7914/SN/VR"
+        },
+        {
+          "id": "96b09d25-90ae-4be4-b0f8-3ee2a9d3aa22",
+          "name": "XVII-INGV SISMIKO Emergency Seismic Network (ISESN) (XVII-ISESN), Y1_2022,https://doi.org/10.13127/sd/tblkba-3u6"
+        },
+        {
+          "id": "d7d7ecce-f297-44c9-a66a-2afaa418aca4",
+          "name": "EIDA node KOERI (Kandilli Observatory and Earthquake Research Institute, Turkey)"
+        },
+        {
+          "id": "bc3b0dbf-23a2-4896-9887-0e1fb046dca1",
+          "name": "Kandilli Observatory (KO) Regional Seismic Network,KO,https://doi.org/10.7914/SN/KO"
+        },
+        {
+          "id": "51e1edb7-728b-44a4-8e78-2ab7959c4894",
+          "name": "Kandilli Observatory,IJ,https://doi.org/10.7914/SN/IJ"
+        },
+        {
+          "id": "64439785-d19f-4005-8f38-1233f7fbabe7",
+          "name": "TUBITAK\t,6G_2013,https://doi.org/10.7914/SN/6G_2013"
+        },
+        {
+          "id": "bc3b0dbf-23a2-4896-9887-0e1fb046dca1",
+          "name": "Kandilli Observatory (KO) Regional Seismic Network,KO,https://doi.org/10.7914/SN/KO"
+        },
+        {
+          "id": "51e1edb7-728b-44a4-8e78-2ab7959c4894",
+          "name": "Kandilli Observatory,IJ,https://doi.org/10.7914/SN/IJ"
+        },
+        {
+          "id": "64439785-d19f-4005-8f38-1233f7fbabe7",
+          "name": "TUBITAK\t,6G_2013,https://doi.org/10.7914/SN/6G_2013"
+        },
+        {
+          "id": "1dda7428-27f8-4a0b-9b6d-8c6ebf1666f8",
+          "name": "EIDA node LMU (Ludwig Maximilian University of Munich, Germany)"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "e05b4520-219b-4d6a-9886-5ab9345bf1ae",
+          "name": "BayernNetz,BW,https://doi.org/10.7914/SN/BW"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "e05b4520-219b-4d6a-9886-5ab9345bf1ae",
+          "name": "BayernNetz,BW,https://doi.org/10.7914/SN/BW"
+        },
+        {
+          "id": "17efbe19-1ec6-4036-bf1b-f873604ccb6b",
+          "name": "EIDA node NIEP (National Institute for Earth Physics, Romania)"
+        },
+        {
+          "id": "6558b7a9-1b20-4c6f-a6d8-e189a5684c85",
+          "name": "Bulgaria Seismic Network ,BS,https://doi.org/10.7914/SN/BS"
+        },
+        {
+          "id": "86a34422-0ea1-43d9-b7e0-baf91bd0d077",
+          "name": "Moldova Network,MD,https://doi.org/10.7914/SN/MD"
+        },
+        {
+          "id": "e1132554-578b-41ff-899d-a90f1921fe7e",
+          "name": "North-East Italy Seismic Network,OX,https://doi.org/10.7914/SN/OX"
+        },
+        {
+          "id": "17d2e370-4d7c-4f78-94b8-c1ffda6946ca",
+          "name": "RASPBERRY SHAKE NETWORK ,AM,https://doi.org/10.7914/SN/AM"
+        },
+        {
+          "id": "29e6ea42-e74a-40e2-9a75-77849b2be870",
+          "name": "Romanian Seismic Network ,RO,https://doi.org/10.7914/SN/RO"
+        },
+        {
+          "id": "ed28bbe8-86e5-42a4-a183-9af1fdb98ab0",
+          "name": "UA network,UD,https://doi.org/10.7914/SN/UD"
+        },
+        {
+          "id": "6558b7a9-1b20-4c6f-a6d8-e189a5684c85",
+          "name": "Bulgaria Seismic Network ,BS,https://doi.org/10.7914/SN/BS"
+        },
+        {
+          "id": "86a34422-0ea1-43d9-b7e0-baf91bd0d077",
+          "name": "Moldova Network,MD,https://doi.org/10.7914/SN/MD"
+        },
+        {
+          "id": "e1132554-578b-41ff-899d-a90f1921fe7e",
+          "name": "North-East Italy Seismic Network,OX,https://doi.org/10.7914/SN/OX"
+        },
+        {
+          "id": "17d2e370-4d7c-4f78-94b8-c1ffda6946ca",
+          "name": "RASPBERRY SHAKE NETWORK ,AM,https://doi.org/10.7914/SN/AM"
+        },
+        {
+          "id": "29e6ea42-e74a-40e2-9a75-77849b2be870",
+          "name": "Romanian Seismic Network ,RO,https://doi.org/10.7914/SN/RO"
+        },
+        {
+          "id": "ed28bbe8-86e5-42a4-a183-9af1fdb98ab0",
+          "name": "UA network,UD,https://doi.org/10.7914/SN/UD"
+        },
+        {
+          "id": "f852884f-cb38-4fca-ba45-81d42be2bdfc",
+          "name": "EIDA node NOA (National Observatory of Athens, Greece)"
+        },
+        {
+          "id": "c45c6ae2-d919-4834-b6fb-947d8dd0eb7f",
+          "name": "Aristotle University of Thessaloniki Seismological Network,HT,https://doi.org/10.7914/SN/HT"
+        },
+        {
+          "id": "edaa2828-0f42-48b8-b58b-d8a6d0a936ba",
+          "name": "Cyprus Broadband Seismological Network,CQ,https://doi.org/10.7914/SN/CQ"
+        },
+        {
+          "id": "ee0186a8-6ba4-4b45-a6ab-e2d5fe6c12e2",
+          "name": "EUROSEISTEST Strong Motion Network (SDGEE_AUTH),EG,https://doi.org/10.7914/SN/EG"
+        },
+        {
+          "id": "d1abdb7d-dbfd-4b01-8cf1-bb9d33a315d7",
+          "name": "Hellenic Seismic Network ,HL,https://doi.org/10.7914/SN/HL"
+        },
+        {
+          "id": "074c722e-f1ea-4365-8f8a-132a10316dc3",
+          "name": "Icelandic Strong-motion Arrays\t,5S_2019,https://doi.org/10.7914/SN/5S_2019"
+        },
+        {
+          "id": "ee0c0d6d-f949-46b0-865b-af0fe9e4f956",
+          "name": "Institute of Engineering Seismology and Earthquake Engineering (ITSAK) Strong Motion Network,HI,https://doi.org/10.7914/SN/HI"
+        },
+        {
+          "id": "da6d0ddf-e5dc-4970-b77b-6bb6b18a0b21",
+          "name": "LF (Lefkada temporary network)\t,X5_2015,https://doi.org/10.7914/SN/X5_2015"
+        },
+        {
+          "id": "1d844f31-83b5-4320-bfea-d79059325a0e",
+          "name": "Montenegrian Seismic Network,ME,https://doi.org/10.7914/SN/ME"
+        },
+        {
+          "id": "13224b78-3fd4-4a9a-b38e-c3c5194410d8",
+          "name": "National and Kapodistrian University of Athens, Seismological Laboratory (NKUA),HA,https://doi.org/10.7914/SN/HA"
+        },
+        {
+          "id": "8100b38f-8baf-482c-8de5-33dd7c7cc48f",
+          "name": "Seismological Network of Crete,HC,https://doi.org/10.7914/SN/HC"
+        },
+        {
+          "id": "6a0bc51b-8831-4946-b2f2-af2e239e0103",
+          "name": "Trichonis Lake network\t,YB_2007,https://doi.org/10.7914/SN/YB_2007"
+        },
+        {
+          "id": "dc00569a-80ef-41bb-84a1-dd42ebb2ad25",
+          "name": "University of Patras, Seismological Laboratory (PSLNET),HP,https://doi.org/10.7914/SN/HP"
+        },
+        {
+          "id": "c45c6ae2-d919-4834-b6fb-947d8dd0eb7f",
+          "name": "Aristotle University of Thessaloniki Seismological Network,HT,https://doi.org/10.7914/SN/HT"
+        },
+        {
+          "id": "edaa2828-0f42-48b8-b58b-d8a6d0a936ba",
+          "name": "Cyprus Broadband Seismological Network,CQ,https://doi.org/10.7914/SN/CQ"
+        },
+        {
+          "id": "ee0186a8-6ba4-4b45-a6ab-e2d5fe6c12e2",
+          "name": "EUROSEISTEST Strong Motion Network (SDGEE_AUTH),EG,https://doi.org/10.7914/SN/EG"
+        },
+        {
+          "id": "d1abdb7d-dbfd-4b01-8cf1-bb9d33a315d7",
+          "name": "Hellenic Seismic Network ,HL,https://doi.org/10.7914/SN/HL"
+        },
+        {
+          "id": "074c722e-f1ea-4365-8f8a-132a10316dc3",
+          "name": "Icelandic Strong-motion Arrays\t,5S_2019,https://doi.org/10.7914/SN/5S_2019"
+        },
+        {
+          "id": "ee0c0d6d-f949-46b0-865b-af0fe9e4f956",
+          "name": "Institute of Engineering Seismology and Earthquake Engineering (ITSAK) Strong Motion Network,HI,https://doi.org/10.7914/SN/HI"
+        },
+        {
+          "id": "da6d0ddf-e5dc-4970-b77b-6bb6b18a0b21",
+          "name": "LF (Lefkada temporary network)\t,X5_2015,https://doi.org/10.7914/SN/X5_2015"
+        },
+        {
+          "id": "1d844f31-83b5-4320-bfea-d79059325a0e",
+          "name": "Montenegrian Seismic Network,ME,https://doi.org/10.7914/SN/ME"
+        },
+        {
+          "id": "13224b78-3fd4-4a9a-b38e-c3c5194410d8",
+          "name": "National and Kapodistrian University of Athens, Seismological Laboratory (NKUA),HA,https://doi.org/10.7914/SN/HA"
+        },
+        {
+          "id": "8100b38f-8baf-482c-8de5-33dd7c7cc48f",
+          "name": "Seismological Network of Crete,HC,https://doi.org/10.7914/SN/HC"
+        },
+        {
+          "id": "6a0bc51b-8831-4946-b2f2-af2e239e0103",
+          "name": "Trichonis Lake network\t,YB_2007,https://doi.org/10.7914/SN/YB_2007"
+        },
+        {
+          "id": "dc00569a-80ef-41bb-84a1-dd42ebb2ad25",
+          "name": "University of Patras, Seismological Laboratory (PSLNET),HP,https://doi.org/10.7914/SN/HP"
+        },
+        {
+          "id": "a8db29cd-1122-4b50-b0b4-0bb1a9469eda",
+          "name": "EIDA node ORFEUS Data Center at KNMI"
+        },
+        {
+          "id": "7af8b436-70c3-4fa9-b18e-1bc98e92ebf7",
+          "name": "Absolute Quantum Gravimeter from the NEWTON-g Gravity Imager,2Q,https://doi.org/10.7914/SN/2Q_2019"
+        },
+        {
+          "id": "5b49d348-10ad-4f62-90cb-d4e0988c06d4",
+          "name": "Acoustic Ground Coupling Experiment, University of Vienna, 6A_2019,https://doi.org/10.7914/SN/6A_2019"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "eec1b117-93e7-4bb9-a332-ec6466471b68",
+          "name": "Antarctic Seismographic Argentinean Italian N,AI,https://doi.org/10.7914/SN/AI"
+        },
+        {
+          "id": "13d4adb3-3ea3-47e6-b4d0-c594f2979c52",
+          "name": "Austrian Seismic Network ,OE,https://doi.org/10.7914/SN/OE"
+        },
+        {
+          "id": "ba7bfce9-5ca5-41bf-a708-ba6d12916ff5",
+          "name": "Belgian Seismic Network ,BE,https://doi.org/10.7914/SN/BE"
+        },
+        {
+          "id": "d3aa5c31-274d-4f8e-90dd-f83471991965",
+          "name": "CR network,CR,https://doi.org/10.7914/SN/CR"
+        },
+        {
+          "id": "e7407fa4-0327-4983-bb7a-002e693ca0f9",
+          "name": "Caribbean Netherlands Seismic Network,NA,https://doi.org/10.21944/dffa7a3f-7e3a-3b33-a436-516a01b6af3f"
+        },
+        {
+          "id": "61aff7e8-513c-4fc9-a5b6-8634138200c7",
+          "name": "Centro de Geofisica da Universidade de Coimbra, Po,SS,https://doi.org/10.7914/SN/SS"
+        },
+        {
+          "id": "fd921f38-692a-4d2d-b61d-8377e244288b",
+          "name": "Einstein Telescope Seismic Campaigns,3T,https://doi.org/10.7914/SN/3T_2013"
+        },
+        {
+          "id": "2f23b5cf-7526-4db5-ae41-16d4bf41539c",
+          "name": "IberArray\t,IB_2007,https://doi.org/10.7914/SN/IB"
+        },
+        {
+          "id": "c65cd9dd-5a58-4ac4-8a39-d4dcd6d47414",
+          "name": "Icelandic National Digital Seismograph Network,VI,https://doi.org/10.7914/zkjm-tj71"
+        },
+        {
+          "id": "17b46646-0447-43f4-b829-3f3c0d5cffbf",
+          "name": "LSC (Laboratorio Subterraneo de Canfranc),LC,https://doi.org/10.7914/SN/LC"
+        },
+        {
+          "id": "dfe3d9de-ad93-4f5f-9c85-20f222794b78",
+          "name": "Misterios Project Seismic Stations - Network 2M\t,2M_2015,https://doi.org/10.7914/SN/2M_2015"
+        },
+        {
+          "id": "542ad496-70d7-42b0-b7f9-dec42cf0abe6",
+          "name": "NARS Netherlands,NR,https://doi.org/10.7914/SN/NR"
+        },
+        {
+          "id": "d5c59093-9b2b-4ce1-b813-91f728739a5d",
+          "name": "National Seismic Network of Turkey (DDA),TU,https://doi.org/10.7914/SN/TU"
+        },
+        {
+          "id": "c83816d4-8989-48ba-90cd-d18e28b50b0b",
+          "name": "National Strong Motion Network of Turkey"
+        },
+        {
+          "id": "36d21bf8-ef89-4dba-b9be-a6dd9422dd94",
+          "name": "Netherlands Seismic and Acoustic Network,NL,https://doi.org/10.21944/e970fd34-23b9-3411-b366-e4f72877d2c5"
+        },
+        {
+          "id": "17d2e370-4d7c-4f78-94b8-c1ffda6946ca",
+          "name": "RASPBERRY SHAKE NETWORK ,AM,https://doi.org/10.7914/SN/AM"
+        },
+        {
+          "id": "deb3d139-3b02-4238-87c4-d581900b0af3",
+          "name": "Seismic Network of the Republic of Slovenia,SL,https://doi.org/10.7914/SN/SL"
+        },
+        {
+          "id": "35ab179c-95da-4bf5-b448-eaa05c9a7354",
+          "name": "Swedish National Seismic Network,UP,https://doi.org/10.18159/SNSN"
+        },
+        {
+          "id": "bad1a35c-6286-4814-8339-03887241e674",
+          "name": "University of Lisbon, Portugal,LX,https://doi.org/10.7914/SN/LX"
+        },
+        {
+          "id": "7af8b436-70c3-4fa9-b18e-1bc98e92ebf7",
+          "name": "Absolute Quantum Gravimeter from the NEWTON-g Gravity Imager,2Q,https://doi.org/10.7914/SN/2Q_2019"
+        },
+        {
+          "id": "5b49d348-10ad-4f62-90cb-d4e0988c06d4",
+          "name": "Acoustic Ground Coupling Experiment, University of Vienna, 6A_2019,https://doi.org/10.7914/SN/6A_2019"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "eec1b117-93e7-4bb9-a332-ec6466471b68",
+          "name": "Antarctic Seismographic Argentinean Italian N,AI,https://doi.org/10.7914/SN/AI"
+        },
+        {
+          "id": "13d4adb3-3ea3-47e6-b4d0-c594f2979c52",
+          "name": "Austrian Seismic Network ,OE,https://doi.org/10.7914/SN/OE"
+        },
+        {
+          "id": "ba7bfce9-5ca5-41bf-a708-ba6d12916ff5",
+          "name": "Belgian Seismic Network ,BE,https://doi.org/10.7914/SN/BE"
+        },
+        {
+          "id": "d3aa5c31-274d-4f8e-90dd-f83471991965",
+          "name": "CR network,CR,https://doi.org/10.7914/SN/CR"
+        },
+        {
+          "id": "e7407fa4-0327-4983-bb7a-002e693ca0f9",
+          "name": "Caribbean Netherlands Seismic Network,NA,https://doi.org/10.21944/dffa7a3f-7e3a-3b33-a436-516a01b6af3f"
+        },
+        {
+          "id": "61aff7e8-513c-4fc9-a5b6-8634138200c7",
+          "name": "Centro de Geofisica da Universidade de Coimbra, Po,SS,https://doi.org/10.7914/SN/SS"
+        },
+        {
+          "id": "fd921f38-692a-4d2d-b61d-8377e244288b",
+          "name": "Einstein Telescope Seismic Campaigns,3T,https://doi.org/10.7914/SN/3T_2013"
+        },
+        {
+          "id": "2f23b5cf-7526-4db5-ae41-16d4bf41539c",
+          "name": "IberArray\t,IB_2007,https://doi.org/10.7914/SN/IB"
+        },
+        {
+          "id": "c65cd9dd-5a58-4ac4-8a39-d4dcd6d47414",
+          "name": "Icelandic National Digital Seismograph Network,VI,https://doi.org/10.7914/zkjm-tj71"
+        },
+        {
+          "id": "17b46646-0447-43f4-b829-3f3c0d5cffbf",
+          "name": "LSC (Laboratorio Subterraneo de Canfranc),LC,https://doi.org/10.7914/SN/LC"
+        },
+        {
+          "id": "dfe3d9de-ad93-4f5f-9c85-20f222794b78",
+          "name": "Misterios Project Seismic Stations - Network 2M\t,2M_2015,https://doi.org/10.7914/SN/2M_2015"
+        },
+        {
+          "id": "542ad496-70d7-42b0-b7f9-dec42cf0abe6",
+          "name": "NARS Netherlands,NR,https://doi.org/10.7914/SN/NR"
+        },
+        {
+          "id": "d5c59093-9b2b-4ce1-b813-91f728739a5d",
+          "name": "National Seismic Network of Turkey (DDA),TU,https://doi.org/10.7914/SN/TU"
+        },
+        {
+          "id": "c83816d4-8989-48ba-90cd-d18e28b50b0b",
+          "name": "National Strong Motion Network of Turkey"
+        },
+        {
+          "id": "36d21bf8-ef89-4dba-b9be-a6dd9422dd94",
+          "name": "Netherlands Seismic and Acoustic Network,NL,https://doi.org/10.21944/e970fd34-23b9-3411-b366-e4f72877d2c5"
+        },
+        {
+          "id": "17d2e370-4d7c-4f78-94b8-c1ffda6946ca",
+          "name": "RASPBERRY SHAKE NETWORK ,AM,https://doi.org/10.7914/SN/AM"
+        },
+        {
+          "id": "deb3d139-3b02-4238-87c4-d581900b0af3",
+          "name": "Seismic Network of the Republic of Slovenia,SL,https://doi.org/10.7914/SN/SL"
+        },
+        {
+          "id": "35ab179c-95da-4bf5-b448-eaa05c9a7354",
+          "name": "Swedish National Seismic Network,UP,https://doi.org/10.18159/SNSN"
+        },
+        {
+          "id": "bad1a35c-6286-4814-8339-03887241e674",
+          "name": "University of Lisbon, Portugal,LX,https://doi.org/10.7914/SN/LX"
+        },
+        {
+          "id": "d7652efd-5a6c-4667-956b-fef5291462d4",
+          "name": "EIDA node RÉSIF (Réseau sismologique et géodésique français, France)"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "f6010d4f-ea9b-4900-b617-4fa90bb32708",
+          "name": "Antarctica 2020, SEIS-ADELICE temporary experiment measuring the cryo-seismicity of the Astrolabe glacier (Terre Adelie, Antarctica)\t,ZR_2020,https://doi.org/10.15778/RESIF.ZR2020"
+        },
+        {
+          "id": "42e6b9bf-7f4c-4ff2-81d3-4052f6400b5f",
+          "name": "Antartica 2009,ARLITA Eastern Antartica temporary experiment, 1A_2009,https://doi.org/10.15778/RESIF.1A2009"
+        },
+        {
+          "id": "dd12e2d1-37ff-4d31-b562-ab9e80a95966",
+          "name": "CEA/DASE broad-band permanent network, RD_1962,https://doi.org/10.15778/RESIF.RD"
+        },
+        {
+          "id": "08062372-77a3-4ca6-b8c0-05ead1b20b9a",
+          "name": "Chile 2019,COPIACO temporary deployment around Copiapo, 9C_2019,https://doi.org/10.7914/SN/9C_2019"
+        },
+        {
+          "id": "c30e78c7-76ff-46ec-857b-8f906786d0b5",
+          "name": "Chili 2010,CHILE_MAULE French part of the aftershock experiment, XS_2010,https://doi.org/10.15778/RESIF.XS2010"
+        },
+        {
+          "id": "bb6e3ebf-bd35-43cf-8373-3b91490637fa",
+          "name": "China Tibet 2001,KUNLUN West Kunlun temporary transect, YT_2001,https://doi.org/10.15778/RESIF.YT2001"
+        },
+        {
+          "id": "9a3f3eb5-934c-415f-8b28-21f065d79b50",
+          "name": "Comoros Archipelago Seismic and Volcano Network, QM_2019,https://doi.org/10.18715/MAYOTTE.QM"
+        },
+        {
+          "id": "dbab8bcf-9949-43ba-9d18-07fdf91888d6",
+          "name": "Corinth Rift Laboratory Network,CL,https://doi.org/10.15778/RESIF.CL"
+        },
+        {
+          "id": "d65a5a6f-c800-4422-bbc2-1f2da12c664d",
+          "name": "Ecuador 2018,META_QUITO passive temporary dense network in Quito City\t,ZE_2018,https://doi.org/10.15778/RESIF.ZE2018"
+        },
+        {
+          "id": "8a61257b-d785-4c29-b277-6ec45747fa6b",
+          "name": "Ethiopia Yemen 1999,HORN_OF_AFRICA BB temporary experiment, YR_1999,https://doi.org/10.15778/RESIF.YR1999"
+        },
+        {
+          "id": "262f817d-154a-46ba-bdb5-0b558bae5938",
+          "name": "Ethiopian 2017, MARGIN_AFAR continental plateaus temporary experiment\t,YP_2017,https://doi.org/10.15778/resif.yp2017"
+        },
+        {
+          "id": "da178e15-2bd3-4f6b-96c7-e96eeb88afb5",
+          "name": "Finland 2007,LAPNET seismic temporary array, XK_2007,https://doi.org/10.15778/RESIF.XK2007"
+        },
+        {
+          "id": "e7ec712a-e7da-4459-9da6-89401d692d5a",
+          "name": "France 1998,TRACK South Massif Central temporary experiment, YO_1998,https://doi.org/10.15778/RESIF.YO1998"
+        },
+        {
+          "id": "de354e49-fa4c-4be7-b4cf-3d7ed2956e17",
+          "name": "France 2004,ALPES-BB temporary experiment\t,Y4_2004,https://doi.org/10.15778/RESIF.Y42004"
+        },
+        {
+          "id": "99e3ef06-cd10-49df-8961-cbfedfe952e5",
+          "name": "France 2014,BARCELONETTE aftershock experiment, XG_2014,https://doi.org/10.15778/RESIF.XG2014"
+        },
+        {
+          "id": "c8afc0c1-6b05-4229-a3c7-5924519d8274",
+          "name": "France 2015,MT_CAMPAGNE French Landslide Observatory temporary experiments, 1N_2015,https://doi.org/10.15778/RESIF.1N2015"
+        },
+        {
+          "id": "2f86334d-c72e-4152-b176-ce7c8603d860",
+          "name": "France 2015,SAINT_GUERIN dam temporary experiment, YI_2015,https://doi.org/10.15778/RESIF.YI2015 "
+        },
+        {
+          "id": "100fbcb6-264e-45a1-8d8e-a025037aa1c5",
+          "name": "France 2016,POSA temporary experiment, ZH_2016,https://doi.org/10.15778/RESIF.ZH2016"
+        },
+        {
+          "id": "166ce6da-eaa5-42d9-bf9f-bf4ab09e18c1",
+          "name": "France 2017,ESSAIM_MAURIENNE temporary experiment\t,YW_2017,https://doi.org/10.15778/RESIF.YW2017"
+        },
+        {
+          "id": "ca94f5ac-2a95-416b-b62a-0588754e7fec",
+          "name": "France 2018,ARGENTIERE_ALPINE_GLACIER dense nodal temporary seismic array, ZO_2018,https://doi.org/10.15778/RESIF.ZO2018 "
+        },
+        {
+          "id": "a599c2ed-7bf0-4c49-b17a-68944aee0777",
+          "name": "France 2018,RITTERSHOFFEN dense nodal seismic array temporary experiment,Bas-Rhin, Z7_2018,https://doi.org/10.15778/RESIF.Z72018"
+        },
+        {
+          "id": "46bf009c-0b65-4281-b45e-8541565f7d41",
+          "name": "France 2019,ALBION2 Noise monitoring of the groundwater in Albion area, XW_2019,https://doi.org/10.15778/RESIF.XW2019"
+        },
+        {
+          "id": "afe687e4-f12e-4fbd-9264-f16d0e6c9e92",
+          "name": "France 2019,ARGG temporary experiment of nodes in Mont Blanc massif, 1D_2019,https://doi.org/10.15778/RESIF.1D2019"
+        },
+        {
+          "id": "ba5429c1-31ef-4d84-9457-24f6f1f3a28b",
+          "name": "France 2019,M5 LE_TEIL 20191111 post seismic (LeTeilPostSeismic) in the Rhone Valley ,3C_2019,https://doi.org/10.15778/RESIF.3C2019"
+        },
+        {
+          "id": "b18c98f6-e2f0-4d4d-aebd-3107809c5b8b",
+          "name": "France 2019,SEISMORIV_SEVRAISSE dense nodal seismic array temporary experiment on the banks of the Sévraisse River (Alps)\t,ZL_2019,https://doi.org/10.15778/RESIF.ZL2019"
+        },
+        {
+          "id": "9d836dac-5903-4482-8a47-b65e8a194528",
+          "name": "France 2020, CHAUVET temporary experiment for study on seismic hazards applied to the Chauvet Cave\t,XQ_2020,https://doi.org/10.7914/SN/XQ_2020"
+        },
+        {
+          "id": "6cc7a720-56f8-4536-9411-1cab8e10f148",
+          "name": "France 2021, Monitoring of seismic activity and noise around the Vuache Fault\t,XO_2021,https://doi.org/10.15778/RESIF.XO2021"
+        },
+        {
+          "id": "e27180dd-cf95-480d-bd6b-bf69b6f08c39",
+          "name": "France 2021, Monitoring the Tour Perret in Grenoble, X1_2021,https://doi.org/10.15778/RESIF.X12021"
+        },
+        {
+          "id": "92cb09fd-6f77-4c5a-b05a-4984b8a2a5c4",
+          "name": "France Guadeloupe 2016,DENSE_ARRAY_LA_SOUFRIERE_GUADELOUPE temporary seismic array, ZK_2017,https://doi.org/10.15778/RESIF.XK2017"
+        },
+        {
+          "id": "b9ba3268-696b-4aea-8337-4556310c2ae7",
+          "name": "France Italy 2012,CIFAlps temporary experiment, YP_2012,https://doi.org/10.15778/RESIF.YP2012"
+        },
+        {
+          "id": "9b0b6aba-054b-4f63-997b-925785eeec93",
+          "name": "France Italy 2018,CIFAlps2 temporary transect across the northwestern (European) Alps ,XT_2018,https://doi.org/10.15778/RESIF.XT2018"
+        },
+        {
+          "id": "236c17cb-b561-42a0-bc4e-7dfd1f82d08d",
+          "name": "France Spain 2010,PYROPE PYRenean Observational Portable Experiment, X7_2010,https://doi.org/10.15778/RESIF.X72010"
+        },
+        {
+          "id": "fb0ddc1b-7a30-4717-80be-63d01df76f28",
+          "name": "France Spain 2015,OROGEN_X temporary experiment\t,ZU_2015,https://doi.org/10.15778/RESIF.ZU2015"
+        },
+        {
+          "id": "978457ad-7318-4972-9469-178177525ee0",
+          "name": "France Switzerland 2014,MOUVEMENTS_GRAVITAIRES, 7H_2010,https://doi.org/10.15778/RESIF.7H2010"
+        },
+        {
+          "id": "4e3165fb-581e-4604-b91b-c4cd622c7922",
+          "name": "French Global Network of Seismological Broadband Stations , G, https://doi.org/10.18715/GEOSCOPE.G"
+        },
+        {
+          "id": "3718e09a-7819-4e91-a618-5747944d0ca0",
+          "name": "French Polynesia 2001,PLUME Polynesian Lithosphere and Upper Mantle temporary experiment, ZI_2001,https://doi.org/10.7914/SN/ZI_2001"
+        },
+        {
+          "id": "be333f4e-5eee-43eb-b0ab-65009282bbfa",
+          "name": "French Polynesia 2018, MAUPITI seismic noise temporary experiment\t,ZV_2018,https://doi.org/10.7914/SN/ZV_2018"
+        },
+        {
+          "id": "5b748bdd-958e-409e-a8ad-afa5b57d3e9c",
+          "name": "Greece 2001,CORINTH temporary experiment, YX_2001,https://doi.org/10.15778/RESIF.YX2001"
+        },
+        {
+          "id": "d82da158-9a75-46be-9bad-5167a0b41537",
+          "name": "Greece 2008,MOVRI post seismic experiment after 8th June 2008 event Andravida ,1E_2008,https://doi.org/10.7914/SN/1E_2008"
+        },
+        {
+          "id": "6de5e89b-2d10-4910-981a-d2ed626f48d8",
+          "name": "Greece Turkey 2007,SIMBAAD Aegean-Anatolia temporary experiment - backbone, XY_2007,https://doi.org/10.15778/RESIF.XY2007"
+        },
+        {
+          "id": "abe5c56a-55bc-49da-a4b9-1bee133d9f6e",
+          "name": "Guadeloupe Seismic and Volcano Observatory Network, GL_1950,https://doi.org/10.18715/guadeloupe.gl"
+        },
+        {
+          "id": "d6ff4e0d-2a04-40d5-83fb-6b1088231924",
+          "name": "Haiti 2010,HEART aftershock experiment, YB_2010,https://doi.org/10.15778/RESIF.YB2010"
+        },
+        {
+          "id": "032af462-7836-4cf2-8db8-27920a34c2ad",
+          "name": "Indonesia 2013,DOMERAPI temporary experiment, YR_2013,https://doi.org/10.15778/RESIF.YR2013"
+        },
+        {
+          "id": "faa08ca9-e902-4343-aad5-8b555a71e941",
+          "name": "Iran 2000,ZAGROS Central Zagros lithospheric temporary transect, YB_2000,https://doi.org/10.15778/RESIF.YB2000"
+        },
+        {
+          "id": "eae33446-86fe-47d8-af15-2ef7add02102",
+          "name": "Iran 2003,BAM French part of the BAM aftershok experiment\t,ZF_2003,https://doi.org/10.15778/RESIF.ZF2003"
+        },
+        {
+          "id": "cbae552a-c40e-403a-b225-91df82ec28db",
+          "name": "Iran 2003,ZAGROS North Zagros lithospheric temporary transect\t,ZH_2003,https://doi.org/10.15778/RESIF.ZH2003"
+        },
+        {
+          "id": "df6e1af3-7ad5-4eb6-9eea-a6275dfd9b0c",
+          "name": "Iran 2004,TABRIZ seismotectonic temporary experiment, YZ_2004,https://doi.org/10.15778/RESIF.YZ2004"
+        },
+        {
+          "id": "328b337b-d85d-46e3-8d98-743e79df7fed",
+          "name": "Italy 2009,L_AQUILA French part of the L'Aquila aftershock experiment, XJ_2009,https://doi.org/10.15778/RESIF.XJ2009 "
+        },
+        {
+          "id": "4df59345-1ae7-4a39-8328-b6a792428ba7",
+          "name": "La Reunion Island 2014,VOLCARRAY Piton de la Fournaise temporary experiment , XP_2014,https://doi.org/10.15778/RESIF.XP2014"
+        },
+        {
+          "id": "c5c3153b-2f2a-470e-9583-367e6ab6079f",
+          "name": "La Reunion Island 2015,RIVIERE_DES_PLUIES temporary experiment, ZF_2015,https://doi.org/10.15778/RESIF.ZF2015"
+        },
+        {
+          "id": "fcb28d1b-72cb-40f4-b200-deabfc5a1295",
+          "name": "La Réunion Island 2009,UNDERVOLC temporary experiment\t,YA_2009,https://doi.org/10.15778/RESIF.YA2009"
+        },
+        {
+          "id": "c4064d11-e5e4-4453-a16b-c3f1e01d301d",
+          "name": "Martinique Seismic and Volcano Observatory Network, MQ_1935,https://doi.org/10.18715/martinique.mq"
+        },
+        {
+          "id": "d833b80a-58e2-4539-bcfd-0611e07e8418",
+          "name": "Mayotte 2018,SISMAYOTTE seismic monitoring of seismic sequence on land and offshore\t,1T_2018,https://doi.org/10.15778/resif.1t2018"
+        },
+        {
+          "id": "365c78bc-c211-4cd3-ba3d-2c8a325f7120",
+          "name": "Mexico 2009,GGAP Guerrero Gap temporary array\t,Y9_2009,https://doi.org/10.15778/RESIF.Y92009"
+        },
+        {
+          "id": "43c3b9d1-1a50-4943-8e86-57ee40f9605a",
+          "name": "Mongolia Russia 2003,MOBAL Mongolia-Baikal temporary transect\t,YT_2003,https://doi.org/10.15778/RESIF.YT2003"
+        },
+        {
+          "id": "3b2edadc-861b-440b-9a1b-dbcac5ceb97e",
+          "name": "Nepal 2014,HiK-NET Nepal temporary experiment\t,ZO_2014,https://doi.org/10.15778/RESIF.ZO2014"
+        },
+        {
+          "id": "64aae990-971a-493c-b339-c3601c9e63de",
+          "name": "New-Caledonia broadband and accelerometric permanent networks, ND_2010,https://doi.org/10.7914/SN/ND"
+        },
+        {
+          "id": "95101fff-251d-40e8-86c2-f9399fb63468",
+          "name": "Norway 2015,SAFE_CO2 Norsard Svalbard temporary experiment, Y2_2014,https://doi.org/10.15778/RESIF.Y22014"
+        },
+        {
+          "id": "344f054a-6563-484f-8cf8-a7d489df0af3",
+          "name": "Norway 2019,ICEWAVEGUIDE dense nodal seismic array temporary experiment on the frozen Laguna of Vallunden\t,XG_2019,https://doi.org/10.15778/RESIF.XG2019"
+        },
+        {
+          "id": "602d1501-a320-4b3a-a676-11360c00162a",
+          "name": "OMIV French Landslide Observatory, MT_2006, https://doi.org/10.15778/RESIF.MT"
+        },
+        {
+          "id": "ea5f9bc0-7100-4b46-9a09-a05b56704b29",
+          "name": "Piton de la Fournaise Volcano Observatory Network (Reunion Island), PF_1980,https://doi.org/10.18715/reunion.PF"
+        },
+        {
+          "id": "1aba4357-001f-4b25-b5f9-d0c358a20f84",
+          "name": "RESIF and other Broad-band and accelerometric permanent networks in metropolitan France, FR_1962,https://doi.org/10.15778/RESIF.FR"
+        },
+        {
+          "id": "6ad01808-e53e-499f-a77b-726c4561e378",
+          "name": "RESIF-RAP Accelerometric permanent network, RA_1995,https://doi.org/10.15778/RESIF.RA"
+        },
+        {
+          "id": "176aed4c-fc7f-4eaa-847b-b7ac36329047",
+          "name": "Tanzania 2007,TANZANIA BB temporary experiment\t,ZS_2007,https://doi.org/10.15778/RESIF.ZS2007"
+        },
+        {
+          "id": "c5771fe9-35ce-4c0d-a45e-bb85a1f9ef12",
+          "name": "Terres australes et antarctiques françaises 2011,RHUMRUM temporary experiment ,YV_2011,https://doi.org/10.15778/RESIF.YV2011"
+        },
+        {
+          "id": "addfdbc2-49bd-4c56-8b96-67ad3e978839",
+          "name": "Turkey 2007,SIMBAAD Aegean-Anatolia temporary experiment - eastern transect\t,YI_2008,https://doi.org/10.15778/RESIF.YI2008"
+        },
+        {
+          "id": "c3e0fca2-b3e4-4a72-837a-b3a3b18a5f4c",
+          "name": "Turkey 2007,SIMBAAD Aegean-Anatolia temporary experiment - western transect, XW_2007,https://doi.org/10.15778/RESIF.XW2007"
+        },
+        {
+          "id": "8d75ff94-5750-4ef8-af1c-8558f15b6851",
+          "name": "Vanuatu 2008,ARC-VANUATU (subduction) temporary experiment, 3A_2008,https://doi.org/10.15778/RESIF.3A2008"
+        },
+        {
+          "id": "6921dee9-af6d-4a15-bfb1-899fde13f8b9",
+          "name": "Vanuatu 2008,ARC-VANUATU (volcanoes) temporary experiment\t,ZO_2008,https://doi.org/10.15778/RESIF.ZO2008"
+        },
+        {
+          "id": "090c5392-60eb-462c-9366-580e43050fe5",
+          "name": "West Indies French Seismic Network, WI_2008,https://doi.org/10.18715/antilles.WI"
+        },
+        {
+          "id": "51cbc1f8-9c02-4ccb-95d1-9e5186234f36",
+          "name": "Yemen Ethiopia Eritrea 2009,DORA Afar temporary experiment, 7C_2009,https://doi.org/10.15778/RESIF.7C2009"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "f6010d4f-ea9b-4900-b617-4fa90bb32708",
+          "name": "Antarctica 2020, SEIS-ADELICE temporary experiment measuring the cryo-seismicity of the Astrolabe glacier (Terre Adelie, Antarctica)\t,ZR_2020,https://doi.org/10.15778/RESIF.ZR2020"
+        },
+        {
+          "id": "42e6b9bf-7f4c-4ff2-81d3-4052f6400b5f",
+          "name": "Antartica 2009,ARLITA Eastern Antartica temporary experiment, 1A_2009,https://doi.org/10.15778/RESIF.1A2009"
+        },
+        {
+          "id": "dd12e2d1-37ff-4d31-b562-ab9e80a95966",
+          "name": "CEA/DASE broad-band permanent network, RD_1962,https://doi.org/10.15778/RESIF.RD"
+        },
+        {
+          "id": "08062372-77a3-4ca6-b8c0-05ead1b20b9a",
+          "name": "Chile 2019,COPIACO temporary deployment around Copiapo, 9C_2019,https://doi.org/10.7914/SN/9C_2019"
+        },
+        {
+          "id": "c30e78c7-76ff-46ec-857b-8f906786d0b5",
+          "name": "Chili 2010,CHILE_MAULE French part of the aftershock experiment, XS_2010,https://doi.org/10.15778/RESIF.XS2010"
+        },
+        {
+          "id": "bb6e3ebf-bd35-43cf-8373-3b91490637fa",
+          "name": "China Tibet 2001,KUNLUN West Kunlun temporary transect, YT_2001,https://doi.org/10.15778/RESIF.YT2001"
+        },
+        {
+          "id": "9a3f3eb5-934c-415f-8b28-21f065d79b50",
+          "name": "Comoros Archipelago Seismic and Volcano Network, QM_2019,https://doi.org/10.18715/MAYOTTE.QM"
+        },
+        {
+          "id": "dbab8bcf-9949-43ba-9d18-07fdf91888d6",
+          "name": "Corinth Rift Laboratory Network,CL,https://doi.org/10.15778/RESIF.CL"
+        },
+        {
+          "id": "d65a5a6f-c800-4422-bbc2-1f2da12c664d",
+          "name": "Ecuador 2018,META_QUITO passive temporary dense network in Quito City\t,ZE_2018,https://doi.org/10.15778/RESIF.ZE2018"
+        },
+        {
+          "id": "8a61257b-d785-4c29-b277-6ec45747fa6b",
+          "name": "Ethiopia Yemen 1999,HORN_OF_AFRICA BB temporary experiment, YR_1999,https://doi.org/10.15778/RESIF.YR1999"
+        },
+        {
+          "id": "262f817d-154a-46ba-bdb5-0b558bae5938",
+          "name": "Ethiopian 2017, MARGIN_AFAR continental plateaus temporary experiment\t,YP_2017,https://doi.org/10.15778/resif.yp2017"
+        },
+        {
+          "id": "da178e15-2bd3-4f6b-96c7-e96eeb88afb5",
+          "name": "Finland 2007,LAPNET seismic temporary array, XK_2007,https://doi.org/10.15778/RESIF.XK2007"
+        },
+        {
+          "id": "e7ec712a-e7da-4459-9da6-89401d692d5a",
+          "name": "France 1998,TRACK South Massif Central temporary experiment, YO_1998,https://doi.org/10.15778/RESIF.YO1998"
+        },
+        {
+          "id": "de354e49-fa4c-4be7-b4cf-3d7ed2956e17",
+          "name": "France 2004,ALPES-BB temporary experiment\t,Y4_2004,https://doi.org/10.15778/RESIF.Y42004"
+        },
+        {
+          "id": "99e3ef06-cd10-49df-8961-cbfedfe952e5",
+          "name": "France 2014,BARCELONETTE aftershock experiment, XG_2014,https://doi.org/10.15778/RESIF.XG2014"
+        },
+        {
+          "id": "c8afc0c1-6b05-4229-a3c7-5924519d8274",
+          "name": "France 2015,MT_CAMPAGNE French Landslide Observatory temporary experiments, 1N_2015,https://doi.org/10.15778/RESIF.1N2015"
+        },
+        {
+          "id": "2f86334d-c72e-4152-b176-ce7c8603d860",
+          "name": "France 2015,SAINT_GUERIN dam temporary experiment, YI_2015,https://doi.org/10.15778/RESIF.YI2015 "
+        },
+        {
+          "id": "100fbcb6-264e-45a1-8d8e-a025037aa1c5",
+          "name": "France 2016,POSA temporary experiment, ZH_2016,https://doi.org/10.15778/RESIF.ZH2016"
+        },
+        {
+          "id": "166ce6da-eaa5-42d9-bf9f-bf4ab09e18c1",
+          "name": "France 2017,ESSAIM_MAURIENNE temporary experiment\t,YW_2017,https://doi.org/10.15778/RESIF.YW2017"
+        },
+        {
+          "id": "ca94f5ac-2a95-416b-b62a-0588754e7fec",
+          "name": "France 2018,ARGENTIERE_ALPINE_GLACIER dense nodal temporary seismic array, ZO_2018,https://doi.org/10.15778/RESIF.ZO2018 "
+        },
+        {
+          "id": "a599c2ed-7bf0-4c49-b17a-68944aee0777",
+          "name": "France 2018,RITTERSHOFFEN dense nodal seismic array temporary experiment,Bas-Rhin, Z7_2018,https://doi.org/10.15778/RESIF.Z72018"
+        },
+        {
+          "id": "46bf009c-0b65-4281-b45e-8541565f7d41",
+          "name": "France 2019,ALBION2 Noise monitoring of the groundwater in Albion area, XW_2019,https://doi.org/10.15778/RESIF.XW2019"
+        },
+        {
+          "id": "afe687e4-f12e-4fbd-9264-f16d0e6c9e92",
+          "name": "France 2019,ARGG temporary experiment of nodes in Mont Blanc massif, 1D_2019,https://doi.org/10.15778/RESIF.1D2019"
+        },
+        {
+          "id": "ba5429c1-31ef-4d84-9457-24f6f1f3a28b",
+          "name": "France 2019,M5 LE_TEIL 20191111 post seismic (LeTeilPostSeismic) in the Rhone Valley ,3C_2019,https://doi.org/10.15778/RESIF.3C2019"
+        },
+        {
+          "id": "b18c98f6-e2f0-4d4d-aebd-3107809c5b8b",
+          "name": "France 2019,SEISMORIV_SEVRAISSE dense nodal seismic array temporary experiment on the banks of the Sévraisse River (Alps)\t,ZL_2019,https://doi.org/10.15778/RESIF.ZL2019"
+        },
+        {
+          "id": "9d836dac-5903-4482-8a47-b65e8a194528",
+          "name": "France 2020, CHAUVET temporary experiment for study on seismic hazards applied to the Chauvet Cave\t,XQ_2020,https://doi.org/10.7914/SN/XQ_2020"
+        },
+        {
+          "id": "6cc7a720-56f8-4536-9411-1cab8e10f148",
+          "name": "France 2021, Monitoring of seismic activity and noise around the Vuache Fault\t,XO_2021,https://doi.org/10.15778/RESIF.XO2021"
+        },
+        {
+          "id": "e27180dd-cf95-480d-bd6b-bf69b6f08c39",
+          "name": "France 2021, Monitoring the Tour Perret in Grenoble, X1_2021,https://doi.org/10.15778/RESIF.X12021"
+        },
+        {
+          "id": "92cb09fd-6f77-4c5a-b05a-4984b8a2a5c4",
+          "name": "France Guadeloupe 2016,DENSE_ARRAY_LA_SOUFRIERE_GUADELOUPE temporary seismic array, ZK_2017,https://doi.org/10.15778/RESIF.XK2017"
+        },
+        {
+          "id": "b9ba3268-696b-4aea-8337-4556310c2ae7",
+          "name": "France Italy 2012,CIFAlps temporary experiment, YP_2012,https://doi.org/10.15778/RESIF.YP2012"
+        },
+        {
+          "id": "9b0b6aba-054b-4f63-997b-925785eeec93",
+          "name": "France Italy 2018,CIFAlps2 temporary transect across the northwestern (European) Alps ,XT_2018,https://doi.org/10.15778/RESIF.XT2018"
+        },
+        {
+          "id": "236c17cb-b561-42a0-bc4e-7dfd1f82d08d",
+          "name": "France Spain 2010,PYROPE PYRenean Observational Portable Experiment, X7_2010,https://doi.org/10.15778/RESIF.X72010"
+        },
+        {
+          "id": "fb0ddc1b-7a30-4717-80be-63d01df76f28",
+          "name": "France Spain 2015,OROGEN_X temporary experiment\t,ZU_2015,https://doi.org/10.15778/RESIF.ZU2015"
+        },
+        {
+          "id": "978457ad-7318-4972-9469-178177525ee0",
+          "name": "France Switzerland 2014,MOUVEMENTS_GRAVITAIRES, 7H_2010,https://doi.org/10.15778/RESIF.7H2010"
+        },
+        {
+          "id": "4e3165fb-581e-4604-b91b-c4cd622c7922",
+          "name": "French Global Network of Seismological Broadband Stations , G, https://doi.org/10.18715/GEOSCOPE.G"
+        },
+        {
+          "id": "3718e09a-7819-4e91-a618-5747944d0ca0",
+          "name": "French Polynesia 2001,PLUME Polynesian Lithosphere and Upper Mantle temporary experiment, ZI_2001,https://doi.org/10.7914/SN/ZI_2001"
+        },
+        {
+          "id": "be333f4e-5eee-43eb-b0ab-65009282bbfa",
+          "name": "French Polynesia 2018, MAUPITI seismic noise temporary experiment\t,ZV_2018,https://doi.org/10.7914/SN/ZV_2018"
+        },
+        {
+          "id": "5b748bdd-958e-409e-a8ad-afa5b57d3e9c",
+          "name": "Greece 2001,CORINTH temporary experiment, YX_2001,https://doi.org/10.15778/RESIF.YX2001"
+        },
+        {
+          "id": "d82da158-9a75-46be-9bad-5167a0b41537",
+          "name": "Greece 2008,MOVRI post seismic experiment after 8th June 2008 event Andravida ,1E_2008,https://doi.org/10.7914/SN/1E_2008"
+        },
+        {
+          "id": "6de5e89b-2d10-4910-981a-d2ed626f48d8",
+          "name": "Greece Turkey 2007,SIMBAAD Aegean-Anatolia temporary experiment - backbone, XY_2007,https://doi.org/10.15778/RESIF.XY2007"
+        },
+        {
+          "id": "abe5c56a-55bc-49da-a4b9-1bee133d9f6e",
+          "name": "Guadeloupe Seismic and Volcano Observatory Network, GL_1950,https://doi.org/10.18715/guadeloupe.gl"
+        },
+        {
+          "id": "d6ff4e0d-2a04-40d5-83fb-6b1088231924",
+          "name": "Haiti 2010,HEART aftershock experiment, YB_2010,https://doi.org/10.15778/RESIF.YB2010"
+        },
+        {
+          "id": "032af462-7836-4cf2-8db8-27920a34c2ad",
+          "name": "Indonesia 2013,DOMERAPI temporary experiment, YR_2013,https://doi.org/10.15778/RESIF.YR2013"
+        },
+        {
+          "id": "faa08ca9-e902-4343-aad5-8b555a71e941",
+          "name": "Iran 2000,ZAGROS Central Zagros lithospheric temporary transect, YB_2000,https://doi.org/10.15778/RESIF.YB2000"
+        },
+        {
+          "id": "eae33446-86fe-47d8-af15-2ef7add02102",
+          "name": "Iran 2003,BAM French part of the BAM aftershok experiment\t,ZF_2003,https://doi.org/10.15778/RESIF.ZF2003"
+        },
+        {
+          "id": "cbae552a-c40e-403a-b225-91df82ec28db",
+          "name": "Iran 2003,ZAGROS North Zagros lithospheric temporary transect\t,ZH_2003,https://doi.org/10.15778/RESIF.ZH2003"
+        },
+        {
+          "id": "df6e1af3-7ad5-4eb6-9eea-a6275dfd9b0c",
+          "name": "Iran 2004,TABRIZ seismotectonic temporary experiment, YZ_2004,https://doi.org/10.15778/RESIF.YZ2004"
+        },
+        {
+          "id": "328b337b-d85d-46e3-8d98-743e79df7fed",
+          "name": "Italy 2009,L_AQUILA French part of the L'Aquila aftershock experiment, XJ_2009,https://doi.org/10.15778/RESIF.XJ2009 "
+        },
+        {
+          "id": "4df59345-1ae7-4a39-8328-b6a792428ba7",
+          "name": "La Reunion Island 2014,VOLCARRAY Piton de la Fournaise temporary experiment , XP_2014,https://doi.org/10.15778/RESIF.XP2014"
+        },
+        {
+          "id": "c5c3153b-2f2a-470e-9583-367e6ab6079f",
+          "name": "La Reunion Island 2015,RIVIERE_DES_PLUIES temporary experiment, ZF_2015,https://doi.org/10.15778/RESIF.ZF2015"
+        },
+        {
+          "id": "fcb28d1b-72cb-40f4-b200-deabfc5a1295",
+          "name": "La Réunion Island 2009,UNDERVOLC temporary experiment\t,YA_2009,https://doi.org/10.15778/RESIF.YA2009"
+        },
+        {
+          "id": "c4064d11-e5e4-4453-a16b-c3f1e01d301d",
+          "name": "Martinique Seismic and Volcano Observatory Network, MQ_1935,https://doi.org/10.18715/martinique.mq"
+        },
+        {
+          "id": "d833b80a-58e2-4539-bcfd-0611e07e8418",
+          "name": "Mayotte 2018,SISMAYOTTE seismic monitoring of seismic sequence on land and offshore\t,1T_2018,https://doi.org/10.15778/resif.1t2018"
+        },
+        {
+          "id": "365c78bc-c211-4cd3-ba3d-2c8a325f7120",
+          "name": "Mexico 2009,GGAP Guerrero Gap temporary array\t,Y9_2009,https://doi.org/10.15778/RESIF.Y92009"
+        },
+        {
+          "id": "43c3b9d1-1a50-4943-8e86-57ee40f9605a",
+          "name": "Mongolia Russia 2003,MOBAL Mongolia-Baikal temporary transect\t,YT_2003,https://doi.org/10.15778/RESIF.YT2003"
+        },
+        {
+          "id": "3b2edadc-861b-440b-9a1b-dbcac5ceb97e",
+          "name": "Nepal 2014,HiK-NET Nepal temporary experiment\t,ZO_2014,https://doi.org/10.15778/RESIF.ZO2014"
+        },
+        {
+          "id": "64aae990-971a-493c-b339-c3601c9e63de",
+          "name": "New-Caledonia broadband and accelerometric permanent networks, ND_2010,https://doi.org/10.7914/SN/ND"
+        },
+        {
+          "id": "95101fff-251d-40e8-86c2-f9399fb63468",
+          "name": "Norway 2015,SAFE_CO2 Norsard Svalbard temporary experiment, Y2_2014,https://doi.org/10.15778/RESIF.Y22014"
+        },
+        {
+          "id": "344f054a-6563-484f-8cf8-a7d489df0af3",
+          "name": "Norway 2019,ICEWAVEGUIDE dense nodal seismic array temporary experiment on the frozen Laguna of Vallunden\t,XG_2019,https://doi.org/10.15778/RESIF.XG2019"
+        },
+        {
+          "id": "602d1501-a320-4b3a-a676-11360c00162a",
+          "name": "OMIV French Landslide Observatory, MT_2006, https://doi.org/10.15778/RESIF.MT"
+        },
+        {
+          "id": "ea5f9bc0-7100-4b46-9a09-a05b56704b29",
+          "name": "Piton de la Fournaise Volcano Observatory Network (Reunion Island), PF_1980,https://doi.org/10.18715/reunion.PF"
+        },
+        {
+          "id": "1aba4357-001f-4b25-b5f9-d0c358a20f84",
+          "name": "RESIF and other Broad-band and accelerometric permanent networks in metropolitan France, FR_1962,https://doi.org/10.15778/RESIF.FR"
+        },
+        {
+          "id": "6ad01808-e53e-499f-a77b-726c4561e378",
+          "name": "RESIF-RAP Accelerometric permanent network, RA_1995,https://doi.org/10.15778/RESIF.RA"
+        },
+        {
+          "id": "176aed4c-fc7f-4eaa-847b-b7ac36329047",
+          "name": "Tanzania 2007,TANZANIA BB temporary experiment\t,ZS_2007,https://doi.org/10.15778/RESIF.ZS2007"
+        },
+        {
+          "id": "c5771fe9-35ce-4c0d-a45e-bb85a1f9ef12",
+          "name": "Terres australes et antarctiques françaises 2011,RHUMRUM temporary experiment ,YV_2011,https://doi.org/10.15778/RESIF.YV2011"
+        },
+        {
+          "id": "addfdbc2-49bd-4c56-8b96-67ad3e978839",
+          "name": "Turkey 2007,SIMBAAD Aegean-Anatolia temporary experiment - eastern transect\t,YI_2008,https://doi.org/10.15778/RESIF.YI2008"
+        },
+        {
+          "id": "c3e0fca2-b3e4-4a72-837a-b3a3b18a5f4c",
+          "name": "Turkey 2007,SIMBAAD Aegean-Anatolia temporary experiment - western transect, XW_2007,https://doi.org/10.15778/RESIF.XW2007"
+        },
+        {
+          "id": "8d75ff94-5750-4ef8-af1c-8558f15b6851",
+          "name": "Vanuatu 2008,ARC-VANUATU (subduction) temporary experiment, 3A_2008,https://doi.org/10.15778/RESIF.3A2008"
+        },
+        {
+          "id": "6921dee9-af6d-4a15-bfb1-899fde13f8b9",
+          "name": "Vanuatu 2008,ARC-VANUATU (volcanoes) temporary experiment\t,ZO_2008,https://doi.org/10.15778/RESIF.ZO2008"
+        },
+        {
+          "id": "090c5392-60eb-462c-9366-580e43050fe5",
+          "name": "West Indies French Seismic Network, WI_2008,https://doi.org/10.18715/antilles.WI"
+        },
+        {
+          "id": "51cbc1f8-9c02-4ccb-95d1-9e5186234f36",
+          "name": "Yemen Ethiopia Eritrea 2009,DORA Afar temporary experiment, 7C_2009,https://doi.org/10.15778/RESIF.7C2009"
+        },
+        {
+          "id": "25e01e57-ccba-44ee-b77f-58b2b7e09f89",
+          "name": "EIDA node SED-ETHZ (Swiss Seismological Service at ETH Zürich)"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "de1d9215-68e2-46a7-aa40-33dbbf402a87",
+          "name": "CERN Seismic Network,C4,https://doi.org/10.12686/sed/networks/c4"
+        },
+        {
+          "id": "8c8a4d6f-6ce3-4520-b92c-b5c376cf6932",
+          "name": "COSEISMIQ - Control SEISmicity and Manage Induced earthQuakes,2C_2018,https://doi.org/10.12686/sed/networks/2c"
+        },
+        {
+          "id": "36ccae54-3efc-486b-a4f8-6d7d1e7d88b4",
+          "name": "Eastern Alpine Seismic Investigation (EASI) - AlpArray Complementary Experiment,XT_2014,https://doi.org/10.12686/alparray/xt_2014"
+        },
+        {
+          "id": "e1a8bf4c-6801-45a0-a025-f789b8f503b7",
+          "name": "GANSSER broadband seismic experiment in Bhutan,XA_2013,https://doi.org/10.12686/sed/networks/xa"
+        },
+        {
+          "id": "1c8cc4cb-20a9-456b-939e-032fc49c5e74",
+          "name": "National Seismic Networks of Switzerland,CH,https://doi.org/10.12686/sed/networks/ch"
+        },
+        {
+          "id": "0b1b2b15-3af8-4a97-bfef-2dbc2401676e",
+          "name": "Orka Natturunnar,OR_2016,https://doi.org/10.7914/SN/OR"
+        },
+        {
+          "id": "ea956ef6-784b-48df-b2b4-85417c879f5f",
+          "name": "Seismology at School Program,S,https://doi.org/10.7914/SN/S"
+        },
+        {
+          "id": "082bfd6b-8194-480b-957f-7f86d29de092",
+          "name": "Temporary Deployments associated with the DEEPEN project in the Hengill region, Iceland,YM_2021,https://doi.org/10.12686/sed/networks/ym"
+        },
+        {
+          "id": "da194e67-2bc7-450d-8630-c851b97a8a03",
+          "name": "Temporary deployments in Switzerland associated with aftershocks, sequences,8D,https://doi.org/10.12686/sed/networks/8d"
+        },
+        {
+          "id": "4333cb2c-c5ff-4dbf-82b4-26eeb32eb4d8",
+          "name": "Temporary deployments in Switzerland associated with glacier monitoring,4D,https://doi.org/10.12686/sed/networks/4d"
+        },
+        {
+          "id": "94c286e2-802f-4927-93bd-12ee8e57ba0c",
+          "name": "Temporary deployments on Greenland Ice-sheet Margin\t,XH_2011,https://doi.org/10.12686/sed/networks/xh"
+        },
+        {
+          "id": "d873258d-158c-4412-b1d4-93853ea51f60",
+          "name": "temporary deployments: Sion 2004-2006 ,ZP_2004,https://doi.org/10.12686/sed/networks/zp"
+        },
+        {
+          "id": "ce1da6a0-ef43-47f1-8810-1f2436a62162",
+          "name": "AlpArray Seismic Network (AASN) temporary component, Z3_2015,https://doi.org/10.12686/alparray/z3_2015"
+        },
+        {
+          "id": "de1d9215-68e2-46a7-aa40-33dbbf402a87",
+          "name": "CERN Seismic Network,C4,https://doi.org/10.12686/sed/networks/c4"
+        },
+        {
+          "id": "8c8a4d6f-6ce3-4520-b92c-b5c376cf6932",
+          "name": "COSEISMIQ - Control SEISmicity and Manage Induced earthQuakes,2C_2018,https://doi.org/10.12686/sed/networks/2c"
+        },
+        {
+          "id": "36ccae54-3efc-486b-a4f8-6d7d1e7d88b4",
+          "name": "Eastern Alpine Seismic Investigation (EASI) - AlpArray Complementary Experiment,XT_2014,https://doi.org/10.12686/alparray/xt_2014"
+        },
+        {
+          "id": "e1a8bf4c-6801-45a0-a025-f789b8f503b7",
+          "name": "GANSSER broadband seismic experiment in Bhutan,XA_2013,https://doi.org/10.12686/sed/networks/xa"
+        },
+        {
+          "id": "1c8cc4cb-20a9-456b-939e-032fc49c5e74",
+          "name": "National Seismic Networks of Switzerland,CH,https://doi.org/10.12686/sed/networks/ch"
+        },
+        {
+          "id": "0b1b2b15-3af8-4a97-bfef-2dbc2401676e",
+          "name": "Orka Natturunnar,OR_2016,https://doi.org/10.7914/SN/OR"
+        },
+        {
+          "id": "ea956ef6-784b-48df-b2b4-85417c879f5f",
+          "name": "Seismology at School Program,S,https://doi.org/10.7914/SN/S"
+        },
+        {
+          "id": "082bfd6b-8194-480b-957f-7f86d29de092",
+          "name": "Temporary Deployments associated with the DEEPEN project in the Hengill region, Iceland,YM_2021,https://doi.org/10.12686/sed/networks/ym"
+        },
+        {
+          "id": "da194e67-2bc7-450d-8630-c851b97a8a03",
+          "name": "Temporary deployments in Switzerland associated with aftershocks, sequences,8D,https://doi.org/10.12686/sed/networks/8d"
+        },
+        {
+          "id": "4333cb2c-c5ff-4dbf-82b4-26eeb32eb4d8",
+          "name": "Temporary deployments in Switzerland associated with glacier monitoring,4D,https://doi.org/10.12686/sed/networks/4d"
+        },
+        {
+          "id": "94c286e2-802f-4927-93bd-12ee8e57ba0c",
+          "name": "Temporary deployments on Greenland Ice-sheet Margin\t,XH_2011,https://doi.org/10.12686/sed/networks/xh"
+        },
+        {
+          "id": "d873258d-158c-4412-b1d4-93853ea51f60",
+          "name": "temporary deployments: Sion 2004-2006 ,ZP_2004,https://doi.org/10.12686/sed/networks/zp"
+        },
+        {
+          "id": "a0c93186-f624-43d4-a118-f7e1a9e50c4a",
+          "name": "EIDA node UiB - NORSAR (University of Bergen & NORSAR, Norway)"
+        },
+        {
+          "id": "430908c7-1e20-4e21-9761-c61486d23128",
+          "name": "1L (2017-2018): Loki Castle Hydrothermal in-situ Experiments and Seismology Surveys,1L_2017,https://doi.org/10.7914/SN/1L_2017"
+        },
+        {
+          "id": "0d831633-9862-4fb7-a663-0e6e60d59d24",
+          "name": "Equinor network is designed for passive monitoring of the CO2 storage sites in offshore Norway (https://doi.org/10.7914/SN/QE),QE,https://doi.org/10.7914/SN/QE"
+        },
+        {
+          "id": "c903a27f-178c-48b7-8be8-8666a0691cfb",
+          "name": "Global Seismograph Network (GSN - IRIS/USGS),IU,https://doi.org/10.7914/SN/IU"
+        },
+        {
+          "id": "c9d9720f-5083-4fa5-bf17-5efa7ee7eb51",
+          "name": "INTAROS temporary Ocean Bottom Seismometers (OBS) on northern Mid Atlantic Ridge (INTOBS),5F_2018,https://doi.org/10.7914/SN/5F_2018"
+        },
+        {
+          "id": "cbc3d747-dd30-4574-bfb6-0f8a1c2527f2",
+          "name": "Kongsberg experiment (2018-2021), 3R_2018,https://doi.org/10.7914/SN/3R_2018"
+        },
+        {
+          "id": "23416413-fdd7-434d-a4db-e8d180a368b8",
+          "name": "NORSAR,NO,https://doi.org/10.21348/d.no.0001"
+        },
+        {
+          "id": "399c65a6-e832-41f6-a310-dc240a03f47d",
+          "name": "UIB,NS,https://doi.org/10.7914/SN/NS"
+        },
+        {
+          "id": "430908c7-1e20-4e21-9761-c61486d23128",
+          "name": "1L (2017-2018): Loki Castle Hydrothermal in-situ Experiments and Seismology Surveys,1L_2017,https://doi.org/10.7914/SN/1L_2017"
+        },
+        {
+          "id": "0d831633-9862-4fb7-a663-0e6e60d59d24",
+          "name": "Equinor network is designed for passive monitoring of the CO2 storage sites in offshore Norway (https://doi.org/10.7914/SN/QE),QE,https://doi.org/10.7914/SN/QE"
+        },
+        {
+          "id": "c903a27f-178c-48b7-8be8-8666a0691cfb",
+          "name": "Global Seismograph Network (GSN - IRIS/USGS),IU,https://doi.org/10.7914/SN/IU"
+        },
+        {
+          "id": "c9d9720f-5083-4fa5-bf17-5efa7ee7eb51",
+          "name": "INTAROS temporary Ocean Bottom Seismometers (OBS) on northern Mid Atlantic Ridge (INTOBS),5F_2018,https://doi.org/10.7914/SN/5F_2018"
+        },
+        {
+          "id": "cbc3d747-dd30-4574-bfb6-0f8a1c2527f2",
+          "name": "Kongsberg experiment (2018-2021), 3R_2018,https://doi.org/10.7914/SN/3R_2018"
+        },
+        {
+          "id": "23416413-fdd7-434d-a4db-e8d180a368b8",
+          "name": "NORSAR,NO,https://doi.org/10.21348/d.no.0001"
+        },
+        {
+          "id": "399c65a6-e832-41f6-a310-dc240a03f47d",
+          "name": "UIB,NS,https://doi.org/10.7914/SN/NS"
+        },
+        {
+          "id": "0f2aae48-cbfb-434e-b01a-b9fcf1d36422",
+          "name": "GFZ - Deutsches GeoForschungsZentrum, Helmholtz-Zentrum Potsdam"
+        },
+        {
+          "id": "cb227373-4e9a-4024-91c0-dba22fc20cd1",
+          "name": "INGV - Istituto Nazionale di Geofisica e Vulcanologia"
+        },
+        {
+          "id": "19257fe6-8b63-4251-b93b-251e3b276337",
+          "name": "Italian Strong Motion Network, IT, https://doi.org/10.7914/SN/IT"
+        },
+        {
+          "id": "d6188d7b-3b8c-4ad3-b961-4d647bd65fc6",
+          "name": "KNMI - Koninklijk Nederlands Meteorologisch Instituut"
+        },
+        {
+          "id": "c83816d4-8989-48ba-90cd-d18e28b50b0b",
+          "name": "National Strong Motion Network of Turkey"
+        },
+        {
+          "id": "035a6459-c47c-4ca8-9635-d2ce843598f9",
+          "name": "Reti accelerometriche centri storici italiani, RR, https://doi.org/10.7914/SN/RR"
+        },
+        {
+          "id": "e0b14b69-a887-41e9-ae8a-e218c3048159",
+          "name": "SED - Swiss Seismological Service at the Federal Institute of Technology Zurich"
+        }
+      ],
+      "name": "organisations"
+    },
+    {
+      "children": [
+        {
+          "id": "22cb12e8-c741-43dc-80fe-c3ab4ae325b2",
+          "name": "Waveform and peak-motion data"
+        },
+        {
+          "id": "dbbfb2c3-8260-453f-8c65-81c62b328cd1",
+          "name": "Strong motion parameters"
+        },
+        {
+          "id": "a34ee3ce-d3a3-49af-a9b4-f784f6daca63",
+          "name": "Quality metrics distributed by EIDA (individual endpoints)"
+        },
+        {
+          "id": "cf873d5b-06dc-4d0a-9284-dd5873775cd6",
+          "name": "Waveform metadata"
+        },
+        {
+          "id": "ad4cedae-6498-4dcc-98da-e4923ceeb2f0",
+          "name": "Waveform parameters"
+        },
+        {
+          "id": "7de84a59-a39b-4914-9e9b-a02a7402456e",
+          "name": "Seismic waveforms distributed by EIDA (individual endpoints)"
+        },
+        {
+          "id": "c081d062-1a04-41c0-8164-53225bf9b4ba",
+          "name": "Waveform metrics"
+        },
+        {
+          "id": "8d4d114c-e64d-4144-ae6a-2c551326d667",
+          "name": "Seismic metadata distributed by EIDA (individual endpoints)"
+        }
+      ],
+      "name": "sciencedomains"
+    },
+    {
+      "name": "servicetypes"
+    }
+  ],
+  "results": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "ddss": "category:wavefmparameters",
+                "distributions": [
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/xml",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/424bba1d-df59-477f-b04e-7e4d456582b2?format=application/xml",
+                        "label": "APPLICATION/XML",
+                        "originalFormat": "application/xml",
+                        "type": "ORIGINAL"
+                      }
+                    ],
+                    "description": "This Web-Service provides machine-friendly access to ShakeMap input files obtaied from data and metadata included in the Engineering Strong Motion Database (https://esm-db.eu)",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/424bba1d-df59-477f-b04e-7e4d456582b2",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/424bba1d-df59-477f-b04e-7e4d456582b2?extended=true",
+                    "id": "424bba1d-df59-477f-b04e-7e4d456582b2",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "ESM peak-motion and earthquake information (USGS ShakeMap formats)",
+                    "uid": "http://www.epos-eu.org/epos-dcat-ap/Seismology/SeismicHazardproducts/ShakeMapInput/Dataset/001/Distribution/001"
+                  },
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/xml",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/0e0be7b3-8711-41d6-a554-7dca68a96f69?format=application/xml",
+                        "label": "APPLICATION/XML",
+                        "originalFormat": "application/xml",
+                        "type": "ORIGINAL"
+                      }
+                    ],
+                    "description": "RRSM ShakeMap webservice to retrieve event information and event-based peak-motion information formatted according to the USGS ShakeMap style (v3.5).",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/0e0be7b3-8711-41d6-a554-7dca68a96f69",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/0e0be7b3-8711-41d6-a554-7dca68a96f69?extended=true",
+                    "id": "0e0be7b3-8711-41d6-a554-7dca68a96f69",
+                    "status": 1,
+                    "statusTimestamp": "2024-08-06T04:54:27Z",
+                    "title": "RRSM event and peak-motion information (USGS ShakeMap format)",
+                    "uid": "https://www.epos-eu.org/epos-dcat-ap/Seismology/Dataset/048/Distribution/048"
+                  }
+                ],
+                "name": "Waveform parameters"
+              },
+              {
+                "children": [
+                  {
+                    "ddss": "category:seismicwavefmsdistributedeidadividualendpots",
+                    "distributions": [
+                      {
+                        "availableFormats": [
+                          {
+                            "format": "sac",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/88c6791f-02a2-4f2f-b040-614322bf9285?format=sac",
+                            "label": "SAC",
+                            "originalFormat": "sac",
+                            "type": "ORIGINAL"
+                          },
+                          {
+                            "format": "ascii",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/88c6791f-02a2-4f2f-b040-614322bf9285?format=ascii",
+                            "label": "ASCII",
+                            "originalFormat": "ascii",
+                            "type": "ORIGINAL"
+                          },
+                          {
+                            "format": "hdf5",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/88c6791f-02a2-4f2f-b040-614322bf9285?format=hdf5",
+                            "label": "HDF5",
+                            "originalFormat": "hdf5",
+                            "type": "ORIGINAL"
+                          },
+                          {
+                            "format": "mseed",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/88c6791f-02a2-4f2f-b040-614322bf9285?format=mseed",
+                            "label": "MSEED",
+                            "originalFormat": "mseed",
+                            "type": "ORIGINAL"
+                          }
+                        ],
+                        "description": "The ESM Event-Data Web-Service provides machine-friendly access to event-based waveforms and response spectra included in the ESM Database (https://esm-db.eu)",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/88c6791f-02a2-4f2f-b040-614322bf9285",
+                        "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/88c6791f-02a2-4f2f-b040-614322bf9285?extended=true",
+                        "id": "88c6791f-02a2-4f2f-b040-614322bf9285",
+                        "status": 2,
+                        "statusTimestamp": "2024-08-06T09:22:40Z",
+                        "title": "ESM Event-Data Web-Service (ASDF, MINISEED, SAC, and ASCII formats)",
+                        "uid": "http://www.epos-eu.org/epos-dcat-ap/Seismology/SeismicWaveform/Eventdata/Dataset/001/Distribution/001"
+                      },
+                      {
+                        "availableFormats": [
+                          {
+                            "format": "application/vnd.fdsn.mseed",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/518e9629-ee60-4081-9676-c2d26b953490?format=application/vnd.fdsn.mseed",
+                            "label": "APPLICATION/VND.FDSN.MSEED",
+                            "originalFormat": "application/vnd.fdsn.mseed",
+                            "type": "ORIGINAL"
+                          }
+                        ],
+                        "description": "Access to seismic waveforms (miniSEED format) distributed by GFZ (German Research Centre for Geosciences).",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/518e9629-ee60-4081-9676-c2d26b953490",
+                        "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/518e9629-ee60-4081-9676-c2d26b953490?extended=true",
+                        "id": "518e9629-ee60-4081-9676-c2d26b953490",
+                        "status": 2,
+                        "statusTimestamp": "2024-08-06T09:49:41Z",
+                        "title": "Seismic waveforms distributed by GFZ (German Research Centre for Geosciences)",
+                        "uid": "https://www.epos-eu.org/epos-dcat-ap/Seismology/Dataset/001/Distribution/001/GFZ"
+                      }
+                    ],
+                    "name": "Seismic waveforms distributed by EIDA (individual endpoints)"
+                  }
+                ],
+                "ddss": "category:wavefmpeakmotidata",
+                "distributions": [
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/vnd.fdsn.mseed",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/8dc30393-4b50-435b-9a73-26422b4752a5?format=application/vnd.fdsn.mseed",
+                        "label": "APPLICATION/VND.FDSN.MSEED",
+                        "originalFormat": "application/vnd.fdsn.mseed",
+                        "type": "ORIGINAL"
+                      }
+                    ],
+                    "description": "Access to seismic waveforms (miniSEED format) ditributed by EIDA (federated access).",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/8dc30393-4b50-435b-9a73-26422b4752a5",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/8dc30393-4b50-435b-9a73-26422b4752a5?extended=true",
+                    "id": "8dc30393-4b50-435b-9a73-26422b4752a5",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "Seismic waveforms distributed by EIDA (federated access)",
+                    "uid": "https://www.epos-eu.org/epos-dcat-ap/Seismology/Dataset/005/Distribution/005/FEDERATOR"
+                  }
+                ],
+                "name": "Waveform and peak-motion data"
+              },
+              {
+                "children": [
+                  {
+                    "ddss": "category:seismicmetadatadistributedeidadividualendpots",
+                    "distributions": [
+                      {
+                        "availableFormats": [
+                          {
+                            "format": "application/xml",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/4176b7be-c44d-4c49-b63d-9dd8959aa24f?format=application/xml",
+                            "label": "APPLICATION/XML",
+                            "originalFormat": "application/xml",
+                            "type": "ORIGINAL"
+                          },
+                          {
+                            "format": "application/epos.geo+json",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/4176b7be-c44d-4c49-b63d-9dd8959aa24f?format=application/epos.geo+json",
+                            "label": "GEOJSON",
+                            "originalFormat": "application/epos.geo+json",
+                            "type": "CONVERTED"
+                          }
+                        ],
+                        "description": "Access to seismic station metadata (XML and GEOJSON formats) distributed by GFZ (German Research Centre for Geosciences).",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/4176b7be-c44d-4c49-b63d-9dd8959aa24f",
+                        "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/4176b7be-c44d-4c49-b63d-9dd8959aa24f?extended=true",
+                        "id": "4176b7be-c44d-4c49-b63d-9dd8959aa24f",
+                        "status": 1,
+                        "statusTimestamp": "2024-08-06T04:54:27Z",
+                        "title": "Station metadata distributed by GFZ (German Research Centre for Geosciences)",
+                        "uid": "https://www.epos-eu.org/epos-dcat-ap/Seismology/Dataset/002/Distribution/002/GFZ"
+                      }
+                    ],
+                    "name": "Seismic metadata distributed by EIDA (individual endpoints)"
+                  }
+                ],
+                "ddss": "category:wavefmmetadata",
+                "distributions": [
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/xml",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/5b613d67-04bb-4c06-ab19-2b500ce27e2c?format=application/xml",
+                        "label": "APPLICATION/XML",
+                        "originalFormat": "application/xml",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "application/epos.geo+json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/5b613d67-04bb-4c06-ab19-2b500ce27e2c?format=application/epos.geo+json",
+                        "label": "GEOJSON",
+                        "originalFormat": "application/epos.geo+json",
+                        "type": "CONVERTED"
+                      }
+                    ],
+                    "description": "Access to seismic station metadata (XML and GEOJSON formats) distributed by EIDA (federated access).",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/5b613d67-04bb-4c06-ab19-2b500ce27e2c",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/5b613d67-04bb-4c06-ab19-2b500ce27e2c?extended=true",
+                    "id": "5b613d67-04bb-4c06-ab19-2b500ce27e2c",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "Station metadata distributed by EIDA (federated access)",
+                    "uid": "https://www.epos-eu.org/epos-dcat-ap/Seismology/Dataset/008/Distribution/008/FEDERATOR"
+                  }
+                ],
+                "name": "Waveform metadata"
+              },
+              {
+                "ddss": "category:strgmotiparameters",
+                "distributions": [
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "ZIP",
+                        "href": "45147ed1-b3f4-4e41-b56b-d1b7d01b4f3f",
+                        "label": "ZIP",
+                        "originalFormat": "ZIP",
+                        "type": "ORIGINAL"
+                      }
+                    ],
+                    "description": "This distribution (https://esm-db.eu/#/products/flat_file/) is a parametric table which contains metadata and intensity measures of manually processed waveforms recorded by accelerometers for magnitude (moment Mw, local ML or surface waves Ms) higher or equal than 4.0. It is encoded in a zip file contains 3 parametric tables in csv format separated by ';'. It covers the time interval 1960-2016 and is limited to the Pan-European region",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/3172a0f2-ffa6-40db-a96c-cb21a952ad8e",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/3172a0f2-ffa6-40db-a96c-cb21a952ad8e?extended=true",
+                    "id": "3172a0f2-ffa6-40db-a96c-cb21a952ad8e",
+                    "status": 0,
+                    "title": "Engineering Strong-Motion (ESM) Flatfile 2018",
+                    "uid": "http://www.epos-eu.org/epos-dcat-ap/Seismology/SeismologicalProducts/ESMFlatFile/Dataset/001/Distribution/001"
+                  }
+                ],
+                "name": "Strong motion parameters"
+              },
+              {
+                "children": [
+                  {
+                    "ddss": "category:qualitymetricsdistributedeidadividualendpots",
+                    "distributions": [
+                      {
+                        "availableFormats": [
+                          {
+                            "format": "application/json",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/d915f86b-7ae4-4f31-b837-a6fc3a836e87?format=application/json",
+                            "label": "APPLICATION/JSON",
+                            "originalFormat": "application/json",
+                            "type": "ORIGINAL"
+                          }
+                        ],
+                        "description": "Access to waveform quality and availability metrics (JSON format) distributed by GFZ (German Research Centre for Geosciences).",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/d915f86b-7ae4-4f31-b837-a6fc3a836e87",
+                        "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/d915f86b-7ae4-4f31-b837-a6fc3a836e87?extended=true",
+                        "id": "d915f86b-7ae4-4f31-b837-a6fc3a836e87",
+                        "status": 1,
+                        "statusTimestamp": "1970-01-01T12:00:00Z",
+                        "title": "Waveform quality and availability metrics distributed by GFZ (German Research Centre for Geosciences)",
+                        "uid": "https://www.epos-eu.org/epos-dcat-ap/Seismology/Dataset/003/Distribution/003/GFZ"
+                      },
+                      {
+                        "availableFormats": [
+                          {
+                            "format": "request",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/af302937-5e49-4a0f-bed1-181bba981eac?format=request",
+                            "label": "REQUEST",
+                            "originalFormat": "request",
+                            "type": "ORIGINAL"
+                          },
+                          {
+                            "format": "text",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/af302937-5e49-4a0f-bed1-181bba981eac?format=text",
+                            "label": "TEXT",
+                            "originalFormat": "text",
+                            "type": "ORIGINAL"
+                          },
+                          {
+                            "format": "geocsv",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/af302937-5e49-4a0f-bed1-181bba981eac?format=geocsv",
+                            "label": "GEOCSV",
+                            "originalFormat": "geocsv",
+                            "type": "ORIGINAL"
+                          }
+                        ],
+                        "description": "Access to waveform FDSNWS Availability metrics distributed by GFZ.",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/af302937-5e49-4a0f-bed1-181bba981eac",
+                        "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/af302937-5e49-4a0f-bed1-181bba981eac?extended=true",
+                        "id": "af302937-5e49-4a0f-bed1-181bba981eac",
+                        "status": 2,
+                        "statusTimestamp": "2024-08-06T09:56:01Z",
+                        "title": "Waveform availability metrics distributed by GFZ",
+                        "uid": "https://www.epos-eu.org/epos-dcat-ap/Seismology/Dataset/004/Distribution/004/GFZ"
+                      },
+                      {
+                        "availableFormats": [
+                          {
+                            "format": "geocsv",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/b9212dfd-f499-4086-9bc0-6154695fe4dc?format=geocsv",
+                            "label": "GEOCSV",
+                            "originalFormat": "geocsv",
+                            "type": "ORIGINAL"
+                          },
+                          {
+                            "format": "request",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/b9212dfd-f499-4086-9bc0-6154695fe4dc?format=request",
+                            "label": "REQUEST",
+                            "originalFormat": "request",
+                            "type": "ORIGINAL"
+                          },
+                          {
+                            "format": "text",
+                            "href": "https://www.ics-c.epos-eu.org/api/v1/execute/b9212dfd-f499-4086-9bc0-6154695fe4dc?format=text",
+                            "label": "TEXT",
+                            "originalFormat": "text",
+                            "type": "ORIGINAL"
+                          }
+                        ],
+                        "description": "Access to waveform FDSNWS Availability metrics distributed by the EIDA FEDERATOR.",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/b9212dfd-f499-4086-9bc0-6154695fe4dc",
+                        "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/b9212dfd-f499-4086-9bc0-6154695fe4dc?extended=true",
+                        "id": "b9212dfd-f499-4086-9bc0-6154695fe4dc",
+                        "status": 1,
+                        "statusTimestamp": "2024-08-06T04:54:27Z",
+                        "title": "Waveform availability metrics distributed by the EIDA FEDERATOR",
+                        "uid": "https://www.epos-eu.org/epos-dcat-ap/Seismology/Dataset/006/Distribution/006/FEDERATOR"
+                      }
+                    ],
+                    "name": "Quality metrics distributed by EIDA (individual endpoints)"
+                  }
+                ],
+                "ddss": "category:wavefmmetrics",
+                "distributions": [
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "application/json",
+                        "href": "https://www.ics-c.epos-eu.org/api/v1/execute/f093d047-00a1-4add-9a7e-6eb64436e8a3?format=application/json",
+                        "label": "APPLICATION/JSON",
+                        "originalFormat": "application/json",
+                        "type": "ORIGINAL"
+                      }
+                    ],
+                    "description": "Access to waveform quality and availability metrics (JSON format) distributed by EIDA (federated access). ",
+                    "href": "https://www.ics-c.epos-eu.org/api/v1/resources/details/f093d047-00a1-4add-9a7e-6eb64436e8a3",
+                    "hrefExtended": "https://www.ics-c.epos-eu.org/api/v1/resources/details/f093d047-00a1-4add-9a7e-6eb64436e8a3?extended=true",
+                    "id": "f093d047-00a1-4add-9a7e-6eb64436e8a3",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "Waveform quality and availability metrics distributed by EIDA (federated access)",
+                    "uid": "https://www.epos-eu.org/epos-dcat-ap/Seismology/Dataset/004/Distribution/004/FEDERATOR"
+                  }
+                ],
+                "name": "Waveform metrics"
+              }
+            ],
+            "ddss": "category:wavefmpeakmotiservices",
+            "name": "Waveform and peak-motion services"
+          }
+        ],
+        "code": "SEI",
+        "color": "#476f57",
+        "id": "1",
+        "imgUrl": "assets/img/logo/SEISM_logo.png",
+        "linkUrl": "https://www.epos-eu.org/tcs/seismology",
+        "name": "Seismology"
+      }
+    ],
+    "name": "domains"
+  }
+}

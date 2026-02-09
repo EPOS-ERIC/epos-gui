@@ -1,0 +1,436 @@
+{
+  "availableContactPoints": [
+    {
+      "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/sender/send-email?id=44e2eb20-694e-46d6-a2ea-580467eba79b&contactType=SERVICEPROVIDERS",
+      "type": "SERVICEPROVIDERS"
+    },
+    {
+      "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/sender/send-email?id=379409b0-c388-41d7-be3c-3688b8ca0208&contactType=DATAPROVIDERS",
+      "type": "DATAPROVIDERS"
+    },
+    {
+      "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/sender/send-email?id=2774cc18-1a66-41bf-8aff-bc78b0c92e8f&contactType=ALL",
+      "type": "ALL"
+    }
+  ],
+  "availableFormats": [
+    {
+      "format": "application/json",
+      "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/2774cc18-1a66-41bf-8aff-bc78b0c92e8f?format=application/json",
+      "label": "APPLICATION/JSON",
+      "originalFormat": "application/json",
+      "type": "ORIGINAL"
+    },
+    {
+      "format": "covjson",
+      "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/2774cc18-1a66-41bf-8aff-bc78b0c92e8f?format=covjson",
+      "label": "COVJSON",
+      "originalFormat": "covjson",
+      "type": "CONVERTED"
+    }
+  ],
+  "categories": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "ddss": "category:vpvsvelocityratio",
+                    "name": "Vp/Vs - velocity ratio"
+                  }
+                ],
+                "ddss": "category:seismologicalproducts",
+                "name": "Seismological products"
+              }
+            ],
+            "ddss": "category:seismologicaldata",
+            "name": "Seismological Data"
+          }
+        ],
+        "code": "NFO",
+        "color": "#5e3160",
+        "id": "2",
+        "imgUrl": "assets/img/logo/NFO_logo.png",
+        "linkUrl": "https://www.epos-eu.org/tcs/near-fault-observatories",
+        "name": "Near Fault Observatories"
+      }
+    ],
+    "name": "domains"
+  },
+  "dataProvider": [
+    {
+      "country": "TR",
+      "dataProviderLegalName": "KOERI - Kandilli Observatory and Earthquake Research Institute",
+      "dataProviderUrl": "http://koeri.boun.edu.tr/",
+      "instanceid": "6824b1c3-5e25-4509-895f-7a9ca67cf8fc",
+      "metaid": "6824b1c3-5e25-4509-895f-7a9ca67cf8fc",
+      "uid": "6824b1c3-5e25-4509-895f-7a9ca67cf8fc"
+    }
+  ],
+  "description": "This distribution provides access to Vp/Vs time series derived from earthquakes location. Datasets are encoded in JSON format.\u00a0Data cover the time period 2017-today and they are limited to the Marmara (Turkey) Near Fault Observatory.",
+  "downloadURL": "",
+  "endpoint": "https://toros.boun.edu.tr/nfo_marsite/vpvs/query{?stacode, mintime, maxtime, minlat, maxlat, minlon, maxlon, mineqdep, maxeqdep, minnp, minns, maxpw, maxsw, minps, maxgap, midi, maxvpvspw, maxvpvssw, maxherr, maxverr}",
+  "frequencyUpdate": "http://purl.org/cld/freq/irregular",
+  "qualityAssurance": "https://fridge.ingv.it/docs/API_prototype_documentation_NFO_QA.pdf",
+  "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/2774cc18-1a66-41bf-8aff-bc78b0c92e8f",
+  "hrefExtended": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/2774cc18-1a66-41bf-8aff-bc78b0c92e8f?extended=true",
+  "id": "2774cc18-1a66-41bf-8aff-bc78b0c92e8f",
+  "internalID": [
+    "WP09-DDSS-009"
+  ],
+  "keywords": [
+    "fridge",
+    "near fault observatories",
+    "seismology",
+    "marmara",
+    "earthquake",
+    "koeri",
+    "marmara near fault observatory",
+    "rocks",
+    "nfo",
+    "seismic waves propagation",
+    "event",
+    "fluids",
+    "vp/vs ratio",
+    "seismicity"
+  ],
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "operationid": "https://www.epos-eu.org/epos-dcat-ap/NearFaultObservatory/KOERI/VPVS/WebService/001/Operation/001",
+  "scienceDomain": [
+    "Vp/Vs - velocity ratio"
+  ],
+  "serviceDescription": "This web service provides access to Vp/Vs (P-wave velocities vs S-wave velocities ratio) time series derived from earthquakes location. It is implemented with Tornado (Python web framework).",
+  "serviceDocumentation": "https://fridge.ingv.it/docs/API_prototype_documentation_NFO_VpVs.pdf",
+  "serviceEndpoint": "https://toros.boun.edu.tr/nfo_marsite/vpvs/query",
+  "serviceName": "Marmara Vp/Vs",
+  "serviceParameters": [
+    {
+      "defaultValue": "4",
+      "label": "Number of P and S couples per earthquake",
+      "name": "minps",
+      "required": true,
+      "type": "integer"
+    },
+    {
+      "Enum": [
+        "OSMT",
+        "YKBL",
+        "KUMB",
+        "ORLT",
+        "COMU",
+        "SIMA",
+        "LAFA",
+        "ENZZ",
+        "CTKS",
+        "MDNY",
+        "KCTX",
+        "BOTS",
+        "KAVV",
+        "ADVT",
+        "TUZL",
+        "BGKT",
+        "ESKY",
+        "EZNE",
+        "GONE",
+        "TVSB",
+        "CANM",
+        "BUYA",
+        "KLYT",
+        "GELI",
+        "ISK",
+        "DST",
+        "HRTX",
+        "YENI",
+        "SRCK",
+        "ALT",
+        "RKY",
+        "SUSR",
+        "CRLT",
+        "BALB",
+        "SHAP",
+        "UVEZ",
+        "MAEG",
+        "HYBA",
+        "BOZC",
+        "GEML",
+        "GEMT",
+        "GPNR",
+        "YLV",
+        "KOUK",
+        "CAVI",
+        "YLVH",
+        "GUZE",
+        "TKR",
+        "CTYL",
+        "SILT",
+        "BRGA",
+        "GAZK",
+        "SOMA",
+        "AVCI",
+        "SINB",
+        "SLVT",
+        "SAUV",
+        "EZN",
+        "YAYO",
+        "EDRB",
+        "KRBG",
+        "EDC",
+        "ENEZ",
+        "GPA",
+        "GEDZ",
+        "ARMT",
+        "ERIK",
+        "BIGA",
+        "MRMT",
+        "IZI",
+        "HVHR",
+        "DKL",
+        "LAP",
+        "UKOP",
+        "GULT",
+        "LAPK",
+        "SMAA"
+      ],
+      "defaultValue": "ADVT",
+      "label": "Station code",
+      "name": "stacode",
+      "required": true,
+      "type": "string"
+    },
+    {
+      "defaultValue": "300",
+      "label": "Maximum allowed formal horizontal error in earthquake location",
+      "maxValue": "40000.00",
+      "minValue": "0.00",
+      "name": "maxherr",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "200",
+      "label": "Maximum allowed formal vertical error in earthquake location",
+      "maxValue": "6378.00",
+      "minValue": "0.00",
+      "name": "maxverr",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "25.0",
+      "label": "Maximum Earhquake Depth",
+      "maxValue": "100",
+      "minValue": "-1",
+      "name": "maxeqdep",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "3",
+      "label": "Maximum quality weight allowed for a p-wave reading",
+      "maxValue": "4",
+      "minValue": "0",
+      "name": "maxvpvspw",
+      "required": false,
+      "type": "integer"
+    },
+    {
+      "defaultValue": "4",
+      "label": "P-phase onset Hypoinverse standard quality weight",
+      "maxValue": "4",
+      "name": "maxpw",
+      "required": true,
+      "type": "integer"
+    },
+    {
+      "defaultValue": "2023-04-01T00:00:00.000Z",
+      "label": "Maximum Time",
+      "minValue": "2017-01-01T00:00:00.000Z",
+      "name": "maxtime",
+      "property": "schema:endDate",
+      "required": true,
+      "type": "dateTime",
+      "valuePattern": "YYYY-MM-DDThh:mm:ss.SSSZ"
+    },
+    {
+      "defaultValue": "4",
+      "label": "S-phase onset Hypoinverse standard quality weight",
+      "maxValue": "4",
+      "name": "maxsw",
+      "required": true,
+      "type": "integer"
+    },
+    {
+      "defaultValue": "70",
+      "label": "Horizontal distance of the closest station from a earthquake",
+      "maxValue": "40000.00",
+      "minValue": "0.00",
+      "name": "midi",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "31.0",
+      "label": "Maximum Longitude",
+      "maxValue": "90",
+      "minValue": "-90",
+      "name": "maxlon",
+      "property": "epos:easternmostLongitude",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "0.4",
+      "label": "Minimum Earthquake Depth",
+      "maxValue": "100",
+      "minValue": "-1",
+      "name": "mineqdep",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "3",
+      "label": "Number of s-waves onset observations",
+      "name": "minns",
+      "required": true,
+      "type": "integer"
+    },
+    {
+      "defaultValue": "26.0",
+      "label": "Minimum Longitude",
+      "maxValue": "90",
+      "minValue": "-90",
+      "name": "minlon",
+      "property": "epos:westernmostLongitude",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "39.0",
+      "label": "Minimum Latitude",
+      "maxValue": "90",
+      "minValue": "-90",
+      "name": "minlat",
+      "property": "epos:southernmostLatitude",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "42.0",
+      "label": "Maximum Latitude",
+      "maxValue": "90",
+      "minValue": "-90",
+      "name": "maxlat",
+      "property": "epos:northernmostLatitude",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "150",
+      "label": "Degrees of azimuthal stations distribution gap per earthquake",
+      "maxValue": "360",
+      "name": "maxgap",
+      "required": true,
+      "type": "integer"
+    },
+    {
+      "defaultValue": "3",
+      "label": "Maximum quality weight allowed for a s-wave reading",
+      "maxValue": "4",
+      "minValue": "0",
+      "name": "maxvpvssw",
+      "required": false,
+      "type": "integer"
+    },
+    {
+      "defaultValue": "2",
+      "label": "Number of p-waves onset observations",
+      "name": "minnp",
+      "required": true,
+      "type": "integer"
+    },
+    {
+      "defaultValue": "2017-01-01T00:00:00.000Z",
+      "label": "Minimum Time",
+      "minValue": "2017-01-01T00:00:00.000Z",
+      "name": "mintime",
+      "property": "schema:startDate",
+      "required": true,
+      "type": "dateTime",
+      "valuePattern": "YYYY-MM-DDThh:mm:ss.SSSZ"
+    }
+  ],
+  "serviceProvider": {
+    "country": "TR",
+    "dataProviderLegalName": "KOERI - Kandilli Observatory and Earthquake Research Institute",
+    "dataProviderUrl": "http://koeri.boun.edu.tr/",
+    "instanceid": "6824b1c3-5e25-4509-895f-7a9ca67cf8fc",
+    "metaid": "6824b1c3-5e25-4509-895f-7a9ca67cf8fc",
+    "uid": "6824b1c3-5e25-4509-895f-7a9ca67cf8fc"
+  },
+  "serviceSpatial": {
+    "paths": [
+      [
+        [
+          26.0,
+          42.0
+        ],
+        [
+          31.0,
+          42.0
+        ],
+        [
+          31.0,
+          39.0
+        ],
+        [
+          26.0,
+          39.0
+        ],
+        [
+          26.0,
+          42.0
+        ]
+      ]
+    ],
+    "wkid": 4326
+  },
+  "serviceTemporalCoverage": {
+    "startDate": "2017-01-01T00:00:00Z"
+  },
+  "spatial": {
+    "paths": [
+      [
+        [
+          26.0,
+          42.0
+        ],
+        [
+          31.0,
+          42.0
+        ],
+        [
+          31.0,
+          39.0
+        ],
+        [
+          26.0,
+          39.0
+        ],
+        [
+          26.0,
+          42.0
+        ]
+      ]
+    ],
+    "wkid": 4326
+  },
+  "temporalCoverage": {
+    "startDate": "2017-01-01T00:00:00Z"
+  },
+  "title": "Marmara Vp/Vs",
+  "type": "WEB_SERVICE",
+  "uid": "https://www.epos-eu.org/epos-dcat-ap/NearFaultObservatory/KOERI/VPVS/Distribution/001"
+}

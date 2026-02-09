@@ -1,0 +1,98 @@
+<app-base-dialog [data]="data" [title]="title" class="content-data" data-cy="data-provider-filter-dialog">
+  <ng-container class="content" id="contentData">
+    <div class="contentWrapper">
+      <div class="filter">
+        <div class="top nice-scrollbar">
+          <div class="alphabet">
+            <ul>
+              <li style="margin-right: 30px" (click)="activateLetter('selected')" [ngClass]="{ danger: activeLetter === 'selected' }" data-cy="data-provider-filter-dialog-selected">Selected</li>
+              <li (click)="activateLetter('')" [ngClass]="{ danger: activeLetter === '' }" data-cy="data-provider-filter-dialog-all">ALL</li>
+              <li
+                *ngFor="let letter of alphabetList"
+                (click)="alphabetCheck.includes(letter) ? activateLetter(letter) : false"
+                [ngClass]="{ danger: letter === activeLetter, disabled: !alphabetCheck.includes(letter) }"
+                data-cy="data-provider-filter-dialog-alphabet-letter">
+                {{ letter }}
+              </li>
+            </ul>
+          </div>
+          <div class="freetext">
+            <mat-form-field *ngIf="!showOnlySelected">
+              <mat-label>Free text search</mat-label>
+              <input matInput #freetext [formControl]="freeTextFormControl" placeholder="Free text search" aria-name="Name" data-cy="data-provider-filter-dialog-text-search"/>
+            </mat-form-field>
+          </div>
+          <div class="country" *ngIf="!showOnlySelected">
+            <app-country-select (countrySelected)="countrySelection($event)" data-cy="data-provider-filter-dialog-country-filter"></app-country-select>
+          </div>
+        </div>
+        <div class="bottom" *ngIf="showOnlySelected === false">
+          Found
+          <strong>{{ dataProviderCounter }}{{ filters.country || filters.letter || filters.text ? '/' + dataProviderCounterTotal : '' }}</strong>
+          Data and Service Providers
+          {{ filters.country || filters.letter || filters.text ? ' (filtered)' : '' }}
+        </div>
+      </div>
+      <!-- selected results-->
+      <div class="result nice-scrollbar" *ngIf="showOnlySelected === true">
+        <div class="block">
+          <span class="title"></span>
+          <ul class="listProviders">
+            <li *ngIf="dataProviderListSelected.length > 1">
+              <mat-checkbox [checked]="true" (change)="toggleAllSelected($event.checked)">
+                Deselect all
+                <strong>{{ dataProviderListSelected.length }}</strong>
+                Data and Service Providers
+              </mat-checkbox>
+            </li>
+          </ul>
+          <div class="block">
+            <ul class="listProviders" style="margin-left: 20px">
+              <li *ngFor="let obj of dataProviderListSelected">
+                <mat-checkbox [(ngModel)]="obj.isSelected" [checked]="dataProvidersSelectedInput.includes(obj.getIdentifier())" (click)="$event.stopPropagation()" data-cy="data-provider-filter-dialog-selected-item">
+                  {{ obj.getName() }}
+                </mat-checkbox>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- all results-->
+      <div class="result nice-scrollbar" *ngIf="showOnlySelected === false" data-cy="data-provider-filter-dialog-result">
+        <ng-container *ngIf="spinner">
+          <mat-spinner></mat-spinner>
+        </ng-container>
+        <ng-container *ngIf="!spinner">
+          <ul class="listProviders">
+            <li *ngIf="(filters.country || filters.letter || filters.text) && dataProviderCounter > 0">
+              <mat-checkbox (change)="toggleAllFiltered($event.checked)">
+                Select all
+                <strong>{{ dataProviderCounter }}</strong>
+                Data and Service Providers filtered
+              </mat-checkbox>
+            </li>
+          </ul>
+          <div *ngFor="let dp of dataProviderList" class="block" data-cy="data-provider-filter-dialog-section">
+            <span class="title" data-cy="data-provider-filter-dialog-section-title">{{ dp[0] | uppercase }}</span>
+            <ul class="listProviders">
+              <li *ngFor="let obj of dp[1]">
+                <mat-checkbox
+                  [(ngModel)]="obj.isSelected"
+                  [checked]="dataProvidersSelectedInput.includes(obj.getIdentifier())"
+                  (click)="$event.stopPropagation()"
+                  (change)="updateDataProviderListSelected(obj)"
+                  data-cy="data-provider-filter-dialog-section-item">
+                  {{ obj.getName() }}
+                </mat-checkbox>
+              </li>
+            </ul>
+          </div>
+        </ng-container>
+      </div>
+      <div class="actions">
+        <button mat-flat-button [color]="'primary'" type="submit" [disabled]="false" (click)="submit()" data-cy="data-provider-filter-dialog-apply">Apply</button>
+        <button mat-flat-button [color]="'secondary'" type="submit" [disabled]="false" (click)="cancel()">Cancel</button>
+      </div>
+    </div>
+  </ng-container>
+</app-base-dialog>

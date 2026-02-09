@@ -1,0 +1,242 @@
+<div class="spinner" *ngIf="!!(showLoading || dataConfigurable?.loading)">
+  <mat-spinner></mat-spinner>
+</div>
+<div class="advanced-search-container nice-scrollbar">
+  <div class="form-header" *ngIf="!showLoading && !dataConfigurable?.loading && !isOnlyDownloadable">
+    <p class="form-title" *ngIf="totPar > 0 && formType === DATA_CONFIGURATION_TYPE.DATA">
+      Advanced search filters
+      <span class="counter">(&nbsp;{{ totParValue }} of {{ totPar }}&nbsp;)</span>
+    </p>
+    <div class="form-header-actions">
+      <mat-icon (click)="openServiceDocumentation()" *ngIf="serviceDocumentation !== ''" matTooltip="Service documentation">library_books</mat-icon>
+      <ng-container *ngIf="dataConfigurable !== null && showExpandButton">
+        <mat-icon (click)="openParametersDialog()" *ngIf="totPar > 0" matTooltip="Expand filters window">open_in_new</mat-icon>
+      </ng-container>
+    </div>
+  </div>
+
+  <form #thisForm="ngForm">
+    <div class="form-fields" *ngIf="!showLoading && !dataConfigurable?.loading && !isOnlyDownloadable">
+      <div class="flex">
+        <p class="warning flex-grow" [class.hidden]="thisForm.valid">Please ensure all parameter values are valid!</p>
+      </div>
+      <div class="spat-temp-wrapper" *ngIf="showApplyButton">
+        <div class="flex" *ngIf="null !== spatialBounds">
+          <div [ngClass]="{ label: true, disabled: !spatialBounds.isBounded() && dataConfigurable!.isSpatialLinked() }">Coordinates:</div>
+          <app-simple-spatial-control
+            class="centred"
+            (changeBBox)="changeBBox($event)"
+            (clearBBox)="changeBBox()"
+            [bbox]="spatialBounds"
+            [inputsDisabled]="spatialBoundslDisabled"
+            [showClearButton]="true"></app-simple-spatial-control>
+          <div class="flex override-container" *ngIf="formType === DATA_CONFIGURATION_TYPE.DATA">
+            <mat-slide-toggle
+              color="primary"
+              [checked]="!dataConfigurable!.isSpatialLinked()"
+              (change)="spatialLinkToggle($event)"
+              matTooltip="With 'Override' disabled, the Spatial Bounds set at the Filter is used."></mat-slide-toggle>
+          </div>
+        </div>
+        <div class="flex" *ngIf="hasTemporalRange">
+          <app-temporal-controls
+            class="centred"
+            [temporalRangeSource]="temporalRangeSource"
+            [inputsDisabledSource]="temporalControlDisabledSource"
+            [disabledRadioButton]="true"></app-temporal-controls>
+          <div class="flex override-container" *ngIf="formType === DATA_CONFIGURATION_TYPE.DATA">
+            <mat-slide-toggle
+              color="primary"
+              [checked]="!dataConfigurable!.isTemporalLinked()"
+              (change)="temporalLinkToggle($event)"
+              matTooltip="With 'Override' disabled, the Temporal Range set at the Filter is used. (Date in UTC)"></mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+      <div class="form-field" *ngFor="let paramDef of otherParameters" [style.display]="paramDef.readOnlyValue === 'true' || paramDef.property === PARAMETER_OUTPUT_FORMAT_PROPERTY ? 'none' : 'block'">
+        <ng-container *ngIf="paramDef.type !== PARAMETER_TYPE_ENUM.BOOLEAN; else checkboxField">
+          <mat-form-field matTooltip="{{ !paramDef.optional ? '*' : '' }} {{ paramDef.label }}" matTooltipPosition="right">
+            <mat-label>{{ !paramDef.optional ? '*' : '' }} {{ paramDef.label }}</mat-label>
+           <ng-container *ngIf="paramDef.hasAllowedValues; else elseBlock">
+  <mat-select [multiple]="paramDef.multipleValue === 'true'" [ngModel]="currentValues[paramDef.name]" [appParameterValidator]="paramDef" [name]="paramDef.name"[required]="!paramDef.optional"
+  disableOptionCentering (opened)="onSelectOpened(paramDef)" (closed)="onSelectClosed(paramDef)">
+  <!-- shows all allowedValues -->
+  <app-select-check-all [name]="paramDef.name" [values]="paramDef.allowedValues" [form]="form" *ngIf="paramDef.multipleValue === 'true'"></app-select-check-all>
+  <!-- Search Input -->
+  <mat-option class="search-option" disabled>
+    <input
+      #searchInput
+      type="text"
+      placeholder="Search..."
+      class="mat-option-search"
+      [value]="searchTerms[paramDef.name] || ''"
+      (input)="onSearchInput(paramDef, $event)"
+      autocomplete="off"
+      (click)="$event.stopPropagation()"
+      (mousedown)="$event.stopPropagation()"
+      (keydown)="$event.stopPropagation()"
+    />
+  </mat-option>
+  
+  <mat-option
+    *ngFor="let allowedValue of filteredAllowedValues[paramDef.name] || paramDef.allowedValues"
+    [value]="allowedValue">
+    {{ allowedValue === '' ? '--EMPTY--' : allowedValue }}
+  </mat-option>
+</mat-select>
+</ng-container>
+
+            <ng-template #elseBlock>
+              <ng-container [ngSwitch]="paramDef.type">
+                <!-- string -->
+                <ng-container *ngSwitchCase="PARAMETER_TYPE_ENUM.STRING">
+                  <input [ngModel]="currentValues[paramDef.name]" matInput [appParameterValidator]="paramDef" type="text" [name]="paramDef.name" [id]="paramDef.name" placeholder="string value" />
+                </ng-container>
+                <!-- integer -->
+                <ng-container *ngSwitchCase="PARAMETER_TYPE_ENUM.INTEGER">
+                  <input
+                    [ngModel]="currentValues[paramDef.name]"
+                    matInput
+                    [appParameterValidator]="paramDef"
+                    type="number"
+                    [name]="paramDef.name"
+                    [id]="paramDef.name"
+                    [min]="paramDef.min"
+                    [max]="paramDef.max"
+                    placeholder="integer value" />
+                </ng-container>
+                <!-- float -->
+                <ng-container *ngSwitchCase="PARAMETER_TYPE_ENUM.FLOAT">
+                  <input
+                    [ngModel]="currentValues[paramDef.name]"
+                    matInput
+                    [appParameterValidator]="paramDef"
+                    type="float"
+                    [name]="paramDef.name"
+                    [id]="paramDef.name"
+                    [min]="paramDef.min"
+                    [max]="paramDef.max"
+                    pattern="-?[0-9]+([.][0-9]+)?"
+                    placeholder="float value" />
+                </ng-container>
+                <!-- time -->
+                <ng-container *ngSwitchCase="PARAMETER_TYPE_ENUM.TIME">
+                  <input
+                    [ngModel]="currentValues[paramDef.name]"
+                    matInput
+                    [appParameterValidator]="paramDef"
+                    type="time"
+                    [name]="paramDef.name"
+                    [id]="paramDef.name"
+                    [min]="paramDef.min"
+                    [max]="paramDef.max"
+                    placeholder="time value" />
+                </ng-container>
+                <!-- datetime -->
+                <ng-container *ngSwitchCase="PARAMETER_TYPE_ENUM.DATETIME">
+                  <input
+                    [ngxMatDatetimePicker]="dateTimePicker"
+                    [ngModel]="currentValues[paramDef.name]"
+                    matInput
+                    [appParameterValidator]="paramDef"
+                    [name]="paramDef.name"
+                    [id]="paramDef.name"
+                    [min]="paramDef.min | stringToMoment : paramDef.format"
+                    [max]="paramDef.max | stringToMoment : paramDef.format" />
+                  <!-- type checking overridden using $any() as external object type out of our control -->
+                  <mat-datepicker-toggle matSuffix [for]="$any(dateTimePicker)"></mat-datepicker-toggle>
+                  <ngx-mat-datetime-picker #dateTimePicker></ngx-mat-datetime-picker>
+                </ng-container>
+                <!-- date -->
+                <ng-container *ngSwitchCase="PARAMETER_TYPE_ENUM.DATE">
+                  <input
+                    [matDatepicker]="picker"
+                    [ngModel]="currentValues[paramDef.name]"
+                    matInput
+                    [appParameterValidator]="paramDef"
+                    [name]="paramDef.name"
+                    [id]="paramDef.name"
+                    [min]="paramDef.min | stringToMoment : paramDef.format"
+                    [max]="paramDef.max | stringToMoment : paramDef.format" />
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </ng-container>
+                <!-- default -->
+                <ng-container *ngSwitchDefault>
+                  <input matInput disabled [name]="paramDef.name" [id]="paramDef.name" [ngModel]="currentValues[paramDef.name]" />
+                </ng-container>
+              </ng-container>
+            </ng-template>
+          </mat-form-field>
+        </ng-container>
+        <ng-template #checkboxField>
+          <!-- checkbox -->
+          <mat-checkbox
+            [ngModel]="currentValues[paramDef.name]"
+            [appParameterValidator]="paramDef"
+            [name]="paramDef.name"
+            [checked]="currentValues[paramDef.name] === true"
+            matTooltip="{{ !paramDef.optional ? '*' : '' }} {{ paramDef.label }}"
+            matTooltipPosition="right">
+            {{ !paramDef.optional ? '*' : '' }} {{ paramDef.label }}
+          </mat-checkbox>
+        </ng-template>
+
+        <mat-error class="warning" *ngIf="thisForm.controls[paramDef.name] !== undefined" [class.hidden]="'' === (thisForm.controls[paramDef.name].errors | firstErrorMessage)">
+          {{ thisForm.controls[paramDef.name].errors | firstErrorMessage }}
+        </mat-error>
+      </div>
+    </div>
+    <div class="form-fields" *ngIf="formType !== DATA_CONFIGURATION_TYPE.DATA">
+      <div class="form-field" *ngFor="let paramDef of otherParameters">
+        <ng-container *ngIf="paramDef.property === PARAMETER_OUTPUT_FORMAT_PROPERTY">
+          <mat-form-field matTooltip="{{ !paramDef.optional ? '*' : '' }} {{ paramDef.label }}" matTooltipPosition="right">
+            <mat-label>{{ !paramDef.optional ? '*' : '' }} {{ paramDef.label }}</mat-label>
+            <mat-select
+              [multiple]="paramDef.multipleValue === 'true'"
+              [ngModel]="currentValues[paramDef.name]"
+              [appParameterValidator]="paramDef"
+              [name]="paramDef.name"
+              [required]="!paramDef.optional">
+              <app-select-check-all [name]="paramDef.name" [values]="paramDef.allowedValues" [form]="form" *ngIf="paramDef.multipleValue === 'true'"></app-select-check-all>
+              <mat-option *ngFor="let allowedValue of paramDef.allowedValues" [value]="allowedValue">
+                  {{ '' === allowedValue ? '--EMPTY--' : allowedValue }}
+                </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
+      </div>
+      <button class="config-control" (click)="saveForm()" mat-flat-button [color]="'primary'">
+        <span class="button-label">Save</span>
+      </button>
+    </div>
+    <div class="form-fields">
+      <div *ngIf="dataConfigurable !== null && formType === DATA_CONFIGURATION_TYPE.DATA" class="form-actions">
+        <mat-icon *ngIf="environmentSelected !== null && showExpandButton" class="share" matTooltip="Add to environment {{ environmentSelected.name }}" (click)="openAddToEnvDialog()">
+          move_to_inbox
+        </mat-icon>
+        <!-- download button -->
+        <button class="config-control" id="configDownloadID" (click)="openDownloadsDialog()" mat-flat-button [color]="'primary'" matTooltip="Download" data-cy="results-panel-download-button">
+          <mat-icon aria-hidden="true">cloud_download</mat-icon>
+          <span class="button-label">Download</span>
+        </button>
+        <ng-container *ngIf="!isOnlyDownloadable && showApplyButton">
+          <ng-container *ngFor="let action of dataConfigurable.actions">
+            <button
+              *ngIf="action.visible && action.type === dataConfigurableActionType.DEFAULT"
+              class="config-control"
+              (click)="action.doAction()"
+              mat-flat-button
+              [color]="'primary'"
+              [disabled]="!action.enabled">
+              <span *ngIf="!action.enabled" class="button-label">{{ action.label }}</span>
+              <ng-container *ngIf="action.enabled">
+                <span *ngIf="action.type === dataConfigurableActionType.DEFAULT" class="button-label">{{ action.label }}</span>
+              </ng-container>
+            </button>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </form>
+</div>

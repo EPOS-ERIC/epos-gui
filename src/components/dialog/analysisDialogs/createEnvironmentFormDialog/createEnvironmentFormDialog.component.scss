@@ -1,0 +1,48 @@
+@import 'src/sassFramework/variables';
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+::ng-deep .mat-radio-label {
+  white-space: unset;
+}
+
+.list-type {
+  margin-top: 10px;
+
+  .label {
+    font-weight: bold;
+    color: dimgray;
+  }
+}
+
+.type {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  gap: 20px;
+
+  .detail {
+    display: flex;
+    flex-direction: column;
+
+    .name {
+      font-weight: bold;
+    }
+
+    .description {
+      font-style: italic;
+      width: 300;
+    }
+  }
+}

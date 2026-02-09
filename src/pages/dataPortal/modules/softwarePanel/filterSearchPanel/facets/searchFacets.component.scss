@@ -1,0 +1,68 @@
+@import 'src/sassFramework/variables.scss';
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .organisation-wrapper {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-grow: 1;
+    grid-gap: 3px;
+    gap: 3px;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-basis: 50%;
+
+    .half {
+      flex-grow: 1;
+      flex-basis: 50%;
+    }
+  }
+
+  .location-select {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    // width: min-content;
+    .radio {
+      width: 20%;
+      margin-right: 10px;
+    }
+
+    .coords {
+      display: flex;
+      justify-content: space-around;
+      flex-grow: 1;
+      grid-gap: 3px;
+      gap: 3px;
+
+      .small-button {
+        margin-top: 15px;
+      }
+    }
+  }
+
+  ::ng-deep mat-form-field,
+  .countrySelect,
+  .dataProviderSelect {
+    width: 100%;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+
+    button {
+      margin-right: 0px;
+    }
+  }
+}

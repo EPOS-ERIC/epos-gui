@@ -1,0 +1,80 @@
+<!-- 
+ 
+ -->
+ <app-base-dialog [data]="data" [title]="title">
+  <ng-container class="content">
+  <div class="table-container"> 
+    <table>
+      <tbody>
+        <!-- Column with List of Examples -->
+        <tr class="tr-border">
+          <td rowspan="4" class="left-column">
+            <strong>List of Examples</strong>
+            <ul class="examples-list">
+              <li
+                *ngFor="let example of examples"
+                class="example-list"
+                (click)="selectExample(example)"
+              >
+                {{ example.title }}
+              </li>
+            </ul>            
+          </td>
+
+          <!-- Column displaying Title of selected example -->
+          <td class="title-cell services-cell">
+            <strong>Title:</strong>
+            <div class="title-and-button">
+              <p *ngIf="selectedExample; else noExample">{{ selectedExample.title }}</p>
+              <ng-template #noExample>
+                <p>Select an example</p>
+              </ng-template>
+              <a *ngIf="selectedExample" [href]="selectedExample.sharingLinkUrl">
+                <button
+                  class="button-get-example"
+                  mat-flat-button
+                  color="primary"
+                  [innerHTML]="data.dataIn.confirmButtonHtml"
+                  matTooltip="Add services from scientific example to your favourites"
+                ></button>
+              </a>
+            </div>
+          </td>
+        </tr>
+        <tr class="tr-border">
+          <!-- Column displaying Description of selected example -->
+          <td class="description-cell">
+            <strong>Description</strong>
+            <p *ngIf="selectedExample; else noExample">{{ selectedExample.description }}</p>
+              <ng-template #noExample>
+                <p>Select an example</p>
+              </ng-template>
+          </td>
+        </tr>
+        <tr>
+          <!-- Column displaying List of Services of selected example -->
+          <td>
+            <strong>List of services</strong>
+            <ul class="service-list">
+              <li *ngFor="let service of selectedExample?.listOfServices">
+                - {{ service }}
+              </li>
+            </ul>
+          </td>          
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-container>
+</app-base-dialog>
+
+
+
+
+  
+  
+  
+  
+  
+  
+  

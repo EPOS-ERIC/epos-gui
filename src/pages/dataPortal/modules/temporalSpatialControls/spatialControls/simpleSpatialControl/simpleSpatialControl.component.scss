@@ -1,0 +1,39 @@
+@import 'src/sassFramework/variables.scss';
+
+
+
+:host {
+
+  .wrapper {
+    display: flex;
+    justify-content: space-around;
+    gap: 5px;
+    height: 30px;
+    margin-right: 5px;
+
+    &.disabled {
+      color: rgba(0, 0, 0, 0.87);
+    }
+  }
+
+  input {
+    display: flex;
+    margin: 5px 0;
+    padding: 1px;
+    // height: 26px;
+    min-width: 35px;
+    flex-grow: 1;
+    box-sizing: border-box;
+  }
+
+  input:disabled {
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  ::ng-deep .mat-form-field-flex>.mat-form-field-infix {
+    padding: 2px 0px 0px 0px !important;
+    width: 100%;
+    border-top: none;
+  }
+
+}

@@ -1,0 +1,201 @@
+{
+  "availableContactPoints": [
+    {
+      "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/sender/send-email?id=04b425d3-27c1-43dc-aa8d-7014acce3bd4&contactType=SERVICEPROVIDERS",
+      "type": "SERVICEPROVIDERS"
+    },
+    {
+      "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/sender/send-email?id=aedda4f1-e0e7-4829-b33a-33ee7c1e3043&contactType=DATAPROVIDERS",
+      "type": "DATAPROVIDERS"
+    },
+    {
+      "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/sender/send-email?id=6b4f5899-edfa-4739-a20b-55be5088a825&contactType=ALL",
+      "type": "ALL"
+    }
+  ],
+  "availableFormats": [
+    {
+      "format": "application/epos.geo+json",
+      "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/6b4f5899-edfa-4739-a20b-55be5088a825?format=application/geo+json",
+      "label": "GEOJSON",
+      "originalFormat": "application/geo+json",
+      "type": "ORIGINAL"
+    }
+  ],
+  "categories": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "ddss": "category:statiinfmati",
+                "name": "Station Information"
+              }
+            ],
+            "ddss": "category:products",
+            "name": "Products"
+          }
+        ],
+        "code": "GNSS",
+        "color": "#941d7f",
+        "id": "3",
+        "imgUrl": "assets/img/logo/GNSS_logo.png",
+        "linkUrl": "https://www.epos-eu.org/tcs/gnss-data-and-products",
+        "name": "GNSS Data and Products"
+      }
+    ],
+    "name": "domains"
+  },
+  "dataProvider": [
+    {
+      "country": "BE",
+      "dataProviderLegalName": "ORB - Observatoire royal de Belgique",
+      "dataProviderUrl": "https://www.astro.oma.be/en/",
+      "instanceid": "dfe3643c-6d66-49cf-a249-dc4c70b3ed4f",
+      "metaid": "dfe3643c-6d66-49cf-a249-dc4c70b3ed4f",
+      "uid": "dfe3643c-6d66-49cf-a249-dc4c70b3ed4f"
+    }
+  ],
+  "description": " Displays the GNSS stations that provide GNSS Products on the map. Returns their metadata as a json, geojson, or csv file.",
+  "downloadURL": "",
+  "endpoint": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/stations/v2/station/bbox/{minLon}/{minLat}/{maxLon}/{maxLat}?with=2",
+  "frequencyUpdate": "http://purl.org/cld/freq/continuous",
+  "qualityAssurance": "https://gnss-epos.eu/quality-assurance/",
+  "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/6b4f5899-edfa-4739-a20b-55be5088a825",
+  "hrefExtended": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/6b4f5899-edfa-4739-a20b-55be5088a825?extended=true",
+  "id": "6b4f5899-edfa-4739-a20b-55be5088a825",
+  "internalID": [
+    "WP10-DDSS-006"
+  ],
+  "keywords": [
+    "gnss station",
+    "velocities",
+    "computed",
+    "gnss",
+    "estimated",
+    "coordinates",
+    "time series",
+    "gnss geojson products",
+    "position",
+    "geodesy",
+    "products"
+  ],
+  "license": "http://creativecommons.org/licenses/by/4.0/",
+  "operationid": "GlassFramework/webresources/stations/v2/station/bbox/operation",
+  "scienceDomain": [
+    "Station Information"
+  ],
+  "serviceDescription": " Displays the GNSS stations that provide GNSS Products on the map. Returns their metadata as a json, geojson, or csv file.",
+  "serviceDocumentation": "https://gnss-epos.eu/ics-tcs/",
+  "serviceEndpoint": "https://gnssproducts.epos.ubi.pt/GlassFramework/webresources/stations/v2/station/bbox/",
+  "serviceName": "GNSS Stations With Products",
+  "serviceParameters": [
+    {
+      "defaultValue": "-25.664",
+      "label": "minLon",
+      "maxValue": "180",
+      "minValue": "-180",
+      "name": "minLon",
+      "property": "epos:westernmostLongitude",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "68.0075",
+      "label": "maxLat",
+      "maxValue": "90",
+      "minValue": "-9",
+      "name": "maxLat",
+      "property": "epos:northernmostLatitude",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "27.070",
+      "label": "maxLon",
+      "maxValue": "180",
+      "minValue": "-180",
+      "name": "maxLon",
+      "property": "epos:easternmostLongitude",
+      "required": true,
+      "type": "float"
+    },
+    {
+      "defaultValue": "35.60371874069731",
+      "label": "minLat",
+      "maxValue": "90",
+      "minValue": "-90",
+      "name": "minLat",
+      "property": "epos:southernmostLatitude",
+      "required": true,
+      "type": "float"
+    }
+  ],
+  "serviceProvider": {
+    "country": "PT",
+    "dataProviderLegalName": "UBI - University of Beira Interior",
+    "dataProviderUrl": "http://www.ubi.pt",
+    "instanceid": "2f96f31e-5c82-46e1-877f-be595f68cd86",
+    "metaid": "2f96f31e-5c82-46e1-877f-be595f68cd86",
+    "uid": "2f96f31e-5c82-46e1-877f-be595f68cd86"
+  },
+  "serviceTemporalCoverage": {},
+  "spatial": {
+    "paths": [
+      [
+        [
+          40.429,
+          81.201
+        ],
+        [
+          -72.773,
+          79.687
+        ],
+        [
+          -75.234,
+          76.1
+        ],
+        [
+          -40.429,
+          43.068
+        ],
+        [
+          -18.632,
+          18.979
+        ],
+        [
+          -2.109,
+          35.817
+        ],
+        [
+          22.016,
+          35.496
+        ],
+        [
+          34.101,
+          27.761
+        ],
+        [
+          52.822,
+          38.616
+        ],
+        [
+          43.066,
+          66.93
+        ],
+        [
+          40.429,
+          81.201
+        ]
+      ]
+    ],
+    "wkid": 4326
+  },
+  "temporalCoverage": {
+    "startDate": "1996-01-01T00:00:00Z"
+  },
+  "title": "GNSS Stations with Products",
+  "type": "WEB_SERVICE",
+  "uid": "GlassFramework/webresources/stations/v2/station/bbox/Distribution/001"
+}

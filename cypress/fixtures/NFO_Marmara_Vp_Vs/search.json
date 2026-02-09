@@ -1,0 +1,145 @@
+{
+  "filters": [
+    {
+      "children": [
+        {
+          "id": "ZWFydGhxdWFrZQ==",
+          "name": "earthquake"
+        },
+        {
+          "id": "ZXZlbnQ=",
+          "name": "event"
+        },
+        {
+          "id": "Zmx1aWRz",
+          "name": "fluids"
+        },
+        {
+          "id": "ZnJpZGdl",
+          "name": "fridge"
+        },
+        {
+          "id": "a29lcmk=",
+          "name": "koeri"
+        },
+        {
+          "id": "bWFybWFyYQ==",
+          "name": "marmara"
+        },
+        {
+          "id": "bWFybWFyYSBuZWFyIGZhdWx0IG9ic2VydmF0b3J5",
+          "name": "marmara near fault observatory"
+        },
+        {
+          "id": "bmVhciBmYXVsdCBvYnNlcnZhdG9yaWVz",
+          "name": "near fault observatories"
+        },
+        {
+          "id": "bmZv",
+          "name": "nfo"
+        },
+        {
+          "id": "cm9ja3M=",
+          "name": "rocks"
+        },
+        {
+          "id": "c2Vpc21pYyB3YXZlcyBwcm9wYWdhdGlvbg==",
+          "name": "seismic waves propagation"
+        },
+        {
+          "id": "c2Vpc21pY2l0eQ==",
+          "name": "seismicity"
+        },
+        {
+          "id": "c2Vpc21vbG9neQ==",
+          "name": "seismology"
+        },
+        {
+          "id": "dnAvdnMgcmF0aW8=",
+          "name": "vp/vs ratio"
+        }
+      ],
+      "name": "keywords"
+    },
+    {
+      "children": [
+        {
+          "id": "6824b1c3-5e25-4509-895f-7a9ca67cf8fc",
+          "name": "KOERI - Kandilli Observatory and Earthquake Research Institute"
+        }
+      ],
+      "name": "organisations"
+    },
+    {
+      "children": [
+        {
+          "id": "b619c7c1-995f-43f7-a5a6-e6f44670bd59",
+          "name": "Vp/Vs - velocity ratio"
+        }
+      ],
+      "name": "sciencedomains"
+    },
+    {
+      "name": "servicetypes"
+    }
+  ],
+  "results": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "ddss": "category:vpvsvelocityratio",
+                    "distributions": [
+                      {
+                        "availableFormats": [
+                          {
+                            "format": "application/json",
+                            "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/2774cc18-1a66-41bf-8aff-bc78b0c92e8f?format=application/json",
+                            "label": "APPLICATION/JSON",
+                            "originalFormat": "application/json",
+                            "type": "ORIGINAL"
+                          },
+                          {
+                            "format": "covjson",
+                            "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/2774cc18-1a66-41bf-8aff-bc78b0c92e8f?format=covjson",
+                            "label": "COVJSON",
+                            "originalFormat": "covjson",
+                            "type": "CONVERTED"
+                          }
+                        ],
+                        "description": "This distribution provides access to Vp/Vs time series derived from earthquakes location. Datasets are encoded in JSON format.\u00a0Data cover the time period 2017-today and they are limited to the Marmara (Turkey) Near Fault Observatory.",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/2774cc18-1a66-41bf-8aff-bc78b0c92e8f",
+                        "hrefExtended": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/2774cc18-1a66-41bf-8aff-bc78b0c92e8f?extended=true",
+                        "id": "2774cc18-1a66-41bf-8aff-bc78b0c92e8f",
+                        "status": 1,
+                        "statusTimestamp": "1970-01-01T12:00:00Z",
+                        "title": "Marmara Vp/Vs",
+                        "uid": "https://www.epos-eu.org/epos-dcat-ap/NearFaultObservatory/KOERI/VPVS/Distribution/001"
+                      }
+                    ],
+                    "name": "Vp/Vs - velocity ratio"
+                  }
+                ],
+                "ddss": "category:seismologicalproducts",
+                "name": "Seismological products"
+              }
+            ],
+            "ddss": "category:seismologicaldata",
+            "name": "Seismological Data"
+          }
+        ],
+        "code": "NFO",
+        "color": "#5e3160",
+        "id": "2",
+        "imgUrl": "assets/img/logo/NFO_logo.png",
+        "linkUrl": "https://www.epos-eu.org/tcs/near-fault-observatories",
+        "name": "Near Fault Observatories"
+      }
+    ],
+    "name": "domains"
+  }
+}

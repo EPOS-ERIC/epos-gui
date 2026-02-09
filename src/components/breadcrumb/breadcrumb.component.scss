@@ -1,0 +1,37 @@
+@import "src/sassFramework/variables.scss";
+
+:host {
+
+  div.wrapper {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    margin-bottom: 3px;
+
+    div.label {
+      width: 23%;
+    }
+
+    div.breadcrumbs {
+      width: 100%;
+    }
+  }
+
+  div.item-crumb {
+
+    span {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    span.no-link {
+      text-decoration: none !important;
+      cursor: default;
+    }
+  }
+
+  .display-inline {
+    display: inline;
+  }
+
+}

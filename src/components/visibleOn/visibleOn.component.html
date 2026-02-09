@@ -1,0 +1,22 @@
+<div class='visibility'>
+  <div *ngIf="item.visibility[0]===''" class="label">
+    Visible on:
+  </div>
+  <div class="list" data-cy="results-panel-item-visible-on">
+    <ng-container *ngFor="let visibility of item.visibility" class='display-inline' [ngSwitch]="visibility">
+      <ng-container *ngSwitchCase="VIEW_TYPE_ENUM.MAP">
+        <div class="hflex" matTooltip="Zoom on map" (click)="centerOnMapOBS(item)">
+          <span class="link pointer">{{visibility}}</span>
+        </div>
+      </ng-container>
+      <span class="link pointer" *ngSwitchCase="VIEW_TYPE_ENUM.TABLE" (click)="tablePanelToggle(item)"
+        matTooltip="Open table data">
+        {{ visibility }}
+      </span>
+      <span class="link pointer" *ngSwitchCase="VIEW_TYPE_ENUM.GRAPH" (click)="graphPanelToggle(item)"
+        matTooltip="Open graph data">
+        {{ visibility }}
+      </span>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,313 @@
+/* --- Main Dashboard Layout --- */
+.stats-dashboard {
+    position: relative;
+    display: flex;
+    height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* --- Sidebar --- */
+.dashboard-sidebar {
+    transition: transform 0.3s ease, width 0.3s ease, padding 0.3s ease;
+    width: 250px;
+    color: #2d3748;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    padding: 1rem;
+}
+
+.sidebar-header h3 {
+    font-size: 1.25rem;
+    margin: 0 0 1.5rem 0;
+    border-bottom: 1px solid #2d3748;
+    padding-top: 1rem;
+    padding-bottom: 0.4rem;
+}
+
+.form-description {
+    font-size: 0.9rem;
+    color: #a0aec0;
+    /* Light gray for description */
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input[type="date"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 0.5px solid #4a5568;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input[type="date"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.update-button {
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1rem;
+    font-weight: 700;
+    background-color: #ffffff;
+    border: 1px solid;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: opacity 0.2s, background-color 0.2s ease;
+
+    &:hover {
+        opacity: 0.6;
+        background-color: #a0aec026;
+        border-radius: 6px;
+    }
+}
+
+.clear-button {
+    color: red;
+    border: 1px solid red;
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 1rem;
+    font-weight: 700;
+    background-color: #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 1.2rem;
+    transition: opacity 0.2s, background-color 0.2s ease;
+
+    i {
+        margin-right: 0.5rem;
+    }
+
+    &:hover {
+        opacity: 0.6;
+        background-color: #ffc7c749;
+        border-radius: 6px;
+
+    }
+}
+
+.error-message {
+    color: #fc8181;
+    /* Light red */
+    background-color: rgba(252, 129, 129, 0.1);
+    border: 1px solid #fc8181;
+    padding: 0.75rem;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+/* --- Main Content Area --- */
+.dashboard-main {
+    width: 100%;
+    height: 100%;
+    flex-grow: 1;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.main-title {
+    color: #2d3748;
+    font-size: 2rem;
+    margin: 0 0 1rem 0;
+    text-align: center;
+
+}
+
+.main-title .date-range {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #718096;
+    margin-top: 0.5rem;
+    text-align: center;
+
+}
+
+.iframe-container {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.iframe-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* --- Responsive Design for Mobile Devices --- */
+@media (max-width: 900px) {
+    .stats-dashboard {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .dashboard-sidebar {
+        width: 100%;
+        height: auto;
+        border-bottom: 1px solid #e2e8f0;
+    }
+}
+
+/* --- Sidebar Toggle Buttons --- */
+.sidebar-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.75rem;
+    line-height: 1;
+    padding: 0 0.5rem;
+    color: #718096;
+    transition: color 0.2s ease;
+}
+
+#close-sidebar-btn {
+    position: absolute;
+    top: 1.4rem;
+    left: 17rem;
+    z-index: 1000;
+    width: auto;
+    height: 35px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+
+    mat-icon {
+        font-size: 24px;
+    }
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+}
+
+
+
+.top-bar-buttons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1000;
+}
+
+/* Sidebar toggle (open) */
+#open-sidebar-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1;
+    font-size: 1rem;
+    width: auto;
+    height: 40px;
+    padding: 0 0.6rem;
+    background-color: transparent;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+    border: none;
+
+    mat-icon {
+        font-size: 24px;
+    }
+
+    .toggle-label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    &:hover {
+        background-color: #f0f0f0;
+        border-radius: 6px;
+    }
+}
+
+
+
+
+/* Clear Filter */
+#clear-filter-btn {
+    color: red;
+    border: none;
+    height: 40px;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background-color: #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: opacity 0.2s, background-color 0.2s ease;
+
+    &:hover {
+        opacity: 0.6;
+        background-color: #ffc7c749;
+        border-radius: 6px;
+
+    }
+}
+
+#clear-filter-btn i {
+    margin-right: 0.5rem;
+}
+
+/* --- Sidebar Closed State --- */
+/* Nascondi l'intero contenitore dei pulsanti quando la sidebar è aperta */
+.stats-dashboard:not(.sidebar-closed) .top-bar-buttons {
+    display: block;
+}
+
+.stats-dashboard.sidebar-closed #close-sidebar-btn {
+    display: none;
+}
+
+
+.stats-dashboard.sidebar-closed .dashboard-sidebar {
+    transform: translateX(-100%);
+    width: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#close-btn {
+    position: absolute;
+    top: -18px;
+    right: -15px;
+    z-index: 1000;
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+
+    mat-icon {
+        font-size: 20px;
+    }
+
+    &:hover {
+        background-color: #f0f0f0;
+    }
+
+}

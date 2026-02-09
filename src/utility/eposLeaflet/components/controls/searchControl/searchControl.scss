@@ -1,0 +1,22 @@
+:host ::ng-deep { 
+  .geocoder-control {
+    height: 34px;
+  }
+  .search-clear {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    clear: none;
+    margin-left: 0;
+    margin-right: 0;
+    line-height: 30px;
+    border: 2px solid rgba(0,0,0,0.2);
+    background-clip: padding-box;
+    border-radius: 4px;
+    width: 20px;
+    text-align: center;
+    cursor: pointer;
+    &.hidden {
+      display: none;
+    }
+  }
+}

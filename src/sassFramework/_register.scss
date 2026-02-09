@@ -1,0 +1,29 @@
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+@import './_variables.scss';
+
+@import './_materials_overrides.scss';
+
+// colors
+@import './_colors.scss';
+
+// general
+@import './_framework.scss';
+
+@import './_btn.scss';
+@import './_miscellaneous.scss';
+@import './_input_elements.scss';
+@import './_v2Layout.scss';
+@import './_tabs.scss';
+
+// media query
+@import './media_query';
+
+@import './snackbar';
+@import './paginator';
+
+// font
+@import './font';
+
+// lightbox
+@import './lightbox_overrides';

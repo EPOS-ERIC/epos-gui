@@ -1,0 +1,243 @@
+@import 'src/sassFramework/variables.scss';
+
+/* Make map panel fill more of the page */
+:host,
+:host .leaflet-container {
+  width: 100%;
+  height: 100%;
+  cursor: auto;
+  z-index: 0;
+}
+
+:host {
+  & ::ng-deep * {
+    box-sizing: border-box;
+  }
+
+  margin-bottom: 0px;
+  position: relative;
+  display: block;
+
+  & .loading {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    height: 100%;
+    width: 100%;
+    background: rgba($color: white, $alpha: 0.4);
+  }
+
+  // start loading bar
+  & .loading-bar {
+    position: absolute;
+    z-index: 9999;
+    width: 100%;
+    height: 21px;
+    text-align: center;
+    background-color: #fdba2c;
+
+    & .message {
+      position: relative;
+      color: #ffffff;
+      z-index: 101;
+      font-size: 20px;
+      font-weight: bold;
+      line-height: 20px;
+    }
+
+    & .bar {
+      content: '';
+      display: inline;
+      position: absolute;
+      width: 0;
+      height: 100%;
+      left: 50%;
+
+      &:nth-child(1) {
+        background-color: #da4733;
+        animation: loading 3s linear 0s infinite;
+      }
+
+      &:nth-child(2) {
+        background-color: #3b78e7;
+        animation: loading 3s linear 1s infinite;
+      }
+
+      &:nth-child(3) {
+        background-color: #fdba2c;
+        animation: loading 3s linear 2s infinite;
+      }
+    }
+  }
+
+  @keyframes loading {
+    from {
+      left: 50%;
+      width: 0;
+      z-index: 100;
+    }
+
+    33.3333% {
+      left: 0;
+      width: 100%;
+      z-index: 10;
+    }
+
+    to {
+      left: 0;
+      width: 100%;
+    }
+  }
+
+  // end loading bar
+
+  // remove default marker background etc.
+  & ::ng-deep {
+    & .leaflet-control-container {
+      .leaflet-right {
+        display: flex;
+        gap: 10px;
+
+        .leaflet-control-mouseposition {
+          height: 18px;
+          padding-left: 5px;
+        }
+
+        .leaflet-control {
+          display: flex;
+          gap: 5px;
+        }
+      }
+    }
+
+    & .leaflet-marker-icon:not(.marker-cluster) {
+      background-color: #00000000;
+      border: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    & .pretty-scroll {
+      // custom scrollbar
+      /* width */
+      &::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+
+      /* Track */
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      /* Handle */
+      &::-webkit-scrollbar-thumb {
+        background: #888;
+      }
+
+      /* Handle on hover */
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    }
+
+    // remove pointer on geojson (non-marker) features
+    // as clicks are handled with general layer click functionality
+    & .epos-leaflet-geojson {
+      cursor: default;
+    }
+
+    & .leaflet-popup-content-wrapper {
+      padding: 0;
+    }
+
+    & .leaflet-popup-content {
+      margin: 0;
+      width: auto !important;
+      display: flex;
+      // overflow: visible;
+      justify-content: center;
+      flex-direction: column;
+
+      h5.popup-title {
+        text-align: center;
+        margin-bottom: 1rem;
+        font-weight: bold;
+      }
+    }
+
+    & .paginated-features-wrapper {
+      .leaflet-popup-content-wrapper {
+        .leaflet-popup-content {
+          flex-direction: unset;
+        }
+      }
+    }
+
+    & .popup-close-header {
+      width: 100%;
+    }
+
+    & .leaflet-popup-content .pretty-scroll {
+      min-width: 150px;
+      min-height: 100px;
+      max-height: 300px;
+      overflow: auto;
+      padding: 5px;
+
+      &:not(.slide-wrapper) {
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+
+      & .pretty-scroll {
+        // disable single popup scroll etc. on paginated popup
+        max-height: unset;
+        max-width: unset;
+        overflow: unset;
+        margin-top: initial;
+        margin-bottom: initial;
+        padding: initial;
+      }
+    }
+
+    & .leaflet-tooltip {
+      font-size: 12px;
+    }
+    
+    // these rules are uniquely intended to address imageOverlay Layers: 
+    // needed to prevent antialising default behaviour and show well defined pixel when zooming.
+    .leaflet-container img.leaflet-image-layer {
+        
+      /* max-width: none !important; */
+        
+      /* Preserve crisp pixels with scaled up images */
+      image-rendering: optimizeSpeed;
+      /* Legal fallback */
+      image-rendering: -moz-crisp-edges;
+      /* Firefox        */
+      image-rendering: -o-crisp-edges;
+      /* Opera          */
+      image-rendering: -webkit-optimize-contrast;
+      /* Safari         */
+      image-rendering: optimize-contrast;
+      /* CSS3 Proposed  */
+      image-rendering: crisp-edges;
+      /* CSS4 Proposed  */
+      image-rendering: pixelated;
+      /* CSS4 Proposed  */
+      -ms-interpolation-mode: nearest-neighbor;
+      /* IE8+           */
+    }
+
+  }
+
+  .custom-layer-control {
+    z-index: 10000;
+    position: absolute;
+    right: $sidenav-margin;
+    top: $sidenav-right-top;
+  }
+}

@@ -1,0 +1,131 @@
+<div class="wrapper">
+  <div class="header">
+    <div class="title">
+      <p>Environments
+        <span class="beta-tag">beta</span>
+      </p>
+    </div>
+
+    <div class="actions" *ngIf="templateStatus === 'envs' && environmentObjectArray!.length > 0">
+
+      <mat-icon [class.disabled]="environmentObjectArray!.length >= MAX_ENVIRONMENTS_LIMIT" class="pointer"
+        matTooltip="{{ environmentObjectArray!.length >= MAX_ENVIRONMENTS_LIMIT ? 'Max limit reached' : 'Create environment' }}"
+        (click)="environmentObjectArray!.length < MAX_ENVIRONMENTS_LIMIT && openCreateEnvironmentDialog()">
+        add_circle_outline
+      </mat-icon>
+
+      <mat-icon class="pointer" matTooltip="Delete all environments"
+        (click)="deleteAllEnvironmentsDialog()">delete</mat-icon>
+      <div class="title">
+        <p *ngIf="environmentObjectArray !== null">
+          {{ environmentObjectArray.length }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="templateStatus === 'loading'" class="loading">
+    <mat-spinner></mat-spinner>
+  </div>
+  <div class="container" *ngIf="templateStatus !== 'loading'">
+    <div class="login" *ngIf="templateStatus === 'login'">
+      <span>It is necessary to log in</span>
+      <button mat-flat-button color="secondary" (click)="logInOut()" style="width: 20%">Login</button>
+    </div>
+    <div class="environment-list" *ngIf="templateStatus === 'envs'">
+      <div *ngIf="environmentObjectArray !== null && environmentObjectArray.length === 0" class="environment-detail"
+        style="padding: 10px">
+        <button mat-flat-button (click)="openCreateEnvironmentDialog()" matTooltip="Create environment" color="primary"
+          [disabled]="MAX_ENVIRONMENTS_LIMIT <= 0"> Create new environment
+          <i class="fas fa-plus" aria-hidden="true"></i>
+        </button>
+        <span class="limit-info-text">
+          Max {{ MAX_ENVIRONMENTS_LIMIT }} environments allowed for beta testing </span>
+      </div>
+      <div *ngFor="let environment of environmentObjectArray" [class]="{
+          environment: true,
+          'mat-elevation-z8': expandedEnvironment !== null && expandedEnvironment.id === environment.id
+        }">
+        <div class="environment-header">
+          <div class="title"
+            [class]="expandedEnvironment !== null && environment.id === expandedEnvironment.id ? 'selected' : ''"
+            (click)="expandedEnvironment = expandedEnvironment !== null && expandedEnvironment.id === environment.id ? null : environment; select(expandedEnvironment)">
+            {{ environment.name }}
+          </div>
+          <div class="actions">
+            <mat-icon class="pointer" matTooltip="Delete environment"
+              (click)="deleteEnvironmentDialog(environment)">delete</mat-icon>
+            <mat-icon class="pointer" matTooltip="Edit environment"
+              (click)="openCreateEnvironmentDialog(environment)">edit</mat-icon>
+            <mat-icon class="pointer" *ngIf="environment.enable" matTooltip="Open environment"
+              (click)="openInBrowser(environment.accessUrl)">open_in_browser</mat-icon>
+            <mat-icon class="pointer" *ngIf="!environment.enable" class="disabled"
+              matTooltip="Environment not ready to open">open_in_browser</mat-icon>
+          </div>
+        </div>
+        <div class="environment-info">
+          <p class="info">
+            <span class="label">Description:</span>
+            <span class="value">{{ environment.description }}</span>
+          </p>
+          <p class="info">
+            <span class="label">Environment Type:</span>
+            <span class="value">{{ environment.type }} - {{ environment.typeSpecific }}</span>
+          </p>
+          <p class="info">
+            <span class="label">Provider:</span>
+            <span class="value">{{ environment.provider }}</span>
+          </p>
+          <p class="info">
+            <span class="label">Creation Time:</span>
+            <span class="value">{{ environment.created }}</span>
+          </p>
+          <p class="info">
+            <span class="label">Status:</span>
+            <span class="value">
+              <mat-icon
+                matTooltip="{{ environment.statusText }}{{ environment.status === environmentStatus.NOT_READY ? ' (click RUN to start the environment )' : '' }}"
+                class="status {{ environment.status | lowercase }}">
+                {{ environment.statusIcon }}
+              </mat-icon>
+              {{ environment.statusText }}
+            </span>
+          </p>
+          <p class="info last">
+            <span class="label">List of resources:</span>
+            <span class="value"
+              (click)="expandedEnvironment = expandedEnvironment !== null && expandedEnvironment.id === environment.id ? null : environment; select(expandedEnvironment)"
+              matTooltip="Open environment">
+              <mat-icon class="pointer" aria-hidden="true" aria-label="expand-more"
+                [class]="expandedEnvironment !== null && environment.id === expandedEnvironment.id ? 'icon-up' : 'icon-down'">
+                expand_more
+              </mat-icon>
+            </span>
+          </p>
+        </div>
+
+        <div class="environment-detail" *ngIf="environment !== undefined && expandedEnvironment?.id === environment.id">
+          <div class="list-item nice-scrollbar">
+            <app-analysis-resources *ngIf="environment.resources.length > 0" [resources]="environment.resources"
+              [environment]="environment" (deleteResourceCall)="deleteResource($event)"
+              (openParametersDialogCall)="openParametersDialog($event)"
+              (cloneResourceCall)="cloneResource($event)"></app-analysis-resources>
+
+            <div class="drag-area" *ngIf="environment.resources.length === 0">
+              Select resources on this environment with &nbsp;
+              <mat-icon class="share">move_to_inbox</mat-icon>
+              &nbsp;icon
+            </div>
+          </div>
+          <div class="environment-action">
+            <button mat-flat-button matTooltip="{{ environment.buttonRunText }} environment" color="primary"
+              (click)="openRun(environment)" [disabled]="!environment.buttonRunEnabled">
+              {{ environment.buttonRunText }}
+              <i *ngIf="environment.buttonRunText === 'Run'" class="fas fa-play" aria-hidden="true"></i>
+              <i *ngIf="environment.buttonRunText === 'Reload'" class="fa fa-refresh" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

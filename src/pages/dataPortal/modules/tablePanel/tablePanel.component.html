@@ -1,0 +1,20 @@
+<ng-container class="wrapper" *ngIf="currentDataConfigurables.length > 0">
+  <div class="toggle-container">
+    <mat-tab-group [(selectedIndex)]="selectedIndex">
+      <mat-tab *ngFor="let config of currentDataConfigurables; let i = index">
+        <ng-template mat-tab-label>
+          <i class="fa-solid fa-earth-europe" *ngIf="resourcesList[config.id]">&nbsp;</i>
+          <i class="fa-solid fa-flask" *ngIf="facilitiesList[config.id]">&nbsp;</i>
+          <span [outerHTML]="config.name"></span>
+          <mat-icon *ngIf="favouritesList[config.id]" class="yellow">star</mat-icon>
+          <i *ngIf="hiddenMarkerOnMapList[config.id]" aria-hidden="true" class="fas fa-eye-slash warning"></i>
+        </ng-template> 
+        <app-table-display [dataConfigurable]="config" (exportData)="exportFile($event)" [onDialogComponent]="onDialogComponent"></app-table-display>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</ng-container>
+
+<ng-container class="wrapper" *ngIf="currentDataConfigurables.length === 0">
+  <div class="toggle-container no-data">Data cannot be visualised in a tabular format.</div>
+</ng-container>

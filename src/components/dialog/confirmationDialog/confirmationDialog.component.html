@@ -1,0 +1,10 @@
+<app-base-dialog [data]="data" [title]="data.dataIn.messageHtml">
+  <ng-container class="content">
+    <div class="buttons-wrapper">
+      <button class="cancel" mat-flat-button color="primary" (click)="cancel()"
+        [innerHTML]="data.dataIn.cancelButtonHtml"></button>
+      <button type="submit" [ngClass]="data.dataIn.confirmButtonCssClass" mat-flat-button color="primary"
+        (click)="confirm()" [innerHTML]="data.dataIn.confirmButtonHtml"></button>
+    </div>
+  </ng-container>
+</app-base-dialog>

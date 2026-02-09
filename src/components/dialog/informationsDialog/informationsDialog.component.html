@@ -1,0 +1,82 @@
+<app-base-dialog [data]="data" title="Welcome to the EPOS Platform!">
+  <ng-container class="content">
+    <div class="wrapper">
+      <div class="items-bar">
+        <img src="assets/img/items_bar.png" />
+      </div>
+      <div class="body-content">
+        <div class="first-content">
+          This Platform is regularly updated, more data will be made readily available.
+        </div>
+        <div class="form-title">
+          Leave your e-mail for updates:
+        </div>
+        <ng-container *ngIf="show === 'form'">
+          <div class="container" novalidate>
+            <form class="form" [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
+              <mat-form-field class="form-element">
+                <input required matInput placeholder="Name" formControlName="firstName">
+                <mat-error *ngIf="!firstName.valid && firstName.touched">
+                  {{ defaultAlert }}
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field class="form-element">
+                <input required matInput placeholder="E-mail address" formControlName="email">
+                <mat-error *ngIf="!email.valid && email.touched">
+                  {{ getErrorEmail() }}
+                </mat-error>
+              </mat-form-field>
+              <ng-container *ngIf="email.value && firstName.value">
+                <mat-checkbox
+                  required
+                  formControlName="consent"
+                  [checked]="false">
+                  I understand and acknowledge the
+                  <a href="https://www.epos-eu.org/sites/default/files/Privacy_Policy.pdf" target="_blank">
+                    PRIVACY POLICY document
+                  </a>
+                </mat-checkbox>
+                <mat-error *ngIf="(!consent.valid && consent.touched)">
+                  {{ defaultAlert }}
+                </mat-error>
+              </ng-container>
+              <div class="button-row">
+                <!-- <button mat-flat-button type="submit" color="secondary">
+                  KEEP ME UPDATED
+                </button> -->
+                <button type="submit"
+                        [ngClass]="data.dataIn.confirmButtonCssClass"
+                         mat-flat-button color="primary"
+                         (click)="confirm()"
+                         [disabled]="!(firstName.value || email.value) ? false : (!formGroup.valid)"
+                         [innerHTML]="data.dataIn.confirmButtonHtml">
+                </button>
+              </div>
+              <!-- <div class="button-row">
+                <button class="guide-button" mat-flat-button color="primary" [mat-dialog-close]="true" (click)="handleTourStart($event)">
+                  START GUIDED TOUR
+                </button>
+              </div> -->
+            </form>
+          </div>
+          <div *ngIf="null !== feedback" class="feedback">
+            <p class="big">
+              <strong>Thank you!</strong>
+            </p>
+            <p>Your request has been received.</p>
+          </div>
+          <div *ngIf="errors !== undefined" class="errors">
+            <ng-container *ngFor="let error of errors">
+              <span [innerHTML]="error"></span>
+            </ng-container>
+          </div>
+        </ng-container>
+        <div class="footer">
+          <mat-checkbox [(ngModel)]="noShowAgain">
+            Don't show again
+          </mat-checkbox>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</app-base-dialog>

@@ -1,0 +1,15 @@
+<span *ngIf="!isEmpty" [class]="'display-item display-item-depth-'+ depth +' display-item-index-'+index"
+  [class.last-item]="index === (indexOf - 1)" [class.first-item]="0 === index">
+  <span *ngIf="null !== stringValue" class="value" appLinkIfUrl>{{stringValue}}</span>
+
+  <ng-container *ngIf="null !== objectValue">
+    <ul class="item-group" [class.single-item-group]="1 === childrenCount">
+      <li class="group-item" *ngFor="let childValue of objectValue | keyvalue; let i=index">
+        <span *ngIf="showChildLabels" class="label">{{childValue.key}}:</span>
+        <app-object-displayer [value]="childValue.value" [index]="i" [indexOf]="childrenCount" [depth]="depth+1">
+        </app-object-displayer>
+      </li>
+    </ul>
+    <div class="end-of-group"></div>
+  </ng-container>
+</span>

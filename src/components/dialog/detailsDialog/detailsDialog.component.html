@@ -1,0 +1,199 @@
+<div id="detailsTourId">
+  <app-base-dialog [data]="data" [title]="'Details'" data-cy="details-dialog">
+    <ng-container class="headerActions">
+      <div class="actions">
+
+        <button *ngIf="context === CONTEXT_RESOURCE" class="fair-btn"
+          matTooltip="This will open a new page showing the FAIR principles assessment for this distribution."
+          aria-label="FAIR Assessment — opens a new page with the FAIR principles for this distribution"
+          (click)="openFairnessDetails()">
+          <mat-icon>workspace_premium</mat-icon>
+          FAIR Assessment
+        </button>
+
+        <mat-icon (click)="hasContactUsButton ? openSendEmailForm() : true"
+          [ngClass]="{ disabled: !hasContactUsButton }">email</mat-icon>
+        <a (click)="hasContactUsButton ? openSendEmailForm() : true"
+          [ngClass]="{ disabled: !hasContactUsButton }">Contact Us</a>
+
+      </div>
+    </ng-container>
+    <ng-container class="content">
+      <div *ngIf="detailsData === undefined" class="spinner" data-cy="details-dialog-spinner">
+        <mat-spinner></mat-spinner>
+      </div>
+      <div *ngIf="detailsData !== undefined">
+        <table mat-table [dataSource]="dataSource" matSort id="matTable" class="mat-elevation-z0">
+          <tr mat-row *matRowDef="let keyValue; columns: displayColumns"></tr>
+          <!-- key -->
+          <ng-container matColumnDef="key">
+            <th mat-cell *matCellDef="let keyValue; let i = index" data-cy="details-dialog-key">
+              {{ keyValue.key }}
+            </th>
+          </ng-container>
+          <!-- value -->
+          <ng-container matColumnDef="value">
+            <td mat-cell *matCellDef="let keyValue; let i = index"
+              [ngClass]="{ table: 'Data Provider(s)' === keyValue.key }" data-cy="details-dialog-value">
+              <ng-container [ngSwitch]="true">
+                <span *ngSwitchCase="'Spatial Coverage' === keyValue.key || 'Location' === keyValue.key">
+                  <app-spatial-coverage-map [hidden]="!showMap"
+                    [spatialRange]="spatialRange"></app-spatial-coverage-map>
+                  <span *ngIf="!showMap" [innerHTML]="keyValue.value"></span>
+                </span>
+                <span *ngSwitchCase="'Categories' === keyValue.key">
+                  <mat-tree #treeCategories [dataSource]="dataSourceCategories" [treeControl]="treeControlCategories"
+                    class="categories-tree">
+                    <mat-tree-node *matTreeNodeDef="let node">
+                      {{ node.name }}
+                    </mat-tree-node>
+                    <mat-nested-tree-node *matTreeNodeDef="let node; when: hasChildCategories">
+                      <div class="mat-tree-node">
+                        {{ node.name }}
+                        <button mat-icon-button class="categories-tree-button"
+                          [attr.aria-label]="'Toggle ' + node.name">
+                          <mat-icon class="mat-icon-rtl-mirror ">
+                            {{ 'chevron_right' }}
+                          </mat-icon>
+                        </button>
+
+                        <div role="group">
+                          <ng-container matTreeNodeOutlet></ng-container>
+                        </div>
+                      </div>
+                    </mat-nested-tree-node>
+                  </mat-tree>
+                </span>
+                <span *ngSwitchCase="'Data Provider(s)' === keyValue.key || 'Organization(s)' === keyValue.key">
+                  <table mat-table [dataSource]="dataProvider" id="dataProvidersMatTable" class="dataprovider">
+                    <tr mat-row *matRowDef="let keyValue; columns: displayColumns" id="{{ keyValue.key }}"></tr>
+                    <!-- key -->
+                    <ng-container matColumnDef="key">
+                      <th mat-cell *matCellDef="let keyValueDp; let i = index" [hidden]="true"></th>
+                    </ng-container>
+                    <!-- value -->
+                    <ng-container matColumnDef="value">
+                      <td mat-cell *matCellDef="let keyValueDp; let i = index" style="padding-right: 5px">
+                        <ng-container *ngIf="keyValueDp.relatedDataProvider.length > 0">
+                          <mat-expansion-panel [expanded]="false">
+                            <mat-expansion-panel-header>
+                              <mat-panel-title>
+                                <a *ngIf="keyValueDp.dataProviderUrl !== ''" class="nobold"
+                                  href="{{ keyValueDp.dataProviderUrl }}" target="_blank"
+                                  [innerHTML]="keyValueDp.dataProviderLegalName"></a>
+                                <span *ngIf="keyValueDp.dataProviderUrl === ''"
+                                  [innerHTML]="keyValueDp.dataProviderLegalName" class="nobold"></span>
+                              </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="providerList">
+                              <ng-container *ngFor="let val of keyValueDp.relatedDataProvider">
+                                <a *ngIf="val.dataProviderUrl !== ''" href="{{ val.dataProviderUrl }}" target="_blank"
+                                  [innerHTML]="'- ' + val.dataProviderLegalName" class="nobold"></a>
+                                <span *ngIf="val.dataProviderUrl === ''" [innerHTML]="'- ' + val.dataProviderLegalName"
+                                  class="providers-span"></span>
+                              </ng-container>
+                            </div>
+                          </mat-expansion-panel>
+                        </ng-container>
+                        <ng-container *ngIf="keyValueDp.relatedDataProvider.length === 0">
+                          <a *ngIf="keyValueDp.dataProviderUrl !== ''" class="nobold"
+                            href="{{ keyValueDp.dataProviderUrl }}" target="_blank"
+                            [innerHTML]="keyValueDp.dataProviderLegalName"></a>
+                          <span *ngIf="keyValueDp.dataProviderUrl === ''" [innerHTML]="keyValueDp.dataProviderLegalName"
+                            class="title"></span>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+                  </table>
+                </span>
+                <span *ngSwitchCase="'Keywords' === keyValue.key">
+                  <app-vocabulary-tooltip [keywords]="keyValue.value"></app-vocabulary-tooltip>
+                </span>
+                <span *ngSwitchDefault [innerHTML]="keyValue.value | urlToLink"></span>
+              </ng-container>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="citation">
+            <td mat-footer-cell *matFooterCellDef colspan="2">
+              <mat-accordion multi="true" data-cy="details-dialog-how-to-cite">
+                <mat-expansion-panel [expanded]="false">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>How to cite</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div class="citation">
+                    <app-citation-component [detailsData]="detailsData"
+                      [citationsToShow]="citationsToShow"></app-citation-component>
+                  </div>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </td>
+            <tr mat-footer-row *matFooterRowDef="['citation']" class="example-second-footer-row"></tr>
+          </ng-container>
+          <ng-container *ngIf="dataService.data.length > 0" matColumnDef="disclaimer">
+            <td mat-footer-cell *matFooterCellDef colspan="2">
+              <mat-accordion multi="true" data-cy="details-dialog-service-details">
+                <mat-expansion-panel [expanded]="true">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>Service Details</mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <table mat-table [dataSource]="dataService" id="serviceMatTable" class="service">
+                    <tr mat-row *matRowDef="let keyValue; columns: displayColumns" id="{{ keyValue.key }}"></tr>
+                    <!-- key -->
+                    <ng-container matColumnDef="key">
+                      <th mat-cell *matCellDef="let keyValue; let i = index" data-cy="details-dialog-service-key">
+                        {{ keyValue.key }}
+                      </th>
+                    </ng-container>
+                    <!-- value -->
+                    <ng-container matColumnDef="value">
+                      <td mat-cell *matCellDef="let keyValue; let i = index" data-cy="details-dialog-service-value">
+                        <ng-container [ngSwitch]="true">
+                          <span *ngSwitchDefault [innerHTML]="keyValue.value | urlToLink"></span>
+                          <span *ngSwitchCase="keyValue.key === 'Service Endpoint'">
+                            {{ keyValue.value }}
+                          </span>
+                          <mat-accordion multi="false"
+                            *ngSwitchCase="keyValue.key === 'Service Provider' && keyValue.value !== null">
+                            <ng-container *ngIf="keyValue.value.relatedDataProvider.length > 0">
+                              <mat-expansion-panel [expanded]="false">
+                                <mat-expansion-panel-header>
+                                  <mat-panel-title>
+                                    <a *ngIf="keyValue.value.dataProviderUrl !== ''" class="nobold"
+                                      href="{{ keyValue.value.dataProviderUrl }}" target="_blank"
+                                      [innerHTML]="keyValue.value.dataProviderLegalName"></a>
+                                    <span *ngIf="keyValue.value.dataProviderUrl === ''"
+                                      [innerHTML]="keyValue.value.dataProviderLegalName" class="nobold"></span>
+                                  </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="providerList">
+                                  <ng-container *ngFor="let val of keyValue.value.relatedDataProvider">
+                                    <a *ngIf="val.dataProviderUrl !== ''" href="{{ val.dataProviderUrl }}"
+                                      target="_blank" [innerHTML]="'- ' + val.dataProviderLegalName" class="nobold"></a>
+                                    <span *ngIf="val.dataProviderUrl === ''"
+                                      [innerHTML]="'- ' + val.dataProviderLegalName" class="providers-span"></span>
+                                  </ng-container>
+                                </div>
+                              </mat-expansion-panel>
+                            </ng-container>
+                            <ng-container *ngIf="keyValue.value.relatedDataProvider.length === 0">
+                              <a *ngIf="keyValue.value.dataProviderUrl !== ''" class="nobold"
+                                href="{{ keyValue.value.dataProviderUrl }}" target="_blank"
+                                [innerHTML]="keyValue.value.dataProviderLegalName"></a>
+                              <span *ngIf="keyValue.value.dataProviderUrl === ''"
+                                [innerHTML]="keyValue.value.dataProviderLegalName" class="title"></span>
+                            </ng-container>
+                          </mat-accordion>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+                  </table>
+                </mat-expansion-panel>
+              </mat-accordion>
+            </td>
+            <tr mat-footer-row *matFooterRowDef="['disclaimer']" class="example-second-footer-row"></tr>
+          </ng-container>
+        </table>
+      </div>
+    </ng-container>
+  </app-base-dialog>
+</div>

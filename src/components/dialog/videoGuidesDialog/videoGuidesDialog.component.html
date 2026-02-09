@@ -1,0 +1,9 @@
+<app-base-dialog [data]="data" title="Video Guides">
+  <ng-container class="content">
+    <mat-tab-group *ngIf="videos.length > 0" (selectedTabChange)="changeTab($event)">
+      <mat-tab *ngFor="let video of videos" label="{{ video.title }}">
+        <app-video [video]="video"></app-video>
+      </mat-tab>
+    </mat-tab-group>
+  </ng-container>
+</app-base-dialog>

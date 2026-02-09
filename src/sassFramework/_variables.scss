@@ -1,0 +1,60 @@
+// Use these to set another (appropriately named) variable within this file, don't reference these in other scss files
+$color-main-content: #ffffff;
+$color-primary: #004926;
+$color-primary-l: lighten($color-primary, 10%);
+$color-primary-ll: lighten($color-primary-l, 10%);
+$color-primary-lll: rgba($color-primary, .54);
+$color-secondary: #f39c12;
+$color-secondary-l: lighten($color-secondary, 10%);
+$color-secondary-ll: lighten($color-secondary-l, 10%);
+$color-tertiary: #3388ff;
+$color-text-bg: #f4f4f4;
+$color-text-bg-light: #ffffff;
+$color-text-bg-dark: #a7a7a7;
+$color-borders: #ddd;
+$color-dark-text: #444;
+$color-dark-text-important: #333;
+$color-dark-text-strong: #000000;
+$color-light-text: #fff;
+$color-danger: #dd4b39;
+$color-success: $color-primary;
+$color-hazard: #f39c12;
+$color-cancel: #838383;
+$color-yellow: #ffc107;
+
+$color-background-panel: rgba(255, 255, 255, 0.5);
+$color-icon: white;
+$color-icon-success: #1ea966;
+$color-icon-info: #1e3fa9;
+$color-icon-warning: #f0a845;
+$color-icon-error: #c6394a;
+
+$color-selected-item: #e1e1e1;
+
+// label
+$label-default-bg: #d2d6de;
+
+// framework, breakpoints
+$grid-columns: 12;
+$breakpoint-small: 'only screen and (min-width: 20rem)';
+$breakpoint-medium: 'only screen and (min-width: 57rem)';
+
+// header
+$header-height: 60px;
+$header-background-color: rgba(0, 0, 0, 0.3);
+
+// panel position
+$sidenav-margin: 35px;
+$sidenav-button-width: 30px;
+$sidenav-button-height: 30px;
+$sidenav-left-top: 65px;
+$sidenav-right-top: 100px;
+$sidenav-bottom-top: 50vh;
+$padding-background-panel: 0.3em;
+$button-toggle-height: 8.5vh;
+$panel-gap: 0.5vh;
+
+// results panel
+$results-item-height: 4.2vh;
+$results-title-font-size: 1.7vh;
+$results-title-max-font-size: 20px;

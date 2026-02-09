@@ -1,0 +1,43 @@
+@use './sassFramework/_driver.scss';
+
+@import './sassFramework/_register.scss';
+
+@import 'utility/eposLeaflet/lightboxComponent/customLightbox.component';
+
+// remove browser specific default outlines
+* {
+  outline: none;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+#driver-highlighted-element-stage {
+  background: transparent !important;
+  outline: 5000px solid rgba(0, 0, 0, .75);
+}
+
+#driver-page-overlay {
+  background: none !important;
+}
+
+.custom-panel-class {
+  margin-top: -13px !important;
+}
+
+.published-color {
+  color: #4caf50;
+}
+
+.submitted-color {
+  color: #f39f21;
+}
+
+.draft-color {
+  color: #ffe222;
+}
+
+.archived-color {
+  color: #5f615f;
+}

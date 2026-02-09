@@ -1,0 +1,127 @@
+// ==========================================================
+// Monitoring Popup Styles
+// ----------------------------------------------------------
+// Popup modal for service monitoring information
+// ==========================================================
+.monitoring-popup {
+  padding: 24px 28px;
+  max-width: 450px;
+  font-family: 'Inter', 'Roboto', Arial, sans-serif;
+  background: #ffffff;
+
+
+  // ---------- Popup Title ----------
+  .title {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #004926;
+    text-align: center;
+    letter-spacing: 0.4px;
+    line-height: 1.25;
+  }
+
+  // ---------- Info Container ----------
+  .info-container {
+    margin-bottom: 24px;
+
+    .status-info {
+      background: #f8f9fa;
+      padding: 16px;
+      margin-bottom: 16px;
+
+      .service-name {
+        font-weight: 600;
+        font-size: 15px;
+        color: #333;
+        margin-bottom: 12px;
+      }
+
+      .status-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 14px;
+
+        .label {
+          font-weight: 600;
+          color: #555;
+          margin-right: 8px;
+          min-width: 80px;
+        }
+
+        .status-active {
+          color: #4caf50;
+          font-weight: 600;
+        }
+
+        .status-inactive {
+          color: #f44336;
+          font-weight: 600;
+        }
+
+        .timestamp {
+          color: #666;
+        }
+      }
+    }
+
+    .description {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: #3a3a3a;
+      text-align: center;
+      margin: 0;
+    }
+  }
+
+  // ---------- Action Buttons ----------
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+
+    button {
+      min-width: 120px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: none;
+
+      &.epos-cancel-btn {
+        background: #e0e0e0;
+        color: #333;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+          background: #d0d0d0;
+          transform: translateY(-1px);
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+      }
+
+      &.epos-confirm-btn {
+        background: #004926;
+        color: white;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+
+        &:hover {
+          background: #00633b;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+        }
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+@import 'src/sassFramework/variables';
+
+button.mat-flat-button {
+  border: 1px solid white;
+  padding: 15px;
+  color: white;
+  font-weight: bold;
+}
+
+.login-disclaimer {
+  clear: both;
+  text-align: center;
+  padding: 1rem 0;
+
+  color: black;
+  font-size: 1em;
+
+  a {
+    color: $color-primary;
+  }
+}
+
+.content {
+  color: #ffffff;
+  align-items: center;
+
+  & .manage-link {
+    // color: #ffffff;
+    color: $color-primary;
+    margin: 1rem 0;
+  }
+}

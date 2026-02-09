@@ -1,0 +1,10 @@
+<mat-form-field>
+  <mat-label>{{ label }}</mat-label>
+  <mat-select #select multiple [(ngModel)]="selectedObject" (openedChange)="toggleSelected($event)" class="select">
+    <mat-select-trigger *ngIf="toSelect !== undefined && toSelect.length > 0">{{ toSelect.length }} item(s) selected</mat-select-trigger>
+    <mat-option #option (click)="toggleAllSelection()" [value]="null" *ngIf="list !== undefined && list.length > 1">Select All ({{ list.length }})</mat-option>
+    <mat-option *ngFor="let elem of list" [value]="elem" (click)="toggleAllSelection(true)" matTooltip="{{ elem.label }}">
+      {{ elem.label }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

@@ -1,0 +1,60 @@
+<mat-accordion>
+  <div class="layer-control" data-cy="layer-control-accordion">
+    <div class="layer-list" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListData]="orderedLayers">
+      <div class="layer" *ngFor="let layer of orderedLayers" cdkDragLockAxis="y" cdkDrag>
+        <div class="layer-placeholder" *cdkDragPlaceholder></div>
+        <mat-expansion-panel class="mat-elevation-z8">
+          <mat-expansion-panel-header
+            [class]="{ 'layer-header': true, 'layer-header-no-move': orderedLayers.length === 1 }">
+            <mat-panel-title>
+
+              <span class="layer-compat-warning" (click)="$event.stopPropagation()"
+                *ngIf="!checkLayerCompatibility(layer)" matTooltip="Layer not compatible with {{ currentCRS }}"
+                matTooltipPosition="above" aria-label="Layer not compatible with the current CRS"
+                data-cy="layer-incompatible-icon">
+                <mat-icon>warning</mat-icon>
+              </span>
+
+              <span class="legend-icon">
+                <app-layer-legend [layer]="layer" [showLabel]="false" [showImage]="false"></app-layer-legend>
+              </span>
+
+              <span class="layer-title">{{ layer.name }}</span>
+
+              <span class="layer-toggle" (click)="$event.stopPropagation()">
+                <app-layer-toggle [layer]="layer"></app-layer-toggle>
+              </span>
+
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="layer-container" (mousedown)="$event.stopPropagation()">
+            <app-layer-tabs-control [layer]="layer"></app-layer-tabs-control>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </div>
+
+    <mat-expansion-panel data-cy="layer-control-expansion-panel">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Basemap</mat-panel-title>
+        <mat-panel-description>
+          <div class="basemap-info">
+            <span>{{ selectedBaseLayerVal }}</span>
+            <span *ngIf="arcticOverlays.length > 0" class="overlay-counter">
+              (+{{ activeArcticOverlaysCount }} Overlays)
+            </span>
+            <span (click)="$event.stopPropagation()">
+              <mat-slide-toggle [checked]="basemapToggled" (change)="updateEnable($event)"></mat-slide-toggle>
+            </span>
+          </div>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-base-layer-selection [crsCode]="currentCRS"
+        (selectedLayer)="selectedBaseLayer($event)"></app-base-layer-selection>
+
+      <app-arctic-overlay-selection *ngIf="arcticOverlays.length > 0"
+        [layers]="arcticOverlays"></app-arctic-overlay-selection>
+
+    </mat-expansion-panel>
+  </div>
+</mat-accordion>

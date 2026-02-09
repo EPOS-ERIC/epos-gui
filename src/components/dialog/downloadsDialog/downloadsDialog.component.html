@@ -1,0 +1,113 @@
+<app-base-dialog [data]="data" [title]="serviceName + '<br />' + subTitle">
+  <ng-container class="content">
+    <div class="table nice-scrollbar">
+      <ng-container *ngIf="spinner">
+        <mat-spinner></mat-spinner>
+      </ng-container>
+      <ng-container *ngIf="!spinner">
+        <table mat-table [dataSource]="dataSource" matSort data-cy="downloads-dialog-table">
+          <!-- Checkbox Column -->
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="checkbox-container" *ngIf="dataSource.data.length > 1">
+                <mat-checkbox
+                  (change)="$event ? toggleAllRows() : null"
+                  [checked]="selection.hasValue() && isAllSelected()"
+                  [indeterminate]="selection.hasValue() && !isAllSelected()"
+                  [aria-label]="checkboxLabel()"></mat-checkbox>
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <div class="checkbox-container" *ngIf="dataSource.data.length > 1">
+                <mat-checkbox
+                  (click)="$event.stopPropagation()"
+                  (change)="$event ? selection.toggle(row) : null"
+                  [checked]="selection.isSelected(row)"
+                  [aria-label]="checkboxLabel(row)"></mat-checkbox>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- File Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by file name">File Name</th>
+            <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+          </ng-container>
+
+          <!-- Type Column -->
+          <ng-container matColumnDef="format">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by file format">File Format</th>
+            <td mat-cell *matCellDef="let element">{{ element.format }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="environment" *ngIf="environmentOps && environmentSelected !== null">
+            <th mat-header-cell *matHeaderCellDef>Add to environment</th>
+            <td mat-cell *matCellDef="let element">
+              <div class="actions">
+                <button mat-icon-button (click)="addToEnv(element)" color="secondary">
+                  <mat-icon matTooltip="Add to env {{ environmentSelected.name }}" aria-hidden="true" class="share">move_to_inbox</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Download Column -->
+          <ng-container matColumnDef="download">
+            <th mat-header-cell *matHeaderCellDef>Download</th>
+            <td mat-cell *matCellDef="let element">
+              <div class="actions">
+                <button mat-icon-button (click)="download($event, element); openCitationDialog()" data-cy="downloads-dialog-download-button">
+                  <mat-icon matTooltip="Download" aria-hidden="true">download</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Copy URL Column -->
+          <ng-container matColumnDef="copy">
+            <th mat-header-cell *matHeaderCellDef [hidden]="onlyDownload">Copy URL</th>
+            <td mat-cell *matCellDef="let element" [hidden]="onlyDownload">
+              <div class="actions">
+                <button mat-icon-button [disabled]="element.type === 'CONVERTED'" (click)="copyUrl(element)">
+                  <mat-icon matTooltip="Copy Url">link</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </ng-container>
+    </div>
+    <div class="footer" [hidden]="dataSource.data.length < 2">
+      <div class="counter">{{ selection.selected.length }} selected</div>
+      <mat-form-field class="filter">
+        <mat-label>Filter</mat-label>
+        <input #filterInput matInput name="epos-table-data-filter" (keyup)="applyFilter($event)" placeholder="Filter table results..." />
+      </mat-form-field>
+      <mat-paginator #paginator matPaginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
+    </div>
+    <div>
+      <div *ngIf="isLoading" class="spinner-wrapper">
+        <mat-spinner diameter="60"></mat-spinner>
+      </div>
+      <div class="citation-wrapper" *ngIf="!isLoading">
+        <div class="citation-content">
+        <p>
+          <b>How to cite: </b><br/>
+          <span [innerHTML]="citation" ></span>
+        </p>
+        </div>
+        <button mat-icon-button (click)="copyCitationToClipboard(citation)">
+          <mat-icon matTooltip="Copy to clipboard">content_copy</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="buttons" [hidden]="dataSource.data.length < 2">
+      <button mat-flat-button [color]="'primary'" [disabled]="!selection.hasValue()" (click)="downloadSelected($event); openCitationDialog()">Download files</button>
+      <button mat-flat-button [color]="'secondary'" [disabled]="!selection.hasValue()" (click)="downloadUrls()">Generate URLs</button>
+      <button mat-flat-button *ngIf="environmentOps" [color]="'secondary'" [disabled]="!selection.hasValue()" (click)="downloadUrls()">Add to Environment</button>
+    </div>
+  </ng-container>
+</app-base-dialog>

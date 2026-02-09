@@ -1,0 +1,119 @@
+// btn.scss
+html .btn {
+  box-shadow: none;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  touch-action: manipulation;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid $color-borders;
+  border-radius: 4px;
+  color: $color-dark-text-important;
+  background: $color-text-bg;
+
+  &:not(.disabled):hover {
+    color: $color-dark-text-important;
+    background: darken($color-text-bg, 5%);
+    border: 1px solid darken($color-borders, 5%);
+  }
+
+  &-positive {
+    background-color: #77dd77;
+    border: 1px solid darken(#77dd77, 5%);
+
+    &:not(.disabled):hover {
+      background: darken(#77dd77, 10%);
+    }
+  }
+
+  &-warning {
+    background-color: #ffb347;
+    border: 1px solid darken(#ffb347, 5%);
+
+    &:not(.disabled):hover {
+      background: darken(#ffb347, 10%);
+    }
+  }
+
+  &-information {
+    background-color: #aec6cf;
+    border: 1px solid darken(#aec6cf, 5%);
+
+    &:not(.disabled):hover {
+      background: darken(#aec6cf, 10%);
+    }
+  }
+
+  &-alert {
+    background-color: red;
+    border: 1px solid darken(red, 5%);
+
+    &:not(.disabled):hover {
+      background: darken(red, 10%);
+    }
+  }
+
+  &-negative {
+    background-color: #ff6961;
+    border: 1px solid darken(#ff6961, 5%);
+
+    &:not(.disabled):hover {
+      background: darken(#ff6961, 10%);
+    }
+  }
+
+  &--flat {
+    border-radius: 0;
+    box-shadow: none;
+    border-width: 1px;
+  }
+
+  &-box-tool {
+    padding: 5px;
+    font-size: 12px;
+    background: transparent;
+    color: $color-dark-text;
+  }
+
+  &--default {
+    background: $color-text-bg;
+    color: $color-dark-text;
+    border: $color-borders;
+  }
+  &--full {
+    width: 100%;
+  }
+}
+
+.filter-cat-button {
+  &.mat-mini-fab {
+    &.mat-primary {
+      margin: 0 10px 0 5px;
+    }
+  }
+
+  span {
+    &.mat-button-wrapper {
+      padding: 0;
+
+      mat-icon {
+        &.mat-icon {
+          &.open {
+            color: #FFC107;
+          }
+
+          &.closed {
+            color: #FFFFFF;
+          }
+        }
+      }
+    }
+  }
+}

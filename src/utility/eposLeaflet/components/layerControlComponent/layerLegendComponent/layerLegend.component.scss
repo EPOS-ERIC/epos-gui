@@ -1,0 +1,153 @@
+@import "src/sassFramework/variables.scss";
+
+:host ::ng-deep {
+
+  .wrapper {
+    max-height: 40vh;
+  }
+
+  .control-content {
+    max-height: 300px;
+  }
+
+  .legend-content {
+    overflow-y: auto;
+    min-width: 200px;
+    height: 100%;
+  }
+
+  .legend-title {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 0.5em;
+    margin: 0;
+    line-height: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .legend-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-shrink: 0;
+
+    & .legend-title {
+      flex-grow: 1;
+    }
+  }
+
+  .legend-wrapper {
+    display: flex;
+    max-width: 200px;
+    min-height: 1px;
+  }
+
+  .leaflet-right .legend-header {
+    flex-direction: row;
+  }
+
+  .leaflet-left .legend-header {
+    flex-direction: row-reverse;
+  }
+
+  .legend-details {
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+  }
+
+  .multilayer-specific-name {
+    &::before {
+      content: '(';
+    }
+
+    &::after {
+      content: ')';
+    }
+  }
+
+  // change some flows depending on control position
+  .leaflet-top .legend-wrapper {
+    flex-direction: column;
+  }
+
+  .leaflet-bottom .legend-wrapper {
+    flex-direction: column-reverse;
+  }
+
+  // specific to default individual legend display function
+  .legend-details-grid {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+
+  .legend-details-row {
+    display: flex;
+    flex-direction: row;
+    column-gap: 20px;
+    border-bottom: 1px solid #bdbdbd;
+  }
+
+  .legend-details-row:last-child {
+    border-bottom: none;
+  }
+
+  .legend-icon {
+    z-index: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  span.legend-icon {
+    width: 20px;
+  }
+
+  span.legend-label {
+    vertical-align: middle;
+  }
+
+  img.legend-icon {
+    width: 300px;
+  }
+
+  // stacked display
+  .legend-display-stacked {
+    & .single-legend-wrapper+.single-legend-wrapper {
+      border-top: 1px solid #bdbdbd;
+    }
+  }
+
+  // paged display
+  .legend-display-paged {
+    & .legend-pagination {
+      display: flex;
+      padding: 5px;
+
+      & .btn {
+        line-height: 1;
+
+        &:first-of-type {
+          margin-right: 0.2em;
+        }
+      }
+    }
+  }
+
+  div.no-label {
+    .legend-details-grid {
+      .legend-details-row {
+        .legend-label {
+          display: none;
+        }
+      }
+    }
+  }
+
+  span.material-icons {
+    font-size: 20px;
+    color: grey;
+  }
+}

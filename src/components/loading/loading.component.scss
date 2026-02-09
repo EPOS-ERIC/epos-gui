@@ -1,0 +1,19 @@
+@import 'src/sassFramework/variables.scss';
+
+.wrapper {
+  position: absolute;
+  display: none;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  opacity: .8;
+  z-index: 99;
+  justify-content: center;
+  align-items: center;
+  background-color: #00000069;
+}
+
+.visible {
+  display: flex;
+}

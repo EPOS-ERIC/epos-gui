@@ -1,0 +1,12 @@
+<div class="visibility">
+  <div class="list">
+    <ng-container *ngFor="let visibility of item.visibility" class="display-inline" [ngSwitch]="visibility">
+      <div class="hflex" *ngSwitchCase="VIEW_TYPE_ENUM.MAP" matTooltip="Zoom on map" (click)="centerOnMapOBS(item)">
+        <span class="link pointer">View on Map</span>
+      </div>
+      <div class="hflex" *ngSwitchCase="VIEW_TYPE_ENUM.TABLE" (click)="tablePanelToggle(item)" matTooltip="Open table data">
+        <span class="link pointer">View List of Equipment</span>
+      </div>
+    </ng-container>
+  </div>
+</div>

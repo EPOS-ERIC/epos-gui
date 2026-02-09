@@ -1,0 +1,40 @@
+<app-base-dialog [data]="data" title="{{ step === 'retrieve' ? 'Loading' : 'Sharing' }} configuration">
+  <ng-container class="content">
+    <div class="wrapper">
+      <div class="body-content">
+        <ng-template [ngIf]="step === 'retrieve'" [ngIfElse]="createUrl">
+          <div class="first-content">Opening this shared configuration will replace your current favorites, layer customizations, and settings.</div>
+          <div class="version-info" *ngIf="versionConf !== version && versionConf !== '' && showVersionMismatch">
+            <div class="warning">A previous version may contain incompatibilities and cause platform instability.</div>
+
+            <div class="versions">
+              Current Version:
+              <span class="version">{{ version }}</span>
+              <br />
+              Loadable version:
+              <span class="version-load">{{ versionConf }}</span>
+            </div>
+          </div>
+
+          <div class="first-content">Are you sure you want to proceed?</div>
+        </ng-template>
+
+        <ng-template #createUrl>
+          <div class="first-content">Share your current favorites, layer customizations, and settings with others using a unique link.</div>
+        </ng-template>
+
+        <div class="container" novalidate>
+          <div class="button-row">
+            <button mat-flat-button type="submit" color="secondary" (click)="cancel()" [innerHTML]="step === 'createUrl' ? 'CANCEL' : 'NO'"></button>
+            <button type="submit" [ngClass]="data.dataIn.confirmButtonCssClass" mat-flat-button color="primary" [disabled]="isLoaded "  (click)="confirm()" [innerHTML]="data.dataIn.confirmButtonHtml">
+            </button>
+          </div>
+        </div>
+        <span *ngIf="isLoaded">
+          <mat-spinner diameter="20"></mat-spinner>
+         The services are loading please wait , the button will be enabled soon 
+        </span>
+      </div>
+    </div>
+  </ng-container>
+</app-base-dialog>

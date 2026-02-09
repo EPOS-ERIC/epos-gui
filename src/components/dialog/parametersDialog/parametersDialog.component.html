@@ -1,0 +1,14 @@
+<app-base-dialog [data]="dialog" [title]="dialog.dataIn.title" class="form-title">
+  <ng-container class="content" *ngIf="component === formType.DATA">
+    <app-data-configuration class="flex flex-col flex-grow" [dataConfigurableSource]="selectedConfigurableSource"></app-data-configuration>
+  </ng-container>
+
+  <ng-container class="content" *ngIf="component === formType.ANALYSIS">
+    <app-configuration
+      class="flex flex-col flex-grow"
+      [dataConfigurableSource]="selectedConfigurableSource"
+      [extraParameterDefinitions]="extraParameterDefinitions"
+      [extraParameterValues]="extraParameterValues"
+      (closePopup)="close($event)"></app-configuration>
+  </ng-container>
+</app-base-dialog>

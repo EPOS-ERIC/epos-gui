@@ -1,0 +1,119 @@
+@import 'src/sassFramework/variables';
+
+:host {
+
+  color: $color-primary;
+
+  ::ng-deep .mat-dialog-content {
+    overflow: hidden;
+  }
+
+  ::ng-deep h1 {
+    font-size: 25px;
+    font-weight: bold;
+
+    margin-bottom: 10px;
+  }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+
+    .items-bar {
+      width: 100%;
+
+      img {
+        width: 100%;
+      }
+    }
+
+    .body-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      width: 100%;
+
+      .first-content {
+        margin-top: 0.75rem;
+      }
+
+      .first-content,
+      .form-title {
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+
+      .form-title {
+        text-align: left;
+        margin-top: 20px;
+      }
+
+      .footer {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+    }
+
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 10px;
+
+    button {
+      width: 200px;
+      color: white;
+      font-weight: bold;
+      margin-left: 0px;
+      margin-right: 0px;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      height: 40px;
+      flex: 1;
+
+      &.confirm {
+        font-size: 13px;
+        font-family: 'Open Sans';
+      }
+
+      &.guide-button {
+        background-color: #3b8fd3;
+      }
+    }
+  }
+
+  .feedback,
+  .errors {
+    color: $color-danger;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+
+    .big {
+      font-size: 1.5em;
+    }
+  }
+
+}
+
+mat-error {
+  text-align: right;
+  margin-top: 10px;
+}
+
+mat-checkbox {
+  margin-top: 1rem;
+}

@@ -1,0 +1,155 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+  display: contents;
+}
+
+app-epos-leaflet-map ::ng-deep {
+  // leaflet draw control
+  // & .leaflet-draw {
+  //   position: absolute;
+  //   left: -999999999px;
+  // }
+
+  // mouse postion control
+  & .leaflet-control-mouseposition {
+    background-color: $header-background-color;
+    border-radius: 4px;
+    background-clip: padding-box;
+    // border: 2px solid rgba(0, 0, 0, .2);
+    min-width: 12em;
+    text-align: center;
+    color: $color-icon;
+  }
+
+  & .leaflet-control-zoom a,
+  .control-wrapper .icon-wrapper,
+  .geocoder-control-input {
+    background-color: $header-background-color;
+    color: $color-icon;
+    border: none;
+  }
+
+  & .geocoder-control-input {
+    padding: 0;
+    color: white;
+    background-image: none;
+    height: 30px;
+    background-image: url('assets/search-white.png');
+  }
+
+  & .geocoder-control-input::placeholder {
+    color: white;
+  }
+
+  & .leaflet-control {
+    border: none;
+  }
+
+  & .layer-name,
+  .legend-title {
+    color: black;
+  }
+
+  // cluster custom marker
+  & .cluster-outer {
+    display: block;
+    width: inherit;
+    height: inherit;
+    position: absolute;
+    background-clip: padding-box;
+    border-radius: 20px;
+  }
+
+  .leaflet-container {
+    font-family: "Open Sans";
+  }
+
+  .leaflet-control {
+    margin-top: 0px;
+    margin-bottom: 5px;
+    margin-right: 0px;
+  }
+
+  .leaflet-control-zoom,
+  .leaflet-bar,
+  .leaflet-control,
+  .leaflet-bar a:first-child,
+  .leaflet-bar a:last-child,
+  .control-wrapper .bordered {
+    border-radius: 0px;
+  }
+
+  .leaflet-popup {
+    width: 500px;
+  }
+
+  .leaflet-popup-content-wrapper,
+  .leaflet-popup.paginated-features-wrapper .paginated-features .slide-navigation,
+  .leaflet-popup.paginated-features-wrapper .paginated-features {
+    border-radius: 0px;
+  }
+
+  .leaflet-popup.paginated-features-wrapper .paginated-features .slide-navigation .nav.disable .nav-butt {
+    background-color: transparent !important;
+  }
+
+  .leaflet-popup-content-wrapper {
+    .leaflet-popup-content {
+
+      padding: 10px;
+
+      table {
+
+        tr:nth-child(even) {
+          background-color: whitesmoke;
+        }
+
+        th {
+          width: 30%;
+        }
+
+        td {
+          width: 70%;
+
+          a {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
+
+          a.no-word-break {
+            display: initial;
+            word-break: unset;
+          }
+        }
+      }
+    }
+
+  }
+
+  .leaflet-top .control-content {
+    top: 35px;
+    right: -5px;
+  }
+
+  #legend-control {
+    .control-content {
+      right: 32px;
+    }
+  }
+
+  div.showOnTable,
+  div.showOnGraph {
+    cursor: pointer;
+    margin-bottom: 10px;
+    text-decoration: underline;
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 5px;
+
+    i {
+      text-decoration: none;
+    }
+  }
+}

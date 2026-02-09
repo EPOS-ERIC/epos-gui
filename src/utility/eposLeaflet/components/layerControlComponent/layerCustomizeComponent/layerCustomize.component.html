@@ -1,0 +1,122 @@
+<ul class="list-options">
+  <!-- opacity and color -->
+  <li class="option" *ngIf="tools.opacity">
+    <div class="label">Opacity</div>
+    <div class="content">
+      <mat-slider (input)="updateOpacity($event)" [value]="opacity" [min]="0" [max]="1" [step]="0.01"
+        matTooltip="Change opacity"></mat-slider>
+    </div>
+  </li>
+  <li class="option" *ngIf="tools.colorOpacity">
+    <div class="label">Stroke color</div>
+    <div class="content">
+      <mcc-color-picker [hideHexForms]="true" [hideUsedColors]="true" [colorPickerSelectorHeight]="170"
+        [selectedColor]="color" [hideButtons]="true" (change)="updateColor($event)" matTooltip="Change color">
+      </mcc-color-picker>
+      <mat-slider (input)="updateOpacity($event)" [value]="opacity" [min]="0" [max]="1" [step]="0.01"
+        matTooltip="Change opacity"></mat-slider>
+    </div>
+  </li>
+  <li class="option" *ngIf="tools.fillColorOpacity">
+    <div class="label">Fill color</div>
+    <div class="content">
+      <mcc-color-picker [hideHexForms]="true" [hideUsedColors]="true" [colorPickerSelectorHeight]="170"
+        [selectedColor]="fillColor" [hideButtons]="true" (change)="updateFillColor($event)" matTooltip="Change color">
+      </mcc-color-picker>
+      <mat-slider (input)="updateFillColorOpacity($event)" [value]="fillColorOpacity" [min]="0" [max]="1"
+        [step]="0.01" matTooltip="Change opacity"></mat-slider>
+    </div>
+  </li>
+
+  <li class="option" *ngIf="tools.weight">
+    <div class="label">Weight</div>
+    <div class="content">
+      <mat-slider (input)="updateWeight($event)" [value]="weight" [min]="1" [max]="10" [step]="1"
+        matTooltip="Change weight">
+      </mat-slider>
+    </div>
+  </li>
+
+  <ng-container *ngIf="tools.changeMarker ==='image'">
+    <li class="option">
+      <div class="label">Icon url</div>
+      <div class="content">
+        <mat-form-field appearance="fill">
+          <input #markerImageUrlInput matInput type="text" [(ngModel)]="markerValue">
+        </mat-form-field>
+
+        <div class="buttons">
+          <button mat-flat-button class="small-button" matTooltip="Change icon marker" (click)="changeMarkerIcon()"
+            [color]="'primary'">
+            <i class="fas fa-check" aria-hidden="true"></i>
+          </button>
+
+          <button mat-flat-button class="small-button" matTooltip="Set to default icon" (click)="changeMarkerIcon(true)"
+            [color]="'primary'">
+            <mat-icon aria-hidden="false">refresh</mat-icon>
+          </button>
+        </div>
+      </div>
+    </li>
+  </ng-container>
+
+  <ng-container *ngIf="tools.changeMarker ==='character'">
+    <li class="option">
+      <div class="label">Value</div>
+      <div class="content">
+        <mat-form-field appearance="fill">
+          <input #markerCharacterInput matInput type="text" [(ngModel)]="markerValue" maxlength="1">
+        </mat-form-field>
+        <div class="buttons">
+          <button mat-flat-button class="small-button" matTooltip="Change icon marker"
+            (click)="changeMarkerIconCharacter()" [color]="'primary'">
+            <i class="fas fa-check" aria-hidden="true"></i>
+          </button>
+
+          <button mat-flat-button class="small-button" matTooltip="Set to default icon"
+            (click)="changeMarkerIconCharacter(true)" [color]="'primary'">
+            <mat-icon aria-hidden="false">refresh</mat-icon>
+          </button>
+        </div>
+      </div>
+    </li>
+  </ng-container>
+
+  <ng-container *ngIf="tools.changeMarker === 'font'">
+    <li class="option">
+      <div class="label">Marker Icon</div>
+      <div class="content">
+        <mat-select-trigger>
+          <i [classList]="selectedMarkerIcon"></i>
+        </mat-select-trigger>
+        <mat-select #selectIcon [(ngModel)]="markerIconFa" (selectionChange)="changeMarkerIconFa($event)">
+          <mat-option *ngFor="let icon of markerIcons" [value]="icon.id">
+            <i [classList]="icon.value.join(' ')"></i>
+          </mat-option>
+        </mat-select>
+      </div>
+    </li>
+  </ng-container>
+
+  <ng-container *ngIf="tools.size">
+    <li class="option">
+      <div class="label">Size</div>
+      <div class="content">
+        <mat-slider (input)="updateSize($event)" [value]="markerIconSize" [min]="5" [max]="100" [step]="5"
+          matTooltip="Change icon size">
+        </mat-slider>
+      </div>
+    </li>
+  </ng-container>
+
+  <ng-container *ngIf="tools.cluster">
+    <li class="option">
+      <div class="label">Cluster</div>
+      <div class="content">
+        <mat-slide-toggle [checked]="clustering" (change)="updateClustering($event)" matTooltip="Cluster marker on map" data-cy="layer-control-cluster-toggle">
+        </mat-slide-toggle>
+      </div>
+    </li>
+  </ng-container>
+
+</ul>

@@ -1,0 +1,105 @@
+<mat-form-field class="text-search mat-elevation-z2">
+  <mat-label>Free text search</mat-label>
+  <mat-chip-list #chipList>
+    <mat-chip *ngFor="let key of listKeyString" (removed)="removeKeyString(key)">
+      <span matTooltip="{{ key.length > 15 ? key : '' }}">{{ key.length > 15 ? (key | slice : 0 : 15) + '...' : key }}</span>
+      <button matChipRemove matTooltip="remove '{{ key }}'">
+        <i class="fas fa-times icon" aria-hidden="true"></i>
+      </button>
+    </mat-chip>
+    <input
+      #textSearchInput
+      type="text"
+      [matAutocomplete]="auto"
+      [formControl]="autoCompleteFormControl"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="addKeyString($event)" />
+  </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayLeafItem" class="nice-scrollbar" (optionSelected)="selectedKey($event)">
+    <mat-option *ngFor="let leafItem of filteredKeys | async" [value]="leafItem">
+      {{ leafItem.label }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>
+
+<mat-expansion-panel #filterPanel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <span>Filters</span>
+      <mat-chip-list #chipFiltersList>
+        <mat-chip *ngFor="let filter of typeFilters" (removed)="removeFilter(filter)">
+          {{ filter }}
+          <button matChipRemove matTooltip="Clear {{ filter }}">
+            <i class="fas fa-times icon" aria-hidden="true"></i>
+          </button>
+        </mat-chip>
+      </mat-chip-list>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="wrapper">
+    <div class="location-select">
+      <span class="radio">
+        <mat-form-field>
+          <mat-select [(ngModel)]="locationRadioSelect">
+            <mat-option value="coordinates">Coordinates</mat-option>
+            <mat-option value="geolocation">Geolocation</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </span>
+      <span class="coords">
+        <app-country-select
+          class="countrySelect"
+          *ngIf="locationRadioSelect === locationRadioSelectTypeGeolocation"
+          [countryDefault]="countrySelected"
+          (countrySelected)="geolocationSelection($event)"></app-country-select>
+
+        <app-spatial-controls
+          *ngIf="locationRadioSelect === locationRadioSelectTypeCoordinates"
+          class="flex-grow"
+          [context]="context"
+          [bbox]="bBoxFromModel"
+          (setBBox)="setBBoxFromControl($event)"
+          (setEditableBBox)="setEditableBBoxFromControl($event)"
+          (clearCountriesSelect)="clearCountriesSelect()"
+          (resetGeolocation)="resetGeolocation()"></app-spatial-controls>
+      </span>
+    </div>
+  </div>
+  <div class="select-wrapper">
+    <app-data-provider-filter
+      class="dataProviderSelect"
+      *ngIf="dataProviders !== undefined"
+      [dataProviders]="dataProviders"
+      [dataProvidersSelected]="organisationsSelected"
+      [title]="'Filter by Organizations'"
+      [label]="'Organizations'"
+      [model]="organisationsModel"
+      (newDataProvidersSelected)="dataProviderSelected($event)"></app-data-provider-filter>
+  </div>
+
+  <!--
+  <div class="select-wrapper" *ngIf="facilitiesType !== undefined">
+    <app-multi-select [label]="'Facility Type'" [model]="facilitiesModel" [list]="facilitiesType" [toSelect]="facilitiesTypeSelected" (newSelectedIds)="facilityTypeSelect($event)"></app-multi-select>
+  </div>
+
+  <div class="select-wrapper">
+    <app-multi-select
+      [label]="'Equipment Type'"
+      [model]="equipmentModel"
+      [list]="equipmentType"
+      [toSelect]="equipmentTypeSelected"
+      [toSelectAttr]="'label'"
+      (newSelectedIds)="equipmentTypeSelect($event)"></app-multi-select>
+  </div>
+  -->
+  
+  <div class="row">
+    <div class="button-container half reverse">
+      <button [disabled]="!clearEnabled" class="adv-search-buttons" mat-flat-button color="primary" (click)="clearAll()" matTooltip="Clear all filters">
+        Clear All
+        <i class="fas fa-times icon" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</mat-expansion-panel>

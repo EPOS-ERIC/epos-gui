@@ -1,0 +1,196 @@
+@import 'mixins';
+
+[class^='mat-'] {
+
+  & :after,
+  & :before {
+    box-sizing: initial;
+  }
+}
+
+[class^='mat-dialog-'],
+[class^='mat-tab-'],
+[class^='mat-expansion-'],
+[class^='mat-paginator-'],
+[class^='mat-button-'],
+[class^='mat-radio-'],
+[class^='mat-table'],
+[class^='mat-option-'],
+[class^='mat-option'],
+[class^='mat-form-field-'],
+[class^='mat-form-field'],
+[class^='mat-checkbox-'],
+[class^='mat-tree'],
+[class^='mat-select-'] {
+  font-family: "Open Sans";
+}
+
+.mat-fab.mat-primary,
+.mat-flat-button.mat-primary,
+.mat-mini-fab.mat-primary,
+.mat-raised-button.mat-primary {
+  background-color: $color-primary;
+  line-height: 0;
+  margin: 0 5px 0 5px;
+
+  &:not([disabled]) {
+    &.confirm {
+      background-color: $color-success;
+    }
+
+    &.cancel {
+      background-color: $color-cancel;
+    }
+
+    &.danger {
+      background-color: $color-danger;
+    }
+
+    &.warning {
+      background-color: $color-hazard;
+      color: $color-dark-text-important;
+    }
+  }
+}
+
+.mat-button.mat-dialog-close {
+  line-height: 1.4;
+  height: 26px;
+}
+
+.mat-flat-button {
+  height: 26px;
+}
+
+.mat-option {
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 14px;
+}
+
+.mat-fab.mat-secondary,
+.mat-flat-button.mat-secondary,
+.mat-mini-fab.mat-secondary,
+.mat-raised-button.mat-secondary {
+  background-color: $color-secondary;
+  line-height: 0;
+}
+
+.mat-datepicker-toggle-active {
+  color: $color-primary;
+}
+
+.mat-form-field-appearance-legacy .mat-form-field-wrapper {
+  padding-bottom: .5em;
+}
+
+.mat-form-field-appearance-legacy .mat-form-field-underline {
+  bottom: .5em;
+}
+
+.cdk-global-scrollblock {
+  overflow-y: hidden;
+}
+
+.mat-slide-toggle.mat-primary.mat-checked .mat-slide-toggle-bar {
+  background-color: $color-primary-lll;
+}
+
+// Should be in a materials theme really.
+.mat-button-toggle.primary.mat-button-toggle-appearance-standard {
+  background-color: $color-primary-ll;
+  color: $color-light-text;
+
+  &.mat-button-toggle-checked {
+    background-color: $color-primary;
+  }
+}
+
+.mat-button-toggle.accent.mat-button-toggle-appearance-standard {
+  background-color: $color-secondary-ll;
+  color: $color-dark-text;
+
+  &.mat-button-toggle-checked {
+    background-color: $color-secondary;
+  }
+}
+
+.mat-flat-button.small-button {
+  margin: 5px 0;
+  min-width: 40px; //CSS quirk
+  max-width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mat-table .mat-row,
+.mat-table .mat-header-row {
+  &.selected {
+    background-color: $color-secondary;
+    color: $color-secondary;
+  }
+
+  & td,
+  & th {
+    padding: 0 1em;
+  }
+}
+
+.mat-tooltip {
+  color: black !important;
+  font-size: 0.75em;
+  background-color: #D49F2A;
+}
+
+.mat-select-panel {
+  @include nice-scroll;
+}
+
+.mat-progress-spinner circle,
+.mat-spinner circle {
+  stroke: $color-yellow;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  background-color: transparent;
+  padding: 0 !important;
+}
+
+.mat-form-field-appearance-fill .mat-form-field-infix {
+  padding-bottom: 0.4375em;
+  padding-top: 0.4375em;
+}
+
+// border-radius
+.mat-form-field-appearance-fill .mat-form-field-flex,
+.mat-button,
+.mat-icon-button,
+.mat-stroked-button,
+.mat-flat-button,
+.mat-dialog-container,
+.mat-expansion-panel,
+.mat-tooltip,
+.mat-select-panel,
+.mat-menu-panel,
+.mat-button-toggle-standalone.mat-button-toggle-appearance-standard,
+.mat-button-toggle-group-appearance-standard {
+  border-radius: 0 !important;
+}
+
+// mat-expansion-panel
+.mat-expansion-panel {
+  .mat-expansion-panel-header {
+    height: 50px;
+  }
+}
+
+button.mat-menu-item {
+  line-height: 36px;
+  height: 36px;
+}
+
+.mat-form-field-wrapper,
+.mat-dialog-container {
+  @include nice-scroll;
+}

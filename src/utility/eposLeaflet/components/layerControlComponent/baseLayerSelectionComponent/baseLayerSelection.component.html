@@ -1,0 +1,8 @@
+<div class="wrapper nice-scrollbar">
+  <mat-radio-group (change)="setLayer($event)" aria-labelledby="example-radio-group-label" class="example-radio-group">
+    <mat-radio-button [hidden]="basemap.name === 'None'" [checked]="currentSelected === basemap" class="example-radio-button" *ngFor="let basemap of basemaps" [value]="basemap">
+      <div class="option-wrapper"><span class="title">{{basemap.name}}</span><span class="img-wrapper"><img src="{{basemap.getThumnailSource()}}" alt=""></span></div>
+  </mat-radio-button>
+</mat-radio-group>
+</div>
+

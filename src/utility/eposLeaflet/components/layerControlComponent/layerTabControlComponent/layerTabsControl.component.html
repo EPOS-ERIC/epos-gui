@@ -1,0 +1,18 @@
+<mat-tab-group>
+  <ng-container *ngIf="hasLegendTab">
+    <mat-tab label="Legend">
+      <ng-container *ngIf="layer !== null">
+        <app-layer-legend [layer]=layer [showLabel]="true">
+        </app-layer-legend>
+      </ng-container>
+    </mat-tab>
+    <mat-tab label="Customize">
+      <app-layer-customize [layer]=layer></app-layer-customize>
+    </mat-tab>
+  </ng-container>
+  <ng-container *ngIf="!hasLegendTab">
+    <mat-tab label="Customize">
+      <app-layer-customize [layer]=layer></app-layer-customize>
+    </mat-tab>
+  </ng-container>
+</mat-tab-group>

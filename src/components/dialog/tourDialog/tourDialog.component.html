@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>
+  EPOS Platform Guided Tour
+</h2>
+<div mat-dialog-content>
+  By starting the tour, all filter selections will be lost. Are you sure you want to continue?
+</div>
+<div class="flex-wrapper">
+  <mat-checkbox class="example-margin" color="primary" (change)="handleShowAgain($event.checked)">
+    Don't show this again
+  </mat-checkbox>
+  <div mat-dialog-actions>
+    <button class="close-dialog" mat-stroked-button (click)="handleClose()">
+      Cancel
+    </button>
+    <button mat-flat-button color="primary" mat-dialog-close (click)="handleStartTour($event)">
+      Start Tour
+    </button>
+  </div>
+</div>

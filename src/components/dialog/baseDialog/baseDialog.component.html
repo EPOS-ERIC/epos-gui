@@ -1,0 +1,13 @@
+<div>
+  <div class="header" cdkDrag cdkDragRootElement=".cdk-overlay-pane" cdkDragHandle>
+    <h1 mat-dialog-title [innerHTML]="title"></h1>
+    <ng-content select=".headerActions"></ng-content>
+    <button *ngIf="data.closable" mat-button [mat-dialog-close]="data" class="mat-dialog-close" (click)="closing()"
+      data-cy="mat-dialog-close-button">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="nice-scrollbar" mat-dialog-content>
+    <ng-content select=".content"></ng-content>
+  </div>
+</div>

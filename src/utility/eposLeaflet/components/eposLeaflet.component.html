@@ -1,0 +1,5 @@
+<div class="loading" *ngIf="showLoader">
+  <mat-spinner></mat-spinner>
+</div>
+<div #mapElement class="leaflet-touch"></div>
+<app-layer-control [ngStyle]="{ display: (layerControlOpened | async) ? 'block' : 'none' }" class="custom-layer-control" [map]="leafletMapObj" data-cy="map-layer-control-panel"></app-layer-control>

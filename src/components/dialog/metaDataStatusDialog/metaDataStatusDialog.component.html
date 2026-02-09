@@ -1,0 +1,22 @@
+<app-base-dialog [data]="data" [title]="data.dataIn.dialogTitle" style="overflow: hidden;">
+    <ng-container class="content">
+      <p style="margin-bottom: 23px;">
+        You've just logged in. Would you like to activate <span><b>'Metadata Preview'</b></span> mode?
+        <br>
+        <br>
+        <br>
+        <i>Tip: You can enable this mode later from the header bar, upper-right corner."</i>
+      </p>
+      <div class="buttons-wrapper">
+        <button class="cancel" mat-flat-button color="primary" (click)="continue()"
+          [innerHTML]="data.dataIn.cancelButtonHtml"></button>
+        <button type="submit" [ngClass]="data.dataIn.activateMetaDataStatusCssClass" mat-flat-button color="primary"
+          (click)="enableMetadataStatusMode()">Activate Metadata Preview Mode</button>
+      </div>
+      <div style=" display: flex; width: 100%; justify-content: end;">
+        <mat-checkbox  [(ngModel)]="noShowAgain" (change)="setCheckbox()">
+          Don't show again
+        </mat-checkbox>
+      </div>
+    </ng-container>
+</app-base-dialog>

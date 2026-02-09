@@ -1,0 +1,22 @@
+<div class="notification-holder" *ngIf="notifications.length !== 0">
+  <div class="notification notification--positive" [ngClass]="{
+    'notification--positive':(notification.getType() === 'positive'),
+    'notification--negative':(notification.getType() === 'negative'),
+    'notification--warning':(notification.getType() === 'warning')
+  }" *ngFor="let notification of notifications">
+    <div class="notification-close" aria-role="button" (click)="hideNotification(notification.getId())">
+      <i class="notification-close-icon fas fa-times-circle" aria-hidden="true"></i>
+    </div>
+    <div class="notification-body">
+      <div class="notification-body-text">
+        {{notification.getNotificationText()}}
+      </div>
+    </div>
+    <div class="notification-action" *ngIf="notification.getAction() !== null">
+      <button type="button" (click)="notification.getAction()!.getButton().action()"
+        [attr.class]="notification.getAction()!.getButton().cssClass">
+        {{notification.getAction()!.getButton().text}}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+@import 'src/sassFramework/variables.scss';
+
+:host{
+  display: flex;
+}
+i {
+  color: $color-primary;
+  margin: 2px;
+  cursor: help;
+}

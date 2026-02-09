@@ -1,0 +1,95 @@
+//if height less than 1200px
+@media screen and (max-height: 1200px) {
+
+  // form fields font-size
+  html,
+  input,
+  .mat-cell,
+  .mat-footer-cell,
+  .mat-form-field-wrapper,
+  .date-input-wrapper input,
+  .mat-radio-group,
+  .mat-chip,
+  .mat-option,
+  .mat-button-wrapper,
+  .mat-expansion-panel-content,
+  .date-input-wrapper {
+    font-size: 13px !important;
+  }
+
+  // general mat-icon
+  .mat-icon {
+    height: 18px !important;
+    width: 18px !important;
+    font-size: 18px !important;
+  }
+
+  // radio button
+  .mat-radio-outer-circle,
+  .mat-radio-inner-circle {
+    height: 16px !important;
+    width: 16px !important;
+  }
+
+  .mat-radio-button .mat-radio-ripple {
+    left: calc(30% - 16px) !important;
+    top: calc(30% - 16px) !important;
+    height: 36px !important;
+    width: 36px !important;
+  }
+
+  .mat-expansion-panel .mat-expansion-panel-header {
+    height: 40px;
+    font-size: 13px;
+  }
+
+  .mat-option {
+    height: 32px !important;
+    line-height: 32px !important;
+  }
+
+  .mat-flat-button {
+    height: 22px;
+  }
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0.3em;
+  }
+
+  .mat-form-field-underline {
+    bottom: 0.3em;
+  }
+
+  // icons on item result
+  div.item-header img.icon {
+    height: 16px !important;
+  }
+
+}
+
+//if height more than 1500px
+@media screen and (min-height: 1500px) {
+
+  div.domain-box {
+    height: 70px !important;
+
+    .domain-icon {
+      height: 100% !important;
+
+      img {
+        height: 70px !important;
+        width: 70px !important;
+      }
+    }
+
+  }
+
+  .domain-item,
+  .results-title {
+    height: 70px !important;
+
+    p {
+      font-size: 23px !important;
+    }
+  }
+}

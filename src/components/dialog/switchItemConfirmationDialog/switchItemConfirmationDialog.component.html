@@ -1,0 +1,21 @@
+<app-base-dialog [data]="data" [title]="data.dataIn.dialogTitle" style="overflow: hidden;">
+    <ng-container class="content">
+      <p style="margin-bottom: 23px;">
+        You are about to explore new data. This action will remove the current <b>"<span [innerHTML]="data.dataIn.expandedElementName"></span>"</b> data from views (Map, Table, Graph). <br>
+        To keep this data, select 'Add to Favourites and Continue.' If you don't need to save it, just click 'Continue.' <br>
+        <br>
+        <i>Tip: You can also keep data by clicking the  "<mat-icon class="yellow">star</mat-icon>" next to the item name.</i>
+      </p>
+      <div class="buttons-wrapper">
+        <button class="cancel" mat-flat-button color="primary" (click)="continue()"
+          [innerHTML]="data.dataIn.continueButtonHtml"></button>
+        <button type="submit" [ngClass]="data.dataIn.addTofavouriteAndContinueButtonCssClass" mat-flat-button color="primary"
+          (click)="favouriteAndContinue()"><mat-icon class="yellow">star</mat-icon> Add to Favourites and Continue</button>
+      </div>
+      <div style=" display: flex; width: 100%; justify-content: end;">
+        <mat-checkbox  [(ngModel)]="noShowAgain" (change)="setCheckbox()">
+          Don't show again
+        </mat-checkbox>
+      </div>
+    </ng-container>
+</app-base-dialog>

@@ -1,0 +1,30 @@
+<div class="monitoring-popup">
+  <h2 class="title">Service Monitoring</h2>
+  
+  <div class="info-container">
+    <div class="status-info">
+      <p class="service-name">{{ data.serviceName }}</p>
+      
+      <div class="status-row">
+        <span class="label">Status:</span>
+        <span [class]="data.status === 1 ? 'status-active' : 'status-inactive'">
+          {{ data.status === 1 ? 'Service Available ✓' : 'Service Not Available ✗' }}
+        </span>
+      </div>
+      
+      <div class="status-row" *ngIf="data.statusTimestamp">
+        <span class="label">Last check:</span>
+        <span class="timestamp">{{ data.statusTimestamp }}</span>
+      </div>
+    </div>
+    
+    <p class="description">
+      Do you want to view the detailed monitoring information for this service?
+    </p>
+  </div>
+  
+  <div class="actions">
+    <button class="epos-cancel-btn" (click)="close()">Cancel</button>
+    <button class="epos-confirm-btn" (click)="goToMonitoring()">View Monitoring</button>
+  </div>
+</div>

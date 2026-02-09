@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    root /opt/node-apps;
+    server_name _;
+    location /api/ {
+        proxy_pass https://epos.cineca.it/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+    location /epos/epos-gui/master/ {
+        try_files $uri$args $uri$args/ /epos/epos-gui/master/index.html;
+    }
+}

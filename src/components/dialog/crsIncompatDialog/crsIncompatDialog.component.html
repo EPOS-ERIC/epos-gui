@@ -1,0 +1,19 @@
+<app-base-dialog [title]="dialogTitle" [data]="data" [closingFunction]="onOk.bind(this)">
+    <ng-container class="headerActions"></ng-container>
+
+    <div class="content">
+        <div class="alert-list">
+            <div class="alert-row alert-box" *ngFor="let name of layersForView" role="alert">
+                <span class="icon" aria-hidden="true">⚠️</span>
+                <p>
+                    The selected layer <strong>{{ name }}</strong> might not be compatible with the selected projection
+                    <strong>{{ currentCrs }}</strong>.
+                </p>
+            </div>
+        </div>
+
+        <div class="buttons-wrapper">
+            <button mat-flat-button color="primary" (click)="onOk()" cdkFocusInitial>OK</button>
+        </div>
+    </div>
+</app-base-dialog>

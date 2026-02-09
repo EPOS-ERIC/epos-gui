@@ -1,0 +1,44 @@
+<app-base-dialog [data]="data" [title]="(isAddMode ? 'Add' : 'Edit') + ' Environment'">
+  <ng-container class="content">
+    <form [formGroup]="form" *ngIf="!loading">
+      <mat-form-field>
+        <mat-label>Name:</mat-label>
+        <input matInput formControlName="name" placeholder="Name" required name="environment-name" aria-label="environment name" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Description:</mat-label>
+        <input matInput formControlName="description" placeholder="Description" required name="environment-description" aria-label="environment description" />
+      </mat-form-field>
+
+      <ng-template [ngIf]="isAddMode">
+        <mat-form-field>
+          <mat-label>Environment type:</mat-label>
+          <mat-select [(ngModel)]="envType" formControlName="type" required>
+            <mat-option *ngFor="let type of environmentTypeArray" [value]="type.type">
+              {{ type.type }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field [hidden]="envType === ''">
+          <mat-label>Provider:</mat-label>
+          <mat-select [(ngModel)]="envService" formControlName="service" required>
+            <mat-option *ngFor="let typeSelect of environmentServiceSelectArray" [value]="typeSelect.id" matTooltip="{{ typeSelect.description }}">
+              {{ typeSelect.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-template>
+
+      <div class="buttons-wrapper">
+        <button class="cancel" mat-flat-button color="primary" (click)="cancel()">Cancel</button>
+        <button type="submit" class="confirm" mat-flat-button color="primary" [disabled]="form.invalid || form.pristine" (click)="confirm()">{{ isAddMode ? 'Add' : 'Update' }}</button>
+      </div>
+    </form>
+    <div *ngIf="loading" class="loading">
+      <h2>The environment is updating...</h2>
+      <h3>Please Wait</h3>
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-container>
+</app-base-dialog>

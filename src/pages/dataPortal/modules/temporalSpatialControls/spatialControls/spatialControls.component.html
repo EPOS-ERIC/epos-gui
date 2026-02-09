@@ -1,0 +1,24 @@
+<div class="spatio-temporal-control">
+  <ng-container class="container">
+    <app-simple-spatial-control
+      [context]="context"
+      [class.north-change]="northEdited"
+      [class.east-change]="eastEdited"
+      [class.south-change]="southEdited"
+      [class.west-change]="westEdited"
+      (clearBBox)="clearBBox()"
+      (applyEdited)="applyEdited()"
+      (changeBBox)="changeEditableBBox($event)"
+      [bbox]="editedBBox"
+      [inputsDisabled]="disabled"
+      [showClearButton]="true"></app-simple-spatial-control>
+
+    <div class="button-wrapper">
+      <button id="apply-button" class="small-button" *ngIf="showApplyButton" [disabled]="!boundsEdited" mat-flat-button color="primary" matTooltip="Confirm" (click)="applyEdited(false)">
+        <i class="fas fa-check icon" aria-hidden="true"></i>
+      </button>
+
+      <app-drawing-spatial-control *ngIf="showDrawButton" data-cy="drawing-spatial-control-button"></app-drawing-spatial-control>
+    </div>
+  </ng-container>
+</div>

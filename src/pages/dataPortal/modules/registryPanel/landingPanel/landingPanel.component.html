@@ -1,0 +1,65 @@
+<div id="TCS-wrapper" #blockResults>
+  <div class="wrapper" id="tcs-specific-results">
+    <div
+      [class]="{
+        'domain-list': true,
+        'domain-list-results': !showLanding
+      }"
+      data-cy="registry-domain-list">
+      <div
+        [class]="{
+          'domain-box': true,
+          'domain-box-selected': activeDomainCode === domain.code,
+          disabled: (domainResultsCounter['FAV'] === 0 && domain.code === 'FAV') || domainResultsCounter[domain.code] === 0
+        }"
+        *ngFor="let domain of domains; let i = index"
+        (click)="toggleDomain(domain.code)"
+        [attr.id]="domain.code">
+        <ng-container *ngIf="domain.code === 'FAV'">
+          <div
+            [class]="{
+              'domain-icon': true,
+              'domain-icon-selected': activeDomainCode === domain.code
+            }"
+            matTooltip="{{ showLanding ? '' : domain.title + ' (' + domainResultsCounter[domain.code] + ')' }}">
+            <img src="{{ domain.imgUrl }}" />
+            <span
+              *ngIf="domain.code === 'FAV' && domainResultsCounter[domain.code] > 0 && !showLanding && activeDomainCode !== 'FAV'"
+              matBadge="{{ domainResultsCounter[domain.code] }}"
+              matBadgeOverlap="false"></span>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="domain.code !== 'FAV'">
+          <div
+            [class]="{
+              'domain-icon': true,
+              'domain-icon-selected': activeDomainCode === domain.code
+            }"
+            matTooltip="{{ showLanding ? '' : domain.title + ' (' + domainResultsCounter[domain.code] + ')' }}">
+            <img src="{{ domain.imgUrl }}" />
+            <span
+              *ngIf="domain.code === 'FAV' && domainResultsCounter[domain.code] > 0 && !showLanding && activeDomainCode !== 'FAV'"
+              matBadge="{{ domainResultsCounter[domain.code] }}"
+              matBadgeOverlap="false"></span>
+          </div>
+        </ng-container>
+        <div
+          [class]="{
+            'domain-separator': true,
+            'domain-separator-selected': activeDomainCode === domain.code
+          }">
+          &nbsp;
+        </div>
+        <div class="domain-item" [hidden]="!showLanding">
+          <p>
+            <span>{{ domain.title }}</span>
+            <span>{{ domainResultsCounter[domain.code] }}</span>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="domain-results" [hidden]="showLanding">
+      <app-results-panel (basicItemList)="getDistributionItemList($event)" (domainResultsCounterEmitter)="getDomainResultsCounter($event)"></app-results-panel>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+@import 'src/sassFramework/variables';
+
+.resize-none {
+  resize: none;
+}
+.give-me-space {
+  margin: 10px 0;
+}
+.container {
+  width: 100%;
+  padding: 10px;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: row;
+  gap: 3em;
+}
+
+.form-element {
+  padding: 2px 0;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+button.submit {
+  margin: 0px;
+}
+
+.right-float {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.messageAlert {
+  color: $color-danger;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+.small-content {
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  flex-grow: 1;
+  & i {
+    font-size: 50px;
+    color: $color-primary;
+  }
+}
+
+mat-error {
+  text-align: right;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+}

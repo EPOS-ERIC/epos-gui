@@ -1,0 +1,25 @@
+@import 'src/sassFramework/variables.scss';
+
+tr {
+  border-bottom: 1px solid $color-borders;
+  min-height: 40px;
+}
+
+th {
+  text-align: left;
+  width: 20%;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+td {
+  width: 80%;
+  border: none;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+
+  mat-icon {
+    width: 24px !important;
+    height: 24px !important;
+  }
+}

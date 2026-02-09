@@ -1,0 +1,98 @@
+@import "src/sassFramework/variables.scss";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  // min-height: 30px;
+
+  padding: $padding-background-panel;
+  background-color: $color-background-panel;
+
+  ::ng-deep .mat-tab-label-active {
+    background-color: $color-selected-item;
+  }
+
+}
+
+app-table-display {
+  width: 100%;
+}
+
+.no-data {
+  width: 100%;
+  background-color: $color-main-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+  font-size: 2vh;
+}
+
+.hidden {
+  display: none;
+}
+
+.toggle-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: $color-main-content;
+  // padding: 0.5em;
+
+  ::ng-deep .mat-tab-header {
+    .mat-tab-label-content {
+      font-weight: bold;
+    }
+  }
+
+  ::ng-deep .mat-button-toggle-group {
+    width: 100%;
+    flex-wrap: wrap;
+    border: none;
+
+    & .mat-button-toggle {
+      font-size: 12px;
+      height: 2.5em;
+      margin: 0.25em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    & .selected {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
+}
+
+button {
+  padding: 0px;
+  min-width: 26px;
+  position: absolute;
+  z-index: 1;
+
+  &.data {
+    right: 1em;
+    top: 1px;
+  }
+}
+
+.mat-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  color: $color-primary;
+
+  &.yellow {
+    color: rgb(253, 178, 0);
+  }
+}
+
+i.warning {
+  color: $color-secondary;
+}

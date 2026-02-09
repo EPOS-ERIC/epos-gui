@@ -1,0 +1,59 @@
+// miscellaneous.scss
+@import 'mixins';
+
+.pull-right {
+  float: right;
+
+  &-container {
+    display: inline-block;
+    width: 100%;
+    margin: .5rem 0;
+  }
+}
+
+.pull-left {
+  float: left;
+}
+
+.img-circle {
+  border-radius: 50%;
+}
+
+.fake-div {
+  display: block;
+}
+
+.nice-scrollbar {
+  // overflow-y: auto;
+  // overflow-x: hidden;
+
+  @include nice-scroll;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+// map details popup table
+.epos .leaflet-popup-content {
+  & td {
+    padding: 1px 5px;
+  }
+
+  & .pretty-scroll.limit-size {
+    max-height: 250px;
+  }
+}
+
+#startTourDialog {
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  font-size: 12px !important;
+}
+
+.layer-popup-table {
+  width: 100%;
+}

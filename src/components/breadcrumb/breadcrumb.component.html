@@ -1,0 +1,25 @@
+<div class='wrapper'>
+  <div class="label">Categories:</div>
+  <div class="breadcrumbs">
+    <div class='item-crumb' *ngFor="let facets of levels" data-cy="results-panel-item-breadcrumb">
+      <div *ngFor="let crumb of facets; let first = first; let last = last; let index = index" class='display-inline'>
+
+        <!-- first only if ALL or FAV -->
+        <ng-container *ngIf="first && showFirst">
+          <span class="no-link" matTooltip='{{ showFirst ? "" : "Filter by" }} {{ crumb.value }}'>
+            {{ (crumb.value.length>textSliceLimit)? (crumb.value | slice:0:textSliceLimit)+'...':(crumb.value) }}
+          </span> >
+        </ng-container>
+        <ng-container *ngIf="!first">
+          <span [class]="{'no-link': showFirst}" (click)="filterBy(crumb.value)"
+            matTooltip='{{ showFirst ? "" : "Filter by" }} {{ crumb.value }}'>
+            {{ (crumb.value.length>textSliceLimit)? (crumb.value | slice:0:textSliceLimit)+'...':(crumb.value) }}
+          </span>
+        </ng-container>
+
+        <ng-container *ngIf="!last && index !== 0"> > </ng-container>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,162 @@
+<mat-drawer-container class="sidenav-container sidenav-container-left" autosize>
+  <ng-container *ngIf="hasModuleData">
+    <div class="data-panel-button-wrapper">
+      <mat-button-toggle #dataPanelButton class="left-sidenav-data-toggle" matTooltip="{{ dataPanelSidenav.opened ? 'Close' : 'Open ' }} Data Tab" (click)="filterPanelToggle()">
+        <mat-icon aria-hidden="false" aria-label="LeftSidenav icon" [ngClass]="{ selected: dataPanelSidenav.opened }">
+          {{ dataPanelSidenav.opened ? 'chevron_left' : 'chevron_right' }}
+        </mat-icon>
+        <span [ngClass]="{ 'button-text': true, selected: dataPanelSidenav.opened }">DATA</span>
+        <span *ngIf="counterData > 0 && !dataPanelSidenav.opened" matBadge="{{ counterData }}" matBadgeOverlap="false"></span>
+      </mat-button-toggle>
+    </div>
+    <mat-sidenav
+      id="sidenavleft"
+      (closedStart)="dataPanelStatusChange(true)"
+      (openedStart)="dataPanelStatusChange(false)"
+      #dataPanelSidenav
+      [class]="{
+        sidenav: true,
+        'sidenav-left': true,
+        'sidenav-left-close': !dataPanelSidenav.opened
+      }"
+      closed
+      mode="side">
+      <div #dataPanel>
+        <app-data-panel></app-data-panel>
+      </div>
+    </mat-sidenav>
+  </ng-container>
+
+  <ng-container *ngIf="hasModuleAnalysis">
+    <div #analysisPanelButton class="analysis-panel-button-wrapper">
+      <mat-button-toggle class="left-sidenav-analysis-toggle" matTooltip="{{ analysisPanelSidenav.opened ? 'Close' : 'Open' }} Analysis Tab" (click)="analysisPanelToggle()">
+        <mat-icon aria-hidden="false" aria-label="LeftSidenav icon" [ngClass]="{ selected: analysisPanelSidenav.opened }">
+          {{ analysisPanelSidenav.opened ? 'chevron_left' : 'chevron_right' }}
+        </mat-icon>
+        <span [ngClass]="{ 'button-text': true, selected: analysisPanelSidenav.opened }">ANALYSIS</span>
+        <span *ngIf="!analysisPanelSidenav.opened && counterEnvironment > 0" matBadge="{{ counterEnvironment }}" matBadgeOverlap="false"></span>
+      </mat-button-toggle>
+    </div>
+    <mat-sidenav
+      #analysisPanelSidenav
+      id="sidenavleftanalysis"
+      [class]="{
+        sidenavanalysis: true,
+        'sidenav-left': true,
+        'sidenav-left-close-analysis': !analysisPanelSidenav.opened
+      }"
+      closed
+      mode="side">
+      <div #analysisPanel class="analysisPanel">
+        <app-analysis-panel></app-analysis-panel>
+      </div>
+    </mat-sidenav>
+  </ng-container>
+
+  <ng-container *ngIf="hasModuleRegistry">
+    <div #registryPanelButton class="registry-panel-button-wrapper">
+      <mat-button-toggle class="left-sidenav-registry-toggle" matTooltip="{{ registryPanelSidenav.opened ? 'Close' : 'Open' }} Facility Tab" (click)="registryPanelToggle()">
+        <mat-icon aria-hidden="false" aria-label="LeftSidenav icon" [ngClass]="{ selected: registryPanelSidenav.opened }">
+          {{ registryPanelSidenav.opened ? 'chevron_left' : 'chevron_right' }}
+        </mat-icon>
+        <span [ngClass]="{ 'button-text': true, selected: registryPanelSidenav.opened }">FACILITIES</span>
+        <span *ngIf="counterRegistry > 0 && !registryPanelSidenav.opened" matBadge="{{ counterRegistry }}" matBadgeOverlap="false"></span>
+      </mat-button-toggle>
+    </div>
+    <mat-sidenav
+      #registryPanelSidenav
+      id="sidenavleftregistry"
+      (closedStart)="registryPanelStatusChange(true)"
+      (openedStart)="registryPanelStatusChange(false)"
+      [class]="{
+        sidenavregistry: true,
+        'sidenav-left': true,
+        'sidenav-left-close': !registryPanelSidenav.opened
+      }"
+      closed
+      mode="side"
+      data-cy="registry-sidenav">
+      <div #registryPanel class="registryPanel">
+        <app-registry-panel></app-registry-panel>
+      </div>
+    </mat-sidenav>
+  </ng-container>
+
+  <ng-container *ngIf="hasModuleSoftware">
+  <div #softwarePanelButton class="software-panel-button-wrapper">
+    <mat-button-toggle class="left-sidenav-software-toggle" matTooltip="{{ softwarePanelSidenav.opened ? 'Close' : 'Open' }} Software Tab" (click)="softwarePanelToggle()">
+      <mat-icon aria-hidden="false" aria-label="LeftSidenav icon" [ngClass]="{ selected: softwarePanelSidenav.opened }">
+        {{ softwarePanelSidenav.opened ? 'chevron_left' : 'chevron_right' }}
+      </mat-icon>
+      <span [ngClass]="{ 'button-text': true, selected: softwarePanelSidenav.opened }">SOFTWARE</span>
+      <span *ngIf="counterSoftware > 0 && !softwarePanelSidenav.opened" matBadge="{{ counterSoftware }}" matBadgeOverlap="false"></span>
+    </mat-button-toggle>
+  </div>
+  <mat-sidenav
+    #softwarePanelSidenav
+    id="sidenavleftsoftware"
+    (closedStart)="softwarePanelStatusChange(true)"
+    (openedStart)="softwarePanelStatusChange(false)"
+    [class]="{
+      sidenavsoftware: true,
+      'sidenav-left': true,
+      'sidenav-left-close': !softwarePanelSidenav.opened
+    }"
+    closed
+    mode="side"
+    data-cy="software-sidenav">
+    <div #softwarePanel class="softwarePanel">
+      <app-software-panel></app-software-panel>
+    </div>
+  </mat-sidenav>
+</ng-container>
+
+  <ng-container *ngIf="hasModuleData">
+    <div *ngIf="tableInResults">
+      <mat-button-toggle id="table-vis-toggle" class="right-sidenav-toggle" matTooltip="{{ tablePanelSidenav.opened ? 'Close' : 'Open ' }} Table Tab" (click)="tablePanelToggle()" data-cy="table-panel-toggle">
+        <span [matBadgeHidden]="!hasHiddenMarker || tablePanelSidenav.opened" matBadge="-" appMatBadgeFaClass="fas fa-eye-slash" matBadgeOverlap="true"></span>
+        <mat-icon aria-hidden="false" aria-label="RightSidenav icon" [ngClass]="{ selected: tablePanelSidenav.opened }">
+          {{ tablePanelSidenav.opened ? 'chevron_right' : 'chevron_left' }}
+        </mat-icon>
+        <span [ngClass]="{ 'button-text': true, selected: tablePanelSidenav.opened }">TABLE</span>
+        <span [matBadgeHidden]="!(counterTable > 0 && !tablePanelSidenav.opened)" matBadge="{{ counterTable }}" matBadgeOverlap="false"></span>
+      </mat-button-toggle>
+      <mat-sidenav
+        #tablePanelSidenav
+        [class]="{
+          sidenav: true,
+          'sidenav-right': true,
+          'sidenav-right-close': !tablePanelSidenav.opened
+        }"
+        [ngStyle]="{ 'width.px': currentScreenWidth - (leftNavWidth + 120) }"
+        mode="side"
+        position="end"
+        data-cy="table-panel">
+        <div class="right-sidenav-header">
+          <mat-icon aria-hidden="false" (click)="detachPanel('table')">open_in_new</mat-icon>
+        </div>
+        <app-table-panel (closeSideNav)="tablePanelToggle()" class="flex flex-grow nice-scrollbar"></app-table-panel>
+      </mat-sidenav>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="hasModuleData">
+    <div *ngIf="graphInResults">
+      <mat-button-toggle id="graph-vis-toggle" class="bottom-sidenav-toggle" matTooltip="{{ graphPanelSidenav.opened ? 'Close' : 'Open ' }} Gragh Tab" (click)="graphPanelToggle()">
+        <mat-icon aria-hidden="false" aria-label="BottomSidenav icon" [ngClass]="{ selected: graphPanelSidenav.opened }">
+          {{ graphPanelSidenav.opened ? 'chevron_right' : 'chevron_left' }}
+        </mat-icon>
+        <span [ngClass]="{ 'button-text': true, selected: graphPanelSidenav.opened }">GRAPH</span>
+        <span *ngIf="counterGraph > 0" matBadge="{{ counterGraph }}" matBadgeOverlap="false"></span>
+      </mat-button-toggle>
+      <mat-sidenav #graphPanelSidenav class="sidenav sidenav-bottom" [ngStyle]="{ 'width.px': currentScreenWidth - (leftNavWidth + 120) }" mode="side" position="end" data-cy="graph-panel">
+        <div class="right-sidenav-header">
+          <mat-icon aria-hidden="false" (click)="detachPanel('graph')">open_in_new</mat-icon>
+        </div>
+        <app-graph-panel (closeSideNav)="graphPanelToggle()" class="flex flex-grow nice-scrollbar" [plotlyVHeight]="40"></app-graph-panel>
+      </mat-sidenav>
+    </div>
+  </ng-container>
+
+  <app-map></app-map>
+</mat-drawer-container>

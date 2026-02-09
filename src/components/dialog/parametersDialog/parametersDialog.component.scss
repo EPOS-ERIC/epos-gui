@@ -1,0 +1,56 @@
+@import 'src/sassFramework/variables';
+
+:host ::ng-deep {
+
+  h1 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 0;
+    line-height: 25px;
+  }
+
+  .header {
+    justify-content: left !important;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid grey;
+  }
+
+  p.form-title {
+    display: block;
+    margin-top: 1px;
+    font-weight: bold;
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .span-font-small {
+    font-weight: 1;
+  }
+
+  .advanced-search-container {
+    padding: 5px;
+    height: auto;
+    overflow: auto;
+    display: block;
+
+    .form-fields {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      margin-top: 20px;
+
+      .form-field {
+        margin-bottom: 20px;
+        flex: 50%;
+      }
+    }
+
+  }
+
+  .mat-form-field,
+  .mat-checkbox {
+    width: 95%;
+    min-width: 35px;
+  }
+}

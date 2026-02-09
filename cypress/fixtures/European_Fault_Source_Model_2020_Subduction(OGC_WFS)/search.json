@@ -1,0 +1,262 @@
+{
+  "filters": [
+    {
+      "children": [
+        {
+          "id": "YWN0aXZlIGZhdWx0",
+          "name": "active fault"
+        },
+        {
+          "id": "Y3J1c3Q=",
+          "name": "crust"
+        },
+        {
+          "id": "Y3J1c3RhbCBmYXVsdA==",
+          "name": "crustal fault"
+        },
+        {
+          "id": "ZGlw",
+          "name": "dip"
+        },
+        {
+          "id": "ZWFydGhxdWFrZQ==",
+          "name": "earthquake"
+        },
+        {
+          "id": "ZWZlaHI=",
+          "name": "efehr"
+        },
+        {
+          "id": "ZWZzbTIw",
+          "name": "efsm20"
+        },
+        {
+          "id": "ZXNobTIw",
+          "name": "eshm20"
+        },
+        {
+          "id": "ZmF1bHQ=",
+          "name": "fault"
+        },
+        {
+          "id": "Z2VvaGF6YXJk",
+          "name": "geohazard"
+        },
+        {
+          "id": "Z2VvbG9neQ==",
+          "name": "geology"
+        },
+        {
+          "id": "aGF6YXJk",
+          "name": "hazard"
+        },
+        {
+          "id": "aGF6YXJkIG1vZGVs",
+          "name": "hazard model"
+        },
+        {
+          "id": "aW5ndg==",
+          "name": "ingv"
+        },
+        {
+          "id": "bWFnbml0dWRl",
+          "name": "magnitude"
+        },
+        {
+          "id": "cmFrZQ==",
+          "name": "rake"
+        },
+        {
+          "id": "c2Vpc21pYyBoYXphcmQ=",
+          "name": "seismic hazard"
+        },
+        {
+          "id": "c2Vpc21pYyBoYXphcmQgbW9kZWw=",
+          "name": "seismic hazard model"
+        },
+        {
+          "id": "c2Vpc21vZmF1bHRz",
+          "name": "seismofaults"
+        },
+        {
+          "id": "c2Vpc21vZ2VuaWMgZmF1bHQ=",
+          "name": "seismogenic fault"
+        },
+        {
+          "id": "c2Vpc21vZ2VuaWMgc291cmNl",
+          "name": "seismogenic source"
+        },
+        {
+          "id": "c2Vpc21vZ2VuaWMgem9uZQ==",
+          "name": "seismogenic zone"
+        },
+        {
+          "id": "c2Vpc21vbG9neQ==",
+          "name": "seismology"
+        },
+        {
+          "id": "c2VyYQ==",
+          "name": "sera"
+        },
+        {
+          "id": "c2xhYg==",
+          "name": "slab"
+        },
+        {
+          "id": "c2xpcCByYXRl",
+          "name": "slip rate"
+        },
+        {
+          "id": "c3RyaWtl",
+          "name": "strike"
+        },
+        {
+          "id": "c3ViZHVjdGlvbg==",
+          "name": "subduction"
+        },
+        {
+          "id": "c3ViZHVjdGlvbiBmYXVsdA==",
+          "name": "subduction fault"
+        }
+      ],
+      "name": "keywords"
+    },
+    {
+      "children": [
+        {
+          "id": "18b0d0d6-6dc3-4d23-bc7c-260557108192",
+          "name": "INGV - Istituto Nazionale di Geofisica e Vulcanologia"
+        }
+      ],
+      "name": "organisations"
+    },
+    {
+      "children": [
+        {
+          "id": "38b4ce57-18d4-4ff2-aaac-3404e48f1617",
+          "name": "Seismogenic faults"
+        }
+      ],
+      "name": "sciencedomains"
+    },
+    {
+      "name": "servicetypes"
+    }
+  ],
+  "results": {
+    "children": [
+      {
+        "children": [
+          {
+            "children": [
+              {
+                "ddss": "category:seismogenicfaults",
+                "distributions": [
+                  {
+                    "availableFormats": [
+                      {
+                        "format": "OGR-TAB",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=OGR-TAB",
+                        "label": "OGR-TAB",
+                        "originalFormat": "OGR-TAB",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "OGR-KML",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=OGR-KML",
+                        "label": "OGR-KML",
+                        "originalFormat": "OGR-KML",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "gml3",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=gml3",
+                        "label": "GML3",
+                        "originalFormat": "gml3",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "application/epos.geo+json",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=json",
+                        "label": "GEOJSON (json)",
+                        "originalFormat": "json",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "KML",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=KML",
+                        "label": "KML",
+                        "originalFormat": "KML",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "gml32",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=gml32",
+                        "label": "GML32",
+                        "originalFormat": "gml32",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "SHAPE-ZIP",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=SHAPE-ZIP",
+                        "label": "SHAPE-ZIP",
+                        "originalFormat": "SHAPE-ZIP",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "OGR-CSV",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=OGR-CSV",
+                        "label": "OGR-CSV",
+                        "originalFormat": "OGR-CSV",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "OGR-MIF",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=OGR-MIF",
+                        "label": "OGR-MIF",
+                        "originalFormat": "OGR-MIF",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "csv",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=csv",
+                        "label": "CSV",
+                        "originalFormat": "csv",
+                        "type": "ORIGINAL"
+                      },
+                      {
+                        "format": "GML2",
+                        "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/execute/19f0935b-ade5-4c5a-8fb4-51b664de9add?format=GML2",
+                        "label": "GML2",
+                        "originalFormat": "GML2",
+                        "type": "ORIGINAL"
+                      }
+                    ],
+                    "description": "The European Fault-Source Model 2020 (EFSM20) was compiled in the framework of the EU Project SERA, Work Package 25, JRA3. EFSM20 includes only faults that are deemed to be capable of generating earthquakes of magnitude equal to or larger than 5.5 and aims at ensuring a homogenous input for use in ground-shaking hazard assessment in the Euro-Mediterranean area, namely the European Seismic Hazard Model 2020 (ESHM20). This is the standard OGC WFS web service providing the European Fault Source Model 2020 (EFSM20) data related to subduction zones in the form of vectors. Layers description: 1) efsm20_slabdepths: Depth isolines (contours) representing the geometry of the top surface of the slab. Polylines. 2) efsm20_si_parameters: Subduction Interface (SI) parameters. Polygons encompassing the SI area in map view. 3) efsm20_si_discretization: Subduction Interface (SI) discretized in areas spanning 1 km depth. Polygons encompassing each area in map view. 4) efsm20_si_realizations: Subduction Interface (SI) model realizations considering uncertainties. Polygons encompassing each area of the different realizations in map view. 5) efsm20_is_lattice: Intraslab (IS) model constituted by equally-spaced nodes sampling the crustal part of the slab volume. Points. The full description of all the parameters can be found in the documentation linked below. This service is hosted and maintained by Istituto Nazionale di Geofisica e Vulcanologia (INGV) through the European Databases of Seismogenic Faults (Seismofaults.eu) installation.",
+                    "href": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/19f0935b-ade5-4c5a-8fb4-51b664de9add",
+                    "hrefExtended": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/api/v1/resources/details/19f0935b-ade5-4c5a-8fb4-51b664de9add?extended=true",
+                    "id": "19f0935b-ade5-4c5a-8fb4-51b664de9add",
+                    "status": 1,
+                    "statusTimestamp": "1970-01-01T12:00:00Z",
+                    "title": "European Fault Source Model 2020 - Subduction (OGC WFS)",
+                    "uid": "Seismology/EFSM20/Distribution/WFS_Subduction"
+                  }
+                ],
+                "name": "Seismogenic faults"
+              }
+            ],
+            "ddss": "category:earthquakehazardriskservices",
+            "name": "Earthquake hazard and risk services"
+          }
+        ],
+        "code": "SEI",
+        "color": "#476f57",
+        "id": "1",
+        "imgUrl": "assets/img/logo/SEISM_logo.png",
+        "linkUrl": "https://www.epos-eu.org/tcs/seismology",
+        "name": "Seismology"
+      }
+    ],
+    "name": "domains"
+  }
+}

@@ -1,0 +1,37 @@
+h2 {
+  margin-bottom: 0;
+}
+
+div {
+  &[mat-dialog-content] {
+    margin-top: 0.5rem;
+  }
+}
+
+.flex-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: -1rem;
+}
+
+button {
+  &.close-dialog {
+    line-height: 24px;
+  }
+
+  &[mat-dialog-close] {
+    padding: 1rem;
+  }
+}
+
+.mat-dialog-content {
+  font-size: 14px;
+}
+
+.mat-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0;
+}

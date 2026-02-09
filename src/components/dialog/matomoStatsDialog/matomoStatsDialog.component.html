@@ -1,0 +1,83 @@
+<div class="stats-dashboard" id="dashboard-container" [class.sidebar-closed]="!isSidebarOpen">
+
+  <!-- LEFT: when the sidebar is closed, show open + Settings label and Clear Filter -->
+  <div class="top-bar-buttons" *ngIf="!isSidebarOpen">
+    <button id="open-sidebar-btn" class="sidebar-toggle" (click)="toggleSidebar()" title="Open settings"
+      aria-label="Open settings">
+      <mat-icon>keyboard_double_arrow_right</mat-icon>
+      <span class="toggle-label">Settings</span>
+    </button>
+
+    <button *ngIf="dataChange" id="clear-filter-btn" type="button" (click)="clearDateRange()" title="Clear date filter"
+      aria-label="Clear date filter">
+      <i class="fas fa-sync-alt"></i> Clear Filter
+    </button>
+  </div>
+
+  <!-- RIGHT: X to close the dialog (same style as the others) -->
+  <button mat-icon-button id="close-btn" class="sidebar-toggle" mat-dialog-close aria-label="Close dialog" title="Close">
+    <mat-icon>close</mat-icon>
+  </button>
+
+
+  <!-- Button to close the sidebar (double arrow to the left) when it is open -->
+  <button *ngIf="isSidebarOpen" id="close-sidebar-btn" class="sidebar-toggle" (click)="toggleSidebar()"
+    title="Close settings" aria-label="Close settings">
+    <mat-icon>keyboard_double_arrow_left</mat-icon>
+  </button>
+
+  <!-- Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-header">
+      <h3>Settings</h3>
+    </div>
+
+    <div class="sidebar-content">
+      <form (submit)="onDateChange()" class="date-form">
+        <p class="form-description">
+          Select a time range to update the statistics.
+        </p>
+
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input id="startDate" type="date" [(ngModel)]="startDate" name="startDate" required>
+        </div>
+
+        <div class="form-group">
+          <label for="endDate">End Date</label>
+          <input id="endDate" type="date" [(ngModel)]="endDate" name="endDate" required>
+        </div>
+
+        <div *ngIf="dateError" class="error-message">
+          {{ dateError }}
+        </div>
+
+        <button type="submit" class="update-button">Update Statistics</button>
+
+        <button *ngIf="dataChange" class="clear-button" id="clear-filter-btn" type="button" (click)="clearDateRange()">
+          <i class="fas fa-sync-alt"></i> Clear Filter
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="dashboard-main">
+    <h2 class="main-title">
+      Global Access Statistics
+      <span class="date-range">
+        From <strong>{{ activeStartDate }}</strong>
+        to <strong>{{ activeEndDate }}</strong>
+      </span>
+    </h2>
+
+    <div class="iframe-container">
+      <ng-container *ngIf="visitorMapSrc; else loading">
+        <iframe [src]="visitorMapSrc" title="Visitor Access Map"></iframe>
+      </ng-container>
+      <ng-template #loading>
+        <p style="text-align: center;">Loading statistics...</p>
+      </ng-template>
+    </div>
+  </main>
+</div>

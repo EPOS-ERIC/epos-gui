@@ -1,0 +1,23 @@
+<div class="wrapper" [class.disabled]="inputsDisabled">
+  <mat-form-field appearance="fill">
+    <input matInput [(ngModel)]="maxLatNorth" [disabled]="inputsDisabled" (input)="onChange()"
+      (keyup.enter)="applyExtent()" id="north-coord" type="number" step="0.01" min="-90" max="90"
+      matTooltip="&deg;North" placeholder="&deg;North" data-cy="spatial-filter-north-input">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [(ngModel)]="minLatSouth" [disabled]="inputsDisabled" (input)="onChange()"
+      (keyup.enter)="applyExtent()" id="south-coord" type="number" step="0.01" min="-90" max="90"
+      matTooltip="&deg;South" placeholder="&deg;South" data-cy="spatial-filter-south-input">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [(ngModel)]="minLonWest" [disabled]="inputsDisabled" (input)="onChange()"
+      (keyup.enter)="applyExtent()" id="west-coord" type="number" step="0.01" min="-180" max="180"
+      matTooltip="&deg;West" placeholder="&deg;West" data-cy="spatial-filter-west-input">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [(ngModel)]="maxLonEast" [disabled]="inputsDisabled" (input)="onChange()"
+      (keyup.enter)="applyExtent()" id="east-coord" type="number" step="0.01" min="-180" max="180"
+      matTooltip="&deg;East" placeholder="&deg;East" data-cy="spatial-filter-east-input">
+  </mat-form-field>
+
+</div>

@@ -1,0 +1,231 @@
+/*
+  LIGHTBOX OVERLAY — full-screen dark background that covers the page
+*/
+.custom-lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9); // Dark overlay
+  z-index: 9999; // On top of everything
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-in; // Fade effect when opening
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/*
+  IMAGE CONTAINER — keeps the image centered and responsive
+*/
+.custom-lightbox-image-container {
+  max-width: 90%;
+  max-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; // So spinner can be absolutely positioned inside
+  margin: auto;
+}
+
+/*
+  MAIN IMAGE — the displayed image
+*/
+.custom-lightbox-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; // Prevent deformation
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  animation: scaleIn 0.2s ease-out; // Slight zoom-in animation
+}
+
+/* Opening scale animation */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/*
+  SPINNER — loader displayed while image is loading
+*/
+.custom-lightbox-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  color: white;
+
+  .spinner {
+    animation: spin 1s linear infinite;
+  }
+}
+
+/* Rotation animation for the spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+  IMAGE CAPTION — text shown below the image
+*/
+.custom-lightbox-caption {
+  color: white;
+  text-align: center;
+  padding: 20px;
+  font-size: 16px;
+  max-width: 90%;
+  line-height: 1.5;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/*
+  IMAGE COUNTER — example: "Image 1 of 4"
+*/
+.custom-lightbox-counter {
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/*
+  CLOSE BUTTON (X) — top right
+*/
+.custom-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 36px;
+  cursor: pointer;
+  z-index: 10000;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1); // Hover highlight
+    border-radius: 50%;
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95); // Click animation
+  }
+}
+
+/*
+  PREVIOUS & NEXT BUTTONS — arrows for navigation
+*/
+.custom-lightbox-prev,
+.custom-lightbox-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2); // Semi-transparent button
+  border: none;
+  color: white;
+  font-size: 48px;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: all 0.2s ease;
+  z-index: 10000;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1); // Grow slightly on hover
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.95); // Shrink when clicked
+  }
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+}
+
+/* Left arrow */
+.custom-lightbox-prev {
+  left: 20px;
+}
+
+/* Right arrow */
+.custom-lightbox-next {
+  right: 20px;
+}
+
+/*
+  RESPONSIVE STYLES — adjust for phones/tablets
+*/
+@media (max-width: 768px) {
+  .custom-lightbox-image-container {
+    max-width: 95%;
+    max-height: 70vh;
+  }
+
+  .custom-lightbox-prev,
+  .custom-lightbox-next {
+    font-size: 36px;
+    padding: 5px 15px;
+  }
+
+  .custom-lightbox-close {
+    font-size: 28px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .custom-lightbox-caption {
+    font-size: 14px;
+    padding: 15px;
+  }
+}
+
+/*
+  ACCESSIBILITY — disable animations if user prefers reduced motion
+*/
+@media (prefers-reduced-motion: reduce) {
+  .custom-lightbox-overlay,
+  .custom-lightbox-image {
+    animation: none;
+  }
+
+  .custom-lightbox-prev,
+  .custom-lightbox-next,
+  .custom-lightbox-close {
+    transition: none;
+  }
+}

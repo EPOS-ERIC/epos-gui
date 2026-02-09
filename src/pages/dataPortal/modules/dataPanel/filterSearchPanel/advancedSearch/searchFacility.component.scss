@@ -1,0 +1,84 @@
+@import "src/sassFramework/variables.scss";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.5vh;
+  height: 100%;
+  width: 100%;
+
+  ::ng-deep .text-search .mat-form-field-flex {
+    background-color: white;
+    padding: 0.5vh 0.5vh 0 0.75em !important;
+    max-height: 50px;
+  }
+
+  .text-search {
+    ::ng-deep .mat-form-field-underline {
+      display: none;
+    }
+
+    ::ng-deep .mat-chip-list-wrapper .mat-standard-chip {
+      margin-top: 0px !important;
+      margin-bottom: 0px !important;
+    }
+
+    ::ng-deep .mat-form-field-wrapper {
+      padding-bottom: 0px;
+      flex-wrap: unset !important;
+      width: 100%;
+      overflow-x: auto;
+      background-color: white;
+    }
+
+    ::ng-deep .mat-form-field-infix {
+      flex: none;
+    }
+  }
+
+  ::ng-deep .mat-expansion-panel-header-title {
+    display: flex;
+    flex-direction: row;
+
+    .mat-chip-list {
+      margin-left: 10px;
+    }
+  }
+
+  ::ng-deep .mat-expansion-panel {
+
+    padding-left: 10px;
+
+    .mat-expansion-panel-header {
+      padding-left: 0px;
+    }
+
+    .mat-expansion-panel-body {
+      padding: 0 10px 10px 0;
+    }
+  }
+
+  .mat-chip {
+    min-height: 24px;
+    border-radius: 0px;
+    padding: 5px;
+    justify-content: space-between;
+    background-color: #c69436;
+    white-space: nowrap;
+
+    @media (max-height: 1300px) {
+      font-size: 12px !important;
+    }
+  }
+
+  .mat-chip-remove {
+    border: none;
+    padding-top: 2px;
+    background-color: transparent;
+  }
+
+  ::ng-deep .mat-chip-list-wrapper {
+    flex-wrap: initial;
+  }
+}
