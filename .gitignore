@@ -76,6 +76,7 @@ Thumbs.db
 # cypress e2e test screenshots and vids
 /cypress/screenshots
 /cypress/videos
+/cypress/downloads
 
 # sonarqube
 .scannerwork

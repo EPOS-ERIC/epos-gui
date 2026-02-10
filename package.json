@@ -6,8 +6,7 @@
     "dev": "ng serve epos --configuration development",
     "lint": "ng lint",
     "test": "npm run lint && npm run ci-pipeline-e2e",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
+    "cy:open": "ng run epos:cypress-open:cypress-ci-testing",
     "ci-pipeline-e2e": "ng run epos:cypress-run:cypress-ci-testing --browser chrome",
     "build-prod": "ng build --configuration production"
   },

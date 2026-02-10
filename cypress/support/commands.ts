@@ -71,10 +71,16 @@ Cypress.Commands.add('welcomePopup', () => {
   cy.contains('Welcome to the EPOS Platform!').should('not.exist');
 });
 
+Cypress.Commands.add('newFeatures', () => {
+  cy.get('.new-feature-popup').get('.epos-close-btn').click();
+  cy.contains('NEW FEATURES').should('not.exist');
+});
+
 Cypress.Commands.add('policyAcceptAndWelcomePopup', () => {
   cy.visit('/');
   cy.policyAccept();
   cy.welcomePopup();
+  cy.newFeatures();
 });
 
 // Command to do get('[data-cy="..."') in a more readable way

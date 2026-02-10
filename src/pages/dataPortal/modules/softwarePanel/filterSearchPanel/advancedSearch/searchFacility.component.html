@@ -15,7 +15,7 @@
       [matChipInputFor]="chipList"
       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
       (matChipInputTokenEnd)="addKeyString($event)"
-      data-cy="search-panel-free-text-input" />
+      data-cy="software-search-panel-free-text-input" />
   </mat-chip-list>
   <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayLeafItem" class="nice-scrollbar" (optionSelected)="selectedKey($event)">
     <mat-option *ngFor="let leafItem of filteredKeys | async" [value]="leafItem">
@@ -24,7 +24,7 @@
   </mat-autocomplete>
 </mat-form-field>
 
-<!-- 
+<!--
 
 <mat-expansion-panel
   appTour

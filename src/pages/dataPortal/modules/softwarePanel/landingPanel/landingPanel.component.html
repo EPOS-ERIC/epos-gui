@@ -5,7 +5,7 @@
         'domain-list': true,
         'domain-list-results': !showLanding
       }"
-      data-cy="domain-list">
+      data-cy="software-domain-list">
       <div
         [class]="{
           'domain-box': true,
@@ -22,13 +22,13 @@
               'domain-icon-selected': activeDomainCode === domain.code
             }"
             matTooltip="{{ showLanding ? '' : domain.title + ' (' + domainResultsCounter[domain.code] + ')' }}"
-            data-cy="domain-icon">
+            data-cy="software-domain-icon">
             <img src="{{ domain.imgUrl }}" />
             <span
               *ngIf="domain.code === 'FAV' && domainResultsCounter[domain.code] > 0 && !showLanding && activeDomainCode !== 'FAV'"
               matBadge="{{ domainResultsCounter[domain.code] }}"
               matBadgeOverlap="false"
-              data-cy="landing-panel-domain-badge"></span>
+              data-cy="software-landing-panel-domain-badge"></span>
           </div>
         </ng-container>
         <ng-container *ngIf="domain.code !== 'FAV'">
@@ -38,13 +38,13 @@
               'domain-icon-selected': activeDomainCode === domain.code
             }"
             matTooltip="{{ showLanding ? '' : domain.title + ' (' + domainResultsCounter[domain.code] + ')' }}"
-            data-cy="domain-icon">
+            data-cy="software-domain-icon">
             <img src="{{ domain.imgUrl }}" />
             <span
               *ngIf="domain.code === 'FAV' && domainResultsCounter[domain.code] > 0 && !showLanding && activeDomainCode !== 'FAV'"
               matBadge="{{ domainResultsCounter[domain.code] }}"
               matBadgeOverlap="false"
-              data-cy="landing-panel-domain-badge"></span>
+              data-cy="software-landing-panel-domain-badge"></span>
           </div>
         </ng-container>
         <div
@@ -57,7 +57,7 @@
         <div class="domain-item" [hidden]="!showLanding">
           <p>
             <span>{{ domain.title }}</span>
-            <span data-cy="domain-item-counter">{{ domainResultsCounter[domain.code] }}</span>
+            <span data-cy="software-domain-item-counter">{{ domainResultsCounter[domain.code] }}</span>
           </p>
         </div>
       </div>

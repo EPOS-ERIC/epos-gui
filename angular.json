@@ -184,8 +184,17 @@
         "cypress-open": {
           "builder": "@cypress/schematic:cypress",
           "options": {
+            "devServerTarget": "epos:serve",
             "watch": true,
             "headless": false
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "epos:serve:production"
+            },
+            "cypress-ci-testing": {
+              "devServerTarget": "epos:serve:cypress-ci-testing"
+            }
           }
         },
         "e2e": {

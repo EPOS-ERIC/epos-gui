@@ -3,24 +3,24 @@
   matBadge="{{ totalFacetsSelected }}"
   matBadgeOverlap="false"
   matBadgePosition="before"
-  data-cy="categories-filtered-badge"></span>
+  data-cy="software-categories-filtered-badge"></span>
 <div class="wrapper" [appResultPanelFluidHeight] [offsetHeight]="50">
   <div *ngIf="showLoading" class="loading">
     <mat-spinner></mat-spinner>
   </div>
-  <div *ngIf="!showLoading" class="results-title" data-cy="results-title">
-    <button class="facet-expand" mat-icon-button [hidden]="activeDomainData.code === 'FAV' || activeDomainData.code === 'ALL'" (click)="toggleFacetExpansionPanel()" data-cy="categories-filter">
+  <div *ngIf="!showLoading" class="results-title" data-cy="software-results-title">
+    <button class="facet-expand" mat-icon-button [hidden]="activeDomainData.code === 'FAV' || activeDomainData.code === 'ALL'" (click)="toggleFacetExpansionPanel()" data-cy="software-categories-filter">
       <mat-icon matTooltip="Filter by categories">filter_alt</mat-icon>
     </button>
     <p (click)="toggleDomain(activeDomainData!.code)">
       <span>{{ activeDomainData.title }}</span>
     </p>
-    <p (click)="toggleDomain(activeDomainData!.code)" class="last" data-cy="results-title-counter">
+    <p (click)="toggleDomain(activeDomainData!.code)" class="last" data-cy="software-results-title-counter">
       <span>{{ domainResultsCounter[activeDomainData!.code] }}</span>
     </p>
   </div>
   <div class="results-buttons" *ngIf="activeDomainData?.code === 'FAV'">
-    <button id="clear-favourites-button" class="adv-search-buttons" mat-flat-button color="primary" (click)="removeAllFavourites()" matTooltip="Clear all favourites" data-cy="clear-favourites-button">
+    <button id="clear-favourites-button" class="adv-search-buttons" mat-flat-button color="primary" (click)="removeAllFavourites()" matTooltip="Clear all favourites" data-cy="software-clear-favourites-button">
       Clear all favourites
       <i class="fas fa-times icon" aria-hidden="true"></i>
     </button>
@@ -31,7 +31,7 @@
     [facetExpansionHidden]="facetExpansionHidden"
     [rawTreeData]="rawTreeData"
     (setSelectedFacets)="setSelectedFacets($event)"
-    data-cy="categories-filter-dropdown"></app-facet-dropdown>
+    data-cy="software-categories-filter-dropdown"></app-facet-dropdown>
   <div *ngIf="!showLoading && dataSource !== undefined && (dataSource.filteredData.length === 0 || dataSource.filteredData[0] === undefined)" class="results-container">
     <div class="results-no-data">
       <p>No results found on {{ activeDomainData!.title }}</p>
@@ -40,9 +40,9 @@
   <div
     *ngIf="(!showLoading && dataSource !== undefined && dataSource.filteredData[0] !== undefined) || (messageShow && messageType === 'error')"
     class="results-container nice-scrollbar"
-    data-cy="results-container">
+    data-cy="software-results-container">
     <div class="results-table">
-      <table mat-table [dataSource]="dataSource" multiTemplateDataRows id="distributionListTable" data-cy="distribution-list-table">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows id="distributionListTable" data-cy="software-distribution-list-table">
         <ng-container matColumnDef="{{ column }}" *ngFor="let column of columnsToDisplay" sticky>
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let element; let i = dataIndex" [class]="{ 'cell-result': true }" [style.border-left-color]="element.color">
@@ -51,7 +51,7 @@
               *ngIf="element !== undefined && (activeDomainData?.code === 'FAV' || element.hideToResult === false)">
               <div [class]="{ 'item-header': true, selected: expandedElement !== null && expandedElement.id === element.id }">
                 <div class="item-name">
-                  <p (click)="select(element)" data-cy="results-panel-item-name">
+                  <p (click)="select(element)" data-cy="software-results-panel-item-name">
                     {{ element.name }}
                   </p>
                 </div>
@@ -74,10 +74,10 @@
                         </div>
                       </div>
                     </ng-container>
-                    <img class="icon" (click)="openDialog(element)" matTooltip="Details" src="assets/img/info.png" alt="info" data-cy="item-info-button" />
-                    <mat-icon *ngIf="!element.isPinned" (click)="favourite(element)" matTooltip="Add to favourites" data-cy="add-to-favourites">star_border</mat-icon>
+                    <img class="icon" (click)="openDialog(element)" matTooltip="Details" src="assets/img/info.png" alt="info" data-cy="software-item-info-button" />
+                    <mat-icon *ngIf="!element.isPinned" (click)="favourite(element)" matTooltip="Add to favourites" data-cy="software-add-to-favourites">star_border</mat-icon>
                   </ng-container>
-                  <mat-icon *ngIf="element.isPinned" (click)="favourite(element)" class="yellow" matTooltip="Remove from favourites" data-cy="remove-from-favourites">star</mat-icon>
+                  <mat-icon *ngIf="element.isPinned" (click)="favourite(element)" class="yellow" matTooltip="Remove from favourites" data-cy="software-remove-from-favourites">star</mat-icon>
                   <mat-icon
                     [class]="expandedElement !== null && expandedElement.id === element.id ? 'icon-up' : 'icon-down'"
                     aria-hidden="true"
