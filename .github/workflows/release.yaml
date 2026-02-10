@@ -89,7 +89,7 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     needs: build
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
     steps:
@@ -100,4 +100,4 @@ jobs:
       - name: Mirror to GitLab
         run: |
           git remote add gitlab https://github:${{ secrets.GITLAB }}@epos-ci.brgm.fr/epos/epos-gui.git
-          git push gitlab ${{ github.ref }}
+          git push --force gitlab HEAD:refs/heads/opensource
