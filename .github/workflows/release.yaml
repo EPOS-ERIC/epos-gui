@@ -100,4 +100,4 @@ jobs:
       - name: Mirror to GitLab
         run: |
           git remote add gitlab https://github:${{ secrets.GITLAB }}@epos-ci.brgm.fr/epos/epos-gui.git
-          git push --force gitlab ${{ github.ref }}
+          git push gitlab ${{ github.ref }}
