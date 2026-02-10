@@ -143,11 +143,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run pre-build script
-        run: |
-          chmod +x pre-build.sh
-          ./pre-build.sh
-
       - name: Run integration tests
         run: npm run ci-pipeline-e2e
 
