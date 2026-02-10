@@ -19,4 +19,3 @@ sed -i -e "s|EPOS_PROD_MATOMO_ENDPOINT|$EPOS_PROD_MATOMO_ENDPOINT|g" src/environ
 sed -i -e "s/EPOS_PROD_MATOMO_SITE_ID/$EPOS_PROD_MATOMO_SITE_ID/g" src/environments/environment.prod.ts
 # Matomo Token Auth Production
 sed -i -e "s|EPOS_PROD_MATOMO_TOKEN_AUTH|$EPOS_PROD_MATOMO_TOKEN_AUTH|g" src/environments/environment.prod.ts
-
