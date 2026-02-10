@@ -1,0 +1,73 @@
+### Kube Deploy Section ###
+
+variables:
+  DEPLOY_REF: latest # The git-ref for the default config
+  DEPLOY_VARS: '{
+    "GUI_IMAGE": "epos-gui/deploy:$CI_COMMIT_REF_SLUG",
+    "PROJECT_NAME": "$CI_PROJECT_PATH_SLUG",
+    "CI_COMMIT_REF_SLUG": "$CI_COMMIT_REF_SLUG",
+    "ENV_STAGE": "development"
+    }' # PROJECT_NAME, CI_COMMIT_REF_SLUG and ENV_STAGE need to be provided as a minimum
+
+include:
+  - project: "epos/k8s-epos-deploy"
+    ref: latest #apis-newgui
+    file: ".gitlab-kube-include.yml"
+
+###########################
+
+# Add 'deploy' in a suitable position in the stages section
+stages:
+  - build-lint
+  - build-image
+  - deploy
+  - test
+
+build:
+  image: node:22.16
+  tags:
+    - docker
+  stage: build-lint
+  script:
+    - npm ci
+    - ./pre-build.sh
+    - npm run build-prod
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - dist
+
+linting:
+  image: node:22.16
+  stage: build-lint
+  tags:
+    - docker
+  script:
+    - npm ci
+    - ./pre-build.sh
+    - npm run lint
+
+build-image:
+  services:
+    - docker:dind
+  image: docker
+  tags:
+    - docker-builder
+  stage: build-image
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -f Dockerfile -t "$CI_REGISTRY_IMAGE/deploy:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/deploy:$CI_COMMIT_REF_SLUG"
+
+integration-tests:
+  image: cypress/browsers:22.21.0
+  tags:
+    - docker
+  stage: test
+  needs:
+    - job: build
+  script:
+    - npm ci
+    - ./pre-build.sh
+    - npm run ci-pipeline-e2e
+  allow_failure: false
