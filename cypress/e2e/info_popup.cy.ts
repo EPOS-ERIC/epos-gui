@@ -136,7 +136,7 @@ describe('Test info popup', () => {
               expect(val).to.eq('Bailo, D., Paciello, R., Michalek, J. et al. The EPOS multi-disciplinary Platform for integrated access to solid Earth science datasets. Sci Data 10, 784 (2023). https://doi.org/10.1038/s41597-023-02697-9');
               break;
             case 'For citing the EPOS Platform contents different from DDSS (e.g. images, pictures)':
-              expect(val).to.eq(`Credits: EPOS Platform(https://www.epos-eu.org/dataportal), ORB - Observatoire royal de Belgique - BE, http://creativecommons.org/licenses/by/4.0/. Accessed on ${today}`);
+              expect(val).to.eq(`Credits: EPOS Platform (https://www.epos-eu.org/dataportal), ORB - Observatoire royal de Belgique - BE, http://creativecommons.org/licenses/by/4.0/. Accessed on ${today}`);
               break;
             default:
               throw new Error('Unknown key: ' + key);

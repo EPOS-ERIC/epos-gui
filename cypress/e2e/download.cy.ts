@@ -138,14 +138,27 @@ describe('Test download', () => {
     cy.get('.mat-progress-spinner')
       .should('not.exist');
 
+    const rawSourceRequest = '@rawSource' + service.name;
+    cy.fixture(service.getOriginalURL()).then((response: { url: string }) => {
+      const parsedUrl = new URL(response.url);
+      cy.intercept(
+        'GET',
+        `${parsedUrl.origin}${parsedUrl.pathname}*`,
+        { fixture: service.rawServiceResponse() }
+      ).as(rawSourceRequest.substring(1));
+    });
+
     // Click on the first item's download
     cy.getByDataCy('downloads-dialog-download-button')
       .first()
       .click();
 
+    cy.wait(service.getOriginalUrlRequest);
+    cy.wait(rawSourceRequest);
+
     // Check that the downloaded file is correct
     cy.fixture(service.rawServiceResponse()).then((jsonData) => {
-      cy.readFile('cypress/downloads/raw_service_response_GNSS Stations with Products.json')
+      cy.readFile(`cypress/downloads/raw_service_response_${service.name}.json`, { timeout: 20000 })
         .then((jsonObject) => {
           expect(JSON.stringify(jsonData)).to.eq(JSON.stringify(jsonObject));
         });

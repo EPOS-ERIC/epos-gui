@@ -155,4 +155,10 @@ Cypress.Commands.add('interceptService', (service: Service) => {
       '\\?.*minLon.*-5\\.00977.*maxLat.*54\\.00777.*maxLon.*9\\.93164.*minLat.*39\\.02772.*'),
     { fixture: service.bboxFilteredJson() }
   ).as(service.bboxFilteredRequest.substring(1));
+  // The getoriginalurl
+  cy.intercept(
+    'GET',
+    new RegExp(`.*/getoriginalurl/${service.id}.*`),
+    { fixture: service.getOriginalURL() }
+  ).as(service.getOriginalUrlRequest.substring(1));
 });

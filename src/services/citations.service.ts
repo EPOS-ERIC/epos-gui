@@ -89,7 +89,7 @@ public getDatasetCitation(distributionDetails: DistributionDetails): Promise<Cit
   return Promise.resolve(
     new Citation(
       'For citing the dataset as a reference in any publication',
-      `${linkedText}.<br/>Accessed on ${this.getTodayString()} through the EPOS Data Portal (<a href="${this.URL}" target="_blank" rel="noopener noreferrer">${this.URL}</a>)`
+      `${linkedText}.<br/>Accessed on ${this.getTodayString()} through the EPOS Platform (<a href="${this.URL}" target="_blank" rel="noopener noreferrer">${this.URL}</a>)`
     )
   );
 }

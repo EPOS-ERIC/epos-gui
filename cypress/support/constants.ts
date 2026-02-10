@@ -5,6 +5,7 @@ export class Service {
   dataRequest: string;
   detailsRequest: string;
   bboxFilteredRequest: string;
+  getOriginalUrlRequest: string;
 
   constructor(
     public name: string,
@@ -20,6 +21,7 @@ export class Service {
     this.dataRequest = '@data' + this.name;
     this.detailsRequest = '@details' + this.name;
     this.bboxFilteredRequest = '@bboxFilteredData' + this.name;
+    this.getOriginalUrlRequest = '@getOriginalUrl' + this.name;
   }
 
   searchJson() {
@@ -44,6 +46,10 @@ export class Service {
 
   rawServiceResponse() {
     return `${this.folder}/raw_service_response.json`;
+  }
+
+  getOriginalURL() {
+    return `${this.folder}/get_original_url.json`
   }
 }
 
