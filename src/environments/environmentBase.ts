@@ -9,6 +9,7 @@ export const environmentBase = {
   production: false,
   version: (require('../../package.json') as Record<string, unknown>).version,
   githash: 'GITHASH', // populated during pipeline
+  gitTag: 'GIT_TAG', // populate during pipeline
   commitDate: 'COMMIT_DATE', // populated during pipeline
   eposSiteApiRestUrl: 'EPOS_SITE_API_REST_URL', // populated during pipeline
   eposSiteApiRestKey: 'EPOS_SITE_API_REST_KEY', // populated during pipeline
