@@ -4,29 +4,18 @@ Essential commands and runtime config for local development and Docker deploymen
 
 ## Development
 
-Install dependencies:
-
-```bash
-npm ci
-```
-
-Start the app in development mode:
-
-```bash
-npm run dev
-```
-
-Default URL:
-
-`http://localhost:4200/testpath`
+| Task                                 | Command           | Notes                                         |
+| ------------------------------------ | ----------------- | --------------------------------------------- |
+| Install dependencies                 | `npm ci`          | Run once after checkout or dependency updates |
+| Start open source development server | `npm run dev-oss` | Local URL: `http://localhost:4200/testpath`   |
+| Start internal development server    | `npm run dev`     | Local URL: `http://localhost:4200/testpath`   |
 
 ## Build
 
-Create a production build:
-
-```bash
-npm run build-prod
-```
+| Task                             | Command             |
+| -------------------------------- | ------------------- |
+| Create open source build         | `npm run build-oss` |
+| Create internal production build | `npm run build`     |
 
 Build output is written to `dist/`.
 
@@ -34,11 +23,11 @@ Build output is written to `dist/`.
 
 The container image supports runtime configuration via environment variables.
 
-| Variable      | Default                   | Description |
-| ------------- | ------------------------- | ----------- |
+| Variable      | Default                   | Description                                                                           |
+| ------------- | ------------------------- | ------------------------------------------------------------------------------------- |
 | `BASE_URL`    | `/`                       | Base path where the app is served. Must start and end with `/` (for example `/gui/`). |
-| `API_HOST`    | `http://gateway:5000/api` | Upstream API URL used by nginx for `/api` requests. |
-| `SERVER_NAME` | `_`                       | nginx `server_name` value. |
+| `API_HOST`    | `http://gateway:5000/api` | Upstream API URL used by nginx for `/api` requests.                                   |
+| `SERVER_NAME` | `_`                       | nginx `server_name` value.                                                            |
 
 Example:
 

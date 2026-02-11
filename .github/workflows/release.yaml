@@ -52,8 +52,8 @@ jobs:
           chmod +x pre-build.sh
           ./pre-build.sh
 
-      - name: Build web app
-        run: npm run build-prod
+      - name: Build web app (open source)
+        run: npm run build-oss
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

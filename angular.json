@@ -93,6 +93,27 @@
               "vendorChunk": false,
               "buildOptimizer": true
             },
+            "opensource": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.opensource.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
             "example": {
               "budgets": [
                 {
@@ -124,6 +145,21 @@
                 }
               ],
               "baseHref": "/testpath/"
+            },
+            "opensource-development": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.opensource.ts"
+                }
+              ],
+              "baseHref": "/testpath/"
             }
           },
           "defaultConfiguration": ""
@@ -139,6 +175,9 @@
             "production": {
               "browserTarget": "epos:build:production"
             },
+            "opensource": {
+              "browserTarget": "epos:build:opensource"
+            },
             "example": {
               "browserTarget": "epos:build:example"
             },
@@ -148,6 +187,10 @@
             },
             "development": {
               "browserTarget": "epos:build:development",
+              "servePath": "/testpath"
+            },
+            "opensource-development": {
+              "browserTarget": "epos:build:opensource-development",
               "servePath": "/testpath"
             }
           }
