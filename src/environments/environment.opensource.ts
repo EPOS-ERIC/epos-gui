@@ -17,6 +17,12 @@ export const environment = {
     poweredByText: 'This Platform is Powered By EPOS Open Source',
     platformLogoPath: 'assets/img/logo/logo-opensource-1-light.png',
     version: openSourceVersion,
+    modules: {
+      data: true,
+      analysis: false,
+      registry: false,
+      software: true
+    },
     mainMenu: [
       {
         name: 'About',
