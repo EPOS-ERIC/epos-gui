@@ -14,6 +14,7 @@ import { GeoJSONHelper } from 'utility/maplayers/geoJSONHelper';
 import { ExportMapAsImageService } from 'utility/eposLeaflet/services/exportMapAsImageService.service';
 import { ChangeDetectorRef ,  NgZone } from '@angular/core';
 import html2canvas from 'html2canvas';
+import { environment } from 'environments/environment';
 
 @Unsubscriber('subscriptions')
 @Component({
@@ -299,7 +300,7 @@ public async downloadLegendImages(layer: MapLayer): Promise<void> {
 
 
     // 1) Prepare URLs and load in parallel
-    const logoUrl = 'assets/img/logo/logo-white.svg';
+    const logoUrl = environment.platformLogoPath;
     const uniqueUrls = new Set<string>(imgElements.map(img => img.src).filter(Boolean));
     uniqueUrls.add(logoUrl);
 
@@ -411,7 +412,7 @@ public async exportLegendWithLogo(layer: MapLayer): Promise<void> {
   this.exportMapAsImageService.incrementExpectedLegends(rows.length);
 
   // 1) Load the logo once
-  const logoUrl = 'assets/img/logo/logo-white.svg';
+  const logoUrl = environment.platformLogoPath;
   const logoImg = await this.loadImage(logoUrl);
   const logoW = 100;
   const logoH = (logoImg.height / logoImg.width) * logoW;

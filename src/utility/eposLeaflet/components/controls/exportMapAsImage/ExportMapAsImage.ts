@@ -9,6 +9,7 @@ import { ComponentFactoryResolver, ComponentRef, Injector, ViewContainerRef } fr
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { ExportMapAsImageService } from 'utility/eposLeaflet/services/exportMapAsImageService.service';
 import { DialogService } from 'components/dialog/dialog.service';
+import { environment } from 'environments/environment';
 import domtoimage from 'dom-to-image-more';
 import html2canvas from 'html2canvas';
 
@@ -189,7 +190,7 @@ export class ExportMapAsImage extends AbstractControl {
       ctx.drawImage(mapImage, 0, 0, width, height);
 
       // Load and draw logo
-      const logo = await this.loadImage('assets/img/logo/logo-white.svg');
+      const logo = await this.loadImage(environment.platformLogoPath);
       const logoWidth = 100 * scale;
       const logoHeight = (logo.height / logo.width) * logoWidth;
 
@@ -254,7 +255,7 @@ export class ExportMapAsImage extends AbstractControl {
       ctx.drawImage(sourceCanvas, 0, 0, width, height);
 
       // 4) Overlay the logo
-      const logo = await this.loadImage('assets/img/logo/logo-white.svg');
+      const logo = await this.loadImage(environment.platformLogoPath);
       const logoW = 100 * scale;
       const logoH = (logo.height / logo.width) * logoW;
 
