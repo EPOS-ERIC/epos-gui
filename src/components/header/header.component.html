@@ -43,7 +43,7 @@
 
 
       <!-- Scientific Examples -->
-      <li> 
+      <li *ngIf="environment.showScientificExamples === true"> 
         <div class="nav-top-items-item guest">
           <a class="nav-top-items-item-text" (click)="scientficExamples()" data-toggle="dropdown">
             <mat-icon>summarize</mat-icon>

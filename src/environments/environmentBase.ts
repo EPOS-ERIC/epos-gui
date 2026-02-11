@@ -21,6 +21,7 @@ export const environmentBase = {
   matomoTrackEvent: true,
   showPoliciesPopup: true,
   showWelcomePopup: true,
+  showScientificExamples: true,
   menuShare: true,
   minWidth: 900,
   homepage: 'https://www.epos-eu.org',

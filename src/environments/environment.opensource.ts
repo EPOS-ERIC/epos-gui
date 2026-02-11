@@ -13,6 +13,7 @@ export const environment = {
     matomoTrackEvent: false,
     showPoliciesPopup: false,
     showWelcomePopup: false,
+    showScientificExamples: false,
     version: openSourceVersion,
   },
 };
