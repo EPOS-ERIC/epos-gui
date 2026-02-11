@@ -162,7 +162,7 @@ jobs:
         run: npm ci
 
       - name: Run integration tests
-        run: npm run ci-pipeline-e2e
+        run: npm test
 
   mirror:
     runs-on: ubuntu-latest

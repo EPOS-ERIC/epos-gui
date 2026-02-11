@@ -4,8 +4,8 @@ export default defineConfig({
   videosFolder: 'cypress/videos',
   screenshotsFolder: 'cypress/screenshots',
   fixturesFolder: 'cypress/fixtures',
-  video: false,
-  screenshotOnRunFailure: false,
+  video: true,
+  screenshotOnRunFailure: true,
   defaultCommandTimeout: 4000,
   viewportWidth: 1920,
   viewportHeight: 1200,
@@ -17,7 +17,7 @@ export default defineConfig({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
       return require('./cypress/plugins/index.js')(on, config);
     },
-    baseUrl: 'http://localhost:4200',
+    baseUrl: 'http://localhost:4200/testpath',
     experimentalStudio: true,
   },
 });
