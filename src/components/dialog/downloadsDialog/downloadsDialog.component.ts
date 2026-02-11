@@ -643,13 +643,17 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
 
     if (this.distributionFormat.length > 0) {
       this.distributionFormat.map((e, index) => {
-        if(e.getType().toLowerCase() === 'converted'){
+
+        // For software, extract the direct download URL
+        const url = this.isSoftware ? (e.getUrl() || '') : '';
+
+        if (e.getType().toLowerCase() === 'converted') {
           this.dataSource.data.push({
             name: 'converted response',
             format: e.getFormat(),
             originalFormat: e.getOriginalFormat(),
             position: index,
-            url: '',
+            url: url,
             type: e.getType(),
             origin: null
           });
@@ -658,18 +662,18 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
             format: e.getOriginalFormat(),
             originalFormat: e.getOriginalFormat(),
             position: index,
-            url: '',
+            url: url,
             type: 'original',
             origin: null
           });
         }
-        else{
+        else {
           this.dataSource.data.push({
             name: 'raw service response',
             format: e.getOriginalFormat(),
             originalFormat: e.getOriginalFormat(),
             position: index,
-            url: '',
+            url: url,
             type: 'original',
             origin: null
           });
