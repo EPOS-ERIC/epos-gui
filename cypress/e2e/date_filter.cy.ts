@@ -6,17 +6,30 @@ describe('Global Date filter', () => {
   });
 
   it('Test time range picker', () => {
-    // Intercept the request for the first date
+    const requestDateFormat = 'YYYY-MM-DDThh:mm:ssZ';
+    const expectedStartDate = moment('2023-01-01 12:00:00', 'YYYY-MM-DD HH:mm:ss', true)
+      .utc()
+      .format(requestDateFormat);
+    const expectedEndDate = moment('2024-01-01 12:00:00', 'YYYY-MM-DD HH:mm:ss', true)
+      .utc()
+      .format(requestDateFormat);
+    const expectedStartDateEncoded = encodeURIComponent(expectedStartDate);
+    const expectedEndDateEncoded = encodeURIComponent(expectedEndDate);
+
+    // Intercept the request for the start date.
     cy.intercept(
       'GET',
-      /.*\/resources\/search\?q=&startDate=2023-01-01T12%3A00%3A00%2B00%3A00/,
+      new RegExp(`.*\\/resources\\/search\\?q=&startDate=${expectedStartDateEncoded}$`),
       { fixture: 'bbox_filtered_distributions.json' },
-    ).as('startDate');    // Intercept the request for the second date
+    ).as('startDate');
+
+    // Intercept the request for the end date.
     cy.intercept(
       'GET',
-      /.*\/resources\/search\?q=&startDate=2023-01-01T12%3A00%3A00%2B00%3A00&endDate=2024-01-01T12%3A00%3A00%2B00%3A00/,
+      new RegExp(`.*\\/resources\\/search\\?q=&startDate=${expectedStartDateEncoded}&endDate=${expectedEndDateEncoded}$`),
       { fixture: 'bbox_filtered_distributions.json' },
     ).as('endDate');
+
     // Open the start date range picker
     cy.getByDataCy('date-range-picker-start-button')
       .click();
@@ -92,12 +105,12 @@ describe('Global Date filter', () => {
     function testDateRange(radioPicker: string, subtractAmount: moment.DurationInputArg1) {
       cy.getByDataCy(radioPicker).click().then(() => {
         // Capture the current date and time
-        let endDate = moment.utc();
-        let startDate = moment.utc().subtract(subtractAmount, 'days');
+        const endDate = moment();
+        const startDate = endDate.clone().subtract(subtractAmount, 'days');
 
         // Format the date and time to match the format of the date range's text, excluding seconds
-        let endFormattedDateTime = endDate.format('YYYY-MM-DD HH:mm');
-        let startFormattedDateTime = startDate.format('YYYY-MM-DD HH:mm');
+        const endFormattedDateTime = endDate.format('YYYY-MM-DD HH:mm');
+        const startFormattedDateTime = startDate.format('YYYY-MM-DD HH:mm');
 
         // Get the text of the date range and compare it with the formatted date and time
         cy.getByDataCy('date-range-picker-end')
