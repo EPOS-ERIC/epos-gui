@@ -1,6 +1,6 @@
 import { environmentBase } from './environmentBase';
 
-const openSourceVersion = (environmentBase.gitTag === 'GIT_TAG' ? 'dev' : environmentBase.gitTag) + ' - open source';
+const openSourceVersion = (environmentBase.gitTag === 'GIT_TAG' ? 'dev' : environmentBase.gitTag);
 
 export const environment = {
   ...environmentBase,

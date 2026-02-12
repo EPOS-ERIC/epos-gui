@@ -106,7 +106,10 @@
                   "with": "src/environments/environment.opensource.ts"
                 }
               ],
-              "index": "src/index.opensource.html",
+              "index": {
+                "input": "src/index.opensource.html",
+                "output": "index.html"
+              },
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -160,7 +163,10 @@
                   "with": "src/environments/environment.opensource.ts"
                 }
               ],
-              "index": "src/index.opensource.html",
+              "index": {
+                "input": "src/index.opensource.html",
+                "output": "index.html"
+              },
               "baseHref": "/testpath/"
             }
           },
