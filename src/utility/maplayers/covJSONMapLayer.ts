@@ -193,11 +193,11 @@ export class CovJSONMapLayer extends JsonMapLayer {
     let isCoverageCollection = false;
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if(jsonRootCC.length > 0){
+    if (jsonRootCC.length > 0) {
       isCoverageCollection = true;
       jsonRoot = jsonRootCC;
     }
-    else{
+    else {
       jsonRoot = jsonRootC;
     }
 
@@ -205,19 +205,19 @@ export class CovJSONMapLayer extends JsonMapLayer {
 
     if (jsonRoot.length > 0) {
       // Refactoring needed: for how the code is set, jsonRoot always contain a single element, so no need for a '.forEach' iteration, instead might be accessing jsonRoot[0] directly
-      jsonRoot.forEach((item, index: number)=>{
+      jsonRoot.forEach((item, index: number) => {
 
         let lat;
         let long;
 
-        if(isCoverageCollection){
+        if (isCoverageCollection) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           lat = jsonRoot[index].coverages[index].domain.axes.y.values[0];
 
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           long = jsonRoot[index].coverages[index].domain.axes.x.values[0];
         }
-        else{
+        else {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           lat = jsonRoot[index].domain.axes.y.values[0];
 
@@ -243,7 +243,7 @@ export class CovJSONMapLayer extends JsonMapLayer {
 
         // [TO FIX: code for CoverageCollection is returning a single point on map. Access properties correctly to show all available points.]
         // [NULL value for CoverageCollection coords: back-end should pass NULL values for services for which no Map visualization is needed (ex.: WFCatalog)]
-        if(isCoverageCollection){
+        if (isCoverageCollection) {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           jsonRoot[0].features = jsonRoot[0].features ? jsonRoot[0].features : [];
 
@@ -251,7 +251,7 @@ export class CovJSONMapLayer extends JsonMapLayer {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           jsonRoot[0].features.push(point);
         }
-        else{
+        else {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           jsonRoot[0].features = [point];
         }
@@ -317,6 +317,12 @@ export class CovJSONMapLayer extends JsonMapLayer {
           case ('linestring'):
           case ('multilinestring'): {
             this.options.customLayerOptionMarkerType.set(MapLayer.MARKERTYPE_LINE);
+            break;
+          }
+          case ('geometrycollection'): {
+            // GeometryCollection contains mixed geometry types
+            // Treat as polygon for marker type purposes
+            this.options.customLayerOptionMarkerType.set(MapLayer.MARKERTYPE_POLYGON);
             break;
           }
           default: {
