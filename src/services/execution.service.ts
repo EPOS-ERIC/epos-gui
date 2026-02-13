@@ -15,17 +15,71 @@ import * as HttpStatus from 'http-status-codes';
 /**
  * A service that exposes methods for accessing the webAPI execution functionality
  * to the rest of the GUI.
+ *
+ * This service includes built-in caching to avoid duplicate API calls when the same
+ * asset execution is requested by multiple components (map, table, graph, downloads).
  */
 @Injectable()
 export class ExecutionService {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   private eposMime = DistributionFormatType.getEposMime();
 
+  /**
+   * Cache storing in-flight and completed promises.
+   * Key format: `${distributionId}::${formatString}::${serializedParams}`
+   * This prevents duplicate API calls for the same asset/format/params combination.
+   */
+  private readonly executionCache = new Map<string, Promise<Record<string, unknown> | Blob>>();
+
   constructor(
     private readonly apiService: ApiService,
     private readonly loggingService: LoggingService,
     private readonly notificationService: NotificationService,
   ) {
+  }
+
+  /**
+   * Generates a unique cache key for an execution request.
+   *
+   * @param distributionId - The unique identifier of the distribution
+   * @param format - The distribution format being requested
+   * @param params - The parameter values for the execution
+   * @returns A unique string key for caching
+   */
+  private generateCacheKey(
+    distributionId: string,
+    format: DistributionFormat,
+    params: Array<ParameterValue> | null
+  ): string {
+    const formatKey = format.getFormat();
+    const paramsKey = params
+      ? params.map(p => `${p.name}=${p.value}`).sort().join('&')
+      : '';
+    return `${distributionId}::${formatKey}::${paramsKey}`;
+  }
+
+  /**
+   * Invalidates (removes) cached data for a specific distribution.
+   * Call this when parameters change and you want to force a fresh fetch.
+   *
+   * @param distributionId - The ID of the distribution to invalidate
+   */
+  public invalidateCache(distributionId: string): void {
+    const keysToDelete: string[] = [];
+    this.executionCache.forEach((_, key) => {
+      if (key.startsWith(`${distributionId}::`)) {
+        keysToDelete.push(key);
+      }
+    });
+    keysToDelete.forEach(key => this.executionCache.delete(key));
+  }
+
+  /**
+   * Clears all cached execution results.
+   * Useful for cleanup or when the user logs out.
+   */
+  public clearCache(): void {
+    this.executionCache.clear();
   }
 
   /**
@@ -65,6 +119,7 @@ export class ExecutionService {
 
   /**
    * Triggers the execute callout from the {@link ApiService} and returns the response.
+   * Results are cached to avoid duplicate API calls for the same asset/format/params.
    *
    * {@link ParameterValue}
    *
@@ -83,11 +138,27 @@ export class ExecutionService {
     params: null | Array<ParameterValue> = null,
   ): Promise<Record<string, unknown> | Blob> {
 
-    return this._executeDistributionFormat(format, paramDefinitions, params)
+    const cacheKey = this.generateCacheKey(distSummary.getIdentifier(), format, params);
+
+    // Check if we already have a cached or in-flight promise
+    const cachedPromise = this.executionCache.get(cacheKey);
+    if (cachedPromise) {
+      return cachedPromise;
+    }
+
+    // Make the API call and cache the promise
+    const promise = this._executeDistributionFormat(format, paramDefinitions, params)
       .catch(error => {
+        // Remove from cache on error so retries can work
+        this.executionCache.delete(cacheKey);
         this.notifyError(error, distSummary.getIdentifier(), distSummary.getName(), 'An error occured whilst executing a distribution.');
         throw (error);
       });
+
+    // Store the promise in the cache
+    this.executionCache.set(cacheKey, promise);
+
+    return promise;
   }
 
   /**
@@ -147,6 +218,7 @@ export class ExecutionService {
     this.loggingService.info(`Downloading (${format.getLabel()}) - ${distDetails.getName()}`, true);
 
     if (authRequired || multipleDownload) {
+      // Note: Downloads bypass the cache since they need fresh blob data
       this._executeDistributionFormat(format, distDetails.getParameters(), params, true)
         .then((blob: Blob) => {
 

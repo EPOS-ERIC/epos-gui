@@ -201,7 +201,7 @@ public getUid(): string {
 
   /**
    * The function `doApplyAction` sets loading to true, creates a new `DataConfigurableDataSearch`
-   * object with updated parameters, and reloads the data with the new configuration.
+   * object with updated parameters, invalidates the cached execution data, and reloads the data with the new configuration.
    * @param newCurrentParams - The `newCurrentParams` parameter is an array of `ParameterValue` objects
    * that are used as input for the `doApplyAction` method.
    * @param [newNewParams] - The `newNewParams` parameter in the `doApplyAction` method is an optional
@@ -218,6 +218,10 @@ public getUid(): string {
 
     const tracker = this.injector.get(Tracker);
     tracker.trackEvent(TrackerCategory.DISTRIBUTION, TrackerAction.APPLY_PARAMETERS, this.distributionDetails.getDomainCode() + Tracker.TARCKER_DATA_SEPARATION + this.distributionDetails.getName());
+
+    // Invalidate cached execution data for this configurable since parameters are changing
+    const executionService = this.injector.get(ExecutionService);
+    executionService.invalidateCache(this.id);
 
     const newConfigurable = new DataConfigurableDataSearch(
       this.injector,
