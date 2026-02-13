@@ -1,18 +1,18 @@
 import { AuthConfig, OAuthService, UserInfo } from 'angular-oauth2-oidc';
-import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks';
 import { Router } from '@angular/router';
 import { AuthenticationProvider } from '../authProvider.interface';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AAAIUser } from '../aaaiUser.interface';
 import { BasicUser } from './basicUser';
-import { Injector } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 /** OAuth provider implementation */
+@Injectable()
 export class OAuthAuthenticationProvider implements AuthenticationProvider {
-  private static readonly EPOS_CLIENT = 'eposICS';
-  private static readonly CYFRONET_ROOT = 'https://aaai.epos-eu.org';
-  private static readonly CYFRONET_ISSUER = OAuthAuthenticationProvider.CYFRONET_ROOT + '/oauth2';
+  private static readonly EPOS_CLIENT = '2d7f667e-9d6c-4c09-ad15-ceec571ae554';
+  private static readonly CYFRONET_ROOT = 'https://login.staging.envri.eu/auth/realms/envri';
+  private static readonly CYFRONET_ISSUER = OAuthAuthenticationProvider.CYFRONET_ROOT;
   private static readonly REVOKE_ENDPOINT = OAuthAuthenticationProvider.CYFRONET_ISSUER + '/revoke';
   private static readonly REDIRECTION_PAGE = '/last-page-redirect';
 
@@ -30,7 +30,7 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
   ) {
     this.router = injector.get(Router);
     this.http = injector.get(HttpClient);
-    this.init();
+    void this.init();
   }
 
   public watchForUserChange(): Observable<null | AAAIUser> {
@@ -58,6 +58,31 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
 
   public getManageUrl(): string {
     return OAuthAuthenticationProvider.CYFRONET_ROOT;
+  }
+
+  public async init(): Promise<void> {
+    this.configure();
+    this.oAuthService.setupAutomaticSilentRefresh();
+    this.oAuthService.events.subscribe(e => {
+      // angular-oauth2-oidc EventType string values
+      switch (e.type) {
+        case ('discovery_document_loaded'):
+        case ('token_received'): // first logged in
+        case ('logout'): // logout to clear user info
+          this.updateUserProfile();
+          break;
+      }
+    });
+
+    try {
+      await this.oAuthService.loadDiscoveryDocumentAndTryLogin();
+      if (this.oAuthService.hasValidAccessToken()) {
+        this.updateUserProfile();
+      }
+    } catch (e) {
+      console.warn('Failed to contact Authentication Server.', e);
+    }
+
   }
 
 
@@ -88,44 +113,20 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
 
       timeoutFactor: 0.75,
 
+      responseType: 'code',
+
       // set the scope for the permissions the client should request
       // The first three are defined by OIDC. The 4th is a usecase-specific one
       scope: [
         'openid',
         'profile',
-        'single-logout',
+        'email',
+        'offline_access',
       ].join(' '),
 
       disableAtHashCheck: true,
     };
     return authConfig;
-  }
-
-  private init() {
-    this.configure();
-    this.oAuthService.setupAutomaticSilentRefresh();
-    this.oAuthService.tokenValidationHandler = new JwksValidationHandler();
-    void this.oAuthService.loadDiscoveryDocumentAndTryLogin()
-      // maybe we should do this like this
-      // https://www.linkedin.com/pulse/implicit-flow-authentication-using-angular-ghanshyam-shukla
-      .catch((e) => {
-        console.warn('Caught Error - Failed to contact Authentication Server.', e);
-      })
-      .then(() => {
-        console.log('Successfully Contacted Authentication Server.');
-      });
-
-    this.oAuthService.events.subscribe(e => {
-      // angular-oauth2-oidc EventType string values
-      switch (e.type) {
-        case ('discovery_document_loaded'): // page refresh when logged in
-        case ('token_received'): // first logged in
-        case ('logout'): // logout to clear user info
-          this.updateUserProfile();
-          break;
-      }
-    });
-
   }
 
   private updateUserProfile(): void {
@@ -194,4 +195,3 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
     return this.oAuthService.getAccessToken();
   }
 }
-
