@@ -113,22 +113,6 @@
               </ng-container>
             </td>
           </ng-container>
-          <ng-container matColumnDef="citation">
-            <td mat-footer-cell *matFooterCellDef colspan="2">
-              <mat-accordion multi="true" data-cy="details-dialog-how-to-cite">
-                <mat-expansion-panel [expanded]="false">
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>How to cite</mat-panel-title>
-                  </mat-expansion-panel-header>
-                  <div class="citation">
-                    <app-citation-component [detailsData]="detailsData"
-                      [citationsToShow]="citationsToShow"></app-citation-component>
-                  </div>
-                </mat-expansion-panel>
-              </mat-accordion>
-            </td>
-            <tr mat-footer-row *matFooterRowDef="['citation']" class="example-second-footer-row"></tr>
-          </ng-container>
           <ng-container *ngIf="dataService.data.length > 0" matColumnDef="disclaimer">
             <td mat-footer-cell *matFooterCellDef colspan="2">
               <mat-accordion multi="true" data-cy="details-dialog-service-details">

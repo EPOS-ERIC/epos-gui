@@ -1,4 +1,4 @@
-import { AfterContentInit, AfterViewInit, Component, Inject, Injector, OnInit, ViewChild } from '@angular/core';
+import { AfterContentInit, AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogData } from '../baseDialogService.abstract';
 import { DataConfigurableDataSearch } from 'utility/configurablesDataSearch/dataConfigurableDataSearch';
@@ -28,8 +28,6 @@ import { AnalysisConfigurablesService } from 'pages/dataPortal/services/analysis
 import { EnvironmentService } from 'services/environment.service';
 import { SimpleEnvironment } from 'api/webApi/data/environments/impl/simpleEnvironment';
 import { SimpleEnvironmentResource } from 'api/webApi/data/environments/impl/simpleEnvironmentResource';
-import { DialogService } from '../dialog.service';
-import { CitationsService } from '../../../services/citations.service';
 import { Tracker } from 'utility/tracker/tracker.service';
 import { TrackerAction, TrackerCategory } from 'utility/tracker/tracker.enum';
 
@@ -73,13 +71,10 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
   public properties: Array<PopupProperty> = [];
 
   public onlyDownload = false;
-  public isLoading = true;
   public subTitle = 'Files available for download';
 
   public environmentOps = false;
   public environmentSelected: SimpleEnvironment | null = null;
-
-  public citation: string;
 
   // Property to identify if we are dealing with Software (Source Code or Application)
   private isSoftware = false;
@@ -99,13 +94,11 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
     private readonly notifier: NotificationService,
     private readonly analysisConfigurables: AnalysisConfigurablesService,
     private readonly environmentService: EnvironmentService,
-    private readonly injector: Injector,
-    private readonly citationService: CitationsService,
     private readonly tracker: Tracker,
   ) {
   }
 
-  public async ngOnInit(): Promise<void> {
+  public ngOnInit(): void {
 
     this.dataConfigurable = this.data.dataIn.dataConfigurable;
     this.environmentOps = this.data.dataIn.environmentOps;
@@ -184,11 +177,6 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
     } else {
       this.spinner = false;
     }
-
-    // Get the citation for this dataset
-    this.citation = (await this.citationService.getDatasetCitation(this.distributionDetails)).citation;
-
-    this.isLoading = false;
   }
 
   public ngAfterViewInit(): void {
@@ -394,57 +382,6 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
       this.dataSource.filter = String((event.target as HTMLInputElement).value).trim().toUpperCase();
     }, 100);
   }
-
-  public openCitationDialog(): void {
-    // We have to inject here instead of the constructor to avoid circular dependencies
-    const dialogService = this.injector.get(DialogService);
-
-    // Get element position with fallbacks
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    let elemPosition = document.getElementById('sidenavleft')!.getBoundingClientRect();
-
-    if (elemPosition.right <= 0) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      elemPosition = document.getElementById('sidenavleftregistry')!.getBoundingClientRect();
-    }
-
-    if (elemPosition.right <= 0) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      elemPosition = document.getElementById('sidenavleftsoftware')!.getBoundingClientRect();
-    }
-
-    // Open the dialog
-    void dialogService.openDownloadCitationDialog(
-      this.distributionDetails,
-      [0],
-      '50vw',
-      String(elemPosition.right + 45) + 'px',
-    );
-  }
-
-  /**
-   * Copies the plain text content of a citation to the clipboard.
-   * This method parses the provided HTML string, extracts its visible text content,
-   * and copies it using the Clipboard API, excluding any HTML tags or formatting.
-   *
-   * @param {string} htmlString - The citation content as an HTML string.
-   *                              The method will strip tags and copy only the visible text.
-   */
-  public copyCitationToClipboard(htmlString: string): void {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlString.replace(/<br\s*\/?>/gi, '\n');
-
-    const plainText = (tempDiv.textContent || tempDiv.innerText || '').trim();
-
-    navigator.clipboard.writeText(plainText).then(() => {
-      console.log('Citation copied to clipboard.');
-    }).catch(err => {
-      console.error('Failed to copy citation:', err);
-    });
-  }
-
-
-
 
   /**
    * This function retrieves a distribution format based on certain conditions and returns the format.
