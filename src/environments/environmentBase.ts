@@ -26,7 +26,7 @@ export const environmentBase = {
   platformLogoPath: 'assets/img/logo/ENVRI-Hub-logo-white.svg',
   menuShare: true,
   minWidth: 900,
-  homepage: 'https://www.epos-eu.org',
+  homepage: 'https://envri.eu/',
   aboutpage: 'https://www.epos-eu.org/dataportal',
   termsAndConditions: 'https://www.epos-eu.org/sites/default/files/Terms_and_Conditions.pdf',
   vocabularyEndpoint: 'https://registry.epos-eu.org/ncl/system/query',
