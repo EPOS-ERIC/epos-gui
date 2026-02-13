@@ -17,7 +17,7 @@ export class Citation {
   providedIn: 'root',
 })
 export class CitationsService {
-  private readonly URL = 'https://www.epos-eu.org/dataportal';
+  private readonly URL = 'https://catalogue.staging.envri.eu/';
 
   constructor(
     private readonly notificationService: NotificationService,
