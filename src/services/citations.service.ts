@@ -67,7 +67,7 @@ public getDatasetCitation(distributionDetails: DistributionDetails): Promise<Cit
 
         return new Citation(
           'For citing the dataset as a reference in any publication',
-          `${combined}<br/>Accessed on ${this.getTodayString()} through the EPOS Platform (<a href="${this.URL}" target="_blank" rel="noopener noreferrer">${this.URL}</a>)`
+          `${combined}<br/>Accessed on ${this.getTodayString()} through the ENVRI-Hub Catalogue of Services (<a href="${this.URL}" target="_blank" rel="noopener noreferrer">${this.URL}</a>)`
         );
       }
 
@@ -77,7 +77,7 @@ public getDatasetCitation(distributionDetails: DistributionDetails): Promise<Cit
 
       return new Citation(
         'For citing the dataset as a reference in any publication',
-        `${linkedText}.<br/>Accessed on ${this.getTodayString()} through the EPOS Platform (<a href="${this.URL}" target="_blank" rel="noopener noreferrer">${this.URL}</a>)`
+        `${linkedText}.<br/>Accessed on ${this.getTodayString()} through the ENVRI-Hub Catalogue of Services (<a href="${this.URL}" target="_blank" rel="noopener noreferrer">${this.URL}</a>)`
       );
     });
   }
@@ -89,7 +89,7 @@ public getDatasetCitation(distributionDetails: DistributionDetails): Promise<Cit
   return Promise.resolve(
     new Citation(
       'For citing the dataset as a reference in any publication',
-      `${linkedText}.<br/>Accessed on ${this.getTodayString()} through the EPOS Platform (<a href="${this.URL}" target="_blank" rel="noopener noreferrer">${this.URL}</a>)`
+      `${linkedText}.<br/>Accessed on ${this.getTodayString()} through the ENVRI-Hub Catalogue of Services (<a href="${this.URL}" target="_blank" rel="noopener noreferrer">${this.URL}</a>)`
     )
   );
 }
@@ -118,7 +118,7 @@ public linkifyText(text: string): string {
     const doiUrl = 'https://doi.org/10.1038/s41597-023-02697-9';
 
     return new Citation(
-      'For citing the EPOS Platform as a reference in any publication',
+      'For citing the ENVRI-Hub Catalogue of Services as a reference in any publication',
       `Bailo, D., Paciello, R., Michalek, J. et al. The EPOS multi-disciplinary Platform for integrated access to solid Earth science datasets. Sci Data 10, 784 (2023). <a href="${doiUrl}" target="_blank" rel="noopener noreferrer">${doiUrl}</a>`
     );
   }
@@ -140,8 +140,8 @@ public linkifyText(text: string): string {
     const licensePart = license ? `, <a href="${license}" target="_blank" rel="noopener noreferrer">${license}</a>` : '';
 
     return new Citation(
-      'For citing the EPOS Platform contents different from DDSS (e.g. images, pictures)',
-      `Credits: EPOS Platform (${urlLink}), ${providersString}${licensePart}${doisPart}. Accessed on ${this.getTodayString()}`
+      'For citing the ENVRI-Hub Catalogue of Services contents different from DDSS (e.g. images, pictures)',
+      `Credits: ENVRI-Hub Catalogue of Services (${urlLink}), ${providersString}${licensePart}${doisPart}. Accessed on ${this.getTodayString()}`
     );
   }
 

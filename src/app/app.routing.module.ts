@@ -10,6 +10,7 @@ export const APP_ROUTES: Routes = [
     path: '',
     component: DataPortalComponent,
     data: {
+      title: 'Catalogue of Services',
       hideHeader: false,
       pageCssClass: '',
     },
@@ -18,6 +19,7 @@ export const APP_ROUTES: Routes = [
     path: 'data/search',
     redirectTo: '',
     data: {
+      title: 'Catalogue of Services',
       hideHeader: false,
       pageCssClass: '',
     },
@@ -26,6 +28,7 @@ export const APP_ROUTES: Routes = [
     path: 'last-page-redirect',
     component: LastPageRedirectComponent,
     data: {
+      title: 'Catalogue of Services',
       ignoreAsLastPage: true,
     },
   },
@@ -33,6 +36,7 @@ export const APP_ROUTES: Routes = [
     path: '**',
     component: NotFoundComponent,
     data: {
+      title: 'Catalogue of Services',
       ignoreAsLastPage: true,
     },
   },
