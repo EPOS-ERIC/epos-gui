@@ -12,7 +12,7 @@ import { Component, OnInit ,Inject } from '@angular/core';
  export class ScientificExamplesDialogComponent implements OnInit {
    examples: Examples[];
    selectedExample: Examples;
-   title = 'Scientific Examples';
+   title = 'ECV Use Cases';
    constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogData<scientificExamplesDataType, boolean>,
      private scientificExamplesService: ScientificExamplesService,

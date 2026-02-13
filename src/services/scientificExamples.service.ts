@@ -13,8 +13,7 @@ import { Examples } from 'components/dialog/scientificExamplesDialog/scientificE
 
 
 export class ScientificExamplesService {
-  // Live credentials obtained during build, from gitlab variables.
-  private readonly endpoint = window.location.href + (window.location.href.endsWith('/') ? '' : '/') + 'api/v1/scientific_example';
+  private readonly endpoint = 'https://raw.githubusercontent.com/epos-eu/ENVRI-Hub-Next-Use-Cases/refs/heads/main/useCases.JSON';
   private examplesSubject = new BehaviorSubject<Examples[]>([]);
   public examples$ = this.examplesSubject.asObservable();
 

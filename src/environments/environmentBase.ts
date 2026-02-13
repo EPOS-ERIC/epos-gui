@@ -7,7 +7,7 @@
  */
 export const environmentBase = {
   production: false,
-  version: (require('../../package.json') as Record<string, unknown>).version,
+  version: '',
   githash: 'GITHASH', // populated during pipeline
   gitTag: 'GIT_TAG', // populate during pipeline
   commitDate: 'COMMIT_DATE', // populated during pipeline
@@ -20,9 +20,9 @@ export const environmentBase = {
   matomoTokenAuth: '', // populated during pipeline
   matomoTrackEvent: true,
   showPoliciesPopup: true,
-  showWelcomePopup: true,
+  showWelcomePopup: false,
   showScientificExamples: true,
-  poweredByText: 'This Platform is Powered By EPOS ERIC',
+  poweredByText: 'Powered by the EPOS Platform Open Source project',
   platformLogoPath: 'assets/img/logo/ENVRI-Hub-logo-white.svg',
   menuShare: true,
   minWidth: 900,
@@ -48,8 +48,8 @@ export const environmentBase = {
   modules: {
     data: true, // turns the data section on and off
     analysis: false, // turns the analysis section on and off
-    registry: true, // turns the analysis section on and off
-    software: true // turns the software section on and off
+    registry: false, // turns the analysis section on and off
+    software: false // turns the software section on and off
   },
   mainMenu: [{
     name: 'About',
@@ -64,26 +64,6 @@ export const environmentBase = {
         url: window.location.href + '/api/v1/ui/',
         icon: 'cloud'
       },
-      {
-        name: 'Service Monitoring',
-        url: 'https://epos-services.vm.fedcloud.eu/monitoring/',
-        icon: 'monitor_heart'
-      },
-      {
-        name: 'Open Source project',
-        url: 'https://epos-eu.github.io/epos-open-source/',
-        icon: 'shopping_basket'
-      },
-      {
-        name: 'Citation Guide',
-        url: 'https://www.epos-eu.org/sites/default/files/2025-03/EPOS%20DDSS%20Citation%20Guide%20v3.1_12March2025_SCCapproved.pdf',
-        icon: 'speaker_notes'
-      },
-      {
-        name: 'Terms and Conditions ',
-        url: 'https://www.epos-eu.org/sites/default/files/Terms_and_Conditions.pdf',
-        icon: 'insert_drive_file'
-      }
     ],
   },
   {
@@ -96,19 +76,5 @@ export const environmentBase = {
     url: 'https://catalogue.staging.envri.eu/backoffice/login',
     icon: 'edit_document',
   },
-  {
-    name: 'Video Guides',
-    action: 'videoguide',
-    icon: 'movie',
-  },
-  { name: 'Statistics',
-    action: 'stats',
-    icon: 'analytics'
-  },
-  {
-    name: 'FAIR Assessment',
-    action: 'fairAssessment',
-    icon: 'workspace_premium',
-  }
   ]
 };

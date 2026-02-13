@@ -32,7 +32,7 @@
           <mat-select #typesSelect multiple [(value)]="selectedStatus" (valueChange)="typesToggleSelected(selectedStatus)" [panelClass]="'custom-panel-class'">
             <mat-select-trigger>{{ selectedStatus }}</mat-select-trigger>
             <mat-option *ngFor="let type of metadataStatuses" [value]="type.value" >
-              {{ type.label }} 
+              {{ type.label }}
               <i class="fa-solid fa-circle" [ngClass]="type.color"></i>
             </mat-option>
           </mat-select>
@@ -42,16 +42,16 @@
 
 
       <!-- Scientific Examples -->
-      <li *ngIf="environment.showScientificExamples === true"> 
+      <li *ngIf="environment.showScientificExamples === true">
         <div class="nav-top-items-item guest">
           <a class="nav-top-items-item-text" (click)="scientficExamples()" data-toggle="dropdown">
             <mat-icon>summarize</mat-icon>
-            <span class="hidden-xs text">Scientific Examples</span>
+            <span class="hidden-xs text">ECVs Use Cases</span>
           </a>
         </div>
       </li>
       <!-- Share -->
-      <li *ngIf="environment.menuShare === true"> 
+      <li *ngIf="environment.menuShare === true">
         <div class="nav-top-items-item guest">
           <!-- app-menu [trigger]="shareMenu[0]" [data]="shareMenu" [isRootNode]="true" [root]="{ name: 'Share', icon: 'share' }"></app-menu -->
           <a class="nav-top-items-item-text" (click)="share()" data-toggle="dropdown">

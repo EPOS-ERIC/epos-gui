@@ -255,7 +255,7 @@ export class HeaderComponent implements OnInit {
     this.dialogService.openShareInformationBanner('createUrl', 'COPY URL ON CLIPBOARD');
   }
   public scientficExamples(): void {
-    this.dialogService.openScientificExamplesDialog('Load Scientific Example' );
+    this.dialogService.openScientificExamplesDialog('Activate Scientific Example' );
   }
   public openNewFeaturesDialog(): void {
     this.newFeaturesService.openNewFeatures(true);
