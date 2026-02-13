@@ -23,7 +23,7 @@ export const environmentBase = {
   showWelcomePopup: true,
   showScientificExamples: true,
   poweredByText: 'This Platform is Powered By EPOS ERIC',
-  platformLogoPath: 'assets/img/logo/logo-white.svg',
+  platformLogoPath: 'assets/img/logo/ENVRI-Hub-logo-white.svg',
   menuShare: true,
   minWidth: 900,
   homepage: 'https://www.epos-eu.org',
@@ -33,16 +33,16 @@ export const environmentBase = {
   fairAssessmentUrl: 'https://ics-c.epos-ip.org/epos-fair-assessment/',
   videos: [
     {
-      title: 'Introduction to EPOS',
-      url: 'https://www.youtube-nocookie.com/embed/A5-WiWeG5-4'
+      title: 'Introduction to ENVRI',
+      url: ''
     },
     {
       title: 'Data search',
-      url: 'https://www.youtube-nocookie.com/embed/qpQuBlZBT7Y'
+      url: ''
     },
     {
       title: 'Configuration and visualization of services',
-      url: 'https://www.youtube-nocookie.com/embed/L2G7ir0cvxI'
+      url: ''
     }
   ],
   modules: {
@@ -55,12 +55,12 @@ export const environmentBase = {
     name: 'About',
     children: [
       {
-        name: 'About EPOS Platform',
-        url: 'https://www.epos-eu.org/dataportal',
+        name: 'About Data Portal',
+        url: 'https://envri.eu/',
         icon: 'info'
       },
       {
-        name: 'EPOS API ',
+        name: 'ENVRI API',
         url: window.location.href + '/api/v1/ui/',
         icon: 'cloud'
       },

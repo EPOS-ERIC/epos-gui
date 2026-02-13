@@ -1,6 +1,6 @@
 {
   "/testpath/api": {
-    "target": "https://ics-c.epos-ip.org/development/k8s-epos-deploy/latest/",
+    "target": "https://catalogue.staging.envri.eu/",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
