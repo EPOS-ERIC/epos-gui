@@ -44,6 +44,7 @@
 
   .title p {
     margin: 0;
+    margin-left: 10px;
     font-size: $results-title-font-size;
     font-weight: bold;
     display: flex;
@@ -228,12 +229,12 @@
     .card-title {
       font-size: 15px;
       font-weight: 600;
-      color: $color-dark-text;
+      color: $color-primary;
     }
 
     .card-subtitle {
       font-size: 13px;
-      color: $color-text-bg-dark;
+      color: $color-dark-text;
       line-height: 1.4;
     }
   }

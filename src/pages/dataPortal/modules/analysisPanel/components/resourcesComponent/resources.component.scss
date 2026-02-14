@@ -63,6 +63,34 @@
     gap: 2px;
   }
 
+  // Resource name styling
+  .resource-name {
+    color: $color-primary;
+    font-weight: 500;
+  }
+
+  // Format cell with icon and text
+  .format-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .format-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+      color: $color-primary;
+      flex-shrink: 0;
+    }
+
+    .format-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
   // Material table styling
   table.mat-mdc-table {
     width: 100%;
@@ -76,7 +104,7 @@
       .mat-mdc-header-cell {
         font-weight: 600;
         color: $color-dark-text;
-        border-bottom: 2px solid $color-primary;
+        border-bottom: 2px solid $color-secondary;
         border-right: 1px solid $color-borders;
         font-size: 13px;
         padding: 10px 12px;
@@ -147,7 +175,7 @@
       background: $color-text-bg;
       font-weight: 600;
       color: $color-dark-text;
-      border-bottom: 2px solid $color-primary;
+      border-bottom: 2px solid $color-secondary;
       text-align: left;
       font-size: 13px;
     }
