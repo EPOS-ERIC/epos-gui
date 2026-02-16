@@ -61,7 +61,8 @@
       [title]="'Filter by Data and Service Providers'"
       [label]="'Data and Service Providers'"
       [model]="organisationsModel"
-      (newDataProvidersSelected)="dataProviderSelected($event)"></app-data-provider-filter>
+      (newDataProvidersSelected)="dataProviderSelected($event)"
+      data-cy="data-provider-filter"></app-data-provider-filter>
     <app-ecv-filter
       class="ecvFilterSelect"
       [ECVsList]="ECVsList"

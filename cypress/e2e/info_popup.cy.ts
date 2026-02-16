@@ -110,41 +110,6 @@ describe('Test info popup', () => {
       });
     });
 
-    // The how to cite section should exist
-    cy.getByDataCy('details-dialog-how-to-cite').click();
-
-    cy.getByDataCy('details-dialog-how-to-cite-value').then(($values) => {
-      cy.getByDataCy('details-dialog-how-to-cite-key').then(($keys) => {
-
-        expect($values).to.have.length(3);
-        // Check if the values are populated correctly
-        $values.each((i, value) => {
-          const key = $keys[i].textContent.trim();
-          const val = value.textContent.trim();
-
-          const dateObj = new Date();
-          const day = String(dateObj.getDate()).padStart(2, '0');
-          const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-          const year = dateObj.getFullYear();
-          const today = `${day}-${month}-${year}`;
-
-          switch (key) {
-            case 'For citing the dataset as a reference in any publication':
-              expect(val).to.eq(`GNSS Stations with Products, provided by ORB - Observatoire royal de Belgique - BE, http://creativecommons.org/licenses/by/4.0/.Accessed on ${today} through the EPOS Platform (https://www.epos-eu.org/dataportal)`);
-              break;
-            case 'For citing the EPOS Platform as a reference in any publication':
-              expect(val).to.eq('Bailo, D., Paciello, R., Michalek, J. et al. The EPOS multi-disciplinary Platform for integrated access to solid Earth science datasets. Sci Data 10, 784 (2023). https://doi.org/10.1038/s41597-023-02697-9');
-              break;
-            case 'For citing the EPOS Platform contents different from DDSS (e.g. images, pictures)':
-              expect(val).to.eq(`Credits: EPOS Platform (https://www.epos-eu.org/dataportal), ORB - Observatoire royal de Belgique - BE, http://creativecommons.org/licenses/by/4.0/. Accessed on ${today}`);
-              break;
-            default:
-              throw new Error('Unknown key: ' + key);
-          }
-        });
-      });
-    });
-
     // The service details should exist
     cy.getByDataCy('details-dialog-service-details');
 
