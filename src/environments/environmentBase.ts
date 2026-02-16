@@ -28,7 +28,7 @@ export const environmentBase = {
   minWidth: 900,
   homepage: 'https://www.epos-eu.org',
   aboutpage: 'https://www.epos-eu.org/dataportal',
-  termsAndConditions: 'https://www.epos-eu.org/sites/default/files/Terms_and_Conditions.pdf',
+  termsAndConditions: 'https://www.epos-eu.org/sites/default/files/2026-02/Terms_and_ConditionsJan26_1.pdf',
   vocabularyEndpoint: 'https://registry.epos-eu.org/ncl/system/query',
   fairAssessmentUrl: 'https://ics-c.epos-ip.org/epos-fair-assessment/',
   videos: [
@@ -81,7 +81,7 @@ export const environmentBase = {
       },
       {
         name: 'Terms and Conditions ',
-        url: 'https://www.epos-eu.org/sites/default/files/Terms_and_Conditions.pdf',
+        url: 'https://www.epos-eu.org/sites/default/files/2026-02/Terms_and_ConditionsJan26_1.pdf',
         icon: 'insert_drive_file'
       }
     ],
