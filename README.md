@@ -1,4 +1,12 @@
-# EPOS GUI
+# ENVRi Hub Next Catalogue of Services GUI
+
+This repository is the active source for the ENVRi Hub Next Catalogue of Services frontend.
+
+## Repository role
+
+- This project started as a fork of `EPOS-ERIC/epos-gui`.
+- Ongoing ENVRi Hub Next Catalogue of Services development should happen in this repository.
+- To stay aligned with the upstream EPOS GUI baseline, periodically merge `upstream/main` into this repository's `main`.
 
 Essential commands and runtime config for local development and Docker deployment.
 
