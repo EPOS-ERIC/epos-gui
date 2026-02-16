@@ -66,21 +66,20 @@
             </div>
           </div>
           <div class="card-subtitle" *ngIf="environment.description">{{ environment.description }}</div>
-        </div>
-
-        <!-- Card Meta -->
-        <div class="card-meta">
-          <div class="meta-item">
-            <mat-icon>memory</mat-icon>
-            <span>{{ environment.type }}</span>
-          </div>
-          <div class="meta-item">
-            <mat-icon>cloud</mat-icon>
-            <span>{{ environment.provider }}</span>
-          </div>
-          <div class="meta-item">
-            <mat-icon>schedule</mat-icon>
-            <span>{{ environment.created }}</span>
+          <!-- Card Meta -->
+          <div class="card-meta">
+            <div class="meta-item">
+              <mat-icon>memory</mat-icon>
+              <span>{{ environment.type }}</span>
+            </div>
+            <div class="meta-item">
+              <mat-icon>cloud</mat-icon>
+              <span>{{ environment.provider }}</span>
+            </div>
+            <div class="meta-item">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ environment.created }}</span>
+            </div>
           </div>
         </div>
 

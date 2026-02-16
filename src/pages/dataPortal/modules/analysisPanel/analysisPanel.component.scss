@@ -190,32 +190,23 @@
 .environment-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
 }
 
 // Environment Card
 .environment-card {
   background-color: white;
-  border: 1px solid $color-borders;
   overflow: hidden;
-  transition: border-color 0.2s ease;
-
-  &:hover {
-    border-color: darken($color-borders, 10%);
-  }
-
-  &.expanded {
-    border-color: $color-primary;
-  }
 
   // Card Header
   .card-header {
     padding: 12px 16px;
     cursor: pointer;
+    background: white;
     transition: background-color 0.15s ease;
 
     &:hover {
-      background-color: rgba($color-primary, 0.02);
+      background: $color-text-bg;
     }
 
     .card-title-row {
@@ -291,13 +282,15 @@
     }
   }
 
-  // Card Meta
+  // Card Meta (now inside card-header)
   .card-meta {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    padding: 0 16px 12px;
-    border-bottom: 1px solid $color-borders;
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba($color-primary, 0.08);
+    border-radius: 4px;
 
     .meta-item {
       display: flex;
