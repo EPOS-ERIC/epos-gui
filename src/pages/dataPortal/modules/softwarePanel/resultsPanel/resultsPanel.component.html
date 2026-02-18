@@ -95,19 +95,19 @@
                   <div class="informations-bottom">
                     <div class="informations-bottom-left">
                       <ng-container *ngIf="metadataStatusModeActive === true && element.versioningStatus !== '' && showStatusChipsOnCards">
-                        <div *ngIf="element.versioningStatusInfo.versioningStatusInfo[0]" style="display: flex; flex-wrap: wrap; justify-content: start; align-items: center">
+                        <div *ngIf="element.versioningStatusInfo?.versioningStatusInfo?.[0]" style="display: flex; flex-wrap: wrap; justify-content: start; align-items: center">
                           <p style="display: flex; width: 100%; justify-content: start; align-items: center; gap: 2px; margin-bottom: 3px">
                             Last change:
                             <mat-icon>calendar_month</mat-icon>
-                            {{ element.versioningStatusInfo.versioningStatusInfo[0].changeDate | date : 'dd/MM/yyyy' }}
+                            {{ element.versioningStatusInfo?.versioningStatusInfo[0]?.changeDate | date : 'dd/MM/yyyy' }}
                             <mat-icon>schedule</mat-icon>
-                            {{ element.versioningStatusInfo.versioningStatusInfo[0].changeDate | date : 'HH:mm' }}
+                            {{ element.versioningStatusInfo?.versioningStatusInfo[0]?.changeDate | date : 'HH:mm' }}
                           </p>
                           <br />
                           <p style="display: flex; width: 100%; justify-content: start; align-items: center; gap: 2px; margin-bottom: 3px">
                             Author:
                             <mat-icon>person</mat-icon>
-                            {{ element.versioningStatusInfo.versioningStatusInfo[0].editorFullName }}
+                            {{ element.versioningStatusInfo?.versioningStatusInfo[0]?.editorFullName }}
                           </p>
                         </div>
 
