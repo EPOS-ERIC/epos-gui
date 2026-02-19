@@ -1,10 +1,89 @@
-<h1>ℹ️ Welcome to the evolving ENVRI Catalogue of Services</h1>
+<!--
+         Copyright 2021 EPOS ERIC
+
+ Licensed under the Apache License, Version 2.0 (the License); you may not
+ use this file except in compliance with the License.  You may obtain a copy
+ of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an AS IS BASIS, WITHOUT
+ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ License for the specific language governing permissions and limitations under
+ the License.
+ -->
+<h1>ENVRI CATALOGUE OF SERVICES POLICIES</h1>
 <div class="policies-grid nice-scrollbar">
-  <p class="details" style="font-size: 17px;">The ENVRI Catalogue of Services is being continuously improved 🛠️.</p>
-  <p class="details" style="font-size: 17px;">✅ "Services" with "Data Visualization = Map" are tested and fully functional.</p>
-  <p class="details" style="font-size: 17px;">⚙️ Some legacy services are still being updated and may offer limited functionality.</p>
+  <!-- ENVRI-specific information -->
+  <div class="envri-info" [class.collapsed]="isInfoCollapsed">
+    <div class="info-header" (click)="toggleInfo()">
+      <span class="info-icon">ℹ️</span>
+      <h2>Welcome to the evolving ENVRI Catalogue of Services!</h2>
+      <button class="toggle-button" type="button" aria-label="Toggle info">
+        <mat-icon>{{ isInfoCollapsed ? 'expand_more' : 'expand_less' }}</mat-icon>
+      </button>
+    </div>
+    <div class="status-list" [@collapse]="isInfoCollapsed ? 'collapsed' : 'expanded'">
+      <div class="status-item">
+        <span class="status-icon building">🛠️</span>
+        <p>The ENVRI Catalogue of Services is being continuously improved</p>
+      </div>
+      <div class="status-item">
+        <span class="status-icon ready">✅</span>
+        <p>"Services" with "Data Visualization = Map" are tested and fully functional</p>
+      </div>
+      <div class="status-item">
+        <span class="status-icon progress">⚙️</span>
+        <p>Some "Legacy" services are still being updated and may offer limited functionality</p>
+      </div>
+    </div>
+  </div>
+  <div class="policy-item">
+    <mat-checkbox #toggleTerms [checked]="false" data-cy="toggle-terms-checkbox"></mat-checkbox>
+    <div class="policy-content">
+      <label id="terms-checkbox-label" [for]="toggleTerms.inputId">I consent to Terms and Conditions</label>
+      <p class="details">
+        Here you will find the conditions under which you use the ENVRI Catalogue of Services. This includes acceptable
+        use and liability disclaimer. If you do not consent to such use of the catalogue, further access to the
+        catalogue is
+        denied. <a href="assets/policies and services/ENVRI Catalogue of Services Terms and Conditions.pdf"
+          target="_blank" rel="noopener noreferrer">Read Terms and Conditions <mat-icon>open_in_new</mat-icon></a>
+      </p>
+    </div>
+  </div>
+
+  <div class="policy-item">
+    <mat-checkbox #togglePrivacy [checked]="false" data-cy="toggle-privacy-checkbox"></mat-checkbox>
+    <div class="policy-content">
+      <label id="privacy-checkbox-label" [for]="togglePrivacy.inputId">I understand and acknowledge the Privacy Policy
+        document</label>
+      <p class="details">
+        The Privacy policy explains how ENVRI Catalogue of Services manages and protects personal data, particularly in
+        the sense of GDPR (General Data Protection Regulation).
+        If you do not consent to such use of your personal data, further access to the catalogue is denied.
+        <a href="assets/policies and services/ENVRI Catalogue of Services PRIVACY POLICY.pdf" target="_blank"
+          rel="noopener noreferrer">Read Privacy Policy <mat-icon>open_in_new</mat-icon></a>
+      </p>
+    </div>
+  </div>
+
+  <div class="policy-item">
+    <mat-slide-toggle #cookiesToggle [(ngModel)]="cookiePolicy"></mat-slide-toggle>
+    <div class="policy-content">
+      <label [for]="cookiesToggle.inputId">COOKIES</label>
+      <p class="details">
+        Websites utilise cookies to store certain information. ENVRI Catalogue of Services uses cookies only to monitor
+        performance anonymously, information used in improving the catalogue. You may choose to allow these cookies or
+        not. Either choice does not prevent use of the catalogue.
+      </p>
+    </div>
+  </div>
 
   <div class="actions">
-    <button class="submit-butt" mat-flat-button color="primary" (click)="setStorage()" data-cy="accept-terms-button">OK</button>
+    <button class="submit-butt" mat-flat-button color="primary"
+      [disabled]="!toggleTerms.checked || !togglePrivacy.checked" (click)="setStorage()"
+      data-cy="accept-terms-button">Submit</button>
   </div>
+
 </div>
