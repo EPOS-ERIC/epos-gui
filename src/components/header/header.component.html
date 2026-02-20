@@ -16,12 +16,13 @@
 
 
       <!-- START OF MetadataPreview -->
-      <!-- <ng-container *ngIf="user !== null">
-        <mat-slide-toggle class="custom-slide-toggle" [(ngModel)]="metadataPreviewModeActive" (toggleChange)="toggleMetadataPreviewMode()"></mat-slide-toggle>
+      <ng-container *ngIf="user !== null">
+        <mat-slide-toggle class="custom-slide-toggle" [(ngModel)]="metadataPreviewModeActive"
+          (toggleChange)="toggleMetadataPreviewMode()"></mat-slide-toggle>
         <li *ngIf="!metadataPreviewModeActive; then metadataFeatureLabel else metadataFeature">
-        
+
         </li>
-          
+
 
       </ng-container>
       <ng-template #metadataFeatureLabel>
@@ -30,20 +31,21 @@
       <ng-template #metadataFeature>
         <mat-form-field>
           <mat-label>{{ "Metadata Preview" }}</mat-label>
-          <mat-select #typesSelect multiple [(value)]="selectedStatus" (valueChange)="typesToggleSelected(selectedStatus)" [panelClass]="'custom-panel-class'">
+          <mat-select #typesSelect multiple [(value)]="selectedStatus"
+            (valueChange)="typesToggleSelected(selectedStatus)" [panelClass]="'custom-panel-class'">
             <mat-select-trigger>{{ selectedStatus }}</mat-select-trigger>
-            <mat-option *ngFor="let type of metadataStatuses" [value]="type.value" >
-              {{ type.label }} 
+            <mat-option *ngFor="let type of metadataStatuses" [value]="type.value">
+              {{ type.label }}
               <i class="fa-solid fa-circle" [ngClass]="type.color"></i>
             </mat-option>
           </mat-select>
         </mat-form-field>
-      </ng-template> -->
+      </ng-template>
       <!-- END OF MetadataPreview -->
 
 
       <!-- Scientific Examples -->
-      <li> 
+      <li>
         <div class="nav-top-items-item guest">
           <a class="nav-top-items-item-text" (click)="scientficExamples()" data-toggle="dropdown">
             <mat-icon>summarize</mat-icon>
@@ -52,7 +54,7 @@
         </div>
       </li>
       <!-- Share -->
-      <li *ngIf="environment.menuShare === true"> 
+      <li *ngIf="environment.menuShare === true">
         <div class="nav-top-items-item guest">
           <!-- app-menu [trigger]="shareMenu[0]" [data]="shareMenu" [isRootNode]="true" [root]="{ name: 'Share', icon: 'share' }"></app-menu -->
           <a class="nav-top-items-item-text" (click)="share()" data-toggle="dropdown">
@@ -89,16 +91,10 @@
       </li>
       <!-- Menu -->
       <li>
-        <div
-          class="nav-top-items-item guest"
-          [ngClass]="{ 'nav-top-items-item--active': this.dropdown === 'menu' }"
-          appTour
-          tourName="EPOS Overview"
-          tourStage="21"
-          tourDescription="The tour can be accessed again from this menu."
-          tourTitle="Tour Complete!"
-          tourPosition="left"
-          (tourForwardFunction)="handleTourFinish()">
+        <div class="nav-top-items-item guest" [ngClass]="{ 'nav-top-items-item--active': this.dropdown === 'menu' }"
+          appTour tourName="EPOS Overview" tourStage="21"
+          tourDescription="The tour can be accessed again from this menu." tourTitle="Tour Complete!"
+          tourPosition="left" (tourForwardFunction)="handleTourFinish()">
           <app-menu [trigger]="initialMenuData[0]" [data]="initialMenuData" [isRootNode]="true"></app-menu>
         </div>
       </li>
