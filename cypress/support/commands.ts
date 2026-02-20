@@ -58,62 +58,22 @@ Cypress.Commands.add('policyAccept', () => {
   // PoliciesService.storeConsentsTimestamp(moment());
   // PoliciesService.storeCookieConsent(true);
 
-  cy.get('body').then(($body) => {
-    // Do not use getByDataCy here: this popup is optional in OSS and cy.get(...) would fail when absent.
-    const hasPoliciesPopup = $body.find('[data-cy="accept-terms-button"]').length > 0;
-    if (!hasPoliciesPopup) {
-      return;
-    }
+  cy.getByDataCy('toggle-terms-checkbox').find('.mat-checkbox-inner-container').click();
+  cy.getByDataCy('toggle-privacy-checkbox').find('.mat-checkbox-inner-container').click();
+  cy.getByDataCy('accept-terms-button').click();
 
-    cy.getByDataCy('toggle-terms-checkbox').find('.mat-checkbox-inner-container').click();
-    cy.getByDataCy('toggle-privacy-checkbox').find('.mat-checkbox-inner-container').click();
-    cy.getByDataCy('accept-terms-button').click();
-
-    cy.contains('EPOS POLICIES').should('not.exist');
-  });
+  cy.contains('EPOS POLICIES').should('not.exist');
 });
 
 // // -- Disable Welcome Popup
 Cypress.Commands.add('welcomePopup', () => {
-  const closeWelcomePopup = (attemptsLeft = 8): void => {
-    cy.get('body').then(($body) => {
-      // Do not use getByDataCy here: welcome popup can be disabled by environment configuration.
-      const hasWelcomePopup = $body.text().includes('Welcome to the EPOS Platform!');
-      if (hasWelcomePopup) {
-        cy.contains('button', 'CONTINUE TO THE PLATFORM').click();
-        cy.contains('Welcome to the EPOS Platform!').should('not.exist');
-        return;
-      }
-
-      if (attemptsLeft > 0) {
-        cy.wait(250);
-        closeWelcomePopup(attemptsLeft - 1);
-      }
-    });
-  };
-
-  closeWelcomePopup();
+  cy.contains('button', 'CONTINUE TO THE PLATFORM').click();
+  cy.contains('Welcome to the EPOS Platform!').should('not.exist');
 });
 
 Cypress.Commands.add('newFeatures', () => {
-  const closeNewFeaturesPopup = (attemptsLeft = 16): void => {
-    cy.get('body').then(($body) => {
-      // Do not use getByDataCy here: this popup may not be shown for the current app version.
-      const hasNewFeaturePopup = $body.find('.new-feature-popup .epos-close-btn').length > 0;
-      if (hasNewFeaturePopup) {
-        cy.get('.new-feature-popup .epos-close-btn').click();
-        cy.contains('NEW FEATURES').should('not.exist');
-        return;
-      }
-
-      if (attemptsLeft > 0) {
-        cy.wait(250);
-        closeNewFeaturesPopup(attemptsLeft - 1);
-      }
-    });
-  };
-
-  closeNewFeaturesPopup();
+  cy.get('.new-feature-popup .epos-close-btn').click();
+  cy.contains('NEW FEATURES').should('not.exist');
 });
 
 Cypress.Commands.add('policyAcceptAndWelcomePopup', () => {

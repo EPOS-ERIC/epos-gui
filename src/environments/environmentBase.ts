@@ -31,6 +31,7 @@ export const environmentBase = {
   termsAndConditions: 'https://www.epos-eu.org/sites/default/files/2026-02/Terms_and_ConditionsJan26_1.pdf',
   vocabularyEndpoint: 'https://registry.epos-eu.org/ncl/system/query',
   fairAssessmentUrl: 'https://ics-c.epos-ip.org/epos-fair-assessment/',
+  showFairAssessment: true,
   videos: [
     {
       title: 'Introduction to EPOS',
