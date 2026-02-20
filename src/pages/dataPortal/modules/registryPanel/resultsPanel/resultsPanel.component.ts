@@ -1,4 +1,5 @@
 import { AfterContentInit, Component, HostListener, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { DiscoverResponse } from 'api/webApi/classes/discoverApi.interface';
 import { Domain } from 'api/webApi/data/domain.interface';
 import { Model } from 'services/model/model.service';
@@ -18,6 +19,10 @@ import { SearchService } from '../../../../../services/search.service';
 import { LeafletLoadingService } from '../../../../../utility/eposLeaflet/services/leafletLoading.service';
 import { MetaDataStatusService } from 'services/metaDataStatus.service';
 import { AaaiService } from 'api/aaai.service';
+import { MonitoringPopupComponent } from 'components/dialog/monitoring-PopupDialog/monitoring-popup.component';
+import { DistributionItem } from 'api/webApi/data/distributionItem.interface';
+import { Tracker } from 'utility/tracker/tracker.service';
+import { TrackerAction, TrackerCategory } from 'utility/tracker/tracker.enum';
 
 @Unsubscriber(['domainSubscription', 'subscriptions'])
 @Component({
@@ -39,7 +44,9 @@ export class ResultsPanelComponent extends BaseResultsPanelComponent implements 
     protected readonly searchService: SearchService,
     protected readonly leafletLoadingService: LeafletLoadingService,
     protected readonly metadataStatusService: MetaDataStatusService,
-    protected readonly aaaiService: AaaiService
+    protected readonly aaaiService: AaaiService,
+    private readonly tracker: Tracker,
+    private dialog: MatDialog,
   ) {
     super(configurables, dialogService, loadingService, landingService, panelsEvent, resultPanelService, localStoragePersister, notification, searchService, leafletLoadingService, metadataStatusService, model, aaaiService);
 
@@ -91,7 +98,55 @@ export class ResultsPanelComponent extends BaseResultsPanelComponent implements 
       this.activeDomainData = this.configurables.getDomainInfoBy(this.domains, activeDomainCode as string, 'code');
     }
   }
+  public select(itemSelected: DistributionItem, event: Event | null = null): void {
 
+    // if (nothing expanded OR (event not null AND item not null AND selected item is not the currently expanded one))
+    if (this.expandedElement === null || (event !== null && itemSelected !== null && itemSelected !== this.expandedElement)) {
+      // click
+      this.tracker.trackEvent(TrackerCategory.DISTRIBUTION, TrackerAction.SELECT_DISTRIBUTION, this.formatTrackerDistributionName(itemSelected!));
+
+    }
+
+    super.select(itemSelected);
+  }
+
+  public favourite(element: DistributionItem, event: Event | null = null): void {
+
+    const inFavouritesList = this.configurables.getAllPinned().filter(_elem => {
+      return _elem.id === element.id;
+    });
+
+    if (event !== null) {
+      // track
+      this.tracker.trackEvent(TrackerCategory.DISTRIBUTION, (inFavouritesList.length === 0 ? TrackerAction.ADD_TO_FAVOURITE : TrackerAction.REMOVE_FROM_FAVOURITE), this.formatTrackerDistributionName(element));
+
+    }
+    super.favourite(element, event);
+  }
+
+  public openDialog(element: DistributionItem): void {
+
+    // track
+    this.tracker.trackEvent(TrackerCategory.DISTRIBUTION, TrackerAction.SHOW_DETAILS, this.formatTrackerDistributionName(element));
+
+    super.openDialog(element);
+  }
+
+  public openMonitoringPopup(event: Event, element: DistributionItem): void {
+    event.stopPropagation();
+    this.dialog.open(MonitoringPopupComponent, {
+      width: '450px',
+      height: 'auto',
+      data: {
+        serviceName: element.name,
+        status: element.status,
+        statusTimestamp: element.statusTimestamp || '',
+        monitoringUrl: element.statusURL,
+      },
+      disableClose: false,
+      panelClass: 'monitoring-popup-dialog'
+    });
+  }
   /**
    * The updateConfigs function updates spatial bounds and equipment types based on data search bounds
    * and equipment types.
@@ -102,6 +157,10 @@ export class ResultsPanelComponent extends BaseResultsPanelComponent implements 
     this.configurables.updateSpatialBounds(this.model.dataSearchBoundsReg.get());
     this.configurables.updateEquipmentTypes(this.model.dataSearchEquipmentTypeReg.get());
 
+  }
+
+  private formatTrackerDistributionName(elem: DistributionItem): string {
+    return elem.code + Tracker.TARCKER_DATA_SEPARATION + elem.name;
   }
 
 }

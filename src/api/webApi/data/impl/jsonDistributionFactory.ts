@@ -379,17 +379,21 @@ export class JSONDistributionFactory {
     // temporary object to hold versioning info
     const tempVersioningInfo: { [key: string]: Partial<{ changeDate: string; editorFullName: string }> } = {};
     const versioningStatusInfoKey = 'versioningStatusInfo';
-     // Initialize temp object for this key if it doesn't exist
+    // Initialize temp object for this key if it doesn't exist
     const uid = ObjectAccessUtility.getObjectValueString(distJson, 'uid', false, null);
-     if (!tempVersioningInfo[versioningStatusInfoKey]) {
+    if (!tempVersioningInfo[versioningStatusInfoKey]) {
       tempVersioningInfo[versioningStatusInfoKey] = {};
     }
     JSONDistributionFactory.versioningStatusInfoProperties.forEach((property: string) => {
-      if(property in distJson && (distJson[property] != null && distJson[property] !== '')) {
+      if (property in distJson && (distJson[property] != null && distJson[property] !== '')) {
         const value = ObjectAccessUtility.getObjectValueString(distJson, property, false);
         tempVersioningInfo[versioningStatusInfoKey][property as 'changeDate' | 'editorFullName'] = value;
       }
     });
+    // fallback: if editorFullName is missing, use editorId as author
+    if (!tempVersioningInfo[versioningStatusInfoKey].editorFullName) {
+      tempVersioningInfo[versioningStatusInfoKey].editorFullName = 'Unknown';
+    }
     Object.entries(tempVersioningInfo).forEach(([key, partial]) => {
       if (partial.changeDate && partial.editorFullName) {
         // finally assigning the actual versioning info to the versioningStatusInfo object with which the DistSummary will be created
@@ -424,7 +428,7 @@ export class JSONDistributionFactory {
 
     if (Confirm.isValidString(id) && //
       Confirm.isValidString(title)) {
-      return Optional.ofNonNullable(SimpleDistributionSummary.make(id, title, formatsAppendTo, status, statusTimestamp,statusURL, versioningStatus, versioningStatusInfo,serviceProvider,uid));
+      return Optional.ofNonNullable(SimpleDistributionSummary.make(id, title, formatsAppendTo, status, statusTimestamp, statusURL, versioningStatus, versioningStatusInfo, serviceProvider, uid));
     } else {
       return Optional.empty();
     }
@@ -507,7 +511,7 @@ export class JSONDistributionFactory {
     return organizations;
   }
 
-public static jsonToOrganization(json: unknown): Organization | null {
+  public static jsonToOrganization(json: unknown): Organization | null {
     // Assert json is an array and has at least one element
     if (Array.isArray(json) && json.length > 0) {
       // Extract the first element of the array and assert its type
@@ -527,7 +531,7 @@ public static jsonToOrganization(json: unknown): Organization | null {
     }
     // Return null if json is not an array or is empty
     return null;
-}
+  }
 
   /**
    * Builds a standard DistributionDetails object (e.g., for web services or file distributions).
