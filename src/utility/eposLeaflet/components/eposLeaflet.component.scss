@@ -240,4 +240,18 @@
     right: $sidenav-margin;
     top: $sidenav-right-top;
   }
+
+  .basemap-selector-control-panel {
+    z-index: 10000;
+    position: absolute;
+    right: $sidenav-margin;
+    top: $sidenav-right-top;
+    padding: $padding-background-panel;
+    background-color: $color-background-panel;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    width: 560px;
+    max-width: calc(100vw - 80px);
+  }
 }

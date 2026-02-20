@@ -1,0 +1,84 @@
+<div class="wrapper nice-scrollbar">
+  <mat-accordion>
+    <mat-expansion-panel [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Basemap</mat-panel-title>
+        <mat-panel-description>
+          <div class="basemap-info">
+            <span>{{ selectedOriginalBasemapVal }}</span>
+            <span (click)="$event.stopPropagation()">
+              <mat-slide-toggle [checked]="basemapToggled" (change)="updateOriginalBasemapEnable($event)"></mat-slide-toggle>
+            </span>
+          </div>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-base-layer-selection [crsCode]="crsCode" (selectedLayer)="selectedOriginalBasemap($event)"></app-base-layer-selection>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>EuroGeographics Basemap</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-accordion class="euro-options" cdkDropList [cdkDropListData]="options" (cdkDropListDropped)="dropEuroGeographicsOptions($event)">
+        <div class="option-item-wrapper" *ngFor="let option of options" cdkDrag cdkDragLockAxis="y">
+        <mat-expansion-panel class="option-item" [expanded]="false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span class="option-checkbox-header" (click)="$event.stopPropagation()">
+                <span class="drag-handle" cdkDragHandle (click)="$event.stopPropagation()" aria-label="Drag to reorder" title="Drag to reorder">
+                  <span class="dot"></span><span class="dot"></span>
+                  <span class="dot"></span><span class="dot"></span>
+                  <span class="dot"></span><span class="dot"></span>
+                </span>
+                <mat-checkbox
+                  class="option-toggle"
+                  [checked]="isSelected(option)"
+                  [disabled]="!isCrsSupported(option)"
+                  (change)="updateSelection($event, option)">
+                </mat-checkbox>
+                <span class="option-name">{{ option.name }}</span>
+              </span>
+            </mat-panel-title>
+            <mat-panel-description class="option-header-actions">
+              <a
+                class="layer-link-btn"
+                [href]="option.datasetUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                (click)="$event.stopPropagation()">
+                Open Layer
+              </a>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="option-body" [class.option-disabled]="!isCrsSupported(option)">
+            <div class="option-slider-box">
+              <span class="slider-label">Transparency</span>
+              <mat-slider
+                [value]="getOpacity(option)"
+                [min]="0"
+                [max]="1"
+                [step]="0.01"
+                [disabled]="!isCrsSupported(option)"
+                (input)="updateOpacity($event, option)">
+              </mat-slider>
+            </div>
+
+            <div class="provider-line">
+              <span>Provided By:</span>
+              <a class="provider-link" href="https://eurogeographics.org/" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()">
+                EuroGeographics
+              </a>
+            </div>
+
+            <div class="preview-wrapper" *ngIf="option.thumbnailSource">
+              <img [src]="option.thumbnailSource" [alt]="option.name + ' preview'">
+            </div>
+          </div>
+        </mat-expansion-panel>
+        </div>
+      </mat-accordion>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

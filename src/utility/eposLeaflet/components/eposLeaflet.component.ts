@@ -40,6 +40,7 @@ export type CrsPreset = {
     './controls/baseLayerControl/baseLayerControl.scss',
     './controls/drawBBoxControl/drawBBoxControl.scss',
     './controls/customLayerControl/customLayerControl.scss',
+    './controls/basemapSelectorControl/basemapSelectorControl.scss',
     './controls/searchControl/searchControl.scss',
     './controls/measureDistanceControl/measureDistanceControl.scss'
   ],
@@ -60,6 +61,9 @@ export class EposLeafletComponent implements OnInit, AfterViewInit {
 
   @ViewChild('mapElement', { static: true }) protected mapElement: ElementRef<HTMLElement>;
 
+  public readonly self = this;
+
+
   public leafletMapObj: L.Map;
   /**
    * The `showLoader` property is a boolean flag that determines whether a loading spinner is displayed. It should not
@@ -68,6 +72,7 @@ export class EposLeafletComponent implements OnInit, AfterViewInit {
   public showLoader = false;
 
   public layerControlOpened = new Subject<boolean>();
+  public basemapSelectorControlOpened = new Subject<boolean>();
   public layers = new Array<MapLayer>();
 
   protected LOADER_DELAY_MS = 200; // delay before loader is shown.
@@ -630,7 +635,16 @@ export class EposLeafletComponent implements OnInit, AfterViewInit {
     this.layerControlOpened.next(false);
 
     // change custom marker icon color
-    this.leafletMapObj.getContainer()!.querySelector('#custom-layer-control')!.classList.remove('control-expanded');
+    this.leafletMapObj.getContainer()!.querySelector('#custom-layer-control')?.classList.remove('control-expanded');
+  }
+
+  public openBasemapSelectorControl(): void {
+    this.basemapSelectorControlOpened.next(true);
+  }
+
+  public closeBasemapSelectorControl(): void {
+    this.basemapSelectorControlOpened.next(false);
+    this.leafletMapObj.getContainer()!.querySelector('#basemap-selector-control')?.classList.remove('control-expanded');
   }
 
   public selectRowOnTablePanel(id: string, feature: string): void {

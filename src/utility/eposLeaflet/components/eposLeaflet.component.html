@@ -3,3 +3,9 @@
 </div>
 <div #mapElement class="leaflet-touch"></div>
 <app-layer-control [ngStyle]="{ display: (layerControlOpened | async) ? 'block' : 'none' }" class="custom-layer-control" [map]="leafletMapObj" data-cy="map-layer-control-panel"></app-layer-control>
+<div [ngStyle]="{ display: (basemapSelectorControlOpened | async) ? 'block' : 'none' }" class="basemap-selector-control-panel" data-cy="map-basemap-selector-panel">
+  <app-basemap-selector-options
+    [crsCode]="crs.code || 'EPSG:3857'"
+    [eposLeaflet]="self">
+  </app-basemap-selector-options>
+</div>

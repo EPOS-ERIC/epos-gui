@@ -10,6 +10,7 @@ import {
   FeatureDisplayItem,
   CrsPreset,
   WmtsTileLayer,
+  BasemapSelectorControl,
 } from 'utility/eposLeaflet/eposLeaflet';
 import { OnAttachDetach } from 'decorators/onAttachDetach.decorator';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -270,6 +271,7 @@ export class MapComponent implements OnInit {
     const bboxcontrol = bboxControl.setPosition('topright');
     const zoomControl = L.control.zoom().setPosition('topright');
     const customLayerControl = new CustomLayerControl(this.injector).setPosition('topright');
+    const basemapSelectorControl = new BasemapSelectorControl().setPosition('topright');
     const exportMapAsImage = new ExportMapAsImage(this.injector, this.componentFactoryResolver, this.viewContainerRef, this.exportMapAsImageService, this.dialogService);
     this.measureControlInstance = new MeasureDistanceControl(this.dialogService);
     const scaleControl = L.control.scale({ metric: true, imperial: false, maxWidth: 200 }).setPosition('bottomright');
@@ -283,6 +285,7 @@ export class MapComponent implements OnInit {
       zoomControl,
       resetZoomControl,
       customLayerControl,
+      basemapSelectorControl,
       scaleControl,
       bboxcontrol,
       exportMapAsImage,
