@@ -31,7 +31,11 @@ describe('Table panel', () => {
       .click();
 
     // Wait for the request to finish
-    cy.wait(service.dataRequest);
+    if (service.name === GNSS_STATIONS_WITH_PRODUCTS.name) {
+      cy.wait(service.bboxFilteredRequest);
+    } else {
+      cy.wait(service.dataRequest);
+    }
 
     // The loading spinner should not be visible anymore
     cy.get('.mat-progress-spinner')
@@ -117,7 +121,7 @@ describe('Table panel', () => {
       .find('tbody tr')
       .should('have.length', service.markerCount <= 25 ? service.markerCount : 25);  // 5 rows per page by default
     cy.getByDataCy('table-component-paginator')
-      .should('contain');
+      .should('contain', 25);
   });
 
   it('Add/Remove column', () => {
@@ -197,7 +201,7 @@ describe('Table panel', () => {
       .should('have.length', service.markerCount);
   });
 
-  it.only('Show on map', () => {
+  it('Show on map', () => {
     const service = GNSS_STATIONS_WITH_PRODUCTS;
 
     // Open the service in the table panel

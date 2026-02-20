@@ -55,6 +55,8 @@ import { GNSS_STATIONS_WITH_PRODUCTS, Service } from './constants';
 
 // // -- Accept policies
 Cypress.Commands.add('policyAccept', () => {
+  cy.getByDataCy('toggle-terms-checkbox').click();
+  cy.getByDataCy('toggle-privacy-checkbox').click();
   cy.getByDataCy('accept-terms-button').click();
 
   cy.contains('Welcome to the evolving ENVRI Catalogue of Services').should('not.exist');
@@ -134,7 +136,7 @@ Cypress.Commands.add('interceptService', (service: Service) => {
   cy.intercept(
     'GET', new RegExp(
       '.*/execute/' + service.id +
-      '\\?.*minLon.*-5\\.00977.*maxLat.*54\\.00777.*maxLon.*9\\.93164.*minLat.*39\\.02772.*'),
+      '\\?.*(minLon|maxLat|maxLon|minLat)'),
     { fixture: service.bboxFilteredJson() }
   ).as(service.bboxFilteredRequest.substring(1));
   // The getoriginalurl

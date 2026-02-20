@@ -33,7 +33,7 @@ describe('Test marker cluster', () => {
       .click();
 
     // Wait for the request to finish
-    cy.wait(service.dataRequest);
+    cy.wait(service.bboxFilteredRequest);
     cy.wait(500);  // TODO: find a better way to wait for pending data to be processed
 
     // The loading spinner should not be visible anymore
@@ -117,12 +117,12 @@ describe('Test marker cluster', () => {
       .find('.selected')    // Check only the selected one
       .find('tr')
       .each(($row) => {
-          const th = $row.find('th').text();
-          const td = $row.find('td').text();
-          if (firstSlideContent[th]) {
-            expect(td).to.eq(firstSlideContent[th]);
-          }
-        },
+        const th = $row.find('th').text();
+        const td = $row.find('td').text();
+        if (firstSlideContent[th]) {
+          expect(td).to.eq(firstSlideContent[th]);
+        }
+      },
       );
 
     // Check the slide navigation
@@ -140,12 +140,12 @@ describe('Test marker cluster', () => {
       .find('.selected')    // Check only the selected one
       .find('tr')
       .each(($row) => {
-          const th = $row.find('th').text();
-          const td = $row.find('td').text();
-          if (secondSlideContent[th]) {
-            expect(td).to.eq(secondSlideContent[th]);
-          }
-        },
+        const th = $row.find('th').text();
+        const td = $row.find('td').text();
+        if (secondSlideContent[th]) {
+          expect(td).to.eq(secondSlideContent[th]);
+        }
+      },
       );
   });
 });

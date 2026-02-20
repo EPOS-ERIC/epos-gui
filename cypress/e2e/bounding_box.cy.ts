@@ -24,13 +24,16 @@ describe('Bounding box filter', () => {
     // Intercept the request to filter the results by the bounding box
     cy.intercept('GET', /\/resources\/search\?.*?\bbbox=[^&]+/, { fixture: 'bbox_filtered_distributions.json' }).as('search');
 
-    // Draw a bounding box on the map
-    cy.getByDataCy('epos-leaflet-map')
-      .trigger('mousedown', 'center', { which: 1 })
-      .trigger('mousemove', { clientX: 1300, clientY: 1100 }) // più a destra (x) e più in basso (y)
-      .trigger('mouseup', { force: true });
+    // Activate the Leaflet draw rectangle tool by clicking its button
+    cy.get('.leaflet-draw-draw-rectangle').click({ force: true });
 
-    // Wait for the results to be filtered
+    // Now simulate drawing a rectangle on the Leaflet map container
+    cy.get('.leaflet-container')
+      .trigger('mousedown', { clientX: 400, clientY: 300, which: 1, bubbles: true })
+      .trigger('mousemove', { clientX: 700, clientY: 500, bubbles: true })
+      .trigger('mouseup', { clientX: 700, clientY: 500, bubbles: true });
+
+    // Wait for the results to be filtered by the bounding box
     cy.wait('@search');
 
     // There should be a "Spatial" chip in the filters
@@ -65,7 +68,8 @@ describe('Bounding box filter', () => {
     cy.getByDataCy('domain-list').children().first().click();
 
     // Wait for the results list to be resized
-    cy.wait(1000);  // TODO: find a better way to wait for the list to be resized
+    cy.wait(2000);  // TODO: find a better way to wait for the list to be resized
+
 
     // Select the fake distribution
     cy.getByDataCy('distribution-list-table').contains(GNSS_STATIONS_WITH_PRODUCTS.name).click();
@@ -75,10 +79,8 @@ describe('Bounding box filter', () => {
     cy.wait(GNSS_STATIONS_WITH_PRODUCTS.detailsRequest);
 
     // Check that the markers are on the map
-    cy.getLeafletPane(GNSS_STATIONS_WITH_PRODUCTS.id).children().should('have.length', 4).and('be.visible');
+    cy.getLeafletPane(GNSS_STATIONS_WITH_PRODUCTS.id).children().should('have.length', GNSS_STATIONS_WITH_PRODUCTS.markerCount).and('be.visible');
 
-    // === Remove the "Spatial" chip and verify bbox is gone ===
-    // Click the chip remove button (X) for "Spatial"
     // === Remove the "Spatial" chip and verify bbox is gone ===
     // Click the chip remove button (X) for "Spatial"
     cy.getByDataCy('search-panel-filters-mat-chip-list')

@@ -49,7 +49,11 @@ describe('Test select distribution', () => {
       .click();
 
     // Wait for the request to finish
-    cy.wait(service.dataRequest);
+    if (service.name === GNSS_STATIONS_WITH_PRODUCTS.name) {
+      cy.wait(service.bboxFilteredRequest);
+    } else {
+      cy.wait(service.dataRequest);
+    }
 
     // The loading spinner should not be visible anymore
     cy.get('.mat-progress-spinner')
@@ -86,12 +90,12 @@ describe('Test select distribution', () => {
       .find('.selected')    // Check only the selected one
       .find('tr')
       .each(($row) => {
-          const th = $row.find('th').text();
-          const td = $row.find('td').text();
-          if (popupContent[th]) {
-            expect(td).to.eq(popupContent[th]);
-          }
-        },
+        const th = $row.find('th').text();
+        const td = $row.find('td').text();
+        if (popupContent[th]) {
+          expect(td).to.eq(popupContent[th]);
+        }
+      },
       );
 
     // Open the extra panel on that element

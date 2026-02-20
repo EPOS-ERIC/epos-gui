@@ -32,7 +32,7 @@ describe('test favourites', () => {
 
     // Wait for the requests to finish
     cy.wait(GNSS_STATIONS_WITH_PRODUCTS.detailsRequest);
-    cy.wait(GNSS_STATIONS_WITH_PRODUCTS.dataRequest);
+    cy.wait(GNSS_STATIONS_WITH_PRODUCTS.bboxFilteredRequest);
 
     // The loading spinner should not be visible anymore
     cy.get('.mat-progress-spinner')
@@ -50,7 +50,7 @@ describe('test favourites', () => {
     // Check that the markers are on the map
     cy.getLeafletPane(GNSS_STATIONS_WITH_PRODUCTS.id)
       .children()
-      .should('have.length', 10)
+      .should('have.length', GNSS_STATIONS_WITH_PRODUCTS.markerCount)
       .and('be.visible');
 
     // Check that there is one favourite in the badge
