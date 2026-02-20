@@ -67,12 +67,15 @@ export class AppComponent implements OnInit {
     private readonly newFeaturesService: NewFeaturesService,
   ) {
 
-    if ((window.location.href.indexOf('policy-index') < 0)
-      && (!policiesService.hasConsents)) {
+    const shouldShowPoliciesPopup = (window.location.href.indexOf('policy-index') < 0)
+      && environment.showPoliciesPopup
+      && (!policiesService.hasConsents);
+
+    if (shouldShowPoliciesPopup) {
       void this.dialogService.openCookiesBanner();
     } else {
       this.checkMobile();
-      if (!informationService.infoEnabled && this.mobile === false) {
+      if (!informationService.infoEnabled && this.mobile === false && environment.showWelcomePopup) {
         void this.dialogService.openInformationBanner().then(() => {
     // After it closes, open the New Features dialog
       this.newFeaturesService.openNewFeatures();});
@@ -181,10 +184,11 @@ export class AppComponent implements OnInit {
   private checkMobile(): void {
 
     this.mobile = (window.innerWidth < environment.minWidth) ? true : false;
+    const canShowMobileDisclaimer = this.policiesService.hasConsents || !environment.showPoliciesPopup;
 
     // show mobile disclaimer
     if (this.mobile) {
-      if (this.policiesService.hasConsents) {
+      if (canShowMobileDisclaimer) {
         void this.dialogService.openNoMobileDisclaimer();
         this.dialogService.closeInformationBanner();
       }

@@ -9,6 +9,7 @@ export const environmentBase = {
   production: false,
   version: (require('../../package.json') as Record<string, unknown>).version,
   githash: 'GITHASH', // populated during pipeline
+  gitTag: 'GIT_TAG', // populate during pipeline
   commitDate: 'COMMIT_DATE', // populated during pipeline
   eposSiteApiRestUrl: 'EPOS_SITE_API_REST_URL', // populated during pipeline
   eposSiteApiRestKey: 'EPOS_SITE_API_REST_KEY', // populated during pipeline
@@ -18,11 +19,16 @@ export const environmentBase = {
   matomoSiteId: '', // populated during pipeline on env files
   matomoTokenAuth: '', // populated during pipeline
   matomoTrackEvent: true,
+  showPoliciesPopup: true,
+  showWelcomePopup: true,
+  showScientificExamples: true,
+  poweredByText: 'This Platform is Powered By EPOS ERIC',
+  platformLogoPath: 'assets/img/logo/logo-white.svg',
   menuShare: true,
   minWidth: 900,
   homepage: 'https://www.epos-eu.org',
   aboutpage: 'https://www.epos-eu.org/dataportal',
-  termsAndConditions: 'https://www.epos-eu.org/sites/default/files/Terms_and_Conditions.pdf',
+  termsAndConditions: 'https://www.epos-eu.org/sites/default/files/2026-02/Terms_and_ConditionsJan26_1.pdf',
   vocabularyEndpoint: 'https://registry.epos-eu.org/ncl/system/query',
   fairAssessmentUrl: 'https://ics-c.epos-ip.org/epos-fair-assessment/',
   videos: [
@@ -75,7 +81,7 @@ export const environmentBase = {
       },
       {
         name: 'Terms and Conditions ',
-        url: 'https://www.epos-eu.org/sites/default/files/Terms_and_Conditions.pdf',
+        url: 'https://www.epos-eu.org/sites/default/files/2026-02/Terms_and_ConditionsJan26_1.pdf',
         icon: 'insert_drive_file'
       }
     ],

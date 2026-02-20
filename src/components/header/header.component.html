@@ -1,7 +1,7 @@
 <header class="header">
   <div class="header-logo-wrapper">
     <a class="header-logo" (click)="clickItem({ id: 'homepage', url: urlHomepage, newTab: true })">
-      <img src="assets/img/logo/logo-white.svg" />
+      <img [src]="environment.platformLogoPath" />
     </a>
     <div class="title">
       <p class="main"></p>
@@ -45,7 +45,7 @@
 
 
       <!-- Scientific Examples -->
-      <li>
+      <li *ngIf="environment.showScientificExamples === true">
         <div class="nav-top-items-item guest">
           <a class="nav-top-items-item-text" (click)="scientficExamples()" data-toggle="dropdown">
             <mat-icon>summarize</mat-icon>

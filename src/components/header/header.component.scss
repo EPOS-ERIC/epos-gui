@@ -31,7 +31,7 @@
         display: none;
         /* background-color: white !important; */ /* Change the underline color */
       }
-    
+
       .mat-form-field-ripple {
         background-color: white !important; /* Change the ripple color on focus */
       }
@@ -66,11 +66,14 @@
       & > a {
         height: $header-height;
         display: flex;
+        align-items: center;
         vertical-align: middle;
         padding: 0.5em 0 0.5em 0;
 
         img {
           width: 110px;
+          height: 64px;
+          object-fit: contain;
         }
       }
 
@@ -84,7 +87,7 @@
           padding-bottom: 2px;
           font-size: 45px;
         }
-        
+
         p.version {
           padding-top: 5px;
           font-weight: bold;

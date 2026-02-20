@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-powered-by',
@@ -7,7 +8,7 @@ import { Component, Input } from '@angular/core';
 })
 export class PoweredByComponent {
 
-  @Input() text = 'This Platform is Powered By EPOS ERIC';
+  @Input() text = environment.poweredByText;
   @Input() url = 'https://epos-eu.github.io/epos-open-source/#/';
 
   constructor() { }

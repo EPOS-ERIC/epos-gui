@@ -52,8 +52,8 @@ jobs:
           chmod +x pre-build.sh
           ./pre-build.sh
 
-      - name: Build web app
-        run: npm run build-prod
+      - name: Build web app (open source)
+        run: npm run build-oss
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -128,7 +128,7 @@ jobs:
           tags: |
             type=raw,value=${{ github.ref_name }},enable=${{ github.ref_type == 'tag' }}
             type=raw,value=main,enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.ref_type == 'tag' }}
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
             type=sha,prefix=sha-
 
       - name: Build and push image
@@ -162,7 +162,7 @@ jobs:
         run: npm ci
 
       - name: Run integration tests
-        run: npm run ci-pipeline-e2e
+        run: npm test
 
   mirror:
     runs-on: ubuntu-latest

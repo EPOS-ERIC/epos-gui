@@ -1,14 +1,15 @@
 {
   "name": "epos",
-  "version": "1.0.52",
+  "version": "1.0.53",
   "license": "Apache-2.0",
   "scripts": {
     "dev": "ng serve epos --configuration development",
+    "dev-oss": "ng serve epos --configuration opensource-development",
+    "build": "ng build --configuration production",
+    "build-oss": "ng build --configuration opensource",
+    "cypress": "ng run epos:cypress-open:cypress-ci-testing",
     "lint": "ng lint",
-    "test": "npm run lint && npm run ci-pipeline-e2e",
-    "cy:open": "ng run epos:cypress-open:cypress-ci-testing",
-    "ci-pipeline-e2e": "ng run epos:cypress-run:cypress-ci-testing --browser chrome",
-    "build-prod": "ng build --configuration production"
+    "test": "ng run epos:cypress-run:cypress-ci-testing --browser chrome"
   },
   "private": true,
   "dependencies": {

@@ -49,7 +49,7 @@ export class LastPageRedirectComponent implements OnInit {
       this.model.user.valueObs.subscribe((user: AAAIUser) => {
         this.user = user;
 
-        /* if(user !== null){
+        if(user !== null){
           this.dialogService.openMetaDataStatusDialog()
           .then(confirmed=>{
             if(confirmed){
@@ -63,7 +63,7 @@ export class LastPageRedirectComponent implements OnInit {
             }
           })
           .catch(err=>console.log(err));
-        } */
+        }
 
       })
     );
