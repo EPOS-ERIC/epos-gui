@@ -17,7 +17,7 @@
 
     <mat-expansion-panel [expanded]="false">
       <mat-expansion-panel-header>
-        <mat-panel-title>EuroGeographics Basemap</mat-panel-title>
+        <mat-panel-title>Basemaps provided by EuroGeographics</mat-panel-title>
       </mat-expansion-panel-header>
 
       <mat-accordion class="euro-options" cdkDropList [cdkDropListData]="options" (cdkDropListDropped)="dropEuroGeographicsOptions($event)">
@@ -40,16 +40,6 @@
                 <span class="option-name">{{ option.name }}</span>
               </span>
             </mat-panel-title>
-            <mat-panel-description class="option-header-actions">
-              <a
-                class="layer-link-btn"
-                [href]="option.datasetUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                (click)="$event.stopPropagation()">
-                Open Layer
-              </a>
-            </mat-panel-description>
           </mat-expansion-panel-header>
 
           <div class="option-body" [class.option-disabled]="!isCrsSupported(option)">
@@ -66,14 +56,21 @@
             </div>
 
             <div class="provider-line">
-              <span>Provided By:</span>
               <a class="provider-link" href="https://eurogeographics.org/" target="_blank" rel="noopener noreferrer" (click)="$event.stopPropagation()">
-                EuroGeographics
+                <img class="provider-logo" src="assets/img/eurogeo-full-colour.svg" alt="EuroGeographics logo">
               </a>
             </div>
 
             <div class="preview-wrapper" *ngIf="option.thumbnailSource">
               <img [src]="option.thumbnailSource" [alt]="option.name + ' preview'">
+              <a
+                class="layer-link-btn"
+                [href]="option.datasetUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                (click)="$event.stopPropagation()">
+                More Details
+              </a>
             </div>
           </div>
         </mat-expansion-panel>
