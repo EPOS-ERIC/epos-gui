@@ -15,7 +15,7 @@
 
     app-base-dialog {
         .header {
-            background: #eef9f3; // Light green background
+            background: #eef9f3;
             padding: 14px;
             margin-bottom: 0;
             border-bottom: 1px solid #c2e2cf;
@@ -62,15 +62,15 @@
             align-items: center;
             gap: 8px;
             padding: 8px 10px;
-            background: #ddf3e7;
-            border-left: 3px solid hsl(145, 63%, 49%);
+            background: #dde9f3;
+            border-left: 3px solid hsl(205, 63%, 49%);
             border-radius: 0 6px 6px 0;
             font-size: 12px;
-            color: #2d5c3f;
+            color: #2d455c;
             line-height: 1.4;
 
             .tip-icon {
-                color: #27ae60;
+                color: #f5c842;
                 font-size: 16px;
                 width: 16px;
                 height: 16px;
@@ -85,6 +85,7 @@
                 position: relative;
                 top: -1px;
             }
+
         }
 
         /* Action buttons */
