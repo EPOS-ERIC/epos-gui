@@ -32,6 +32,7 @@ import { DialogService } from '../dialog.service';
 import { CitationsService } from '../../../services/citations.service';
 import { Tracker } from 'utility/tracker/tracker.service';
 import { TrackerAction, TrackerCategory } from 'utility/tracker/tracker.enum';
+import { environment as currentEnvironment } from 'environments/environment';
 
 export interface ConfigurableDataIn {
   dataConfigurable: DataConfigurableDataSearch;
@@ -400,25 +401,14 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
     const dialogService = this.injector.get(DialogService);
 
     // Get element position with fallbacks
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    let elemPosition = document.getElementById('sidenavleft')!.getBoundingClientRect();
-
-    if (elemPosition.right <= 0) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      elemPosition = document.getElementById('sidenavleftregistry')!.getBoundingClientRect();
-    }
-
-    if (elemPosition.right <= 0) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      elemPosition = document.getElementById('sidenavleftsoftware')!.getBoundingClientRect();
-    }
+    const elemPosition = this.getLeftSidenavPosition();
 
     // Open the dialog
     void dialogService.openDownloadCitationDialog(
       this.distributionDetails,
       [0],
       '50vw',
-      String(elemPosition.right + 45) + 'px',
+      String(Math.max(elemPosition.right + 45, 45)) + 'px',
     );
   }
 
@@ -443,7 +433,27 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
     });
   }
 
+  private getLeftSidenavPosition(): DOMRect {
+    const sidenavCandidates = [
+      { enabled: currentEnvironment.modules.data, id: 'sidenavleft' },
+      { enabled: currentEnvironment.modules.analysis, id: 'sidenavleftanalysis' },
+      { enabled: currentEnvironment.modules.registry, id: 'sidenavleftregistry' },
+      { enabled: currentEnvironment.modules.software, id: 'sidenavleftsoftware' },
+    ];
 
+    const enabledSidenavs = sidenavCandidates
+      .filter(candidate => candidate.enabled)
+      .map(candidate => document.getElementById(candidate.id))
+      .filter((element): element is HTMLElement => element != null);
+
+    const openSidenav = enabledSidenavs.find(element => element.getBoundingClientRect().right > 0);
+
+    if (openSidenav != null) {
+      return openSidenav.getBoundingClientRect();
+    }
+
+    return enabledSidenavs[0]!.getBoundingClientRect();
+  }
 
 
   /**
