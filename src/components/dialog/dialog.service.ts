@@ -153,7 +153,7 @@ export class DialogService extends BaseDialogService {
         continueButtonHtml: continueButtonHtml,
       },
       {
-        width: '50vw'
+        width: '480px'
       }
     ).then((data: DialogData<ConfirmationDataIn, boolean>) => (null != data) && (data.dataOut));
   }
