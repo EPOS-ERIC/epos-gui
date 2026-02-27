@@ -33,6 +33,7 @@ import { scientificExamplesDataType } from './scientificExamplesDialog/scientifi
 import { NewFeaturesService } from './newFeatureDialog/newFeatures.service';
 import { MetaDataStatusDialogComponent } from './metaDataStatusDialog/metaDataStatusDialog.component';
 import { CrsIncompatDataIn, CrsIncompatDialogComponent, WmsCrsIncompat } from './crsIncompatDialog/crsIncompatDialog.component';
+import { environment } from 'environments/environment';
 
 
 /**
@@ -152,7 +153,7 @@ export class DialogService extends BaseDialogService {
         continueButtonHtml: continueButtonHtml,
       },
       {
-        width: '50vw'
+        width: '480px'
       }
     ).then((data: DialogData<ConfirmationDataIn, boolean>) => (null != data) && (data.dataOut));
   }
@@ -217,15 +218,7 @@ export class DialogService extends BaseDialogService {
     width = '50vw',
   ): Promise<null | DialogData> {
 
-    let elemPosition = document.getElementById('sidenavleft')!.getBoundingClientRect();
-
-    if (elemPosition.right <= 0) {
-      elemPosition = document.getElementById('sidenavleftregistry')!.getBoundingClientRect();
-    }
-
-    if (elemPosition.right <= 0) {
-      elemPosition = document.getElementById('sidenavleftsoftware')!.getBoundingClientRect();
-    }
+    const elemPosition = this.getLeftSidenavPosition();
 
     return this.openDialog<DetailsDataIn>(
       'detailsDialog',
@@ -240,8 +233,8 @@ export class DialogService extends BaseDialogService {
       {
         width: width,
         position: {
-          top: String(elemPosition.top) + 'px',
-          left: String(elemPosition.right + 45) + 'px',
+          top: String(Math.max(elemPosition.top, 0)) + 'px',
+          left: String(Math.max(elemPosition.right + 45, 45)) + 'px',
         }
       }
     );
@@ -252,15 +245,7 @@ export class DialogService extends BaseDialogService {
     width: string,
   ): Promise<null | DialogData> {
 
-    let elemPosition = document.getElementById('sidenavleft')!.getBoundingClientRect();
-
-    if (elemPosition.right <= 0) {
-      elemPosition = document.getElementById('sidenavleftregistry')!.getBoundingClientRect();
-    }
-
-    if (elemPosition.right <= 0) {
-      elemPosition = document.getElementById('sidenavleftsoftware')!.getBoundingClientRect();
-    }
+    const elemPosition = this.getLeftSidenavPosition();
 
     return this.openDialog<DetailsDataIn>(
       'downloadsDialog',
@@ -274,8 +259,8 @@ export class DialogService extends BaseDialogService {
       {
         width: width,
         position: {
-          top: String(elemPosition.top) + 'px',
-          left: String(elemPosition.right + 45) + 'px',
+          top: String(Math.max(elemPosition.top, 0)) + 'px',
+          left: String(Math.max(elemPosition.right + 45, 45)) + 'px',
         }
       }
     );
@@ -312,15 +297,7 @@ export class DialogService extends BaseDialogService {
     width: string,
   ): Promise<null | DialogData> {
 
-    let elemPosition = document.getElementById('sidenavleft')!.getBoundingClientRect();
-
-    if (elemPosition.right <= 0) {
-      elemPosition = document.getElementById('sidenavleftregistry')!.getBoundingClientRect();
-    }
-
-    if (elemPosition.right <= 0) {
-      elemPosition = document.getElementById('sidenavleftsoftware')!.getBoundingClientRect();
-    }
+    const elemPosition = this.getLeftSidenavPosition();
 
     return this.openDialog<DetailsDataIn>(
       'downloadsDialog',
@@ -334,8 +311,8 @@ export class DialogService extends BaseDialogService {
       {
         width: width,
         position: {
-          top: String(elemPosition.top) + 'px',
-          left: String(elemPosition.right + 45) + 'px',
+          top: String(Math.max(elemPosition.top, 0)) + 'px',
+          left: String(Math.max(elemPosition.right + 45, 45)) + 'px',
         }
       }
     );
@@ -657,6 +634,28 @@ export class DialogService extends BaseDialogService {
 
     // The dialog opens synchronously; retrieve its ref by id
     return this.dialog.getDialogById('crsIncompat') as MatDialogRef<CrsIncompatDialogComponent, boolean> | null;
+  }
+
+  private getLeftSidenavPosition(): DOMRect {
+    const sidenavCandidates = [
+      { enabled: environment.modules.data, id: 'sidenavleft' },
+      { enabled: environment.modules.analysis, id: 'sidenavleftanalysis' },
+      { enabled: environment.modules.registry, id: 'sidenavleftregistry' },
+      { enabled: environment.modules.software, id: 'sidenavleftsoftware' },
+    ];
+
+    const enabledSidenavs = sidenavCandidates
+      .filter(candidate => candidate.enabled)
+      .map(candidate => document.getElementById(candidate.id))
+      .filter((element): element is HTMLElement => element != null);
+
+    const openSidenav = enabledSidenavs.find(element => element.getBoundingClientRect().right > 0);
+
+    if (openSidenav != null) {
+      return openSidenav.getBoundingClientRect();
+    }
+
+    return enabledSidenavs[0]!.getBoundingClientRect();
   }
 
   private closeDialogById(dialogId: string): void {
