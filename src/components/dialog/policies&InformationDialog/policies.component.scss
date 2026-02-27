@@ -31,12 +31,21 @@ h1 {
 
 .logo-container {
   display: flex;
-  justify-content: center;
-  margin-bottom: 8px;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
 
   .welcome-logo {
     max-width: 160px;
     height: auto;
+  }
+
+  .intro-text {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: $color-primary;
   }
 }
 
@@ -87,11 +96,7 @@ h1 {
 }
 
 //leave your email email for updates
-.intro-text {
-  text-align: center;
-  font-size: 1em;
-  font-weight: bold;
-}
+
 
 // Email form section
 .email-section {
