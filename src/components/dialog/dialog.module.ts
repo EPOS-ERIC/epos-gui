@@ -45,6 +45,7 @@ import { DownloadsDialogComponent } from './downloadsDialog/downloadsDialog.comp
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
 import { VideoGuidesDialogComponent } from './videoGuidesDialog/videoGuidesDialog.component';
 import { VideoComponent } from './videoGuidesDialog/videoComponent/video.component';
 import { MobileDisclaimerDialogComponent } from './mobileDisclaimerDialog/mobileDisclaimerDialog.component';
@@ -134,6 +135,7 @@ import { MetaDataStatusDialogComponent } from './metaDataStatusDialog/metaDataSt
     MatIconModule,
     DragDropModule,
     MatTooltipModule,
+    MatMenuModule,
     NgxMatDatetimePickerModule,
     MatDatepickerModule,
     MatGridListModule,

@@ -18,6 +18,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { SpatialTemporalControlsModule } from '../temporalSpatialControls/spatialTemporalControls.module';
 
 @NgModule({
@@ -43,6 +44,7 @@ import { SpatialTemporalControlsModule } from '../temporalSpatialControls/spatia
     NgxMatDatetimePickerModule,
     MatSlideToggleModule,
     MatInputModule,
+    MatMenuModule,
     SpatialTemporalControlsModule,
   ],
   exports: [

@@ -79,6 +79,7 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
 
   public environmentOps = false;
   public environmentSelected: SimpleEnvironment | null = null;
+  public environments: Environment[] = [];
 
   public citation: string;
 
@@ -267,43 +268,18 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
    * The function `addToEnv` adds a new resource to the selected environment.
    * Updates logic to handle Software types by using direct URLs.
    * @param {FormatElement} elem - The `elem` parameter is of type `FormatElement`.
+   * @param {Environment | null} env - The target environment.
    */
-  public addToEnv(elem: FormatElement): void {
+  public addToEnv(elem: FormatElement, env: Environment | null = null): void {
+
+    const targetEnv = env ?? this.environmentSelected;
 
     this.spinner = true;
 
-    void new Promise<string>((resolve) => {
-      // CASE 1: It's a Feature (e.g. GeoJSON feature link)
-      if (this.isElemFeature(elem)) {
-        resolve(elem.url);
-      } else {
+    void this.getUrlToAdd(elem).then((urlToAdd: string) => {
 
-        // CASE 2: SOFTWARE LOGIC
-        // For software, we already extracted the direct download URL in 'getServiceTableData'.
-        // We resolve it immediately without calling external services.
-        if (this.isSoftware) {
-          resolve(elem.url);
-        } else {
-
-          // CASE 3: STANDARD LOGIC (Web Service)
-          // We need to set the output format parameter and fetch the URL from the originator.
-          const paramOutput = this.getOutputFormatParam();
-
-          // set new format
-          if (paramOutput !== undefined) {
-            paramOutput.value = elem.originalFormat;
-          }
-
-          // Retrieve via Originator URL (asynchronous)
-          void this.dataConfigurable.getOriginatorUrl().then((url) => {
-            resolve(url || ''); // Resolve with url or empty string safety
-          });
-        }
-      }
-    }).then((urlToAdd: string) => {
-
-      if (this.environmentSelected !== null) {
-        const resources = this.environmentSelected?.getResources();
+      if (targetEnv !== null) {
+        const resources = targetEnv.resources;
 
         if (resources !== undefined) {
           // Create the new resource object
@@ -318,8 +294,8 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
           );
 
           // Save changes to the backend service
-          void this.environmentService.updateResourcesToEnvironment(this.environmentSelected, resources)
-            .then((updatedSummary: Environment) => {
+          void this.environmentService.updateResourcesToEnvironment(targetEnv as Environment, resources)
+            .then(() => {
               this.environmentService.refreshEnvs.emit(); // Notify app to refresh env list
               this.spinner = false;
               this.data.close(); // Close dialog on success
@@ -336,6 +312,58 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
     });
   }
 
+  public addToEnvSelected(env: Environment | null = null): void {
+    const targetEnv = env ?? this.environmentSelected;
+    if (targetEnv === null) {
+      return;
+    }
+
+    this.spinner = true;
+
+    const promiseArray: Array<Promise<string>> = [];
+    const selectedElements = this.selection.selected;
+
+    selectedElements.forEach(elem => {
+      promiseArray.push(this.getUrlToAdd(elem));
+    });
+
+    void Promise.all(promiseArray).then((urls: string[]) => {
+      const resources = targetEnv.resources;
+      if (resources !== undefined) {
+        selectedElements.forEach((elem, index) => {
+          resources.push(
+            SimpleEnvironmentResource.make(
+              this.dataConfigurable.id,
+              `${this.dataConfigurable.name} - ${elem.name}`,
+              `Dataset in format ${elem.format} for ${this.dataConfigurable.name}`,
+              elem.format,
+              urls[index],
+            )
+          );
+        });
+
+        void this.environmentService.updateResourcesToEnvironment(targetEnv as Environment, resources)
+          .then(() => {
+            this.environmentService.refreshEnvs.emit();
+            this.spinner = false;
+            this.data.close();
+          }).catch(() => {
+            this.notifier.sendErrorNotification('An error occured updating the environment, please try again.');
+            this.spinner = false;
+          });
+      }
+    }).catch(() => {
+      this.notifier.sendErrorNotification('An error occured updating the environment, please try again.');
+      this.spinner = false;
+    });
+  }
+
+
+  public loadEnvironments(): void {
+    void this.environmentService.getAllEnvironments().then((envs) => {
+      this.environments = envs ?? [];
+    });
+  }
   public downloadUrls(): void {
 
     const paramOutput = this.getOutputFormatParam();
@@ -813,6 +841,38 @@ export class DownloadsDialogComponent implements OnInit, AfterViewInit, AfterCon
       str += line + '\r\n';
     });
     return str;
+  }
+
+  private getUrlToAdd(elem: FormatElement): Promise<string> {
+    return new Promise<string>((resolve) => {
+      // CASE 1: It's a Feature (e.g. GeoJSON feature link)
+      if (this.isElemFeature(elem)) {
+        resolve(elem.url);
+      } else {
+
+        // CASE 2: SOFTWARE LOGIC
+        // For software, we already extracted the direct download URL in 'getServiceTableData'.
+        // We resolve it immediately without calling external services.
+        if (this.isSoftware) {
+          resolve(elem.url);
+        } else {
+
+          // CASE 3: STANDARD LOGIC (Web Service)
+          // We need to set the output format parameter and fetch the URL from the originator.
+          const paramOutput = this.getOutputFormatParam();
+
+          // set new format
+          if (paramOutput !== undefined) {
+            paramOutput.value = elem.originalFormat;
+          }
+
+          // Retrieve via Originator URL (asynchronous)
+          void (this.dataConfigurable.getOriginatorUrl() as Promise<null | string>).then((url) => {
+            resolve(url || ''); // Resolve with url or empty string safety
+          });
+        }
+      }
+    });
   }
 
   private formatTrackerDistributionName(distDetail: DistributionDetails): string {
