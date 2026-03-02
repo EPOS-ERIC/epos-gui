@@ -21,6 +21,7 @@ export const environmentBase = {
   matomoTrackEvent: true,
   showPoliciesPopup: true,
   showWelcomePopup: true,
+  showGuidedTourNotificationOnStart: true,
   showScientificExamples: true,
   poweredByText: 'This Platform is Powered By EPOS ERIC',
   platformLogoPath: 'assets/img/logo/logo-white.svg',

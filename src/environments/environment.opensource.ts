@@ -13,6 +13,7 @@ export const environment = {
     matomoTrackEvent: false,
     showPoliciesPopup: false,
     showWelcomePopup: false,
+    showGuidedTourNotificationOnStart: false,
     showScientificExamples: false,
     showFairAssessment: false,
     poweredByText: 'This Platform is Powered By EPOS Open Source',
@@ -39,11 +40,6 @@ export const environment = {
             icon: 'shopping_basket',
           },
         ],
-      },
-      {
-        name: 'Guided Tour',
-        action: 'startGuidedTour',
-        icon: 'live_help',
       },
       {
         name: 'Video Guides',

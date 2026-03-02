@@ -84,7 +84,9 @@ export class AppComponent implements OnInit {
       this.checkMobile();
       // Consent already given — open New Features dialog
       this.newFeaturesService.openNewFeatures();
-      if (this.localStoragePersister.getValue(LocalStorageVariables.LS_GUIDE_TOUR_SNACKBAR_CHECK) === false || this.localStoragePersister.getValue(LocalStorageVariables.LS_GUIDE_TOUR_SNACKBAR_CHECK) === null) {
+
+      const guidedTourSnackbarCheck = this.localStoragePersister.getValue(LocalStorageVariables.LS_GUIDE_TOUR_SNACKBAR_CHECK);
+      if (environment.showGuidedTourNotificationOnStart && (guidedTourSnackbarCheck === false || guidedTourSnackbarCheck === null)) {
         void this.notificationService.sendAvailableGuidedTourNotification('Start Guided Tour', 'assets/img/guided_tour_snack_logo_orange.svg');
       }
     }
