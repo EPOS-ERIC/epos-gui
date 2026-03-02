@@ -569,7 +569,10 @@ export class JSONDistributionFactory {
       const dataProvider = JSONDistributionFactory.jsonToArrayDataProvider(rawData, 'dataProvider');
       // DDSS ID for internal usage/check during implementation phase
       const internalID = ObjectAccessUtility.getObjectArray<string>(rawData, 'internalID', false);
-      const doi = ObjectAccessUtility.getObjectArray<string>(rawData, 'DOI', false);
+      let doi = ObjectAccessUtility.getObjectArray<string>(rawData, 'DOI', false);
+      if (doi.length === 0) {
+        doi = ObjectAccessUtility.getObjectArray<string>(rawData, 'doi', false);
+      }
       const downloadURL = ObjectAccessUtility.getObjectValueString(rawData, 'downloadURL', false, '');
       const contactPoints = ObjectAccessUtility.getObjectArray<string>(rawData, 'contactPoints', false);
       const keywords = ObjectAccessUtility.getObjectArray<string>(rawData, 'keywords', false);
@@ -680,7 +683,10 @@ export class JSONDistributionFactory {
     return summary.map(sum => {
 
       // Initialize lists
-      const doiList = ObjectAccessUtility.getObjectArray<string>(rawData, 'DOI', false) || [];
+      let doiList = ObjectAccessUtility.getObjectArray<string>(rawData, 'DOI', false);
+      if (doiList.length === 0) {
+        doiList = ObjectAccessUtility.getObjectArray<string>(rawData, 'doi', false);
+      }
       const internalIdList = ObjectAccessUtility.getObjectArray<string>(rawData, 'internalID', false) || [];
 
       // details
