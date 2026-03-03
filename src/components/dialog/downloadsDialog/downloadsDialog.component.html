@@ -119,15 +119,19 @@
       <button mat-flat-button [color]="'secondary'" [disabled]="!selection.hasValue()" (click)="downloadUrls()">Generate
         URLs</button>
       <button mat-flat-button *ngIf="environmentOps" [color]="'secondary'" [disabled]="!selection.hasValue()"
-        [matMenuTriggerFor]="envMenuBulk" (menuOpened)="loadEnvironments()">Add to Environment</button>
-      <mat-menu #envMenuBulk="matMenu" xPosition="after" yPosition="above" [overlapTrigger]="false">
-        <button mat-menu-item *ngFor="let env of environments" (click)="addToEnvSelected(env)">
-          {{ env.name }}
-        </button>
-        <button mat-menu-item disabled *ngIf="environments.length === 0">
-          No environments available
-        </button>
-      </mat-menu>
+        class="env-select-button" (click)="envSelect.open()">
+        Add to Environment
+        <mat-icon>expand_more</mat-icon>
+        <mat-select #envSelect class="hidden-select" (openedChange)="$event ? loadEnvironments() : null"
+          (selectionChange)="addToEnvSelected($event.value)">
+          <mat-option *ngFor="let env of environments" [value]="env">
+            {{ env.name }}
+          </mat-option>
+          <mat-option disabled *ngIf="environments.length === 0">
+            No environments available
+          </mat-option>
+        </mat-select>
+      </button>
     </div>
   </ng-container>
 </app-base-dialog>
