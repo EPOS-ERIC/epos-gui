@@ -24,7 +24,7 @@ export const environmentBase = {
   showGuidedTourNotificationOnStart: false,
   showScientificExamples: true,
   poweredByText: 'Powered by the EPOS Platform Open Source project',
-  platformLogoPath: 'assets/img/logo/ENVRI-Hub-logo-white.svg',
+  platformLogoPath: 'assets/img/logo/ENVRI_hub.svg',
   menuShare: true,
   minWidth: 900,
   homepage: 'https://envri.eu/',
