@@ -5,6 +5,7 @@ import { AAAIUser } from 'api/aaai/aaaiUser.interface';
 import { Model } from 'services/model/model.service';
 import { Unsubscriber } from 'decorators/unsubscriber.decorator';
 import { environment } from 'environments/environment';
+import { MetaDataStatusService } from 'services/metaDataStatus.service';
 
 /**
  * Displays the User Interface for triggering authentication related
@@ -26,7 +27,8 @@ export class LoginComponent {
 
   constructor(
     private readonly aaai: AaaiService,
-    private readonly model: Model
+    private readonly model: Model,
+    private readonly metadataStatusService: MetaDataStatusService
   ) {
     this.subscriptions.push(
       this.model.user.valueObs.subscribe((user: AAAIUser) => {
@@ -43,6 +45,7 @@ export class LoginComponent {
       this.aaai.logout();
       this.closeDropdown.emit();
     } else {
+      this.metadataStatusService.setPromptPending(true);
       this.aaai.login();
     }
   }

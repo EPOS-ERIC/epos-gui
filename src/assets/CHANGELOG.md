@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.53] - 2026-02-16
+- Update 'T&C' references
+- Requests fix on Temporal Range set
+- Dialog dimensions
+- Hide Metadata Preview Area
+
 ## [1.0.52] - 2026-01-26
 - Requests fix on Temporal Range set
 - Dialog dimensions

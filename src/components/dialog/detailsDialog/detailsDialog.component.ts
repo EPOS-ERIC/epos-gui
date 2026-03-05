@@ -52,6 +52,7 @@ export class DetailsDialogComponent implements OnInit, AfterViewInit, OnDestroy 
   public dataProvider: MatTableDataSource<DataProvider>;
 
   public hasContactUsButton = true;
+  public readonly showFairAssessment = environment.showFairAssessment;
 
   public webPageUrl: string | null = null;
 
@@ -168,6 +169,10 @@ export class DetailsDialogComponent implements OnInit, AfterViewInit, OnDestroy 
   public hasChildCategories = (_: number, node: DistributionCategories) => !!node.children && node.children.length > 0;
 
   public openFairnessDetails(): void {
+    if (!this.showFairAssessment) {
+      return;
+    }
+
     const id = this.detailsData?.getIdentifier();
     const url = `${environment.fairAssessmentUrl}details/${id}`;
 

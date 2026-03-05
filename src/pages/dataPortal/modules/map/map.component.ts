@@ -751,53 +751,74 @@ export class MapComponent implements OnInit {
           }
         }
         else {
-          this.eposLeaflet.getLeafletObject().eachLayer((_l: MyLayer) => {
+          if (propertyId !== null && propertyId !== undefined) {
+            const layer = this.eposLeaflet.getLayers().find(l => l.id === layerId);
+            const defaultOpacity = (layer as MapLayer)?.options?.customLayerOptionOpacity?.get?.();
+            const defaultFillOpacity = (layer as MapLayer)?.options?.customLayerOptionFillColorOpacity?.get?.();
 
-            if (_l !== undefined) {
-              const options = _l.options;
-              let elementOnMap: HTMLElement | undefined;
+            const toggleLayerRecursive = (l: MyLayer, forceMatch = false) => {
+              if (l !== undefined) {
+                const options = l.options;
+                let elementOnMap: HTMLElement | undefined;
 
-              if (options.pane === layerId) {
+                // check propertyId on feature or options (cast to String for type-agnostic matching)
+                // Propagate match result to children (crucial for GeometryCollection members)
+                const isMatch = forceMatch ||
+                  (String(l.feature?.properties?.[PopupProperty.PROPERTY_ID]) === String(propertyId)) ||
+                  (String(options?.[PopupProperty.PROPERTY_ID]) === String(propertyId));
 
-                // if propertyId on layer feature
-                if (_l.feature !== undefined) {
-                  const feature: Feature = _l.feature;
-                  const properties = feature.properties;
-                  if (properties !== null) {
-                    if (properties[PopupProperty.PROPERTY_ID] === propertyId) {
+                if (isMatch) {
+
+                  // priority order for finding the element
+                  // eslint-disable-next-line no-underscore-dangle
+                  elementOnMap = (l.getElement?.() as HTMLElement) || l._path || l._icon || l._image;
+
+                  if (elementOnMap !== undefined) {
+                    if (show === false) {
+                      elementOnMap.style.setProperty('display', 'none', 'important');
+
+                      // also hide shadow if it exists (for markers)
                       // eslint-disable-next-line no-underscore-dangle
-                      elementOnMap = _l._path;
+                      if (l._shadow) {
+                        // eslint-disable-next-line no-underscore-dangle
+                        l._shadow.style.setProperty('display', 'none', 'important');
+                      }
+                    } else {
+                      elementOnMap.style.removeProperty('display');
+                      // eslint-disable-next-line no-underscore-dangle
+                      if (l._shadow) {
+                        // eslint-disable-next-line no-underscore-dangle
+                        l._shadow.style.removeProperty('display');
+                      }
                     }
+                  }
+
+                  // fallback for SVG paths/polygons using Leaflet's setStyle
+                  if (typeof l.setStyle === 'function') {
+                    l.setStyle({
+                      opacity: (show ? defaultOpacity : 0) as number,
+                      fillOpacity: (show ? defaultFillOpacity : 0) as number
+                    });
+                  }
+                  // fallback for Markers
+                  if (typeof l.setOpacity === 'function') {
+                    l.setOpacity(show ? 1 : 0);
+                  }
+
+                  if (show === false && typeof l.closeTooltip === 'function') {
+                    l.closeTooltip();
                   }
                 }
-                else {
 
-                  // if propertyId on layer options
-                  if (options[PopupProperty.PROPERTY_ID] === propertyId) {
-
-                    // eslint-disable-next-line no-underscore-dangle
-                    elementOnMap = _l._icon;
-                    if (elementOnMap === undefined) {
-                      // eslint-disable-next-line no-underscore-dangle
-                      elementOnMap = _l._image;
-                    }
-                    if (elementOnMap === undefined) {
-                      // eslint-disable-next-line no-underscore-dangle
-                      elementOnMap = _l._path;
-                    }
-                  }
-                }
-
-                if (elementOnMap !== undefined) {
-                  if (show === false) {
-                    elementOnMap.style.setProperty('display', 'none');
-                  } else {
-                    elementOnMap.style.removeProperty('display');
-                  }
+                // recurse and propagate the match state
+                if (typeof (l as unknown as L.LayerGroup).eachLayer === 'function') {
+                  (l as unknown as L.LayerGroup).eachLayer((child: MyLayer) => toggleLayerRecursive(child, isMatch));
                 }
               }
-            }
-          });
+            };
+
+            this.eposLeaflet.getLeafletObject().eachLayer((_l: MyLayer) => toggleLayerRecursive(_l));
+          }
         }
       }),
 
@@ -1304,8 +1325,12 @@ class BboxStyle implements Stylable {
 }
 
 interface MyLayer extends L.Layer {
-  feature: Feature;
-  _path: HTMLElement;
-  _icon: HTMLElement;
-  _image: HTMLElement;
+  feature?: Feature;
+  _path?: HTMLElement;
+  _icon?: HTMLElement;
+  _image?: HTMLElement;
+  _shadow?: HTMLElement;
+  getElement?: () => HTMLElement | undefined;
+  setStyle?: (style: L.PathOptions) => this;
+  setOpacity?: (opacity: number) => this;
 }

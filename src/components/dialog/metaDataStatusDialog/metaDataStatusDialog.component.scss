@@ -1,0 +1,154 @@
+.dialog-body {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+// Override default mat-dialog padding using the custom panel class
+::ng-deep .metadata-status-dialog .mat-dialog-container {
+    padding: 5px !important;
+    overflow: hidden;
+}
+
+:host ::ng-deep {
+
+    app-base-dialog {
+        .header {
+            background: #eef9f3;
+            padding: 14px;
+            margin-bottom: 0;
+            border-bottom: 1px solid #c2e2cf;
+            justify-content: center;
+
+            h1 {
+                color: #1e7a4a;
+                font-size: 18px;
+            }
+
+            .mat-dialog-close {
+                top: 50%;
+                right: 12px;
+                transform: translateY(-50%);
+                color: #1e7a4a; // Dark green
+                position: absolute;
+            }
+        }
+
+        /* Blue header background area for message */
+        .dialog-header-bg {
+            padding: 12px 14px 10px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .dialog-message {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #1c2b25;
+
+            span {
+                color: #1e7a4a; // Dark green
+            }
+        }
+
+        /* Tip banner */
+        .tip-banner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: #dde9f3;
+            border-left: 3px solid hsl(205, 63%, 49%);
+            border-radius: 0 6px 6px 0;
+            font-size: 12px;
+            color: #2d455c;
+            line-height: 1.4;
+
+            .tip-icon {
+                color: #f5c842;
+                font-size: 16px;
+                width: 16px;
+                height: 16px;
+                flex-shrink: 0;
+            }
+        }
+
+        /* Action buttons */
+        .dialog-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: end;
+            padding: 0 2px;
+            margin-top: 10px;
+
+            button {
+                font-size: 12px;
+                border-radius: 6px;
+                height: 30px;
+                padding: 0 12px;
+                line-height: 30px;
+                transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+                &:hover {
+                    transform: translateY(-1px);
+                }
+
+                &:active {
+                    transform: translateY(0);
+                }
+            }
+
+            .btn-secondary {
+                border-color: #a8c1d5;
+                color: #2d557a;
+                background: transparent;
+
+                &:hover {
+                    background: #f0f6fa;
+                    border-color: #2784ae;
+                    box-shadow: 0 2px 8px rgba(39, 132, 174, 0.1);
+                }
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, #27ae60, #1e7a4a);
+                color: #fff;
+                box-shadow: 0 2px 8px rgba(30, 132, 73, 0.28);
+                display: flex;
+                align-items: center;
+
+                &:hover {
+                    box-shadow: 0 4px 12px rgba(30, 132, 73, 0.38);
+                }
+
+                mat-icon {
+                    font-size: 18px;
+                    width: 18px;
+                    height: 18px;
+                    margin-right: 6px;
+                }
+            }
+        }
+
+        /* Don't show again */
+        .dont-show {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 2px;
+            margin-top: -1px;
+
+            .mat-mdc-checkbox {
+                font-size: 12px;
+                color: #7a8d9e;
+            }
+        }
+
+        .yellow {
+            color: #f5c842;
+        }
+    }
+}

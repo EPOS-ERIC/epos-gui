@@ -21,6 +21,7 @@ export const environmentBase = {
   matomoTrackEvent: true,
   showPoliciesPopup: true,
   showWelcomePopup: false,
+  showGuidedTourNotificationOnStart: false,
   showScientificExamples: true,
   poweredByText: 'Powered by the EPOS Platform Open Source project',
   platformLogoPath: 'assets/img/logo/ENVRI-Hub-logo-white.svg',
@@ -31,6 +32,7 @@ export const environmentBase = {
   termsAndConditions: 'https://www.epos-eu.org/sites/default/files/2026-02/Terms_and_ConditionsJan26_1.pdf',
   vocabularyEndpoint: 'https://registry.epos-eu.org/ncl/system/query',
   fairAssessmentUrl: 'https://ics-c.epos-ip.org/epos-fair-assessment/',
+  showFairAssessment: false,
   videos: [
     {
       title: 'Introduction to ENVRI',

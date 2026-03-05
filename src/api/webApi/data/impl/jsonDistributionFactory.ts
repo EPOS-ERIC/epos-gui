@@ -392,6 +392,10 @@ export class JSONDistributionFactory {
         tempVersioningInfo[versioningStatusInfoKey][property as 'changeDate' | 'editorFullName'] = value;
       }
     });
+    // fallback: if editorFullName is missing, use editorId as author
+    if (!tempVersioningInfo[versioningStatusInfoKey].editorFullName) {
+      tempVersioningInfo[versioningStatusInfoKey].editorFullName = 'Unknown';
+    }
     Object.entries(tempVersioningInfo).forEach(([key, partial]) => {
       if (partial.changeDate && partial.editorFullName) {
         // finally assigning the actual versioning info to the versioningStatusInfo object with which the DistSummary will be created
@@ -529,7 +533,7 @@ export class JSONDistributionFactory {
     }
     // Return null if json is not an array or is empty
     return null;
-}
+  }
 
   /**
    * Converts JSON response to array of SimpleECV objects

@@ -31,6 +31,7 @@ import { DataSearchConfigurablesServiceRegistry } from '../../services/dataSearc
 import { CONTEXT_FACILITY } from 'api/api.service.factory';
 import { LandingService } from '../../services/landing.service';
 import { FacetLeafItemMI } from 'services/model/modelItems/facetLeafItemMI';
+import { MetaDataStatusService } from 'services/metaDataStatus.service';
 
 
 @OnAttachDetach('onAttachComponents')
@@ -100,6 +101,8 @@ export class SearchFacilityComponent implements OnInit {
   public equipmentModel: FacetLeafItemMI;
 
   public context = CONTEXT_FACILITY;
+  private metadataStatusModeActive: boolean = false;
+  private selectedStatuses: Array<string> = [];
 
   /** Constant reference for the "keywords" element of the returned facets data. */
   private readonly FACET_KEYWORDS = 'keywords';
@@ -121,6 +124,7 @@ export class SearchFacilityComponent implements OnInit {
     private readonly panelsEvent: PanelsEmitterService,
     private readonly configurables: DataSearchConfigurablesServiceRegistry,
     private readonly localStoragePersister: LocalStoragePersister,
+    private readonly metadataStatusService: MetaDataStatusService
   ) {
     this.filteredKeys = this.autoCompleteFormControl.valueChanges.pipe(
       startWith(''),
@@ -204,6 +208,42 @@ export class SearchFacilityComponent implements OnInit {
       this.model.dataSearchEquipmentTypeReg.valueObs.subscribe((arrayEquipmentType: Array<string>) => {
         if (arrayEquipmentType !== null) {
           this.equipmentTypeSelected = arrayEquipmentType;
+        }
+      }),
+
+      this.model.metadataPreviewMode.valueObs.subscribe((active: boolean) => {
+        if (active) {
+          this.metadataStatusModeActive = true;
+        }
+        else {
+          this.metadataStatusModeActive = false;
+        }
+      }),
+      // using this subscription for startup, page reload, trigger of search call from Header component
+      this.model.metadataPreviewModeStatuses.valueObs.subscribe((selectedStatuses: null | Array<string>) => {
+        if (this.metadataStatusModeActive && selectedStatuses !== null) {
+          if (selectedStatuses.length === 0) {
+            this.selectedStatuses = [];
+            this.triggerAdvancedSearch();
+            return;
+          }
+          this.selectedStatuses = selectedStatuses as Array<string>;
+          // at startup, loggedIn not immediately available, so subscription
+          if (this.model.user.get() == null) {
+            this.model.user.valueObs.subscribe((logged) => {
+              if (logged !== null) {
+                this.triggerAdvancedSearch();
+              }
+            });
+          }
+          // if already loggedIn and just selecting/deselecting statuses
+          else {
+            this.triggerAdvancedSearch();
+          }
+        }
+        else if (this.metadataStatusModeActive === false) {
+          this.selectedStatuses = [];
+          this.triggerAdvancedSearch();
         }
       }),
 
@@ -325,15 +365,29 @@ export class SearchFacilityComponent implements OnInit {
         });
       }
 
-      this.doSearch(SimpleDiscoverRequest.makeFullQuery(
-        CONTEXT_FACILITY,
-        this.newText,
-        this.model.dataSearchBoundsReg.get(),
-        null,
-        this.model.dataSearchFacetLeafItemsReg.get(),
-        this.model.dataSearchFacilityTypeReg.get(),
-        equipmentToSearch,
-      ));
+      // if metadata preview mode active and selectedStatuses not empty
+      if (this.metadataStatusModeActive === true && this.selectedStatuses.length > 0 && this.model.user.get() !== null) {
+        this.doSearch(SimpleDiscoverRequest.makeFullQuery(
+          CONTEXT_FACILITY,
+          this.newText,
+          this.model.dataSearchBoundsReg.get(),
+          null,
+          this.model.dataSearchFacetLeafItemsReg.get(),
+          this.model.dataSearchFacilityTypeReg.get(),
+          equipmentToSearch,
+          this.selectedStatuses
+        ));
+      } else {
+        this.doSearch(SimpleDiscoverRequest.makeFullQuery(
+          CONTEXT_FACILITY,
+          this.newText,
+          this.model.dataSearchBoundsReg.get(),
+          null,
+          this.model.dataSearchFacetLeafItemsReg.get(),
+          this.model.dataSearchFacilityTypeReg.get(),
+          equipmentToSearch,
+        ));
+      }
 
     }, 500);
 

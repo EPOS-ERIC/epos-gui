@@ -38,7 +38,7 @@ export abstract class BaseDialogService {
   protected openDialog<DataInType = unknown, DataOutType = unknown>(
     dialogId: string,
     contentComponent: ComponentType<unknown>,
-    panelClass: string,
+    panelClass: string | string[],
     closable = true,
     customData: null | Record<string, unknown> = null,
     configIn: null | MatDialogConfig = null,

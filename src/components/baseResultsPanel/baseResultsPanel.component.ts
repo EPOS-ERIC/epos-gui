@@ -102,6 +102,7 @@ export class BaseResultsPanelComponent implements OnInit, AfterContentInit {
   private dataConfigurablesArraySource = new BehaviorSubject<null | Array<DataConfigurableI>>([]);
 
   private lastGoodSelectedConfigurableId: string;
+  private wasAuthenticatedUser = false;
 
   constructor(
     public readonly configurables: DataSearchConfigurablesService,
@@ -119,6 +120,7 @@ export class BaseResultsPanelComponent implements OnInit, AfterContentInit {
     protected readonly aaaiService: AaaiService
   ) {
     this.expandedElement = null;
+    this.wasAuthenticatedUser = this.aaaiService.getUser() !== null;
 
   }
 
@@ -241,12 +243,17 @@ export class BaseResultsPanelComponent implements OnInit, AfterContentInit {
             }),
             // when user gets logged out (automatically, timer from last interaction has expired) and metadataStatusModeActive variable still true
             this.aaaiService.watchUser().subscribe((user: null | AAAIUser)=>{
-              if(user == null && this.metadataStatusModeActive === true){
+              const isAuthenticated = user !== null;
+              const isRealLogout = this.wasAuthenticatedUser && !isAuthenticated;
+
+              if(isRealLogout && this.metadataStatusModeActive === true){
                 this.metadataStatusModeActive = false;
                 this.showStatusChipsOnCards = false;
                 this.metadataStatusService.metadataStatusModeActive.next(false);
                 this.metadataStatusService.metadataSelectedStatuses.next([]);
               }
+
+              this.wasAuthenticatedUser = isAuthenticated;
             }),
 
             // notification by data service

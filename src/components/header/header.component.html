@@ -17,10 +17,12 @@
 
       <!-- START OF MetadataPreview -->
       <ng-container *ngIf="user !== null">
-        <mat-slide-toggle class="custom-slide-toggle" [(ngModel)]="metadataPreviewModeActive" (toggleChange)="toggleMetadataPreviewMode()"></mat-slide-toggle>
+        <mat-slide-toggle class="custom-slide-toggle" [(ngModel)]="metadataPreviewModeActive"
+          (toggleChange)="toggleMetadataPreviewMode()"></mat-slide-toggle>
         <li *ngIf="!metadataPreviewModeActive; then metadataFeatureLabel else metadataFeature">
 
         </li>
+
 
       </ng-container>
       <ng-template #metadataFeatureLabel>
@@ -29,9 +31,10 @@
       <ng-template #metadataFeature>
         <mat-form-field>
           <mat-label>{{ "Metadata Preview" }}</mat-label>
-          <mat-select #typesSelect multiple [(value)]="selectedStatus" (valueChange)="typesToggleSelected(selectedStatus)" [panelClass]="'custom-panel-class'">
+          <mat-select #typesSelect multiple [(value)]="selectedStatus"
+            (valueChange)="typesToggleSelected(selectedStatus)" [panelClass]="'custom-panel-class'">
             <mat-select-trigger>{{ selectedStatus }}</mat-select-trigger>
-            <mat-option *ngFor="let type of metadataStatuses" [value]="type.value" >
+            <mat-option *ngFor="let type of metadataStatuses" [value]="type.value">
               {{ type.label }}
               <i class="fa-solid fa-circle" [ngClass]="type.color"></i>
             </mat-option>
@@ -88,16 +91,10 @@
       </li>
       <!-- Menu -->
       <li>
-        <div
-          class="nav-top-items-item guest"
-          [ngClass]="{ 'nav-top-items-item--active': this.dropdown === 'menu' }"
-          appTour
-          tourName="EPOS Overview"
-          tourStage="21"
-          tourDescription="The tour can be accessed again from this menu."
-          tourTitle="Tour Complete!"
-          tourPosition="left"
-          (tourForwardFunction)="handleTourFinish()">
+        <div class="nav-top-items-item guest" [ngClass]="{ 'nav-top-items-item--active': this.dropdown === 'menu' }"
+          appTour tourName="EPOS Overview" tourStage="21"
+          tourDescription="The tour can be accessed again from this menu." tourTitle="Tour Complete!"
+          tourPosition="left" (tourForwardFunction)="handleTourFinish()">
           <app-menu [trigger]="initialMenuData[0]" [data]="initialMenuData" [isRootNode]="true"></app-menu>
         </div>
       </li>

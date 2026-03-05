@@ -3,6 +3,7 @@ import moment from 'moment-es6';
 import { PoliciesService } from 'services/policiesService.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
+
 @Component({
   selector: 'app-policies',
   templateUrl: 'policies.component.html',
@@ -21,8 +22,8 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
     ])
   ]
 })
-
 export class PoliciesComponent {
+
   public cookiePolicy = true;
   isInfoCollapsed = true;
 

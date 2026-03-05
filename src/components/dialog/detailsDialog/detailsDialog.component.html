@@ -3,7 +3,7 @@
     <ng-container class="headerActions">
       <div class="actions">
 
-        <button *ngIf="context === CONTEXT_RESOURCE" class="fair-btn"
+        <button *ngIf="context === CONTEXT_RESOURCE && showFairAssessment" class="fair-btn"
           matTooltip="This will open a new page showing the FAIR principles assessment for this distribution."
           aria-label="FAIR Assessment — opens a new page with the FAIR principles for this distribution"
           (click)="openFairnessDetails()">

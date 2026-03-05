@@ -50,7 +50,7 @@ describe('test favourites', () => {
     // Check that the markers are on the map
     cy.getLeafletPane(GNSS_STATIONS_WITH_PRODUCTS.id)
       .children()
-      .should('have.length', 10)
+      .should('have.length', GNSS_STATIONS_WITH_PRODUCTS.markerCount)
       .and('be.visible');
 
     // Check that there is one favourite in the badge

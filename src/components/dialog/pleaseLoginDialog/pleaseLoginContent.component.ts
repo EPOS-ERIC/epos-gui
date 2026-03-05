@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { Unsubscriber } from 'decorators/unsubscriber.decorator';
 import { Model } from 'services/model/model.service';
 import { environment } from 'environments/environment';
+import { MetaDataStatusService } from 'services/metaDataStatus.service';
 
 @Unsubscriber('subscriptions')
 @Component({
@@ -26,6 +27,7 @@ export class PleaseLoginContentComponent {
   constructor(
     private readonly aaai: AaaiService,
     private readonly model: Model,
+    private readonly metadataStatusService: MetaDataStatusService,
     @Inject(MAT_DIALOG_DATA) public data: DialogData<LoginMessageObject>,
   ) {
     this.title = data.dataIn.title as string;
@@ -41,6 +43,7 @@ export class PleaseLoginContentComponent {
 
   public login(): void {
     if (this.user == null) {
+      this.metadataStatusService.setPromptPending(true);
       this.aaai.login();
     }
   }
