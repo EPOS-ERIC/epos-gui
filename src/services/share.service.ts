@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import {  EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { environment } from 'environments/environment';
 import { LocalStoragePersister } from './model/persisters/localStoragePersister';
 import { LocalStorageVariables } from './model/persisters/localStorageVariables.enum';
@@ -56,7 +56,7 @@ export class ShareService {
             this.copyCitationToClipboard(url);
           }).catch((_) => {
             // Show an error notification
-            this.notificationService.sendNotification('Failed to copy EPOS Platform URL to clipboard', 'x', NotificationService.TYPE_ERROR, 5000);
+            this.notificationService.sendNotification('Failed to copy ENVRI Catalog of Services URL to clipboard', 'x', NotificationService.TYPE_ERROR, 5000);
           });
 
         });
@@ -103,10 +103,10 @@ export class ShareService {
 
     navigator.clipboard.writeText(data).then(() => {
       // Show a success notification
-      this.notificationService.sendNotification('EPOS Platform URL copied to clipboard', 'x', NotificationService.TYPE_SUCCESS, 5000);
+      this.notificationService.sendNotification('ENVRI Catalog of Services URL copied to clipboard', 'x', NotificationService.TYPE_SUCCESS, 5000);
     }).catch((_) => {
       // Show an error notification
-      this.notificationService.sendNotification('Failed to copy EPOS Platform URL to clipboard', 'x', NotificationService.TYPE_ERROR, 5000);
+      this.notificationService.sendNotification('Failed to copy ENVRI Catalog of Services URL to clipboard', 'x', NotificationService.TYPE_ERROR, 5000);
     });
   }
 }
