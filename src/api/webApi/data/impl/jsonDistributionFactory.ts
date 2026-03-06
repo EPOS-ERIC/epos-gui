@@ -183,7 +183,7 @@ export class JSONDistributionFactory {
     if (creatorObjects != null) {
       creatorObjects.forEach((creatorObj: Record<string, unknown>) => {
         // check required fields
-        const name = ObjectAccessUtility.getObjectValueString(creatorObj, 'name', false, null);
+        let name = ObjectAccessUtility.getObjectValueString(creatorObj, 'name', false, null);
         const url = ObjectAccessUtility.getObjectValueString(creatorObj, 'url', false, null);
         const uid = ObjectAccessUtility.getObjectValueString(creatorObj, 'uid', false, '');
         const instanceId = ObjectAccessUtility.getObjectValueString(creatorObj, 'instanceid', false, '');
@@ -192,6 +192,9 @@ export class JSONDistributionFactory {
         if (name == null) {
           console.log('Creator no name', creatorObj);
         } else {
+          // Append the country code after the name of the creator
+          name = name + (country ? (' - ' + country) : '');
+
           const createdCreator: Creator = {
             name,
             url,

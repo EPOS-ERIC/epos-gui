@@ -108,21 +108,26 @@
                   </table>
                 </span>
                 <span *ngSwitchCase="'Creator(s)' === keyValue.key">
-                  <table mat-table [dataSource]="creatorSource" id="creatorMatTable" class="dataprovider">
-                    <tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
-                    <!-- key -->
-                    <ng-container matColumnDef="key">
-                      <th mat-cell *matCellDef="let org; let i = index" [hidden]="true"></th>
-                    </ng-container>
-                    <!-- value -->
-                    <ng-container matColumnDef="value">
-                      <td mat-cell *matCellDef="let org; let i = index" style="padding-right: 5px">
-                        <a *ngIf="org.url" class="nobold" href="{{ org.url }}" target="_blank"
-                          [innerHTML]="org.name"></a>
-                        <span *ngIf="!org.url" [innerHTML]="org.name" class="title"></span>
-                      </td>
-                    </ng-container>
-                  </table>
+                  <ng-container *ngIf="creatorSource.data.length > 0; else noCreators">
+                    <table mat-table [dataSource]="creatorSource" id="creatorMatTable" class="dataprovider">
+                      <tr mat-row *matRowDef="let row; columns: displayColumns"></tr>
+                      <!-- key -->
+                      <ng-container matColumnDef="key">
+                        <th mat-cell *matCellDef="let org; let i = index" [hidden]="true"></th>
+                      </ng-container>
+                      <!-- value -->
+                      <ng-container matColumnDef="value">
+                        <td mat-cell *matCellDef="let org; let i = index" style="padding-right: 5px">
+                          <a *ngIf="org.url" class="nobold" href="{{ org.url }}" target="_blank"
+                            [innerHTML]="org.name"></a>
+                          <span *ngIf="!org.url" [innerHTML]="org.name" class="title"></span>
+                        </td>
+                      </ng-container>
+                    </table>
+                  </ng-container>
+                  <ng-template #noCreators>
+                    Unspecified
+                  </ng-template>
                 </span>
                 <span *ngSwitchCase="'Keywords' === keyValue.key">
                   <app-vocabulary-tooltip [keywords]="keyValue.value"></app-vocabulary-tooltip>
