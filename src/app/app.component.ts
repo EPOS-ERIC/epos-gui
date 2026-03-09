@@ -148,7 +148,7 @@ export class AppComponent implements OnInit {
       this.aaaiService.watchUser().subscribe((user: null | AAAIUser) => {
 
         if(user != null){
-          const isUserBackofficeUser = this.apiService.getBackOfficeUser('self').then((userResponse) => {
+          void this.apiService.getBackOfficeUser('self').then((userResponse) => {
             if (userResponse.getGroups().length > 0) {
               // set user is backoffice user (consumed only by the header at the moment)
               this.backofficeUserService.setIsBackofficeUser(true);
