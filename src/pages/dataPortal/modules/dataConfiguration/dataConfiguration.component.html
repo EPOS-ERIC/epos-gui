@@ -41,7 +41,7 @@
           <div class="flex override-container" *ngIf="formType === DATA_CONFIGURATION_TYPE.DATA">
             <mat-slide-toggle color="primary" [checked]="!dataConfigurable!.isTemporalLinked()"
               (change)="temporalLinkToggle($event)"
-              matTooltip="With 'Override' disabled, the Temporal Range set at the Filter is used. (Date in UTC)"></mat-slide-toggle>
+              matTooltip="With 'Override' disabled, the Temporal Range set at the Filter is used."></mat-slide-toggle>
           </div>
         </div>
       </div>

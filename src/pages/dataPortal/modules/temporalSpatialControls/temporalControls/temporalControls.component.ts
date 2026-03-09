@@ -53,13 +53,13 @@ export class TemporalControlsComponent implements OnInit, AfterViewInit {
         if (temporalRange != null) {
           const lower = temporalRange.getLowerBound();
           this.startDisplayDate = (null != lower)
-            ? `${lower.clone().local().format(this.DATE_FORMAT)}`
+            ? `${lower.clone().utc().format(this.DATE_FORMAT)}`
             : '';
           this.initDatePicker(true);
 
           const upper = temporalRange.getUpperBound();
           this.endDisplayDate = (null != upper)
-            ? `${upper.clone().local().format(this.DATE_FORMAT)}`
+            ? `${upper.clone().utc().format(this.DATE_FORMAT)}`
             : '';
           this.initDatePicker(false);
         }
@@ -175,7 +175,7 @@ export class TemporalControlsComponent implements OnInit, AfterViewInit {
       // https://github.com/dangrossman/daterangepicker/issues/343
       // create a utc date with the date that was set, whether that be a local or utc moment
       let value: null | moment.Moment = pickerObj.startDate as moment.Moment;
-      value = (null == value) ? null : value.local().utc();
+      value = (null == value) ? null : moment.utc(value.format('YYYY-MM-DDTHH:mm:ss'));
       // this.landingService.showLanding(false);
       this.radioControlDate = '';
       setFunction(value);
@@ -221,11 +221,8 @@ export class TemporalControlsComponent implements OnInit, AfterViewInit {
   }
 
   public startDateChange(): void {
-    const newDate = moment(
-      this.startDisplayDate,
-      this.DATE_FORMAT,
-      true
-    ).local().utc();
+    const newDate = moment.utc(this.startDisplayDate, this.DATE_FORMAT);
+
     const thisCurrentRange = this.temporalRangeSource.getValue();
     const lower = thisCurrentRange.getLowerBound();
     const upper = thisCurrentRange.getUpperBound();
@@ -234,18 +231,14 @@ export class TemporalControlsComponent implements OnInit, AfterViewInit {
       this.setFunctionLower(newDate);
     } else {
       this.startDisplayDate = (null != lower)
-        ? lower.clone().local().format(this.DATE_FORMAT)
+        ? lower.clone().utc().format(this.DATE_FORMAT)
         : '';
     }
     this.radioControlDate = '';
   }
 
   public endDateChange(): void {
-    const newDate = moment(
-      this.endDisplayDate,
-      this.DATE_FORMAT,
-      true
-    ).local().utc();
+    const newDate = moment.utc(this.endDisplayDate, this.DATE_FORMAT);
     const thisCurrentRange = this.temporalRangeSource.getValue();
     const lower = thisCurrentRange.getLowerBound();
     const upper = thisCurrentRange.getUpperBound();
@@ -254,7 +247,7 @@ export class TemporalControlsComponent implements OnInit, AfterViewInit {
       this.setFunctionUpper(newDate);
     } else {
       this.endDisplayDate = (null != upper)
-        ? upper.clone().local().format(this.DATE_FORMAT)
+        ? upper.clone().utc().format(this.DATE_FORMAT)
         : '';
     }
     this.radioControlDate = '';
