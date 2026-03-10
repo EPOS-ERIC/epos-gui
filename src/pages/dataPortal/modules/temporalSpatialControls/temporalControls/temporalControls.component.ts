@@ -126,9 +126,9 @@ export class TemporalControlsComponent implements OnInit, AfterViewInit {
     const upper = currentRange.getUpperBound();
 
     const options = {
-      startDate: (date == null) ? moment : date.clone().utc(),
-      minDate: (isStart) ? minDefault : (lower == null ? minDefault : lower.clone().utc()),
-      maxDate: (isStart) ? (upper == null ? maxDefault : upper.clone().utc()) : maxDefault,
+      startDate: (date == null) ? moment : date.clone().local(),
+      minDate: (isStart) ? minDefault : (lower == null ? minDefault : lower.clone().local()),
+      maxDate: (isStart) ? (upper == null ? maxDefault : upper.clone().local()) : maxDefault,
       locale: {
         format: this.DATE_FORMAT,
       },
