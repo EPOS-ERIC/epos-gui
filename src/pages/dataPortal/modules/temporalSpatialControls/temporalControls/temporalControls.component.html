@@ -1,25 +1,25 @@
 <div #wrapper class='date-input-wrapper'>
 
   <button [disabled]="temporalInputsDisabled" class="small-button" mat-flat-button color="primary"
-    matTooltip="Start Date (UTC)" id="daterangepickerstart" data-cy="date-range-picker-start-button">
+    matTooltip="Start Date (local)" id="daterangepickerstart" data-cy="date-range-picker-start-button">
     <i class="far fa-calendar left-icon" aria-hidden="true"></i><i class="fas fa-caret-right icon"
       aria-hidden="true"></i>
   </button>
   <mat-form-field appearance="fill">
     <input matInput [disabled]="temporalInputsDisabled" id="daterangepickerstart-input" type="text"
       [placeholder]="DATE_FORMAT" [(ngModel)]="startDisplayDate" (change)="startDateChange()" autocomplete="off"
-      size="15" matTooltip="Start Date (UTC)" data-cy="date-range-picker-start"/>
+      size="15" matTooltip="Start Date (local)" data-cy="date-range-picker-start"/>
   </mat-form-field>
 
   <mat-form-field appearance="fill">
     <input matInput [disabled]="temporalInputsDisabled" id="daterangepickerend-input" type="text"
       [placeholder]="DATE_FORMAT" [(ngModel)]="endDisplayDate" (change)="endDateChange()" autocomplete="off" size="15"
-      matTooltip="End Date (UTC)" data-cy="date-range-picker-end"/>
+      matTooltip="End Date (local)" data-cy="date-range-picker-end"/>
   </mat-form-field>
 
 
   <button [disabled]="temporalInputsDisabled" class="small-button" mat-flat-button color="primary"
-    matTooltip="End Date (UTC)" id="daterangepickerend" data-cy="date-range-picker-end-button">
+    matTooltip="End Date (local)" id="daterangepickerend" data-cy="date-range-picker-end-button">
     <i class="fas fa-caret-left left-icon" aria-hidden="true"></i><i class="far fa-calendar icon"
       aria-hidden="true"></i>
   </button>
