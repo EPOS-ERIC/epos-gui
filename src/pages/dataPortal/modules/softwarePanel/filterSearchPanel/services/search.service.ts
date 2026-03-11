@@ -11,7 +11,7 @@ export class SearchService extends DataSearchService {
   public static readonly FILTER_ORGANIZATION = 'Providers';
   public static readonly FILTER_TYPE = 'Data Visualization';
 
-  private _typeFilters = new BehaviorSubject<Array<string>>(['']);
+  private _typeFilters = new BehaviorSubject<Array<string>>([]);
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public typeFiltersObs = this._typeFilters.asObservable();
 

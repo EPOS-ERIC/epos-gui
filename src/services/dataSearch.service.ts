@@ -13,6 +13,8 @@ import { CONTEXT_FACILITY, CONTEXT_RESOURCE, CONTEXT_SOFTWARE } from 'api/api.se
 @Injectable()
 export class DataSearchService {
 
+  private readonly latestRequestIdByContext = new Map<string, number>();
+
   constructor(
     protected readonly apiService: ApiService,
     protected readonly loggingService: LoggingService,
@@ -26,10 +28,20 @@ export class DataSearchService {
    */
   public doSearch(discoverRequest: DiscoverRequest): Promise<DiscoverResponse> {
 
+    const context = discoverRequest.getContext() ?? '';
+    const currentRequestId = (this.latestRequestIdByContext.get(context) ?? 0) + 1;
+    this.latestRequestIdByContext.set(context, currentRequestId);
+
     return this.loggingService.logForPromise(
       this.apiService.discover(discoverRequest),
       this.getLogMessage(discoverRequest),
     ).then((r: DiscoverResponse) => {
+
+      // Latest-wins strategy: ignore responses from superseded requests for the same context.
+      // (issue was typically arising when multiple Discover triggered in a tight sequence, overwriting each others unorderly)
+      if ((this.latestRequestIdByContext.get(context) ?? 0) !== currentRequestId) {
+        return r;
+      }
 
       switch (discoverRequest.getContext()) {
         case CONTEXT_RESOURCE: {

@@ -60,6 +60,8 @@ export class HeaderComponent implements OnInit {
   public defaultSelectValue: string = 'Published';
   public selectedStatus: string[] = [this.defaultSelectValue];
 
+  private readonly metadataStatusesDebounceMs = 250;
+
   /** Timer used to ensure that the search isn't done too many times in quick succession. */
   private searchTimer: NodeJS.Timeout;
   private readonly subscriptions: Array<Subscription> = new Array<Subscription>();
@@ -152,8 +154,10 @@ export class HeaderComponent implements OnInit {
 
 
   public typesToggleSelected(selectedTypes: Array<string> = []): void {
-   this.metadataStatusService.metadataSelectedStatuses.next(selectedTypes);
-
+    clearTimeout(this.searchTimer);
+    this.searchTimer = setTimeout(() => {
+      this.metadataStatusService.metadataSelectedStatuses.next(selectedTypes);
+    }, this.metadataStatusesDebounceMs);
   }
 
   public toggleMetadataPreviewMode(value?: boolean): void{
