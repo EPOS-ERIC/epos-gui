@@ -1,7 +1,7 @@
 {
   "name": "epos",
   "version": "1.0.54",
-  "license": "Apache-2.0",
+  "license": "GPL-3.0-only",
   "scripts": {
     "dev": "ng serve epos --configuration development",
     "dev-oss": "ng serve epos --configuration opensource-development",
