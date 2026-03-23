@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { environmentProd } from 'environments/environment.prod';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'app-matomo-widget-test',
@@ -11,9 +11,9 @@ export class MatomoStatsDialogComponent implements OnInit {
 
   public visitorMapSrc: SafeResourceUrl | null = null;
 
-  public siteId = environmentProd.matomoSiteId;
-  public endpoint = environmentProd.matomoEndpoint;
-  public tokenAuth = environmentProd.matomoTokenAuth;
+  public siteId = environment.matomoSiteId;
+  public endpoint = environment.matomoEndpoint;
+  public tokenAuth = environment.matomoTokenAuth;
   public isSidebarOpen = true;
 
   // form (temporary inputs)

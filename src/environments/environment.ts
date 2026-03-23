@@ -8,7 +8,6 @@
  */
 
 import { environmentDevel } from './environment.devel';
-import { environmentLatest } from './environment.latest';
 import { environmentProd } from './environment.prod';
 import { environmentStage } from './environment.stage';
 import { environmentBase } from './environmentBase';
@@ -23,10 +22,6 @@ function getEnvironment() {
 
     case 'EPOS_ENV_STAGE_URL':
       return { ...environmentStage };
-      break;
-
-    case 'EPOS_ENV_LATEST_URL':
-      return { ...environmentLatest };
       break;
 
     case 'localhost:4200':
