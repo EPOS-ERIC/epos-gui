@@ -13,12 +13,18 @@
     <base href="/" />
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
     <!-- Matomo -->
+  </head>
+
+  <body class="epos">
+    <app-root></app-root>
+    <!-- after content so it doesn't hinder rendering times -->
     <script>
       const siteId = window.__env && window.__env.matomoSiteId;
       if(!siteId) {
         console.warn('Matomo site ID not set, skipping Matomo initialization');
       }
       else{
+        console.warn('Yes, var loaded! ;)');
         var _paq = window._paq = window._paq || [];
         /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
         _paq.push(['trackPageView']);
@@ -33,10 +39,5 @@
       }
     </script>
     <!-- End Matomo Code -->
-  </head>
-
-  <body class="epos">
-    <app-root></app-root>
-    <!-- after content so it doesn't hinder rendering times -->
   </body>
 </html>
