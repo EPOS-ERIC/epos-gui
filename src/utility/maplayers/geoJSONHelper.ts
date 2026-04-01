@@ -154,7 +154,7 @@ export class GeoJSONHelper extends JsonHelper {
         ? String(property.values[0]).valueOf()
         : AuthenticatedLink.getUrlFromElement(target);
 
-      const filename = (null != property)
+      let filename = (null != property)
         ? property.authenticatedDownloadFileName
         : AuthenticatedLink.getFilenameFromElement(target);
 
@@ -170,6 +170,9 @@ export class GeoJSONHelper extends JsonHelper {
         }
       } else if ((null != property) && (PopupPropertyType.SIMPLE === property.type)) {
         if (null != link) {
+          if(property.name){
+            filename = property.name;
+          }
           void executionService.doDownload(link, filename);
         }
       }
