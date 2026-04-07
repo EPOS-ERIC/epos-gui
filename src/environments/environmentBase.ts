@@ -15,6 +15,7 @@ export const environmentBase = {
   eposSiteApiRestKey: 'EPOS_SITE_API_REST_KEY', // populated during pipeline
   esriApiKey: 'EPOS_ESRI_API_KEY', // populated during pipeline
   shareSalt: 'EPOS_SHARE_SALT', // populated during pipeline
+  authRootUrl: 'https://aaai.epos-eu.org',
   matomoEndpoint: '', // populated during pipeline on env files
   matomoSiteId: '', // populated during pipeline on env files
   matomoTokenAuth: '', // populated during pipeline

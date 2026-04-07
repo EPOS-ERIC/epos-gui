@@ -7,11 +7,12 @@ import { AAAIUser } from '../aaaiUser.interface';
 import { BasicUser } from './basicUser';
 import { Injector } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'environments/environment';
 
 /** OAuth provider implementation */
 export class OAuthAuthenticationProvider implements AuthenticationProvider {
   private static readonly EPOS_CLIENT = 'eposICS';
-  private static readonly CYFRONET_ROOT = 'https://aaai.epos-eu.org';
+  private static readonly CYFRONET_ROOT = environment.authRootUrl;
   private static readonly CYFRONET_ISSUER = OAuthAuthenticationProvider.CYFRONET_ROOT + '/oauth2';
   private static readonly REVOKE_ENDPOINT = OAuthAuthenticationProvider.CYFRONET_ISSUER + '/revoke';
   private static readonly REDIRECTION_PAGE = '/last-page-redirect';
@@ -194,4 +195,3 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
     return this.oAuthService.getAccessToken();
   }
 }
-

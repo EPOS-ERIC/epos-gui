@@ -1,6 +1,7 @@
 import { environmentBase } from './environmentBase';
 
 const openSourceVersion = (environmentBase.gitTag === 'GIT_TAG' ? 'dev' : environmentBase.gitTag);
+const authRootUrl = decodeURIComponent('__AUTH_ROOT_URL__');
 
 export const environment = {
   ...environmentBase,
@@ -10,6 +11,7 @@ export const environment = {
     eposSiteApiRestKey: '',
     esriApiKey: '',
     shareSalt: 'CHANGE_ME',
+    authRootUrl: authRootUrl.startsWith('http') ? authRootUrl : 'http://localhost:35000',
     matomoTrackEvent: false,
     showPoliciesPopup: false,
     showWelcomePopup: false,
