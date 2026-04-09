@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.55] - 2026-04-09
+- Solved generic 'download' filename to actual name in the payload (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20097)
+- Fix Date/Time Misalignment (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20302)
+- Minor fixes and improvements
+
 ## [1.0.54] - 2026-03-06
 - Unified <b>Terms and Conditions</b> and <b>News Letter Dialog</b>
 - In Software tab New Details are shown: <b>Creator(s)</b>, <b>Run Time Platform</b> and <b>Software Requirements</b>
