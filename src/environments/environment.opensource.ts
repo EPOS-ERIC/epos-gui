@@ -24,7 +24,7 @@ export const environment = {
     modules: {
       data: true,
       analysis: false,
-      registry: false,
+      registry: true,
       software: true
     },
     mainMenu: [
