@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { MatomoTracker } from '@ngx-matomo/tracker';
-import { environment } from 'environments/environment';
+/* import { MatomoTracker } from '@ngx-matomo/tracker'; */
+/* import { environment } from 'environments/environment'; */
 import { PoliciesService } from 'services/policiesService.service';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class Tracker {
   public static readonly TARCKER_DATA_SEPARATION = '|';
 
   constructor(
-    private readonly tracker: MatomoTracker,
+    /* private readonly tracker: MatomoTracker, */
     private policiesService: PoliciesService,
   ) {
   }
@@ -31,18 +31,18 @@ export class Tracker {
    * should be a number that provides additional
    */
   public trackEvent(category: string, action: string, name?: string, value?: number): void {
-    if (environment.matomoTrackEvent && this.policiesService.cookiesEnabled) {
+    /* if (environment.matomoTrackEvent && this.policiesService.cookiesEnabled) {
       this.tracker.trackEvent(category, action, name, value);
-    }
+    } */
   }
 
   /**
    * The trackPageView function tracks a page view only if cookies are enabled.
    */
   public trackPageView(): void {
-    if (this.policiesService.cookiesEnabled) {
+    /* if (this.policiesService.cookiesEnabled) {
       this.tracker.trackPageView();
-    }
+    } */
   }
 
 }
