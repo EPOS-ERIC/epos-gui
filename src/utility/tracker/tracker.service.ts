@@ -1,7 +1,21 @@
+/* eslint-disable no-underscore-dangle */
 import { Injectable } from '@angular/core';
 /* import { MatomoTracker } from '@ngx-matomo/tracker'; */
 /* import { environment } from 'environments/environment'; */
 import { PoliciesService } from 'services/policiesService.service';
+
+interface MtmEventPayload {
+  event: string;
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  [key: string]: MtmQueueValue;
+}
+
+
+type MtmQueueValue = string | number | boolean | null | undefined;
+
+interface WindowWithMtm extends Window {
+  _mtm?: Array<MtmEventPayload>;
+}
 
 @Injectable()
 export class Tracker {
@@ -31,18 +45,43 @@ export class Tracker {
    * should be a number that provides additional
    */
   public trackEvent(category: string, action: string, name?: string, value?: number): void {
-    /* if (environment.matomoTrackEvent && this.policiesService.cookiesEnabled) {
-      this.tracker.trackEvent(category, action, name, value);
-    } */
+    if (!this.policiesService.cookiesEnabled) {
+      return;
+    }
+
+    const payload: MtmEventPayload = {
+      event: 'epos.Event',
+      category,
+      action,
+      name,
+      value,
+    };
+
+    this.pushToTagManager(payload);
   }
 
   /**
    * The trackPageView function tracks a page view only if cookies are enabled.
    */
-  public trackPageView(): void {
-    /* if (this.policiesService.cookiesEnabled) {
-      this.tracker.trackPageView();
-    } */
+  public trackPageView(path?: string): void {
+    if (!this.policiesService.cookiesEnabled) {
+      return;
+    }
+
+    const payload: MtmEventPayload = {
+      event: 'mtm.PageView',
+      pageTitle: document.title,
+      pagePath: path ?? window.location.pathname,
+      pageUrl: window.location.href,
+    };
+
+    this.pushToTagManager(payload);
+  }
+
+  private pushToTagManager(payload: MtmEventPayload): void {
+    const windowWithMtm = window as WindowWithMtm;
+    windowWithMtm._mtm = windowWithMtm._mtm || [];
+    windowWithMtm._mtm.push(payload);
   }
 
 }

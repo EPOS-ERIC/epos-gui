@@ -97,7 +97,6 @@ export class AppComponent implements OnInit {
 
     if (policiesService.cookiesEnabled) {
       initHotjarFunc();
-      this.tracker.trackPageView();
     }
 
     this.subscriptions.push(
@@ -120,6 +119,7 @@ export class AppComponent implements OnInit {
       this.router.events.subscribe((event: Event) => {
         if (event instanceof NavigationEnd) {
           this.modelPrimer.setServicesAndTriggerInitialValues();
+          this.tracker.trackPageView(event.urlAfterRedirects);
         }
       }),
     );
