@@ -32,7 +32,7 @@
     "@ngx-matomo/tracker": "^3.2.1",
     "@turf/turf": "^6.5.0",
     "angular-oauth2-oidc": "^10.0.3",
-    "angular-oauth2-oidc-jwks": "^15.0.1",
+    "angular-oauth2-oidc-jwks": "^20.0.0",
     "angular-plotly.js": "^4.0.4",
     "angular-resizable-element": "^6.0.2",
     "core-js": "^3.31.1",
