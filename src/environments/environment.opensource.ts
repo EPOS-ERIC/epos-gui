@@ -13,7 +13,7 @@ export const environment = {
     shareSalt: 'CHANGE_ME',
     authRootUrl: authRootUrl.startsWith('http') ? authRootUrl : 'http://localhost:35000',
     matomoTrackEvent: false,
-    showPoliciesPopup: false,
+    showPoliciesPopup: true,
     showWelcomePopup: false,
     showGuidedTourNotificationOnStart: false,
     showScientificExamples: false,
