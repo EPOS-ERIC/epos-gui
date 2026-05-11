@@ -1,6 +1,10 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.56] - 2026-05-011
+- Fix: remove duplicated bbox underneath drawn bbox
+- Minor fixes and improvements
+
 ## [1.0.55] - 2026-04-09
 - Solved generic 'download' filename to actual name in the payload (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20097)
 - Fix Date/Time Misalignment (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20302)
