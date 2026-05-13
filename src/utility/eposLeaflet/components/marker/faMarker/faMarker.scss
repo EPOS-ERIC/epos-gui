@@ -2,15 +2,23 @@
   & .fa-marker-icon-marker.marker-gradient-back {
     color: #191919;
   }
+
   & .fa-marker-icon-marker.marker-gradient {
     background-clip: text !important;
     -webkit-text-fill-color: transparent;
   }
-  & .fa-marker-wrapper > * {
+
+  .exporting-map .fa-marker-icon-marker.marker-gradient {
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+  }
+
+  & .fa-marker-wrapper>* {
     display: flex;
     justify-content: center;
     align-items: center;
   }
+
   & .fa-marker-overlay {
     position: absolute;
     left: 0;

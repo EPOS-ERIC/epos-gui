@@ -93,7 +93,7 @@ export class ExportMapAsImage extends AbstractControl {
   private async confrimDownloadImagesLegends(): Promise<boolean> {
     return this.dialogService.openConfirmationDialog(
       '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Are you sure you want to export the map image and legends? &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p> ',
-       true, // Dialog is closable by clicking outside
+      true, // Dialog is closable by clicking outside
       'Export', // Text for the confirm button
       'confirm', // CSS class for the confirm button
       'Cancel' // Text for the cancel button
@@ -113,15 +113,11 @@ export class ExportMapAsImage extends AbstractControl {
    * @returns A Promise that resolves when the export operation is complete.
    */
   public async exportMapImage(map: L.Map): Promise<void> {
-    const wmsPresent = this.hasWmsLayer(map);
-
-    if (wmsPresent) {
-      return this.exportWithDomToImage(map);
-    }
-
     try {
+      // Try html2canvas first as it handles Font Awesome and CSS better
       await this.exportWithHtml2Canvas(map);
     } catch (err) {
+      console.warn('html2canvas failed, falling back to dom-to-image:', err);
       await this.exportWithDomToImage(map);
     }
   }
@@ -142,8 +138,8 @@ export class ExportMapAsImage extends AbstractControl {
 
       // Wait until the map is fully ready
       await new Promise<void>((resolve) => map.whenReady(() => resolve()));
-
       const mapContainer = map.getContainer();
+      mapContainer.classList.add('exporting-map');
 
       const scale = 3;
       const width = mapContainer.clientWidth * scale;
@@ -211,6 +207,7 @@ export class ExportMapAsImage extends AbstractControl {
       throw error;
     } finally {
       this.hideSpinner();
+      map.getContainer().classList.remove('exporting-map');
       this.exportMapAsImageService.addMapControls();
     }
   }
@@ -232,6 +229,7 @@ export class ExportMapAsImage extends AbstractControl {
       await new Promise<void>(resolve => map.whenReady(() => resolve()));
 
       const container = map.getContainer();
+      container.classList.add('exporting-map');
       const scale = 3;
       const width = container.clientWidth * scale;
       const height = container.clientHeight * scale;
@@ -277,6 +275,7 @@ export class ExportMapAsImage extends AbstractControl {
       throw error;
     } finally {
       this.hideSpinner();
+      map.getContainer().classList.remove('exporting-map');
       this.exportMapAsImageService.addMapControls();
     }
   }
@@ -293,28 +292,27 @@ export class ExportMapAsImage extends AbstractControl {
    * @param map - The Leaflet map instance to inspect for WMS layers.
    * @returns `true` if a WMS layer is found in the map; otherwise, `false`.
    */
-  private hasWmsLayer(map: L.Map): boolean {
-    let found = false;
+  /*  private hasWmsLayer(map: L.Map): boolean {
+     let found = false;
 
-    const checkLayer = (layer: L.Layer) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-      if (layer instanceof (L as any).TileLayer.WMS) {
-        found = true;
-      }
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      else if ((layer as any).wmsParams) {
-        found = true;
-      }
-      // Se è un gruppo, vai dentro
-      else if (layer instanceof L.LayerGroup) {
-        (layer as L.LayerGroup).eachLayer(checkLayer);
-      }
-    };
+     const checkLayer = (layer: L.Layer) => {
+       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+       if (layer instanceof (L as any).TileLayer.WMS) {
+         found = true;
+       }
+       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+       else if ((layer as any).wmsParams) {
+         found = true;
+       }
+       // Se è un gruppo, vai dentro
+       else if (layer instanceof L.LayerGroup) {
+         (layer as L.LayerGroup).eachLayer(checkLayer);
+       }
+     };
 
-    map.eachLayer(checkLayer);
-    return found;
-  }
-
+     map.eachLayer(checkLayer);
+     return found;
+   } */
 
   /** `loadImage` function is used to Loads an image from a specified URL.
    * It will returns the image element (HTMLImageElement) once it has been successfully loaded.
