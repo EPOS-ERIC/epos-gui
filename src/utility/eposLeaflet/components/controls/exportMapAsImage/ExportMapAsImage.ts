@@ -347,13 +347,21 @@ export class ExportMapAsImage extends AbstractControl {
       const width = container.clientWidth * scale;
       const height = container.clientHeight * scale;
 
-      // 2) Capture the container with html2canvas
-      const sourceCanvas: HTMLCanvasElement = await html2canvas(container, {
-        backgroundColor: '#ffffff',
-        scale,                                // internal rendering scale
-        useCORS: true,                        // for cross-origin tiles and images
-        logging: false
-      });
+      // 2) Prepare markers for export (removes shadows, fixes gradients)
+      const restoreExportSafeMarkers = this.prepareExportSafeMarkers(container);
+
+      let sourceCanvas: HTMLCanvasElement;
+      try {
+        // 3) Capture the container with html2canvas
+        sourceCanvas = await html2canvas(container, {
+          backgroundColor: '#ffffff',
+          scale,                                // internal rendering scale
+          useCORS: true,                        // for cross-origin tiles and images
+          logging: false
+        });
+      } finally {
+        restoreExportSafeMarkers();
+      }
 
       // 3) Draw onto a high-resolution canvas
       const finalCanvas = document.createElement('canvas');
