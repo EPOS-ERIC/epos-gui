@@ -782,8 +782,8 @@ export class JSONDistributionFactory {
         softwareDownloadLink = codeRepoLink;
         runtimePlatform = ObjectAccessUtility.getObjectValueString(rawData, 'runtimePlatform', false);
       } else if (detailsType === 'software_application') {
-        requirements = ObjectAccessUtility.getObjectValueString(rawData, 'requirements', false);
-        softwareDownloadLink = ObjectAccessUtility.getObjectValueString(rawData, 'downloadUrl', false, null);
+        requirements = ObjectAccessUtility.getObjectValueString(rawData, 'softwareRequirements', false);
+        softwareDownloadLink = ObjectAccessUtility.getObjectValueString(rawData, 'downloadURL', false, null);
         runtimePlatform = ObjectAccessUtility.getObjectValueString(rawData, 'operatingSystem', false);
       }
 
