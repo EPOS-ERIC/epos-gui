@@ -12,7 +12,7 @@ import { LocalStoragePersister } from 'services/model/persisters/localStoragePer
 import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 import { GeoJSONHelper } from 'utility/maplayers/geoJSONHelper';
 import { ExportMapAsImageService } from 'utility/eposLeaflet/services/exportMapAsImageService.service';
-import { ChangeDetectorRef ,  NgZone } from '@angular/core';
+import { ChangeDetectorRef, NgZone } from '@angular/core';
 import html2canvas from 'html2canvas';
 import { environment } from 'environments/environment';
 
@@ -123,12 +123,12 @@ export class LayerLegendComponent implements OnInit {
         }
 
         const wmtsLayerStorage = this.mapInteractionService.wmtsLayerStorage.value;
-        if(wmtsLayerStorage && wmtsLayerStorage.has(this._layer.id)){
+        if (wmtsLayerStorage && wmtsLayerStorage.has(this._layer.id)) {
           const originatorConfig = wmtsLayerStorage.get(this._layer.id)?.originatorConfig;
           const mapLayersArray = (this._layer as WmtsTileLayer).getEposLeaflet().getLayers();
-          if(originatorConfig){
-            const defaultLayer = mapLayersArray.find((layerEl)=> layerEl.id === originatorConfig);
-            if(defaultLayer != null && defaultLayer.id === this._layer.id){
+          if (originatorConfig) {
+            const defaultLayer = mapLayersArray.find((layerEl) => layerEl.id === originatorConfig);
+            if (defaultLayer != null && defaultLayer.id === this._layer.id) {
               this.getLegendContent(this._layer);
             }
           }
@@ -186,11 +186,11 @@ export class LayerLegendComponent implements OnInit {
   }
 
   private sanitizeFilename(name: string): string {
-  return name
-    .trim()
-    .replace(/\s+/g, '_')
-    .replace(/[^a-zA-Z0-9_-]/g, '')
-    .toLowerCase();
+    return name
+      .trim()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_-]/g, '')
+      .toLowerCase();
   }
 
 
@@ -282,8 +282,8 @@ export class LayerLegendComponent implements OnInit {
   }
 
 
-// eslint-disable-next-line @typescript-eslint/member-ordering
-public async downloadLegendImages(layer: MapLayer): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public async downloadLegendImages(layer: MapLayer): Promise<void> {
     const container = this.legendContent?.nativeElement as HTMLElement | undefined;
     if (!container) {
       this.exportMapAsImageService.addLegendBlob(null, null);
@@ -310,20 +310,20 @@ public async downloadLegendImages(layer: MapLayer): Promise<void> {
     urlsArray.forEach((u, i) => imageMap.set(u, loadedImages[i]));
 
     // 2) Pre-compute text measurements
-    const padding         = 20;
-    const bandPadding     = 10;
-    const minWidth        = 200;
-    const iconLabelSpace  = 8;
-    const lineSpacing     = 4;
-    const fontSize        = 16;
-    const titleText       = layer.name || '';
-    const titleWidth      = titleText ? this.measureTextWidth(titleText, fontSize) : 0;
+    const padding = 20;
+    const bandPadding = 10;
+    const minWidth = 200;
+    const iconLabelSpace = 8;
+    const lineSpacing = 4;
+    const fontSize = 16;
+    const titleText = layer.name || '';
+    const titleWidth = titleText ? this.measureTextWidth(titleText, fontSize) : 0;
 
     const labelMap = new Map<string, { text: string; width: number }>();
     imgElements.forEach(img => {
       const txt = img.closest('.legend-details-row')
-                  ?.querySelector<HTMLElement>('.legend-label')
-                  ?.textContent?.trim() || '';
+        ?.querySelector<HTMLElement>('.legend-label')
+        ?.textContent?.trim() || '';
       const w = txt ? this.measureTextWidth(txt, fontSize) : 0;
       labelMap.set(img.src, { text: txt, width: w });
     });
@@ -335,22 +335,22 @@ public async downloadLegendImages(layer: MapLayer): Promise<void> {
 
     // Loop only over legend URLs (exclude logo)
     for (const src of urlsArray.filter(u => u !== logoUrl)) {
-      const image   = imageMap.get(src)!;
+      const image = imageMap.get(src)!;
       const logoImg = imageMap.get(logoUrl)!;
       const { text: labelText, width: labelWidth } = labelMap.get(src)!;
 
       // Compute sizes
-      const logoW      = 100;
-      const logoH      = (logoImg.height / logoImg.width) * logoW;
-      const imgW       = image.width;
-      const imgH       = image.height;
-      const whiteH     = imgH + bandPadding * 2 + (labelText ? fontSize + iconLabelSpace : 0);
-      const titleH     = titleText ? fontSize + lineSpacing : 0;
+      const logoW = 100;
+      const logoH = (logoImg.height / logoImg.width) * logoW;
+      const imgW = image.width;
+      const imgH = image.height;
+      const whiteH = imgH + bandPadding * 2 + (labelText ? fontSize + iconLabelSpace : 0);
+      const titleH = titleText ? fontSize + lineSpacing : 0;
       const maxContent = Math.max(imgW, logoW, labelWidth, titleWidth, minWidth);
-      const canvasW    = maxContent + padding * 2;
-      const canvasH    = padding + logoH + padding + whiteH + padding + titleH + padding;
+      const canvasW = maxContent + padding * 2;
+      const canvasH = padding + logoH + padding + whiteH + padding + titleH + padding;
 
-      canvas.width  = canvasW;
+      canvas.width = canvasW;
       canvas.height = canvasH;
       ctx.clearRect(0, 0, canvasW, canvasH);
 
@@ -372,18 +372,18 @@ public async downloadLegendImages(layer: MapLayer): Promise<void> {
 
       // 4) Label under icon
       if (labelText) {
-        ctx.fillStyle    = 'black';
-        ctx.font         = `${fontSize}px sans-serif`;
-        ctx.textAlign    = 'center';
+        ctx.fillStyle = 'black';
+        ctx.font = `${fontSize}px sans-serif`;
+        ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         ctx.fillText(labelText, canvasW / 2, iconY + imgH + iconLabelSpace);
       }
 
       // 5) Layer title below band
       if (titleText) {
-        ctx.fillStyle    = 'white';
-        ctx.font         = `${fontSize}px sans-serif`;
-        ctx.textAlign    = 'center';
+        ctx.fillStyle = 'white';
+        ctx.font = `${fontSize}px sans-serif`;
+        ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         ctx.fillText(titleText, canvasW / 2, bandY + whiteH + padding);
       }
@@ -398,175 +398,231 @@ public async downloadLegendImages(layer: MapLayer): Promise<void> {
   }
 
 
-// eslint-disable-next-line @typescript-eslint/member-ordering
-public async exportLegendWithLogo(layer: MapLayer): Promise<void> {
-  if (!this.showImage) { return; }
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public async exportLegendWithLogo(layer: MapLayer): Promise<void> {
+    if (!this.showImage) { return; }
 
-  const container = this.legendContent.nativeElement as HTMLElement;
-  const rows = Array.from(container.querySelectorAll<HTMLElement>('.legend-details-row'));
-  if (!rows.length) {
-    this.exportMapAsImageService.addLegendBlob(null, null);
-    return;
-  }
+    const container = this.legendContent.nativeElement as HTMLElement;
+    const rows = Array.from(container.querySelectorAll<HTMLElement>('.legend-details-row'));
+    if (!rows.length) {
+      this.exportMapAsImageService.addLegendBlob(null, null);
+      return;
+    }
 
-  this.exportMapAsImageService.incrementExpectedLegends(rows.length);
+    this.exportMapAsImageService.incrementExpectedLegends(rows.length);
 
-  // 1) Load the logo once
-  const logoUrl = environment.platformLogoPath;
-  const logoImg = await this.loadImage(logoUrl);
-  const logoW = 100;
-  const logoH = (logoImg.height / logoImg.width) * logoW;
+    // 1) Load the logo once
+    const logoUrl = environment.platformLogoPath;
+    const logoImg = await this.loadImage(logoUrl);
+    const logoW = 100;
+    const logoH = (logoImg.height / logoImg.width) * logoW;
 
-  // 2) Constants & pre-compute title metrics
-  const padding         = 20;
-  const minWidth        = 200;
-  const fontSize        = 16;
-  const cornerRadius    = 8;
-  const lineSpacing     = 4;
-  const iconLabelSpace  = 8;
-  const titleText       = layer.name || '';
-  const titleWidth      = titleText ? this.measureTextWidth(titleText, fontSize) : 0;
+    // 2) Constants & pre-compute title metrics
+    const padding = 20;
+    const minWidth = 200;
+    const fontSize = 16;
+    const cornerRadius = 8;
+    const lineSpacing = 4;
+    const iconLabelSpace = 8;
+    const titleText = layer.name || '';
+    const titleWidth = titleText ? this.measureTextWidth(titleText, fontSize) : 0;
 
-  // 3) Identify which rows have a native <img> and preload those in parallel
-  const nativeRows = rows
-    .map(row => ({ row, src: (row.querySelector('img') as HTMLImageElement)?.src }))
-    .filter(({ src }) => !!src) as { row: HTMLElement; src: string }[];
+    // 3) Identify which rows have a native <img> and preload those in parallel
+    const nativeRows = rows
+      .map(row => ({ row, src: (row.querySelector('img') as HTMLImageElement)?.src }))
+      .filter(({ src }) => !!src) as { row: HTMLElement; src: string }[];
 
-  const nativePromises = nativeRows.map(({ src }) => this.loadImage(src!));
-  const nativeImages = await Promise.all(nativePromises);
-  const nativeMap = new Map<string, HTMLImageElement>();
-  nativeRows.forEach(({ src }, i) => nativeMap.set(src!, nativeImages[i]));
+    const nativePromises = nativeRows.map(({ src }) => this.loadImage(src!));
+    const nativeImages = await Promise.all(nativePromises);
+    const nativeMap = new Map<string, HTMLImageElement>();
+    nativeRows.forEach(({ src }, i) => nativeMap.set(src!, nativeImages[i]));
 
-  // 4) Pre-measure every label text
-  const labelInfo = new Map<HTMLElement, { text: string; width: number }>();
-  rows.forEach(row => {
-    const lblEl = row.querySelector<HTMLElement>('.legend-label');
-    const text  = lblEl?.textContent?.trim() || '';
-    const w     = text ? this.measureTextWidth(text, fontSize) : 0;
-    labelInfo.set(row, { text, width: w });
-  });
+    // 4) Pre-measure every label text
+    const labelInfo = new Map<HTMLElement, { text: string; width: number }>();
+    rows.forEach(row => {
+      const lblEl = row.querySelector<HTMLElement>('.legend-label');
+      const text = lblEl?.textContent?.trim() || '';
+      const w = text ? this.measureTextWidth(text, fontSize) : 0;
+      labelInfo.set(row, { text, width: w });
+    });
 
-  // 5) Prepare one canvas
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d')!;
-  let count = 0;
+    // 5) Prepare one canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d')!;
+    let count = 0;
 
-  for (const row of rows) {
-    try {
-      const { text: labelText, width: labelWidth } = labelInfo.get(row)!;
-      const titleTextNonNull = titleText;
-      const titleW = titleWidth;
+    for (const row of rows) {
+      try {
+        const { text: labelText, width: labelWidth } = labelInfo.get(row)!;
+        const titleTextNonNull = titleText;
+        const titleW = titleWidth;
 
-      // Decide if we use native image or rasterize with html2canvas
-      let iconImg: HTMLImageElement;
-      let iconW: number;
-      let iconH: number;
-      let bandPad: number;
+        // Decide if we use native image or rasterize with html2canvas
+        let iconImg: HTMLImageElement;
+        let iconW: number;
+        let iconH: number;
+        let bandPad: number;
 
-      const native = row.querySelector('img') as HTMLImageElement | null;
-      if (native && nativeMap.has(native.src)) {
-        // use preloaded native
-        iconImg = nativeMap.get(native.src)!;
-        iconW = iconImg.width;
-        iconH = iconImg.height;
-        bandPad = 4;
-      } else {
-        // rasterize via html2canvas (unchanged logic)
-        const clone = row.cloneNode(true) as HTMLElement;
-        clone.querySelectorAll('img, .marker-gradient, .fa-marker-icon-icon, .legend-label')
-             .forEach(el => el.remove());
-        clone.querySelectorAll<HTMLElement>('.legend-icon > span')
-             .forEach(span => span.style.display = 'inline-block');
+        // Extract letter info to draw manually later since html2canvas fails with it
+        let pinChar = '';
+        let pinCharColor = 'white';
+        let pinCharFont = '';
 
-        const wrapper = document.createElement('div');
-        Object.assign(wrapper.style, {
-          position: 'absolute', left: '-9999px', top: '-9999px',
-          background: 'transparent', margin: '0', padding: '5px'
-        });
-        wrapper.appendChild(clone);
-        document.body.appendChild(wrapper);
+        const faWrapper = row.querySelector('.fa-marker-wrapper');
+        if (faWrapper) {
+          const inner = faWrapper.querySelector('.fa-marker-icon-icon');
+          if (inner) {
+            const comp = window.getComputedStyle(inner);
+            pinCharColor = comp.color;
+            pinCharFont = `${comp.fontWeight} ${comp.fontSize} ${comp.fontFamily}`;
 
-        await document.fonts?.ready;
-        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+            const before = window.getComputedStyle(inner, ':before').content;
+            if (before && before !== 'none' && before !== 'normal') {
+              let str = before.replace(/^['"]|['"]$/g, '');
+              str = str.replace(/\\([0-9a-fA-F]{1,6})/g, (m: string, hex: string) => String.fromCharCode(parseInt(hex, 16)));
+              pinChar = str;
+            } else if (inner.textContent) {
+              pinChar = inner.textContent;
+            }
+          }
+        }
 
-        const raster = await html2canvas(wrapper, { backgroundColor: null, useCORS: true, scale: 1 });
-        iconImg = new Image();
-        iconImg.src = raster.toDataURL();
-        await new Promise(r => (iconImg.onload = r));
-        document.body.removeChild(wrapper);
+        const native = row.querySelector('img') as HTMLImageElement | null;
+        if (native && nativeMap.has(native.src)) {
+          // use preloaded native
+          iconImg = nativeMap.get(native.src)!;
+          iconW = iconImg.width;
+          iconH = iconImg.height;
+          bandPad = 4;
+        } else {
+          // rasterize via html2canvas
+          const clone = row.cloneNode(true) as HTMLElement;
 
-        iconW = iconImg.width;
-        iconH = iconImg.height;
-        bandPad = Math.ceil(iconH / 2) + 4;
+          clone.querySelectorAll<HTMLElement>('.fa-marker-wrapper').forEach(markerWrapper => {
+            const front = markerWrapper.querySelector<HTMLElement>('.marker-gradient');
+            const back = markerWrapper.querySelector<HTMLElement>('.marker-gradient-back');
+            const inner = markerWrapper.querySelector<HTMLElement>('.fa-marker-icon-icon');
+
+            if (back) {
+              if (front?.style.color) {
+                back.style.setProperty('color', front.style.color, 'important');
+              }
+              back.style.setProperty('z-index', '1', 'important');
+              back.style.setProperty('display', 'block', 'important');
+              back.style.setProperty('opacity', '1', 'important');
+            }
+            // Remove inner since we will draw it manually
+            inner?.remove();
+            front?.remove();
+          });
+
+          clone.querySelectorAll('img, .legend-label').forEach(el => el.remove());
+          clone.querySelectorAll<HTMLElement>('.legend-icon > span')
+            .forEach(span => span.style.display = 'inline-block');
+
+          const wrapper = document.createElement('div');
+          Object.assign(wrapper.style, {
+            position: 'absolute', left: '-9999px', top: '-9999px',
+            background: 'transparent', margin: '0', padding: '5px'
+          });
+          wrapper.appendChild(clone);
+          document.body.appendChild(wrapper);
+
+          await document.fonts?.ready;
+          await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+          const raster = await html2canvas(wrapper, { backgroundColor: null, useCORS: true, scale: 1 });
+          iconImg = new Image();
+          iconImg.src = raster.toDataURL();
+          await new Promise(r => (iconImg.onload = r));
+          document.body.removeChild(wrapper);
+
+          iconW = iconImg.width;
+          iconH = iconImg.height;
+          bandPad = Math.ceil(iconH / 2) + 4;
+        }
+
+        // 6) Compute dimensions
+        const whiteBandH = iconH + bandPad * 2 + (labelText ? fontSize + iconLabelSpace : 0);
+        const titleAreaH = titleTextNonNull ? fontSize + lineSpacing : 0;
+        const contentMaxW = Math.max(iconW, logoW, labelWidth, titleW, minWidth);
+        const canvasW = contentMaxW + padding * 2;
+        const canvasH = padding + logoH + padding + whiteBandH + padding + titleAreaH + padding;
+
+        canvas.width = canvasW;
+        canvas.height = canvasH;
+        ctx.clearRect(0, 0, canvasW, canvasH);
+
+        // 7) Draw background & logo
+        ctx.fillStyle = 'grey';
+        ctx.fillRect(0, 0, canvasW, canvasH);
+        ctx.drawImage(logoImg, (canvasW - logoW) / 2, padding, logoW, logoH);
+
+        // 8) White band + clipped icon
+        const bandY = padding + logoH + padding;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, bandY, canvasW, whiteBandH);
+
+        const iconX = (canvasW - iconW) / 2;
+        const iconY = bandY + bandPad;
+        ctx.save();
+        ctx.beginPath();
+        // rounded rect path
+        ctx.moveTo(iconX + cornerRadius, iconY);
+        ctx.lineTo(iconX + iconW - cornerRadius, iconY);
+        ctx.quadraticCurveTo(iconX + iconW, iconY, iconX + iconW, iconY + cornerRadius);
+        ctx.lineTo(iconX + iconW, iconY + iconH - cornerRadius);
+        ctx.quadraticCurveTo(iconX + iconW, iconY + iconH, iconX + iconW - cornerRadius, iconY + iconH);
+        ctx.lineTo(iconX + cornerRadius, iconY + iconH);
+        ctx.quadraticCurveTo(iconX, iconY + iconH, iconX, iconY + iconH - cornerRadius);
+        ctx.lineTo(iconX, iconY + cornerRadius);
+        ctx.quadraticCurveTo(iconX, iconY, iconX + cornerRadius, iconY);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(iconImg, iconX, iconY);
+        ctx.restore();
+
+        // Draw the extracted FontAwesome letter manually on top of the pin
+        if (pinChar) {
+          ctx.fillStyle = pinCharColor;
+          // Parse the computed font size from the pin Char
+          const sizeMatch = pinCharFont.match(/([0-9.]+)px/);
+          // Reduce the multiplier to make the letter smaller
+          const charFontSize = sizeMatch ? parseFloat(sizeMatch[1]) * 0.9 : iconH * 0.30;
+          ctx.font = `900 ${charFontSize}px "Font Awesome 5 Free", "FontAwesome", sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          // Draw slightly above exact center to match pin bubble geometry
+          ctx.fillText(pinChar, iconX + iconW / 2, iconY + iconH * 0.45);
+        }
+
+        // 9) Label & title
+        if (labelText) {
+          ctx.fillStyle = 'black';
+          ctx.font = `${fontSize}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText(labelText, canvasW / 2, iconY + iconH + iconLabelSpace);
+        }
+        if (titleTextNonNull) {
+          ctx.fillStyle = 'white';
+          ctx.font = `${fontSize}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText(titleTextNonNull, canvasW / 2, bandY + whiteBandH + padding);
+        }
+
+        // 10) Export
+        const blob = await new Promise<Blob | null>(r => canvas.toBlob(r, 'image/png'));
+        if (blob) {
+          const fn = this.sanitizeFilename(`${layer.name}_legend_${++count}`);
+          this.exportMapAsImageService.addLegendBlob(blob, `${fn}.png`);
+        }
+      } catch (err) {
+        console.error('Error exporting legend row:', err);
       }
-
-      // 6) Compute dimensions
-      const whiteBandH   = iconH + bandPad * 2 + (labelText ? fontSize + iconLabelSpace : 0);
-      const titleAreaH   = titleTextNonNull ? fontSize + lineSpacing : 0;
-      const contentMaxW  = Math.max(iconW, logoW, labelWidth, titleW, minWidth);
-      const canvasW      = contentMaxW + padding * 2;
-      const canvasH      = padding + logoH + padding + whiteBandH + padding + titleAreaH + padding;
-
-      canvas.width  = canvasW;
-      canvas.height = canvasH;
-      ctx.clearRect(0, 0, canvasW, canvasH);
-
-      // 7) Draw background & logo
-      ctx.fillStyle = 'grey';
-      ctx.fillRect(0, 0, canvasW, canvasH);
-      ctx.drawImage(logoImg, (canvasW - logoW) / 2, padding, logoW, logoH);
-
-      // 8) White band + clipped icon
-      const bandY = padding + logoH + padding;
-      ctx.fillStyle = 'white';
-      ctx.fillRect(0, bandY, canvasW, whiteBandH);
-
-      const iconX = (canvasW - iconW) / 2;
-      const iconY = bandY + bandPad;
-      ctx.save();
-      ctx.beginPath();
-      // rounded rect path
-      ctx.moveTo(iconX + cornerRadius, iconY);
-      ctx.lineTo(iconX + iconW - cornerRadius, iconY);
-      ctx.quadraticCurveTo(iconX + iconW, iconY, iconX + iconW, iconY + cornerRadius);
-      ctx.lineTo(iconX + iconW, iconY + iconH - cornerRadius);
-      ctx.quadraticCurveTo(iconX + iconW, iconY + iconH, iconX + iconW - cornerRadius, iconY + iconH);
-      ctx.lineTo(iconX + cornerRadius, iconY + iconH);
-      ctx.quadraticCurveTo(iconX, iconY + iconH, iconX, iconY + iconH - cornerRadius);
-      ctx.lineTo(iconX, iconY + cornerRadius);
-      ctx.quadraticCurveTo(iconX, iconY, iconX + cornerRadius, iconY);
-      ctx.closePath();
-      ctx.clip();
-      ctx.drawImage(iconImg, iconX, iconY);
-      ctx.restore();
-
-      // 9) Label & title
-      if (labelText) {
-        ctx.fillStyle    = 'black';
-        ctx.font         = `${fontSize}px sans-serif`;
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText(labelText, canvasW / 2, iconY + iconH + iconLabelSpace);
-      }
-      if (titleTextNonNull) {
-        ctx.fillStyle    = 'white';
-        ctx.font         = `${fontSize}px sans-serif`;
-        ctx.textAlign    = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText(titleTextNonNull, canvasW / 2, bandY + whiteBandH + padding);
-      }
-
-      // 10) Export
-      const blob = await new Promise<Blob | null>(r => canvas.toBlob(r, 'image/png'));
-      if (blob) {
-        const fn = this.sanitizeFilename(`${layer.name}_legend_${++count}`);
-        this.exportMapAsImageService.addLegendBlob(blob, `${fn}.png`);
-      }
-    } catch (err) {
-      console.error('Error exporting legend row:', err);
     }
   }
-}
 
 
 

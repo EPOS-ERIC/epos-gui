@@ -145,9 +145,31 @@ export class ExportMapAsImage extends AbstractControl {
 
       const mapContainer = map.getContainer();
 
+      // Snapshot marker colors on live DOM nodes so cloned nodes can reuse them reliably.
+      const liveGradientMarkers = Array.from(
+        mapContainer.querySelectorAll('.fa-marker-wrapper .fa-marker-icon-marker.marker-gradient')
+      );
+      liveGradientMarkers.forEach((el) => {
+        if (!(el instanceof HTMLElement)) {
+          return;
+        }
+
+        const inlineStyleAttr = el.getAttribute('style') || '';
+        const colorFromAttr = inlineStyleAttr.match(/color\s*:\s*([^;]+)/i)?.[1]?.trim() || '';
+        const inlineColor = el.style.color || '';
+        const computedColor = window.getComputedStyle(el).color || '';
+        const markerColor = colorFromAttr || inlineColor || computedColor || '';
+
+        if (markerColor !== '') {
+          el.setAttribute('data-export-color', markerColor);
+        }
+      });
+
       const scale = 3;
       const width = mapContainer.clientWidth * scale;
       const height = mapContainer.clientHeight * scale;
+
+      const restoreExportSafeMarkers = this.prepareExportSafeMarkers(mapContainer);
 
       // Generate PNG from the map container at higher resolution
       let dataUrl: string;
@@ -159,6 +181,13 @@ export class ExportMapAsImage extends AbstractControl {
           width,
           height,
           quality: 1,
+          filter: (node: Node) => {
+            if (!(node instanceof HTMLElement)) {
+              return true;
+            }
+
+            return !node.classList.contains('leaflet-marker-shadow');
+          },
           style: {
             transform: `scale(${scale})`,
             transformOrigin: 'top left',
@@ -166,7 +195,9 @@ export class ExportMapAsImage extends AbstractControl {
             height: `${mapContainer.clientHeight}px`,
           }
         });
+        restoreExportSafeMarkers();
       } catch (err) {
+        restoreExportSafeMarkers();
         if (err instanceof Error) {
           console.error('Error generating PNG:', err.message);
           throw err;
@@ -216,6 +247,86 @@ export class ExportMapAsImage extends AbstractControl {
   }
 
   /**
+   * Temporarily rewrites custom FA markers into export-safe static markers,
+   * preserving marker color and removing shadow/gradient artifacts.
+   */
+  private prepareExportSafeMarkers(mapContainer: HTMLElement): () => void {
+    const originalStyles: Array<{ el: HTMLElement; styleAttr: string | null }> = [];
+
+    const remember = (el: HTMLElement): void => {
+      if (originalStyles.some((entry) => entry.el === el)) {
+        return;
+      }
+      originalStyles.push({ el, styleAttr: el.getAttribute('style') });
+    };
+
+    mapContainer.querySelectorAll('.leaflet-marker-shadow').forEach((shadow) => {
+      if (shadow instanceof HTMLElement) {
+        remember(shadow);
+        shadow.style.display = 'none';
+        shadow.style.opacity = '0';
+      }
+    });
+
+    mapContainer.querySelectorAll('.leaflet-marker-icon').forEach((icon) => {
+      if (icon instanceof HTMLElement) {
+        remember(icon);
+        icon.style.background = 'transparent';
+        icon.style.backgroundColor = 'transparent';
+        icon.style.border = '0';
+        icon.style.boxShadow = 'none';
+      }
+    });
+
+    mapContainer.querySelectorAll('.fa-marker-wrapper').forEach((wrapper) => {
+      if (!(wrapper instanceof HTMLElement)) {
+        return;
+      }
+
+      const top = wrapper.querySelector('.fa-marker-icon-marker.marker-gradient');
+      const back = wrapper.querySelector('.fa-marker-icon-marker.marker-gradient-back');
+      const innerIcon = wrapper.querySelector('.fa-marker-icon-icon');
+
+      if (!(top instanceof HTMLElement) || !(back instanceof HTMLElement)) {
+        return;
+      }
+
+      remember(top);
+      remember(back);
+
+      const topStyle = top.getAttribute('style') || '';
+      const colorFromAttr = topStyle.match(/color\s*:\s*([^;]+)/i)?.[1]?.trim() || '';
+      const topInlineColor = top.style.color || '';
+      const topComputedColor = window.getComputedStyle(top).color || '';
+      const markerColor = colorFromAttr || topInlineColor || topComputedColor;
+
+      if (markerColor !== '') {
+        back.style.setProperty('color', markerColor, 'important');
+      }
+
+      back.style.setProperty('display', 'block', 'important');
+      back.style.setProperty('opacity', '1', 'important');
+      back.style.setProperty('z-index', '1', 'important');
+      if (innerIcon instanceof HTMLElement) {
+        remember(innerIcon);
+        innerIcon.style.setProperty('z-index', '2', 'important');
+      }
+      top.style.visibility = 'hidden';
+      top.style.opacity = '0';
+    });
+
+    return () => {
+      originalStyles.forEach(({ el, styleAttr }) => {
+        if (styleAttr == null) {
+          el.removeAttribute('style');
+        } else {
+          el.setAttribute('style', styleAttr);
+        }
+      });
+    };
+  }
+
+  /**
    * Exports the current Leaflet map view as a PNG image using html2canvas.
    * This method captures the map container, draws it onto a high-resolution canvas,
    * overlays a logo, and exports the result as a PNG Blob.
@@ -236,13 +347,21 @@ export class ExportMapAsImage extends AbstractControl {
       const width = container.clientWidth * scale;
       const height = container.clientHeight * scale;
 
-      // 2) Capture the container with html2canvas
-      const sourceCanvas: HTMLCanvasElement = await html2canvas(container, {
-        backgroundColor: '#ffffff',
-        scale,                                // internal rendering scale
-        useCORS: true,                        // for cross-origin tiles and images
-        logging: false
-      });
+      // 2) Prepare markers for export (removes shadows, fixes gradients)
+      const restoreExportSafeMarkers = this.prepareExportSafeMarkers(container);
+
+      let sourceCanvas: HTMLCanvasElement;
+      try {
+        // 3) Capture the container with html2canvas
+        sourceCanvas = await html2canvas(container, {
+          backgroundColor: '#ffffff',
+          scale,                                // internal rendering scale
+          useCORS: true,                        // for cross-origin tiles and images
+          logging: false
+        });
+      } finally {
+        restoreExportSafeMarkers();
+      }
 
       // 3) Draw onto a high-resolution canvas
       const finalCanvas = document.createElement('canvas');
@@ -280,7 +399,6 @@ export class ExportMapAsImage extends AbstractControl {
       this.exportMapAsImageService.addMapControls();
     }
   }
-
 
   /**
    * Checks whether the given Leaflet map contains at least one WMS (Web Map Service) layer.
