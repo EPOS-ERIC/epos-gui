@@ -93,7 +93,7 @@ export class ExportMapAsImage extends AbstractControl {
   private async confrimDownloadImagesLegends(): Promise<boolean> {
     return this.dialogService.openConfirmationDialog(
       '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Are you sure you want to export the map image and legends? &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p> ',
-       true, // Dialog is closable by clicking outside
+      true, // Dialog is closable by clicking outside
       'Export', // Text for the confirm button
       'confirm', // CSS class for the confirm button
       'Cancel' // Text for the cancel button
@@ -120,9 +120,9 @@ export class ExportMapAsImage extends AbstractControl {
     }
 
     try {
-      await this.exportWithHtml2Canvas(map);
-    } catch (err) {
       await this.exportWithDomToImage(map);
+    } catch (err) {
+      await this.exportWithHtml2Canvas(map);
     }
   }
 
