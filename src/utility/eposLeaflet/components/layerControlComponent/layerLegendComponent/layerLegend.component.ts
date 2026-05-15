@@ -14,7 +14,6 @@ import { GeoJSONHelper } from 'utility/maplayers/geoJSONHelper';
 import { ExportMapAsImageService } from 'utility/eposLeaflet/services/exportMapAsImageService.service';
 import { ChangeDetectorRef, NgZone } from '@angular/core';
 import html2canvas from 'html2canvas';
-import domtoimage from 'dom-to-image-more';
 import { environment } from 'environments/environment';
 
 @Unsubscriber('subscriptions')
@@ -480,7 +479,7 @@ export class LayerLegendComponent implements OnInit {
             const before = window.getComputedStyle(inner, ':before').content;
             if (before && before !== 'none' && before !== 'normal') {
               let str = before.replace(/^['"]|['"]$/g, '');
-              str = str.replace(/\\([0-9a-fA-F]{1,6})/g, (m, hex) => String.fromCharCode(parseInt(hex, 16)));
+              str = str.replace(/\\([0-9a-fA-F]{1,6})/g, (m: string, hex: string) => String.fromCharCode(parseInt(hex, 16)));
               pinChar = str;
             } else if (inner.textContent) {
               pinChar = inner.textContent;
@@ -499,10 +498,10 @@ export class LayerLegendComponent implements OnInit {
           // rasterize via html2canvas
           const clone = row.cloneNode(true) as HTMLElement;
 
-          clone.querySelectorAll<HTMLElement>('.fa-marker-wrapper').forEach(wrapper => {
-            const front = wrapper.querySelector<HTMLElement>('.marker-gradient');
-            const back = wrapper.querySelector<HTMLElement>('.marker-gradient-back');
-            const inner = wrapper.querySelector<HTMLElement>('.fa-marker-icon-icon');
+          clone.querySelectorAll<HTMLElement>('.fa-marker-wrapper').forEach(markerWrapper => {
+            const front = markerWrapper.querySelector<HTMLElement>('.marker-gradient');
+            const back = markerWrapper.querySelector<HTMLElement>('.marker-gradient-back');
+            const inner = markerWrapper.querySelector<HTMLElement>('.fa-marker-icon-icon');
 
             if (back) {
               if (front?.style.color) {
