@@ -28,6 +28,9 @@ export class CovJSONMapLayer extends JsonMapLayer {
   ) {
     super(injector, id, name, stylable);
 
+    const baseId = id.replace(CovJSONHelper.COVJSON_ID_SUFFIX, '');
+    this.options.set('pane', baseId);
+
     this.setPreLayerAddFunction(() => {
       return getDataFunction()
         .then((data: GeoJsonObject) => {
@@ -126,7 +129,15 @@ export class CovJSONMapLayer extends JsonMapLayer {
    * `L.Layer` object.
    */
   protected createLeafletMarker(stylable: Stylable, marker: null | Marker, latlng: L.LatLng): L.Layer {
-    return super.createLeafletMarker(stylable, marker, latlng, false);
+    const layer = super.createLeafletMarker(stylable, marker, latlng, false);
+    const baseId = this.id.replace(CovJSONHelper.COVJSON_ID_SUFFIX, '');
+    (layer as L.Marker).options.pane = baseId;
+    return layer;
+  }
+
+  protected preLayerAdd(): Promise<void> {
+    const baseId = this.id.replace(CovJSONHelper.COVJSON_ID_SUFFIX, '');
+    return Promise.resolve().then(() => this.getEposLeaflet().ensurePaneExists(baseId));
   }
 
   private addStyle() {
@@ -383,7 +394,6 @@ export class CovJSONMapLayer extends JsonMapLayer {
         feature.properties[PopupProperty.PROPERTY_ID] = this.id + '#' + index.toString() + '#';
       }
     });
-
   }
 
 }
