@@ -33,6 +33,7 @@ export class GeoJSONMapLayer extends JsonMapLayer {
     mapConfig: EposLeafletComponent,
   ) {
     super(injector, id, name, stylable);
+    this.markerLayer.options.set('pane', this.id);
 
     this.setPreLayerAddFunction(() => {
 
@@ -126,6 +127,10 @@ export class GeoJSONMapLayer extends JsonMapLayer {
       return GeoJSONHelper.getFeatureDisplayItemById(featureCollection.features as Array<Feature>, propertyId, layerName);
     }
     return Promise.resolve();
+  }
+
+  protected preLayerAdd(): Promise<void> {
+    return Promise.resolve().then(() => this.getEposLeaflet().ensurePaneExists(this.id));
   }
 
   // filter out the image features that don't have any geometry (badly formed?)

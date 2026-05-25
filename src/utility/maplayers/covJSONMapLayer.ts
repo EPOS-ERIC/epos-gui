@@ -12,11 +12,14 @@ import { PopupProperty } from './popupProperty';
 import { JsonMapLayer, Marker } from './jsonMapLayer';
 import { CovJSONHelper } from './covJSONHelper';
 import { JsonHelper } from './jsonHelper';
-import { HttpClient } from '@angular/common/http';
 import { GeoJSONHelper } from './geoJSONHelper';
+import { GeoJSONMapLayer } from './geoJSONMapLayer';
+import { HttpClient } from '@angular/common/http';
 
 
 export class CovJSONMapLayer extends JsonMapLayer {
+
+  private hiddenSyncedWithBaseLayer = false;
 
   constructor(
     injector: Injector,
@@ -30,6 +33,7 @@ export class CovJSONMapLayer extends JsonMapLayer {
 
     const baseId = id.replace(CovJSONHelper.COVJSON_ID_SUFFIX, '');
     this.options.set('pane', baseId);
+    this.markerLayer.options.set('pane', baseId);
 
     this.setPreLayerAddFunction(() => {
       return getDataFunction()
@@ -100,7 +104,11 @@ export class CovJSONMapLayer extends JsonMapLayer {
           color: this.getStylableColor1(this.stylable),
         };
       })
-      .setLegendCreatorFunction(this.createLegend.bind(this) as (layer: MapLayer, http: HttpClient) => Promise<null | Array<Legend>>)
+      .setLegendCreatorFunction((layer: MapLayer, http: HttpClient): Promise<null | Array<Legend>> => {
+        return this.getBaseGeoJsonLayer(baseId) == null
+          ? this.createLegend(layer, http)
+          : Promise.resolve([] as Array<Legend>);
+      })
 
       /*
       .setPostLayerAddFunction(() => {
@@ -111,6 +119,13 @@ export class CovJSONMapLayer extends JsonMapLayer {
       */
       ;
 
+  }
+
+  public setZOffset(index?: number): void {
+    const baseId = this.id.replace(CovJSONHelper.COVJSON_ID_SUFFIX, '');
+    super.setZOffset(this.getBaseGeoJsonLayer(baseId) == null
+      ? index
+      : index == null ? -1 : index - 1);
   }
 
 
@@ -137,7 +152,34 @@ export class CovJSONMapLayer extends JsonMapLayer {
 
   protected preLayerAdd(): Promise<void> {
     const baseId = this.id.replace(CovJSONHelper.COVJSON_ID_SUFFIX, '');
+    const baseLayer = this.getBaseGeoJsonLayer(baseId);
+    this.visibleOnLayerControl.set(baseLayer == null);
+    this.setZOffset();
+    this.syncHiddenWithBaseLayer(baseLayer);
     return Promise.resolve().then(() => this.getEposLeaflet().ensurePaneExists(baseId));
+  }
+
+  private getBaseGeoJsonLayer(baseId: string): null | GeoJSONMapLayer {
+    const baseLayer = this.getEposLeaflet().getLayers().find((layer: MapLayer) => layer.id === baseId);
+    return baseLayer instanceof GeoJSONMapLayer ? baseLayer : null;
+  }
+
+  private syncHiddenWithBaseLayer(baseLayer: null | GeoJSONMapLayer): void {
+    if (this.hiddenSyncedWithBaseLayer) {
+      return;
+    }
+
+    if (baseLayer != null) {
+      this.hidden.set(baseLayer.hidden.get() === true);
+      this.options.customLayerOptionOpacity.set(baseLayer.options.customLayerOptionOpacity.get());
+      baseLayer.hidden.watch().subscribe((hidden: boolean) => {
+        this.hidden.set(hidden === true);
+      });
+      baseLayer.options.customLayerOptionOpacity.watch().subscribe((opacity: number) => {
+        this.options.customLayerOptionOpacity.set(opacity);
+      });
+      this.hiddenSyncedWithBaseLayer = true;
+    }
   }
 
   private addStyle() {
