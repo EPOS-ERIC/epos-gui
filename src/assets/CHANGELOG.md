@@ -1,6 +1,13 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.57] - 2026-05-26
+- Feature: Covjson + Geojson (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20393)
+- Feature: multiple locations covjson(related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/19297)
+- Fix: export Map image (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20308)
+- Improve Matomo filter Date input usability
+- Minor fixes and improvements
+
 ## [1.0.56] - 2026-05-11
 - Fix: remove duplicated bbox underneath drawn bbox (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20328)
 - Fix: map image export (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20308)
