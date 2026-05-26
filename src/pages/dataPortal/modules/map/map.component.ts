@@ -842,12 +842,12 @@ export class MapComponent implements OnInit {
 
           if (layer !== undefined) {
 
-            if (typeof coordinates[0] !== 'number') {
-              lat = coordinates[0][1] as unknown as number;
-              lng = coordinates[0][0] as unknown as number;
+            if (Array.isArray(coordinates[0])) {
+              lat = Number(coordinates[0][1]);
+              lng = Number(coordinates[0][0]);
             } else {
-              lat = coordinates[1] as unknown as number;
-              lng = coordinates[0];
+              lat = Number(coordinates[1]);
+              lng = Number(coordinates[0]);
             }
 
             // move view with latitude offset

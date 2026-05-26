@@ -7,6 +7,7 @@ import { Stylable } from 'utility/styler/stylable.interface';
 import { ParameterDefinitions } from 'api/webApi/data/parameterDefinitions.interface';
 import { Injector } from '@angular/core';
 import { CovJSONMapLayer } from './covJSONMapLayer';
+import { CovJSONHelper } from './covJSONHelper';
 
 
 /** The CovJSONMapLayerFactory class is a TypeScript class that implements the MapLayerFactory interface
@@ -55,7 +56,7 @@ export class CovJSONMapLayerFactory implements MapLayerFactory<GeoJSON.GeoJsonOb
     parameters: Array<ParameterValue>,
     getDataFunction: () => Promise<GeoJSON.GeoJsonObject>,
   ): Array<GeoJsonLayer> {
-    return [new CovJSONMapLayer(this.injector, id, name, stylable, getDataFunction, mapConfig)];
+    return [new CovJSONMapLayer(this.injector, id + CovJSONHelper.COVJSON_ID_SUFFIX, name, stylable, getDataFunction, mapConfig)];
 
   }
 }
