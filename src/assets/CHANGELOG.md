@@ -1,6 +1,9 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.58] - 2026-06-19
+- Remove Silent Refresh
+- Minor fixes and improvements
 ## [1.0.57] - 2026-05-26
 - Feature: Covjson + Geojson (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20393)
 - Feature: multiple locations covjson(related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/19297)
