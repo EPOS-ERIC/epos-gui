@@ -241,8 +241,8 @@ export class WmsFeatureDisplayItemGenerator implements FeatureDisplayItemGenerat
 
     this.preferredFormats.push(WmsFeatureFormat.GEO_JSON);
     this.preferredFormats.push(WmsFeatureFormat.JSON);
-    this.preferredFormats.push(WmsFeatureFormat.HTML_TEXT);
     this.preferredFormats.push(WmsFeatureFormat.PLAIN_TEXT);
+    this.preferredFormats.push(WmsFeatureFormat.HTML_TEXT);
   }
 
   /**
