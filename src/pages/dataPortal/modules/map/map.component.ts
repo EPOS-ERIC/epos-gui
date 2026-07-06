@@ -271,7 +271,7 @@ export class MapComponent implements OnInit {
     const zoomControl = L.control.zoom().setPosition('topright');
     const customLayerControl = new CustomLayerControl(this.injector).setPosition('topright');
     const exportMapAsImage = new ExportMapAsImage(this.injector, this.componentFactoryResolver, this.viewContainerRef, this.exportMapAsImageService, this.dialogService);
-    this.measureControlInstance = new MeasureDistanceControl(this.dialogService);
+    this.measureControlInstance = new MeasureDistanceControl(this.dialogService, this.panelsEvent);
     const scaleControl = L.control.scale({ metric: true, imperial: false, maxWidth: 200 }).setPosition('bottomright');
     const resetZoomControl = new ResetZoomControl(this.layersService).setPosition('topright');
 

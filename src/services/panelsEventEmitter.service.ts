@@ -33,6 +33,13 @@ export class PanelsEmitterService {
   private timeSeriesPopupLayerIdUrlSrc = new Subject<[string, string | null]>();
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public timeSeriesPopupLayerIdUrlObs = this.timeSeriesPopupLayerIdUrlSrc.asObservable();
+  private paleolatitudeRequestSrc = new Subject<{ lat: number; lon: number }>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public paleolatitudeRequestObs = this.paleolatitudeRequestSrc.asObservable();
+  private paleolatitudeRequests = new Array<{ lat: number; lon: number }>();
+  private clearPaleolatitudeSrc = new Subject<void>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public clearPaleolatitudeObs = this.clearPaleolatitudeSrc.asObservable();
 
   constructor(
     private readonly localStoragePersister: LocalStoragePersister,
@@ -149,5 +156,19 @@ export class PanelsEmitterService {
   public setTimeSeriesPopupLayerIdUrl(layerId: string, url: string | null): void {
     this.timeSeriesPopupLayerIdUrlSrc.next([layerId, url]);
     this.localStoragePersister.set(LocalStorageVariables.LS_CONFIGURABLES, layerId, false, LocalStorageVariables.LS_TS_POPUP_LAYER_ID);
+  }
+
+  public setPaleolatitudeRequest(lat: number, lon: number): void {
+    this.paleolatitudeRequests.push({ lat, lon });
+    this.paleolatitudeRequestSrc.next({ lat, lon });
+  }
+
+  public getPaleolatitudeRequests(): Array<{ lat: number; lon: number }> {
+    return this.paleolatitudeRequests.slice();
+  }
+
+  public clearPaleolatitude(): void {
+    this.paleolatitudeRequests = [];
+    this.clearPaleolatitudeSrc.next();
   }
 }

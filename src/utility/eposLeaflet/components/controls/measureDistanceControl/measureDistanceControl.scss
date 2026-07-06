@@ -2,54 +2,110 @@
     .leaflet-ruler {
         height: 30px;
         width: 30px;
-        background-image: url("../../../../../../src/assets/img/ruler-white.svg"); 
-        background-repeat: no-repeat;
-        background-position: center;
         background-color: #0000004D;
         mix-blend-mode: difference;
-        background-size: 18px 18px;
-      }
-      
-    .leaflet-ruler:hover {
-        background-image: url("../../../../../../src/assets/img/ruler-white.svg"); 
-        cursor: pointer;
-        background-size: 18px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-      
+
+    .leaflet-ruler::before {
+        content: "edit_location_alt";
+        color: #ffffff;
+        font-family: "Material Icons";
+        font-size: 20px;
+        font-feature-settings: "liga";
+        line-height: 1;
+    }
+
+    .leaflet-ruler:hover {
+        cursor: pointer;
+    }
+
     .leaflet-ruler-clicked {
         height: 30px;
         width: 30px;
         background-color: rgba(198, 148, 54, 1);
-        background-repeat: no-repeat;
-        background-position: center;
-        background-image: url("../../../../../../src/assets/img/ruler-white.svg");
-      background-size: 18px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
-    
+
+    .leaflet-ruler-clicked::before {
+        content: "edit_location_alt";
+        color: #ffffff;
+        font-family: "Material Icons";
+        font-size: 20px;
+        font-feature-settings: "liga";
+        line-height: 1;
+    }
+
+    .map-tool-mode-toolbar {
+        position: absolute;
+        top: 8%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2000;
+        display: flex;
+        gap: 4px;
+        padding: 4px;
+        pointer-events: auto;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+    }
+
+    .map-tool-mode-toolbar.hidden {
+        display: none;
+    }
+
+    .map-tool-mode-button {
+        height: 28px;
+        padding: 0 10px;
+        border: 0;
+        border-radius: 3px;
+        background: transparent;
+        color: #333333;
+        font-size: 12px;
+        line-height: 28px;
+        cursor: pointer;
+    }
+
+    .map-tool-mode-button:hover,
+    .map-tool-mode-button.active {
+        background: rgba(198, 148, 54, 1);
+        color: #ffffff;
+    }
+
     .leaflet-control {
         cursor: pointer;
     }
-      .result-tooltip{
+
+    .result-tooltip {
         background-color: white;
         border-width: smaller;
         border-color: black;
         font-size: smaller;
     }
-      .moving-tooltip{
+
+    .moving-tooltip {
         background-color: rgba(255, 255, 255, .7);
         background-clip: padding-box;
         opacity: 0.5;
         border: dotted;
-        border-color:red;
+        border-color: red;
         font-size: smaller;
     }
-      .plus-length{
+
+    .plus-length {
         padding-left: 45px;
     }
+
     .lineStyle {
         color: red;
     }
-    
+
     .leaflet-ruler-tooltip {
         position: absolute;
         background: red;
@@ -57,5 +113,5 @@
         border-radius: 3px;
         font-size: 12px;
     }
-    
+
 }
