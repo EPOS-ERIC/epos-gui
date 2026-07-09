@@ -32,7 +32,7 @@ export class SpatialCoverageMapComponent implements AfterViewInit {
       doubleClickZoom: false,
       boxZoom: false,
       keyboard: false,
-      dragging: false,
+      dragging: true,
     });
     tiles.addTo(this.map);
 
@@ -41,28 +41,40 @@ export class SpatialCoverageMapComponent implements AfterViewInit {
 
     try {
       if (shape.isBounded()) {
-        const geometryType = shape.getFeatures()[0].geometry['type'] as string;
+        const spatialBounds = new L.LatLngBounds([]);
 
-        if (geometryType === SpatialRangeGeometaryType.POLYGON as string) {
+        shape.getFeatures().forEach(feature => {
+          const geometryType = feature.geometry['type'] as string;
 
-          const spatialBbox =
-            new L.Polyline(this.convertToLatLongExp(shape.getFeatures()[0].geometry['coordinates'] as number[][][]));
+          if (geometryType === SpatialRangeGeometaryType.POLYGON as string) {
 
-          spatialBbox.addTo(this.map);
-          this.map.fitBounds(spatialBbox.getBounds());
+            const spatialBbox =
+              new L.Polyline(this.convertToLatLongExp(feature.geometry['coordinates'] as number[][][]));
 
-        } else if (geometryType === SpatialRangeGeometaryType.POINT as string) {
-          const pointArr = shape.getFeatures()[0].geometry['coordinates'] as Array<number>;
-          const reversedPointArr = this.reverseArray(pointArr);
-          const icon = new L.Icon.Default();
-          icon.options.shadowSize = [0, 0];
-          icon.options.imagePath = 'assets/img/leaflet/';
-          icon.options.iconUrl = 'marker-icon.png';
-          icon.options.iconRetinaUrl = 'marker-icon.png';
-          icon.options.shadowUrl = 'marker-shadow.png';
-          const spatialPoint = new L.Marker(reversedPointArr as L.LatLngExpression, { icon: icon });
-          spatialPoint.addTo(this.map);
-          this.map.flyTo(reversedPointArr as L.LatLngExpression);
+            spatialBbox.addTo(this.map);
+            spatialBounds.extend(spatialBbox.getBounds());
+
+          } else if (geometryType === SpatialRangeGeometaryType.POINT as string) {
+            const pointArr = feature.geometry['coordinates'] as Array<number>;
+            const reversedPointArr = this.reverseArray(pointArr) as L.LatLngTuple;
+            const icon = new L.Icon.Default();
+            icon.options.shadowSize = [0, 0];
+            icon.options.imagePath = 'assets/img/leaflet/';
+            icon.options.iconUrl = 'marker-icon.png';
+            icon.options.iconRetinaUrl = 'marker-icon.png';
+            icon.options.shadowUrl = 'marker-shadow.png';
+            const spatialPoint = new L.Marker(reversedPointArr as L.LatLngExpression, { icon: icon });
+            spatialPoint.addTo(this.map);
+            spatialBounds.extend(reversedPointArr);
+          }
+        });
+
+        if (spatialBounds.isValid()) {
+          if (spatialBounds.getNorthEast().equals(spatialBounds.getSouthWest())) {
+            this.map.flyTo(spatialBounds.getCenter());
+          } else {
+            this.map.fitBounds(spatialBounds);
+          }
         }
       } else if (shape != null && shape.isUnbounded()) {
         const globalBbox = new L.Polygon([[70, 180], [70, -180], [-70, -180], [-70, 180]]);
@@ -93,4 +105,3 @@ enum SpatialRangeGeometaryType {
   POLYGON = 'Polygon',
   POINT = 'Point',
 }
-
