@@ -93,6 +93,12 @@ export class GeoJSONHelper extends JsonHelper {
         propertiesToUse.push(new PopupProperty(PopupProperty.POINTS_ON_MAP, coords as Position));
       }
 
+      // if "geometry" property is present and has null value, insert it into the table with '--' value (which is: don't just skip it, otherwise data will be messed up)
+      if('geometry' in propertiesObj && pointData == null){
+        propertiesToUse.push(new PopupProperty(PopupProperty.LONG_LAT, ['--']));
+        propertiesToUse.push(new PopupProperty(PopupProperty.POINTS_ON_MAP, ['--']));
+      }
+
       // add property id
       propertiesToUse.push(new PopupProperty(PopupProperty.PROPERTY_ID, [layerId + '#' + rowIndex.toString() + '#']));
 
