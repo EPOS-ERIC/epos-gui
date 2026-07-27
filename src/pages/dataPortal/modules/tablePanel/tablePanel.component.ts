@@ -19,6 +19,7 @@ import { DataSearchConfigurablesService } from 'pages/dataPortal/services/dataSe
 import { DataSearchConfigurablesServiceSoftware } from '../softwarePanel/services/dataSearchConfigurables.service';
 import { CONTEXT_FACILITY, CONTEXT_RESOURCE, CONTEXT_SOFTWARE } from 'api/api.service.factory';
 import { MapLayer } from 'utility/eposLeaflet/eposLeaflet';
+import { PaleolatitudeResult } from '../graphPanel/objects/paleolatitude.interface';
 
 
 @Unsubscriber('subscriptions')
@@ -36,6 +37,7 @@ export class TablePanelComponent implements OnInit {
   @Output() closeSideNav = new EventEmitter<void>();
 
   public currentDataConfigurables = new Array<DataConfigurableI>();
+  public paleolatitudeResults = new Array<PaleolatitudeResult>();
 
   public showSpinner = false;
   public selectedIndex = 0;
@@ -66,6 +68,11 @@ export class TablePanelComponent implements OnInit {
 
   public ngOnInit(): void {
     this.initSubscriptions();
+    this.paleolatitudeResults = this.panelsEvent.getPaleolatitudeResults();
+    if (this.paleolatitudeResults.length > 0) {
+      this.selectedIndex = this.currentDataConfigurables.length + this.paleolatitudeResults.length - 1;
+    }
+    this.updateTableCounter();
   }
 
   public closeNav(): void {
@@ -123,6 +130,23 @@ export class TablePanelComponent implements OnInit {
 
       this.panelsEvent.invokeTablePanelToggle.subscribe((id: string) => {
         this.selectedIndex = this.currentDataConfigurables.findIndex(tab => tab.id === id);
+      }),
+
+      this.panelsEvent.paleolatitudeResultObs.subscribe((result: PaleolatitudeResult) => {
+        const existingIndex = this.paleolatitudeResults.findIndex((item: PaleolatitudeResult) => item.id === result.id);
+        if (existingIndex === -1) {
+          this.paleolatitudeResults.push(result);
+          this.selectedIndex = this.currentDataConfigurables.length + this.paleolatitudeResults.length - 1;
+        } else {
+          this.paleolatitudeResults[existingIndex] = result;
+        }
+        this.updateTableCounter();
+      }),
+
+      this.panelsEvent.clearPaleolatitudeObs.subscribe(() => {
+        this.paleolatitudeResults = [];
+        this.selectedIndex = Math.min(this.selectedIndex, Math.max(this.currentDataConfigurables.length - 1, 0));
+        this.updateTableCounter();
       }),
     );
   }
@@ -190,7 +214,7 @@ export class TablePanelComponent implements OnInit {
       });
 
       setTimeout(() => {
-        if (configurables.getSelected() !== null) {
+        if (configurables.getSelected() !== null && this.paleolatitudeResults.length === 0) {
           // index to selected item
           this.selectedIndex = this.currentDataConfigurables.findIndex((thisConfig: DataConfigurableI) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -201,8 +225,12 @@ export class TablePanelComponent implements OnInit {
       }, 100);
     }
 
-    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length);
+    this.updateTableCounter();
 
+  }
+
+  private updateTableCounter(): void {
+    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length + this.paleolatitudeResults.length);
   }
 
   private ensureReloadFuncSet(configurables: Array<DataConfigurableDataSearchI>, context: string): void {

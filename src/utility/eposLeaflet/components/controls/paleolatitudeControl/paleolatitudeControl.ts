@@ -96,12 +96,11 @@ export class PaleolatitudeControl {
     }).addTo(this.locationLayer);
     marker
       .bindTooltip(`X: ${normalizedLon.toFixed(6)}<br>Y: ${latLng.lat.toFixed(6)}`, {
-        permanent: true,
+        permanent: false,
         direction: 'right',
         offset: [8, -18],
         className: 'result-tooltip',
-      })
-      .openTooltip();
+      });
   }
 
   private clearMarkers(): void {

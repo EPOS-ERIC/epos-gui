@@ -18,7 +18,8 @@ import { NotificationService } from 'components/notification/notification.servic
 import { DataConfigurableDataSearchI } from 'utility/configurablesDataSearch/dataConfigurableDataSearchI.interface';
 import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
 import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
-import { PaleolatitudePoint, PaleolatitudeResponse, PALEOLATITUDE_CONFIG_ID, PALEOLATITUDE_TRACE_ID, PALEOLATITUDE_API_URL } from './objects/paleolatitude.interface';
+import { PALEOLATITUDE_CONFIG_ID, PALEOLATITUDE_TRACE_ID } from './objects/paleolatitude.interface';
+import { PaleolatitudeGraphService } from './services/paleolatitudeGraph.service';
 
 /**
  * Wrapper for the visualization graphing functionality.
@@ -75,7 +76,8 @@ export class GraphPanelComponent implements OnInit {
     private readonly apiService: ApiService,
     private readonly traceSelector: TraceSelectorService,
     private readonly cd: ChangeDetectorRef,
-    private readonly mapInteractionService: MapInteractionService
+    private readonly mapInteractionService: MapInteractionService,
+    private readonly paleolatitudeGraphService: PaleolatitudeGraphService,
   ) {
   }
 
@@ -294,11 +296,15 @@ export class GraphPanelComponent implements OnInit {
   private async fetchPaleolatitudeTraces(lat: number, lon: number, openGraphPanel = true): Promise<void> {
     const requestId = ++this.paleolatitudeRequestId;
     const sessionId = this.paleolatitudeSessionId;
-    const normalizedLon = this.normalizeLongitude(lon);
     const configurableId = `${PALEOLATITUDE_CONFIG_ID}-${requestId}`;
     const traceId = `${PALEOLATITUDE_TRACE_ID}-${requestId}`;
+    const request = this.paleolatitudeGraphService.createRequest(lat, lon, this.configurables.getAll());
+    if (request == null) {
+      this.sendWarning(configurableId);
+      return;
+    }
+    const normalizedLon = request.normalizedLon;
     const config = this.makePaleolatitudeConfigurable(configurableId, `Paleolatitude (${normalizedLon.toFixed(4)}, ${lat.toFixed(4)})`);
-    const url = `${PALEOLATITUDE_API_URL}/${lat}/${normalizedLon}/-1/0/9999/vaes/website`;
 
     this.addPaleolatitudeConfigurable(config, null);
     this.triggerChangedTraces();
@@ -308,13 +314,13 @@ export class GraphPanelComponent implements OnInit {
     }
 
     try {
-      const data = await this.apiService.executeUrl(url);
-      const response = JSON.parse(await data.text()) as PaleolatitudeResponse;
+      const result = await this.paleolatitudeGraphService.executeRequest(request, configurableId, traceId);
       if (sessionId !== this.paleolatitudeSessionId) {
         return;
       }
 
-      const traces = this.createPaleolatitudeTrace(response, configurableId, traceId);
+      const response = result.response;
+      const traces = result.traces;
       if (traces.length === 0) {
         this.sendWarning(configurableId);
         this.removePaleolatitudeConfigurable(config);
@@ -324,11 +330,21 @@ export class GraphPanelComponent implements OnInit {
       }
 
       const plateLabel = response.plate?.name != null ? ` - ${response.plate.name}` : '';
+      const resultName = `Paleolatitude${plateLabel} (${normalizedLon.toFixed(4)}, ${lat.toFixed(4)})`;
       const updatedConfig = this.makePaleolatitudeConfigurable(
         configurableId,
-        `Paleolatitude${plateLabel} (${normalizedLon.toFixed(4)}, ${lat.toFixed(4)})`
+        resultName
       );
       this.updatePaleolatitudeConfigurable(config, updatedConfig, traces);
+      this.panelsEvent.setPaleolatitudeResult({
+        id: configurableId,
+        name: resultName,
+        selectedLat: lat,
+        selectedLon: normalizedLon,
+        plateId: response.plate?.id,
+        plateName: response.plate?.name,
+        points: response.paleolatitude ?? [],
+      });
       this.selectedDisplayType = YAxisDisplayType.OVERLAY;
       this.triggerChangedTraces();
       this.updateGraphCounter();
@@ -351,33 +367,6 @@ export class GraphPanelComponent implements OnInit {
       this.triggerChangedTraces();
       this.updateGraphCounter();
     }
-  }
-
-  private createPaleolatitudeTrace(response: PaleolatitudeResponse, configurableId: string, traceId: string): Array<Trace> {
-    const points = response.paleolatitude ?? [];
-    if (points.length === 0 || response.error != null || response.message != null) {
-      return [];
-    }
-
-    const trace = new Trace(
-      configurableId,
-      traceId,
-      'scatter',
-      'Paleolatitude',
-      'Paleolatitude from selected map point',
-      'deg',
-      'Paleolatitude',
-      points.map((point: PaleolatitudePoint) => String(point.lat)),
-      points.map((point: PaleolatitudePoint) => String(point.age)),
-      'lines+markers',
-    );
-
-    if (points.every((point: PaleolatitudePoint) => typeof point.lowerbound === 'number' && typeof point.upperbound === 'number')) {
-      trace.yErrorMinValues = points.map((point: PaleolatitudePoint) => String(Math.max(point.lat - point.lowerbound!, 0)));
-      trace.yErrorMaxValues = points.map((point: PaleolatitudePoint) => String(Math.max(point.upperbound! - point.lat, 0)));
-    }
-
-    return [trace];
   }
 
   private addPaleolatitudeConfigurable(configurable: DataConfigurableDataSearch, traces: null | Array<Trace>): void {
@@ -428,10 +417,6 @@ export class GraphPanelComponent implements OnInit {
 
   private isPaleolatitudeConfigurable(configurable: DataConfigurableDataSearch): boolean {
     return this.paleolatitudeConfigurableIds.has(configurable.id);
-  }
-
-  private normalizeLongitude(lon: number): number {
-    return ((((lon + 180) % 360) + 360) % 360) - 180;
   }
 
   private updateGraphCounter(): void {

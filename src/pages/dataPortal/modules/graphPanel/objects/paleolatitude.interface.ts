@@ -15,6 +15,16 @@ export interface PaleolatitudeResponse {
   message?: string;
 }
 
+export interface PaleolatitudeResult {
+  id: string;
+  name: string;
+  selectedLat: number;
+  selectedLon: number;
+  plateId?: string;
+  plateName?: string;
+  points: Array<PaleolatitudePoint>;
+}
+
 export const PALEOLATITUDE_CONFIG_ID = 'paleolatitude-map-tool';
 export const PALEOLATITUDE_TRACE_ID = 'paleolatitude-map-tool-trace';
 export const PALEOLATITUDE_API_URL = 'https://paleolatitude.org/api/paleolatitude';

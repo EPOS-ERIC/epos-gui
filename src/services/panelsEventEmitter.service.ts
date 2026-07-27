@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { LocalStoragePersister } from './model/persisters/localStoragePersister';
 import { LocalStorageVariables } from './model/persisters/localStorageVariables.enum';
 import { ViewType } from 'api/webApi/data/viewType.enum';
+import { PaleolatitudeResult } from 'pages/dataPortal/modules/graphPanel/objects/paleolatitude.interface';
 
 @Injectable()
 export class PanelsEmitterService {
@@ -37,6 +38,10 @@ export class PanelsEmitterService {
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public paleolatitudeRequestObs = this.paleolatitudeRequestSrc.asObservable();
   private paleolatitudeRequests = new Array<{ lat: number; lon: number }>();
+  private paleolatitudeResultSrc = new Subject<PaleolatitudeResult>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public paleolatitudeResultObs = this.paleolatitudeResultSrc.asObservable();
+  private paleolatitudeResults = new Map<string, PaleolatitudeResult>();
   private clearPaleolatitudeSrc = new Subject<void>();
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public clearPaleolatitudeObs = this.clearPaleolatitudeSrc.asObservable();
@@ -167,8 +172,18 @@ export class PanelsEmitterService {
     return this.paleolatitudeRequests.slice();
   }
 
+  public setPaleolatitudeResult(result: PaleolatitudeResult): void {
+    this.paleolatitudeResults.set(result.id, result);
+    this.paleolatitudeResultSrc.next(result);
+  }
+
+  public getPaleolatitudeResults(): Array<PaleolatitudeResult> {
+    return Array.from(this.paleolatitudeResults.values());
+  }
+
   public clearPaleolatitude(): void {
     this.paleolatitudeRequests = [];
+    this.paleolatitudeResults.clear();
     this.clearPaleolatitudeSrc.next();
   }
 }
