@@ -274,7 +274,7 @@ export class MapComponent implements OnInit {
     const customLayerControl = new CustomLayerControl(this.injector).setPosition('topright');
     const exportMapAsImage = new ExportMapAsImage(this.injector, this.componentFactoryResolver, this.viewContainerRef, this.exportMapAsImageService, this.dialogService);
     this.measureControlInstance = new MeasureDistanceControl(this.dialogService);
-    this.paleolatitudeControlInstance = new PaleolatitudeControl(this.dialogService, this.panelsEvent).addTo(this.eposLeaflet.leafletMapObj);
+    this.paleolatitudeControlInstance = new PaleolatitudeControl(this.dialogService, this.panelsEvent).addTo(this.eposLeaflet);
     const scaleControl = L.control.scale({ metric: true, imperial: false, maxWidth: 200 }).setPosition('bottomright');
     const resetZoomControl = new ResetZoomControl(this.layersService).setPosition('topright');
 

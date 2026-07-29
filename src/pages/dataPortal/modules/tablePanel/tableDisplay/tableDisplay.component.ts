@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, AfterViewInit, HostListener, ElementRef, Renderer2, Output, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit, HostListener, ElementRef, Renderer2, Output, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -54,9 +54,9 @@ export enum TableDataType {
   templateUrl: './tableDisplay.component.html',
   styleUrls: ['./tableDisplay.component.scss']
 })
-export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @Input() dataConfigurable: DataConfigurableI;
-  @Input() paleolatitudeResult: PaleolatitudeResult;
+  @Input() paleolatitudeResults: Array<PaleolatitudeResult>;
   @Input() onDialogComponent: boolean = false;
 
   @Output() exportData = new Subject<TableExportObject>();
@@ -193,9 +193,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.checkRowInPage();
 
     this.showSpinner = true;
-    this.tableName = this.paleolatitudeResult?.name ?? this.dataConfigurable.name;
+    this.tableName = this.paleolatitudeResults != null ? 'Paleolatitude markers' : this.dataConfigurable.name;
 
-    if (this.paleolatitudeResult != null) {
+    if (this.paleolatitudeResults != null) {
       this.initializePaleolatitudeTable();
       return;
     }
@@ -335,6 +335,12 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
 
     );
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.paleolatitudeResults?.firstChange && this.matPaginator != null) {
+      this.initializePaleolatitudeTable();
+    }
   }
 
   public ngOnDestroy(): void {
@@ -571,7 +577,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public updateTable(headers: Array<string>): void {
 
-    if (this.paleolatitudeResult != null) {
+    if (this.paleolatitudeResults != null) {
       this.updatePaleolatitudeTable(headers);
       return;
     }
@@ -706,7 +712,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public handleSelectionChange(event: MatSelectChange): void {
     this.getActiveColumnCount(event.value, true);
-    if (this.paleolatitudeResult == null) {
+    if (this.paleolatitudeResults == null) {
       this.refreshHiddenRowOnTable(200);
     }
   }
@@ -722,7 +728,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
       data: this.dataSource.filteredData.map((popupPropAr: Array<PopupProperty>) => popupPropAr.filter((popupProp: PopupProperty) => {
         return !this.headersToRemove.includes(popupProp.name);
-      }).map((popupProp: PopupProperty) => this.paleolatitudeResult != null ? popupProp.values.toString() : popupProp.valuesConcatString)
+      }).map((popupProp: PopupProperty) => this.paleolatitudeResults != null ? popupProp.values.toString() : popupProp.valuesConcatString)
       ) as Array<Array<string>>,
       fileName: this.tableName,
     };
@@ -803,10 +809,12 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   private initializePaleolatitudeTable(): void {
     this.isMappable = false;
     this.dataType = TableDataType.FEATURE_COLLECTION;
-    const resultProperties = Object.entries(this.paleolatitudeResult).filter(([, value]) => !Array.isArray(value));
-    this.paleolatitudeRows = this.paleolatitudeResult.points.map(point => {
-      return resultProperties.concat(Object.entries(point)).map(([name, value]) => {
-        return new PopupProperty(this.formatPaleolatitudeHeader(name), [this.getPaleolatitudePropertyValue(value)]);
+    this.paleolatitudeRows = this.paleolatitudeResults.flatMap((result: PaleolatitudeResult) => {
+      const resultProperties = Object.entries(result).filter(([, value]) => !Array.isArray(value));
+      return result.points.map(point => {
+        return resultProperties.concat(Object.entries(point)).map(([name, value]) => {
+          return new PopupProperty(this.formatPaleolatitudeHeader(name), [this.getPaleolatitudePropertyValue(value)]);
+        });
       });
     });
     this.tableHeaders = Array.from(new Set(this.paleolatitudeRows.flatMap(row => row.map(property => property.name))));

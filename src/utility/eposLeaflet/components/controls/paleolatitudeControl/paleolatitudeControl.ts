@@ -1,10 +1,83 @@
 import { DialogService } from 'components/dialog/dialog.service';
 import { PanelsEmitterService } from 'services/panelsEventEmitter.service';
 import * as L from 'leaflet';
+import { MapLayer } from '../../layers/mapLayer.abstract';
+import { EposLeafletComponent } from '../../eposLeaflet.component';
+import { Stylable } from 'utility/styler/stylable.interface';
+import { Style } from 'utility/styler/style';
+import { BehaviorSubject } from 'rxjs';
+
+const PALEOLATITUDE_MARKERS_LAYER_ID = 'paleolatitude-markers';
+
+class PaleolatitudeMarkerLayer extends MapLayer {
+  private readonly locationLayer = L.layerGroup();
+
+  constructor() {
+    super(PALEOLATITUDE_MARKERS_LAYER_ID, 'Paleolatitude markers');
+    this.options.pane.set(this.id);
+    this.options.customLayerOptionOpacity.set(1);
+    this.options.customLayerOptionMarkerType.set(MapLayer.MARKERTYPE_RAW);
+
+    const stylable = new PaleolatitudeMarkerStylable();
+    stylable.setStyle(new Style('#d71920'));
+    this.options.customLayerOptionStylable.set(stylable);
+  }
+
+  public addMarker(latLng: L.LatLng, normalizedLon: number): void {
+    L.marker(latLng, {
+      pane: this.id,
+      icon: L.divIcon({
+        className: '',
+        html: '<span class="material-icons" style="color:#d71920;font-size:30px;line-height:30px;text-shadow:0 1px 3px rgba(0,0,0,.45);">location_on</span>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
+      }),
+    })
+      .bindTooltip(`X: ${normalizedLon.toFixed(6)}<br>Y: ${latLng.lat.toFixed(6)}`, {
+        permanent: false,
+        direction: 'right',
+        offset: [8, -18],
+        className: 'result-tooltip',
+      })
+      .addTo(this.locationLayer);
+  }
+
+  public clearMarkers(): void {
+    this.locationLayer.clearLayers();
+  }
+
+  protected getLeafletLayer(): Promise<L.Layer> {
+    return Promise.resolve(this.locationLayer);
+  }
+
+  protected updateLeafletLayerOpacity(): void {
+    this.locationLayer.eachLayer((layer: L.Layer) => {
+      if (layer instanceof L.Marker) {
+        layer.setOpacity(this.options.customLayerOptionOpacity.get()!);
+      }
+    });
+  }
+}
+
+class PaleolatitudeMarkerStylable implements Stylable {
+  private readonly styleSrc = new BehaviorSubject<null | Style>(null);
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public readonly styleObs = this.styleSrc.asObservable();
+
+  public setStyle(style: null | Style): void {
+    this.styleSrc.next(style);
+  }
+
+  public getStyle(): null | Style {
+    return this.styleSrc.value;
+  }
+}
 
 export class PaleolatitudeControl {
   private map: L.Map;
-  private locationLayer: L.LayerGroup;
+  private eposLeaflet: EposLeafletComponent;
+  private readonly locationLayer = new PaleolatitudeMarkerLayer();
+  private locationLayerAdded = false;
   private enabled = false;
   private readonly locationClickHandler: EventListener;
   private readonly keydownHandler: EventListener;
@@ -17,9 +90,9 @@ export class PaleolatitudeControl {
     this.keydownHandler = (event: Event) => this.handleKeydown(event as KeyboardEvent);
   }
 
-  public addTo(map: L.Map): this {
-    this.map = map;
-    this.locationLayer = L.layerGroup().addTo(map);
+  public addTo(eposLeaflet: EposLeafletComponent): this {
+    this.eposLeaflet = eposLeaflet;
+    this.map = eposLeaflet.getLeafletObject();
     return this;
   }
 
@@ -39,7 +112,6 @@ export class PaleolatitudeControl {
   public remove(): void {
     this.enabled = false;
     this.deactivate();
-    this.locationLayer?.remove();
   }
 
   private async activate(): Promise<void> {
@@ -86,25 +158,19 @@ export class PaleolatitudeControl {
     const latLng = this.map.mouseEventToLatLng(event);
     const normalizedLon = this.normalizeLongitude(latLng.lng);
     this.panelsEvent.setPaleolatitudeRequest(latLng.lat, normalizedLon);
-    const marker = L.marker(latLng, {
-      icon: L.divIcon({
-        className: '',
-        html: '<span class="material-icons" style="color:#d71920;font-size:30px;line-height:30px;text-shadow:0 1px 3px rgba(0,0,0,.45);">location_on</span>',
-        iconSize: [30, 30],
-        iconAnchor: [15, 30],
-      }),
-    }).addTo(this.locationLayer);
-    marker
-      .bindTooltip(`X: ${normalizedLon.toFixed(6)}<br>Y: ${latLng.lat.toFixed(6)}`, {
-        permanent: false,
-        direction: 'right',
-        offset: [8, -18],
-        className: 'result-tooltip',
-      });
+    this.locationLayer.addMarker(latLng, normalizedLon);
+    if (!this.locationLayerAdded) {
+      this.locationLayerAdded = true;
+      this.eposLeaflet.addLayer(this.locationLayer);
+    }
   }
 
   private clearMarkers(): void {
-    this.locationLayer?.clearLayers();
+    this.locationLayer.clearMarkers();
+    if (this.locationLayerAdded) {
+      this.locationLayerAdded = false;
+      this.eposLeaflet.removeLayerByIdCRS(this.locationLayer.id);
+    }
   }
 
   private normalizeLongitude(lon: number): number {

@@ -38,6 +38,7 @@ export class TablePanelComponent implements OnInit {
 
   public currentDataConfigurables = new Array<DataConfigurableI>();
   public paleolatitudeResults = new Array<PaleolatitudeResult>();
+  public paleolatitudeServiceName = 'Paleolatitude';
 
   public showSpinner = false;
   public selectedIndex = 0;
@@ -70,7 +71,7 @@ export class TablePanelComponent implements OnInit {
     this.initSubscriptions();
     this.paleolatitudeResults = this.panelsEvent.getPaleolatitudeResults();
     if (this.paleolatitudeResults.length > 0) {
-      this.selectedIndex = this.currentDataConfigurables.length + this.paleolatitudeResults.length - 1;
+      this.selectedIndex = this.currentDataConfigurables.length;
     }
     this.updateTableCounter();
   }
@@ -135,10 +136,12 @@ export class TablePanelComponent implements OnInit {
       this.panelsEvent.paleolatitudeResultObs.subscribe((result: PaleolatitudeResult) => {
         const existingIndex = this.paleolatitudeResults.findIndex((item: PaleolatitudeResult) => item.id === result.id);
         if (existingIndex === -1) {
-          this.paleolatitudeResults.push(result);
-          this.selectedIndex = this.currentDataConfigurables.length + this.paleolatitudeResults.length - 1;
+          this.paleolatitudeResults = [...this.paleolatitudeResults, result];
+          this.selectedIndex = this.currentDataConfigurables.length;
         } else {
-          this.paleolatitudeResults[existingIndex] = result;
+          this.paleolatitudeResults = this.paleolatitudeResults.map((item: PaleolatitudeResult, index: number) => {
+            return index === existingIndex ? result : item;
+          });
         }
         this.updateTableCounter();
       }),
@@ -160,6 +163,13 @@ export class TablePanelComponent implements OnInit {
     this.ensureReloadFuncSet(allConfigurables, context);
 
     if (allConfigurables !== null) {
+
+      if (context === CONTEXT_RESOURCE) {
+        const paleolatitudeConfigurable = allConfigurables.find((configurable: DataConfigurableI) => {
+          return configurable.getDistributionDetails().getKeywords().some(keyword => keyword.trim().toLowerCase() === 'eposdynamic');
+        });
+        this.paleolatitudeServiceName = paleolatitudeConfigurable?.name ?? this.paleolatitudeServiceName;
+      }
 
       // set context. TODO: move it on dataConfigurables creation logic
       allConfigurables.map(conf => {
@@ -230,7 +240,7 @@ export class TablePanelComponent implements OnInit {
   }
 
   private updateTableCounter(): void {
-    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length + this.paleolatitudeResults.length);
+    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length + (this.paleolatitudeResults.length > 0 ? 1 : 0));
   }
 
   private ensureReloadFuncSet(configurables: Array<DataConfigurableDataSearchI>, context: string): void {
