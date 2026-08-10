@@ -1,6 +1,13 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.59] - 2026-08-10
+- Fix: Table mixing values
+- Cite the source of a definition (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20301)
+- Multiple Bounding Boxes in Details dialog mini-map (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20593)
+- Chore: changed GetFeatInfo format priority (1.application/json, 2.text/plain, 3.text/html)
+- Minor fixes and improvements
+
 ## [1.0.58] - 2026-06-19
 - Remove Silent Refresh
 - Minor fixes and improvements
