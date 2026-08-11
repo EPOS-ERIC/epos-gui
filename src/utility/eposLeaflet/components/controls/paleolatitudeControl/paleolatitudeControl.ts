@@ -5,14 +5,20 @@ import { MapLayer } from '../../layers/mapLayer.abstract';
 import { EposLeafletComponent } from '../../eposLeaflet.component';
 import { Stylable } from 'utility/styler/stylable.interface';
 import { Style } from 'utility/styler/style';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { PALEOLATITUDE_CONFIG_ID } from 'pages/dataPortal/modules/graphPanel/objects/paleolatitude.interface';
 
 const PALEOLATITUDE_MARKERS_LAYER_ID = 'paleolatitude-markers';
+const PALEOLATITUDE_MARKER_PENDING_COLOR = '#9e9e9e';
 
 class PaleolatitudeMarkerLayer extends MapLayer {
   private readonly locationLayer = L.layerGroup();
+  private readonly markers = new Map<string, L.Marker>();
 
-  constructor() {
+  constructor(
+    private readonly onMarkerHover: (id: null | string) => void,
+    private readonly onMarkerRemove: (id: string) => void,
+  ) {
     super(PALEOLATITUDE_MARKERS_LAYER_ID, 'Paleolatitude markers');
     this.options.pane.set(this.id);
     this.options.customLayerOptionOpacity.set(1);
@@ -23,27 +29,83 @@ class PaleolatitudeMarkerLayer extends MapLayer {
     this.options.customLayerOptionStylable.set(stylable);
   }
 
-  public addMarker(latLng: L.LatLng, normalizedLon: number): void {
-    L.marker(latLng, {
+  public addMarker(id: string, latLng: L.LatLng, normalizedLon: number): void {
+    const marker = L.marker(latLng, {
       pane: this.id,
-      icon: L.divIcon({
-        className: '',
-        html: '<span class="material-icons" style="color:#d71920;font-size:30px;line-height:30px;text-shadow:0 1px 3px rgba(0,0,0,.45);">location_on</span>',
-        iconSize: [30, 30],
-        iconAnchor: [15, 30],
-      }),
+      icon: this.createMarkerIcon(PALEOLATITUDE_MARKER_PENDING_COLOR),
     })
-      .bindTooltip(`X: ${normalizedLon.toFixed(6)}<br>Y: ${latLng.lat.toFixed(6)}`, {
+      .bindTooltip(this.createTooltipContent('Paleolatitude', normalizedLon, latLng.lat), {
         permanent: false,
         direction: 'right',
         offset: [8, -18],
         className: 'result-tooltip',
       })
+      .bindPopup(this.createRemoveButton(id), {
+        className: 'paleolatitude-marker-popup',
+        closeButton: false,
+        minWidth: 0,
+        maxWidth: 120,
+      })
+      .on('mouseover', () => this.onMarkerHover(id))
+      .on('mouseout', () => this.onMarkerHover(null))
       .addTo(this.locationLayer);
+    this.markers.set(id, marker);
+  }
+
+  public setMarkerColor(id: string, color: null | string): void {
+    this.markers.get(id)?.setIcon(this.createMarkerIcon(color ?? PALEOLATITUDE_MARKER_PENDING_COLOR));
+  }
+
+  public removeMarker(id: string): void {
+    const marker = this.markers.get(id);
+    if (marker != null) {
+      this.locationLayer.removeLayer(marker);
+      this.markers.delete(id);
+    }
+  }
+
+  public setMarkerDetails(id: string, title: string, lon: number, lat: number): void {
+    this.markers.get(id)?.setTooltipContent(this.createTooltipContent(title, lon, lat));
   }
 
   public clearMarkers(): void {
     this.locationLayer.clearLayers();
+    this.markers.clear();
+  }
+
+  private createMarkerIcon(color: string): L.DivIcon {
+    return L.divIcon({
+      className: '',
+      html: `<span class="material-icons" style="color:${color};font-size:30px;line-height:30px;text-shadow:0 1px 3px rgba(0,0,0,.45);">location_on</span>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+    });
+  }
+
+  private createTooltipContent(title: string, lon: number, lat: number): HTMLElement {
+    const content = document.createElement('div');
+    const heading = document.createElement('b');
+    heading.textContent = `${title}:`;
+    content.append(heading, document.createElement('br'));
+    content.append(`X: ${lon.toFixed(6)}`, document.createElement('br'));
+    content.append(`Y: ${lat.toFixed(6)}`);
+    return content;
+  }
+
+  private createRemoveButton(id: string): HTMLButtonElement {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = 'remove marker';
+    button.style.background = 'transparent';
+    button.style.border = '0';
+    button.style.color = '#293971';
+    button.style.cursor = 'pointer';
+    button.style.fontSize = '11px';
+    button.style.lineHeight = '16px';
+    button.style.padding = '1px 3px';
+    button.style.textDecoration = 'underline';
+    button.addEventListener('click', () => this.onMarkerRemove(id));
+    return button;
   }
 
   protected getLeafletLayer(): Promise<L.Layer> {
@@ -76,16 +138,22 @@ class PaleolatitudeMarkerStylable implements Stylable {
 export class PaleolatitudeControl {
   private map: L.Map;
   private eposLeaflet: EposLeafletComponent;
-  private readonly locationLayer = new PaleolatitudeMarkerLayer();
+  private readonly locationLayer: PaleolatitudeMarkerLayer;
   private locationLayerAdded = false;
   private enabled = false;
   private readonly locationClickHandler: EventListener;
   private readonly keydownHandler: EventListener;
+  private readonly subscriptions = new Array<Subscription>();
+  private paleolatitudeMarkerId = 0;
 
   constructor(
     private dialogService: DialogService,
     private panelsEvent: PanelsEmitterService,
   ) {
+    this.locationLayer = new PaleolatitudeMarkerLayer(
+      (id: null | string) => this.panelsEvent.setPaleolatitudeMarkerHover(id),
+      (id: string) => this.panelsEvent.removePaleolatitude(id),
+    );
     this.locationClickHandler = (event: Event) => this.addLocationMarker(event as MouseEvent);
     this.keydownHandler = (event: Event) => this.handleKeydown(event as KeyboardEvent);
   }
@@ -93,6 +161,21 @@ export class PaleolatitudeControl {
   public addTo(eposLeaflet: EposLeafletComponent): this {
     this.eposLeaflet = eposLeaflet;
     this.map = eposLeaflet.getLeafletObject();
+    this.subscriptions.push(
+      this.panelsEvent.paleolatitudeMarkerColorObs.subscribe(({ id, color }) => {
+        this.locationLayer.setMarkerColor(id, color);
+      }),
+      this.panelsEvent.removePaleolatitudeMarkerObs.subscribe((id: string) => {
+        this.locationLayer.removeMarker(id);
+      }),
+      this.panelsEvent.removePaleolatitudeObs.subscribe((id: string) => {
+        this.locationLayer.removeMarker(id);
+      }),
+      this.panelsEvent.paleolatitudeResultObs.subscribe((result) => {
+        const title = result.plateName == null ? 'Paleolatitude' : `Paleolatitude - ${result.plateName}`;
+        this.locationLayer.setMarkerDetails(result.id, title, result.selectedLon, result.selectedLat);
+      }),
+    );
     return this;
   }
 
@@ -112,6 +195,7 @@ export class PaleolatitudeControl {
   public remove(): void {
     this.enabled = false;
     this.deactivate();
+    this.subscriptions.forEach((subscription: Subscription) => subscription.unsubscribe());
   }
 
   private async activate(): Promise<void> {
@@ -157,8 +241,9 @@ export class PaleolatitudeControl {
     event.stopPropagation();
     const latLng = this.map.mouseEventToLatLng(event);
     const normalizedLon = this.normalizeLongitude(latLng.lng);
-    this.panelsEvent.setPaleolatitudeRequest(latLng.lat, normalizedLon);
-    this.locationLayer.addMarker(latLng, normalizedLon);
+    const markerId = `${PALEOLATITUDE_CONFIG_ID}-${++this.paleolatitudeMarkerId}`;
+    this.locationLayer.addMarker(markerId, latLng, normalizedLon);
+    this.panelsEvent.setPaleolatitudeRequest(markerId, latLng.lat, normalizedLon);
     if (!this.locationLayerAdded) {
       this.locationLayerAdded = true;
       this.eposLeaflet.addLayer(this.locationLayer);

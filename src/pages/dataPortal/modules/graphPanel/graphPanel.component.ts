@@ -49,6 +49,7 @@ export class GraphPanelComponent implements OnInit {
   public currentTraces = new Map<DataConfigurableDataSearch, null | Array<Trace>>();
   /** The {@link Trace}s that have been selected in the {@link TraceSelector} component. */
   public selectedTraces = new Array<Trace>();
+  public highlightedPaleolatitudeId: null | string = null;
   /** Whether the loading spinner should show */
   public loading = false;
 
@@ -63,6 +64,7 @@ export class GraphPanelComponent implements OnInit {
   private readonly subscriptions: Array<Subscription> = new Array<Subscription>();
   private dataConfigurablesArraySource = new BehaviorSubject<Array<DataConfigurableDataSearchI>>([]);
   private paleolatitudeConfigurableIds = new Set<string>();
+  private removedPaleolatitudeIds = new Set<string>();
   private paleolatitudeRequestId = 0;
   private paleolatitudeSessionId = 0;
 
@@ -95,6 +97,7 @@ export class GraphPanelComponent implements OnInit {
    */
   public setSelectedTraces(traces: Array<Trace>): void {
     this.selectedTraces = traces;
+    this.updatePaleolatitudeMarkerColors();
   }
 
   public setLoading(loading: boolean): void {
@@ -206,11 +209,17 @@ export class GraphPanelComponent implements OnInit {
           this.resultPanelService.setCounterGraph(graphableConfigurables.length - 1);
         }
       }),
-      this.panelsEvent.paleolatitudeRequestObs.subscribe((coords: { lat: number; lon: number }) => {
-        void this.fetchPaleolatitudeTraces(coords.lat, coords.lon);
+      this.panelsEvent.paleolatitudeRequestObs.subscribe((coords: { id: string; lat: number; lon: number }) => {
+        void this.fetchPaleolatitudeTraces(coords.id, coords.lat, coords.lon);
       }),
       this.panelsEvent.clearPaleolatitudeObs.subscribe(() => {
         this.clearPaleolatitudeTraces();
+      }),
+      this.panelsEvent.paleolatitudeMarkerHoverObs.subscribe((id: null | string) => {
+        this.highlightedPaleolatitudeId = id;
+      }),
+      this.panelsEvent.removePaleolatitudeObs.subscribe((id: string) => {
+        this.removePaleolatitude(id);
       }),
     );
   }
@@ -293,14 +302,14 @@ export class GraphPanelComponent implements OnInit {
 
   }
 
-  private async fetchPaleolatitudeTraces(lat: number, lon: number, openGraphPanel = true): Promise<void> {
+  private async fetchPaleolatitudeTraces(configurableId: string, lat: number, lon: number, openGraphPanel = true): Promise<void> {
     const requestId = ++this.paleolatitudeRequestId;
     const sessionId = this.paleolatitudeSessionId;
-    const configurableId = `${PALEOLATITUDE_CONFIG_ID}-${requestId}`;
     const traceId = `${PALEOLATITUDE_TRACE_ID}-${requestId}`;
     const request = this.paleolatitudeGraphService.createRequest(lat, lon, this.configurables.getAll());
     if (request == null) {
       this.sendWarning(configurableId);
+      this.panelsEvent.removePaleolatitude(configurableId);
       return;
     }
     const normalizedLon = request.normalizedLon;
@@ -315,7 +324,7 @@ export class GraphPanelComponent implements OnInit {
 
     try {
       const result = await this.paleolatitudeGraphService.executeRequest(request, configurableId, traceId);
-      if (sessionId !== this.paleolatitudeSessionId) {
+      if (sessionId !== this.paleolatitudeSessionId || this.removedPaleolatitudeIds.has(configurableId)) {
         return;
       }
 
@@ -324,6 +333,7 @@ export class GraphPanelComponent implements OnInit {
       if (traces.length === 0) {
         this.sendWarning(configurableId);
         this.removePaleolatitudeConfigurable(config);
+        this.panelsEvent.removePaleolatitude(configurableId);
         this.triggerChangedTraces();
         this.updateGraphCounter();
         return;
@@ -359,11 +369,12 @@ export class GraphPanelComponent implements OnInit {
         );
       }, 100);
     } catch (e) {
-      if (sessionId !== this.paleolatitudeSessionId) {
+      if (sessionId !== this.paleolatitudeSessionId || this.removedPaleolatitudeIds.has(configurableId)) {
         return;
       }
       this.sendWarning(configurableId);
       this.removePaleolatitudeConfigurable(config);
+      this.panelsEvent.removePaleolatitude(configurableId);
       this.triggerChangedTraces();
       this.updateGraphCounter();
     }
@@ -390,6 +401,7 @@ export class GraphPanelComponent implements OnInit {
 
   private clearPaleolatitudeTraces(): void {
     this.paleolatitudeSessionId++;
+    this.removedPaleolatitudeIds.clear();
     Array.from(this.currentTraces.keys()).forEach((configurable: DataConfigurableDataSearch) => {
       if (this.isPaleolatitudeConfigurable(configurable)) {
         this.currentTraces.delete(configurable);
@@ -401,8 +413,8 @@ export class GraphPanelComponent implements OnInit {
   }
 
   private restorePaleolatitudeTraces(): void {
-    this.panelsEvent.getPaleolatitudeRequests().forEach((coords: { lat: number; lon: number }) => {
-      void this.fetchPaleolatitudeTraces(coords.lat, coords.lon, false);
+    this.panelsEvent.getPaleolatitudeRequests().forEach((coords: { id: string; lat: number; lon: number }) => {
+      void this.fetchPaleolatitudeTraces(coords.id, coords.lat, coords.lon, false);
     });
   }
 
@@ -417,6 +429,32 @@ export class GraphPanelComponent implements OnInit {
 
   private isPaleolatitudeConfigurable(configurable: DataConfigurableDataSearch): boolean {
     return this.paleolatitudeConfigurableIds.has(configurable.id);
+  }
+
+  private updatePaleolatitudeMarkerColors(): void {
+    this.paleolatitudeConfigurableIds.forEach((configurableId: string) => {
+      const trace = this.selectedTraces.find((selectedTrace: Trace) => {
+        return selectedTrace.originatingConfigurableId === configurableId;
+      });
+      this.panelsEvent.setPaleolatitudeMarkerColor(configurableId, trace?.getStyle()?.getColor1String() ?? null);
+    });
+  }
+
+  private removePaleolatitude(id: string): void {
+    this.removedPaleolatitudeIds.add(id);
+    if (this.highlightedPaleolatitudeId === id) {
+      this.highlightedPaleolatitudeId = null;
+    }
+    const configurable = Array.from(this.currentTraces.keys()).find((item) => item.id === id);
+    const trace = configurable == null ? null : this.currentTraces.get(configurable)?.[0] ?? null;
+    if (trace != null) {
+      this.traceSelector.setTraceSelector(id, trace.id, false);
+    }
+    if (configurable != null) {
+      this.removePaleolatitudeConfigurable(configurable);
+      this.triggerChangedTraces();
+      this.updateGraphCounter();
+    }
   }
 
   private updateGraphCounter(): void {

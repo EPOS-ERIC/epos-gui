@@ -151,6 +151,12 @@ export class TablePanelComponent implements OnInit {
         this.selectedIndex = Math.min(this.selectedIndex, Math.max(this.currentDataConfigurables.length - 1, 0));
         this.updateTableCounter();
       }),
+
+      this.panelsEvent.removePaleolatitudeObs.subscribe((id: string) => {
+        this.paleolatitudeResults = this.paleolatitudeResults.filter((result: PaleolatitudeResult) => result.id !== id);
+        this.selectedIndex = Math.min(this.selectedIndex, Math.max(this.currentDataConfigurables.length - 1, 0));
+        this.updateTableCounter();
+      }),
     );
   }
 
