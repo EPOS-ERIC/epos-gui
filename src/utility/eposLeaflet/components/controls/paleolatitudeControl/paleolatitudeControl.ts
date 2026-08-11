@@ -73,6 +73,18 @@ class PaleolatitudeMarkerLayer extends MapLayer {
     this.markers.clear();
   }
 
+  protected getLeafletLayer(): Promise<L.Layer> {
+    return Promise.resolve(this.locationLayer);
+  }
+
+  protected updateLeafletLayerOpacity(): void {
+    this.locationLayer.eachLayer((layer: L.Layer) => {
+      if (layer instanceof L.Marker) {
+        layer.setOpacity(this.options.customLayerOptionOpacity.get()!);
+      }
+    });
+  }
+
   private createMarkerIcon(color: string): L.DivIcon {
     return L.divIcon({
       className: '',
@@ -108,17 +120,6 @@ class PaleolatitudeMarkerLayer extends MapLayer {
     return button;
   }
 
-  protected getLeafletLayer(): Promise<L.Layer> {
-    return Promise.resolve(this.locationLayer);
-  }
-
-  protected updateLeafletLayerOpacity(): void {
-    this.locationLayer.eachLayer((layer: L.Layer) => {
-      if (layer instanceof L.Marker) {
-        layer.setOpacity(this.options.customLayerOptionOpacity.get()!);
-      }
-    });
-  }
 }
 
 class PaleolatitudeMarkerStylable implements Stylable {

@@ -18,7 +18,7 @@ import { NotificationService } from 'components/notification/notification.servic
 import { DataConfigurableDataSearchI } from 'utility/configurablesDataSearch/dataConfigurableDataSearchI.interface';
 import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
 import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
-import { PALEOLATITUDE_CONFIG_ID, PALEOLATITUDE_TRACE_ID } from './objects/paleolatitude.interface';
+import { PALEOLATITUDE_TRACE_ID } from './objects/paleolatitude.interface';
 import { PaleolatitudeGraphService } from './services/paleolatitudeGraph.service';
 
 /**
