@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, AfterViewInit, HostListener, ElementRef, Renderer2, Output, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit, HostListener, ElementRef, Renderer2, Output, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -25,6 +25,7 @@ import { CONTEXT_RESOURCE } from 'api/api.service.factory';
 import { CONTEXT_FACILITY } from 'api/api.service.factory';
 import { CONTEXT_SOFTWARE } from 'api/api.service.factory';
 import { WMTSLayerTableData } from 'utility/eposLeaflet/eposLeaflet';
+import { PaleolatitudeResult } from '../../graphPanel/objects/paleolatitude.interface';
 
 /** The above code is defining an interface called `TableExportObject` in TypeScript. This interface is
 used to define the structure and properties of an object that can be exported from a table. */
@@ -53,8 +54,9 @@ export enum TableDataType {
   templateUrl: './tableDisplay.component.html',
   styleUrls: ['./tableDisplay.component.scss']
 })
-export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @Input() dataConfigurable: DataConfigurableI;
+  @Input() paleolatitudeResults: Array<PaleolatitudeResult>;
   @Input() onDialogComponent: boolean = false;
 
   @Output() exportData = new Subject<TableExportObject>();
@@ -71,6 +73,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public tableHeaders: Array<string>;
   public customHeaders: Array<string>;
+  public tableName: string;
   public dataSource = new MatTableDataSource<Array<null | PopupProperty>>([]);
 
   // flag to establish if data are of type FeatureCollection or WMTS
@@ -114,6 +117,8 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   private headersToRemove = [this.pointsOnMapHeader, this.propertyIdHeader, this.imagesHeader];
 
   private imageOverlay = false;
+
+  private paleolatitudeRows = new Array<Array<PopupProperty>>();
 
   constructor(
     private readonly executionService: ExecutionService,
@@ -188,6 +193,12 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.checkRowInPage();
 
     this.showSpinner = true;
+    this.tableName = this.paleolatitudeResults != null ? 'Paleolatitude markers' : this.dataConfigurable.name;
+
+    if (this.paleolatitudeResults != null) {
+      this.initializePaleolatitudeTable();
+      return;
+    }
 
     // check if mappable
     this.isMappable = this.dataConfigurable.isMappable;
@@ -326,8 +337,16 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.paleolatitudeResults?.firstChange && this.matPaginator != null) {
+      this.initializePaleolatitudeTable();
+    }
+  }
+
   public ngOnDestroy(): void {
-    this.removeLayerIdFromHiddenMarkerOnLocalStorage(this.dataConfigurable.id);
+    if (this.dataConfigurable != null) {
+      this.removeLayerIdFromHiddenMarkerOnLocalStorage(this.dataConfigurable.id);
+    }
   }
 
   /**
@@ -405,6 +424,10 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public showOnMap(element: Array<PopupProperty>, propertyId: string): void {
     if (this.isMappable) {
+      if (this.paleolatitudeResults != null) {
+        this.panelsEvent.viewPaleolatitudeOnMap(propertyId);
+        return;
+      }
       const latlongProp = element.filter((val: PopupProperty) => val.name === this.pointsOnMapHeader);
 
       const coordinates = this.getCoordinateByProperty(latlongProp[0]);
@@ -558,6 +581,11 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public updateTable(headers: Array<string>): void {
 
+    if (this.paleolatitudeResults != null) {
+      this.updatePaleolatitudeTable(headers);
+      return;
+    }
+
     if (this.dataType === TableDataType.FEATURE_COLLECTION) {
       const tableMap = GeoJSONHelper.getTableObjectsFromProperties(this.dataConfigurable.id, this.data.features);
 
@@ -688,7 +716,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public handleSelectionChange(event: MatSelectChange): void {
     this.getActiveColumnCount(event.value, true);
-    this.refreshHiddenRowOnTable(200);
+    if (this.paleolatitudeResults == null) {
+      this.refreshHiddenRowOnTable(200);
+    }
   }
 
   /**
@@ -702,9 +732,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
       data: this.dataSource.filteredData.map((popupPropAr: Array<PopupProperty>) => popupPropAr.filter((popupProp: PopupProperty) => {
         return !this.headersToRemove.includes(popupProp.name);
-      }).map((popupProp: PopupProperty) => popupProp.valuesConcatString)
+      }).map((popupProp: PopupProperty) => this.paleolatitudeResults != null ? popupProp.values.toString() : popupProp.valuesConcatString)
       ) as Array<Array<string>>,
-      fileName: this.dataConfigurable.name,
+      fileName: this.tableName,
     };
 
     this.exportData.next(data);
@@ -778,6 +808,51 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.activeColumnCount.next(copy.length);
     }
+  }
+
+  private initializePaleolatitudeTable(): void {
+    this.isMappable = true;
+    this.dataType = TableDataType.FEATURE_COLLECTION;
+    if (!this.headersToRemove.includes(this.showOnMapHeader)) {
+      this.headersToRemove.push(this.showOnMapHeader);
+    }
+    this.paleolatitudeRows = this.paleolatitudeResults.flatMap((result: PaleolatitudeResult) => {
+      const resultProperties = Object.entries(result).filter(([, value]) => !Array.isArray(value));
+      return result.points.map(point => {
+        return [new PopupProperty(this.showOnMapHeader, [result.id])].concat(resultProperties.concat(Object.entries(point)).map(([name, value]) => {
+          return new PopupProperty(this.formatPaleolatitudeHeader(name), [this.getPaleolatitudePropertyValue(value)]);
+        }));
+      });
+    });
+    this.tableHeaders = Array.from(new Set(this.paleolatitudeRows.flatMap(row => row.map(property => property.name))));
+    this.customHeaders = this.tableHeaders.slice();
+    this.totalColumnCount = this.tableHeaders.length;
+    this.updatePaleolatitudeTable(this.customHeaders);
+    this.showSpinner = false;
+  }
+
+  private updatePaleolatitudeTable(headers: Array<string>): void {
+    this.customHeaders = headers;
+    this.dataSource.data = this.paleolatitudeRows.map((row: Array<PopupProperty>) => headers.map((header: string) => {
+      return row.find((property: PopupProperty) => property.name === header) ?? new PopupProperty(header, ['']);
+    }));
+    this.maxPageNumber = Math.ceil(this.dataSource.data.length / this.matPaginator.pageSize);
+    this.getActiveColumnCount(this.dataSource.data[0], false);
+  }
+
+  private formatPaleolatitudeHeader(name: string): string {
+    return name
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .replace(/[_-]+/g, ' ')
+      .replace(/\b\w/g, character => character.toUpperCase());
+  }
+
+  private getPaleolatitudePropertyValue(value: unknown): number | boolean | string {
+    if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'string') {
+      return value;
+    }
+
+    return value == null ? '' : String(value);
   }
 
   private createEmptyTable() {

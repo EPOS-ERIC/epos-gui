@@ -37,7 +37,7 @@
 
   <div class="table-container">
     <table *ngIf="showTable" mat-table matSort [dataSource]="dataSource" data-cy="table-component-table">
-      <caption>{{ dataConfigurable.name }} - Data</caption>
+      <caption>{{ tableName }} - Data</caption>
 
       <ng-container [matColumnDef]="label" *ngFor="let label of customHeaders; let columnIndex = index">
         <th
@@ -52,7 +52,7 @@
           (click)="selectedRow = null">
           <span *ngIf="columnIndex > 1 || !isMappable">{{ label }}</span>
           <i
-            *ngIf="columnIndex === 1 && isMappable && dataType !== 1"
+            *ngIf="columnIndex === 1 && isMappable && dataType !== 1 && (paleolatitudeResults === undefined || paleolatitudeResults === null)"
             class="fas fa-eye{{ someOnMapHide && !toggleOnMapDisabled ? '-slash' : '' }} action {{ toggleOnMapDisabled ? 'disabled' : '' }}"
             aria-hidden="true"
             [matTooltip]="'Toggle all data on map (' + dataSource.filteredData.length + ')' + toggleOnMapDisabledMessage"
@@ -109,9 +109,9 @@
           <span class="italic">{{ filterInput.value }}</span>
           "
         </td>
-        <td class="no-data" *ngIf="dataSource.data.length === 0 && dataConfigurable.context === CONTEXT_RESOURCE" colspan="4">No data available for this service.</td>
-        <td class="no-data" *ngIf="dataSource.data.length === 0 && dataConfigurable.context === CONTEXT_FACILITY" colspan="4">No equipment available for this service.</td>
-        <td class="no-data" *ngIf="dataSource.data.length === 0 && dataConfigurable.context === CONTEXT_SOFTWARE" colspan="4">No software available for this service.</td>
+        <td class="no-data" *ngIf="dataSource.data.length === 0 && dataConfigurable?.context === CONTEXT_RESOURCE" colspan="4">No data available for this service.</td>
+        <td class="no-data" *ngIf="dataSource.data.length === 0 && dataConfigurable?.context === CONTEXT_FACILITY" colspan="4">No equipment available for this service.</td>
+        <td class="no-data" *ngIf="dataSource.data.length === 0 && dataConfigurable?.context === CONTEXT_SOFTWARE" colspan="4">No software available for this service.</td>
       </tr>
     </table>
   </div>

@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { LocalStoragePersister } from './model/persisters/localStoragePersister';
 import { LocalStorageVariables } from './model/persisters/localStorageVariables.enum';
 import { ViewType } from 'api/webApi/data/viewType.enum';
+import { PaleolatitudeResult } from 'pages/dataPortal/modules/graphPanel/objects/paleolatitude.interface';
 
 @Injectable()
 export class PanelsEmitterService {
@@ -33,6 +34,35 @@ export class PanelsEmitterService {
   private timeSeriesPopupLayerIdUrlSrc = new Subject<[string, string | null]>();
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public timeSeriesPopupLayerIdUrlObs = this.timeSeriesPopupLayerIdUrlSrc.asObservable();
+  private paleolatitudeRequestSrc = new Subject<{ id: string; lat: number; lon: number }>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public paleolatitudeRequestObs = this.paleolatitudeRequestSrc.asObservable();
+  private paleolatitudeRequests = new Array<{ id: string; lat: number; lon: number }>();
+  private paleolatitudeMarkerColorSrc = new Subject<{ id: string; color: null | string }>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public paleolatitudeMarkerColorObs = this.paleolatitudeMarkerColorSrc.asObservable();
+  private removePaleolatitudeMarkerSrc = new Subject<string>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public removePaleolatitudeMarkerObs = this.removePaleolatitudeMarkerSrc.asObservable();
+  private paleolatitudeMarkerHoverSrc = new Subject<null | string>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public paleolatitudeMarkerHoverObs = this.paleolatitudeMarkerHoverSrc.asObservable();
+  private removePaleolatitudeSrc = new Subject<string>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public removePaleolatitudeObs = this.removePaleolatitudeSrc.asObservable();
+  private viewPaleolatitudeOnGraphSrc = new Subject<string>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public viewPaleolatitudeOnGraphObs = this.viewPaleolatitudeOnGraphSrc.asObservable();
+  private viewPaleolatitudeOnMapSrc = new Subject<string>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public viewPaleolatitudeOnMapObs = this.viewPaleolatitudeOnMapSrc.asObservable();
+  private paleolatitudeResultSrc = new Subject<PaleolatitudeResult>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public paleolatitudeResultObs = this.paleolatitudeResultSrc.asObservable();
+  private paleolatitudeResults = new Map<string, PaleolatitudeResult>();
+  private clearPaleolatitudeSrc = new Subject<void>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public clearPaleolatitudeObs = this.clearPaleolatitudeSrc.asObservable();
 
   constructor(
     private readonly localStoragePersister: LocalStoragePersister,
@@ -149,5 +179,56 @@ export class PanelsEmitterService {
   public setTimeSeriesPopupLayerIdUrl(layerId: string, url: string | null): void {
     this.timeSeriesPopupLayerIdUrlSrc.next([layerId, url]);
     this.localStoragePersister.set(LocalStorageVariables.LS_CONFIGURABLES, layerId, false, LocalStorageVariables.LS_TS_POPUP_LAYER_ID);
+  }
+
+  public setPaleolatitudeRequest(id: string, lat: number, lon: number): void {
+    const request = { id, lat, lon };
+    this.paleolatitudeRequests.push(request);
+    this.paleolatitudeRequestSrc.next(request);
+  }
+
+  public getPaleolatitudeRequests(): Array<{ id: string; lat: number; lon: number }> {
+    return this.paleolatitudeRequests.slice();
+  }
+
+  public setPaleolatitudeMarkerColor(id: string, color: null | string): void {
+    this.paleolatitudeMarkerColorSrc.next({ id, color });
+  }
+
+  public removePaleolatitudeMarker(id: string): void {
+    this.removePaleolatitudeMarkerSrc.next(id);
+  }
+
+  public setPaleolatitudeMarkerHover(id: null | string): void {
+    this.paleolatitudeMarkerHoverSrc.next(id);
+  }
+
+  public removePaleolatitude(id: string): void {
+    this.paleolatitudeRequests = this.paleolatitudeRequests.filter((request) => request.id !== id);
+    this.paleolatitudeResults.delete(id);
+    this.removePaleolatitudeSrc.next(id);
+  }
+
+  public viewPaleolatitudeOnGraph(id: string): void {
+    this.viewPaleolatitudeOnGraphSrc.next(id);
+  }
+
+  public viewPaleolatitudeOnMap(id: string): void {
+    this.viewPaleolatitudeOnMapSrc.next(id);
+  }
+
+  public setPaleolatitudeResult(result: PaleolatitudeResult): void {
+    this.paleolatitudeResults.set(result.id, result);
+    this.paleolatitudeResultSrc.next(result);
+  }
+
+  public getPaleolatitudeResults(): Array<PaleolatitudeResult> {
+    return Array.from(this.paleolatitudeResults.values());
+  }
+
+  public clearPaleolatitude(): void {
+    this.paleolatitudeRequests = [];
+    this.paleolatitudeResults.clear();
+    this.clearPaleolatitudeSrc.next();
   }
 }
