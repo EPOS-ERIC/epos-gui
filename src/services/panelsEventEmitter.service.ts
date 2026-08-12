@@ -50,6 +50,12 @@ export class PanelsEmitterService {
   private removePaleolatitudeSrc = new Subject<string>();
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public removePaleolatitudeObs = this.removePaleolatitudeSrc.asObservable();
+  private viewPaleolatitudeOnGraphSrc = new Subject<string>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public viewPaleolatitudeOnGraphObs = this.viewPaleolatitudeOnGraphSrc.asObservable();
+  private viewPaleolatitudeOnMapSrc = new Subject<string>();
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  public viewPaleolatitudeOnMapObs = this.viewPaleolatitudeOnMapSrc.asObservable();
   private paleolatitudeResultSrc = new Subject<PaleolatitudeResult>();
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public paleolatitudeResultObs = this.paleolatitudeResultSrc.asObservable();
@@ -201,6 +207,14 @@ export class PanelsEmitterService {
     this.paleolatitudeRequests = this.paleolatitudeRequests.filter((request) => request.id !== id);
     this.paleolatitudeResults.delete(id);
     this.removePaleolatitudeSrc.next(id);
+  }
+
+  public viewPaleolatitudeOnGraph(id: string): void {
+    this.viewPaleolatitudeOnGraphSrc.next(id);
+  }
+
+  public viewPaleolatitudeOnMap(id: string): void {
+    this.viewPaleolatitudeOnMapSrc.next(id);
   }
 
   public setPaleolatitudeResult(result: PaleolatitudeResult): void {

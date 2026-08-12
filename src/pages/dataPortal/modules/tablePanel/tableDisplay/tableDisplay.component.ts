@@ -424,6 +424,10 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
    */
   public showOnMap(element: Array<PopupProperty>, propertyId: string): void {
     if (this.isMappable) {
+      if (this.paleolatitudeResults != null) {
+        this.panelsEvent.viewPaleolatitudeOnMap(propertyId);
+        return;
+      }
       const latlongProp = element.filter((val: PopupProperty) => val.name === this.pointsOnMapHeader);
 
       const coordinates = this.getCoordinateByProperty(latlongProp[0]);
@@ -807,14 +811,17 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
   }
 
   private initializePaleolatitudeTable(): void {
-    this.isMappable = false;
+    this.isMappable = true;
     this.dataType = TableDataType.FEATURE_COLLECTION;
+    if (!this.headersToRemove.includes(this.showOnMapHeader)) {
+      this.headersToRemove.push(this.showOnMapHeader);
+    }
     this.paleolatitudeRows = this.paleolatitudeResults.flatMap((result: PaleolatitudeResult) => {
       const resultProperties = Object.entries(result).filter(([, value]) => !Array.isArray(value));
       return result.points.map(point => {
-        return resultProperties.concat(Object.entries(point)).map(([name, value]) => {
+        return [new PopupProperty(this.showOnMapHeader, [result.id])].concat(resultProperties.concat(Object.entries(point)).map(([name, value]) => {
           return new PopupProperty(this.formatPaleolatitudeHeader(name), [this.getPaleolatitudePropertyValue(value)]);
-        });
+        }));
       });
     });
     this.tableHeaders = Array.from(new Set(this.paleolatitudeRows.flatMap(row => row.map(property => property.name))));

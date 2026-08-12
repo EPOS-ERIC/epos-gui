@@ -52,7 +52,7 @@
           (click)="selectedRow = null">
           <span *ngIf="columnIndex > 1 || !isMappable">{{ label }}</span>
           <i
-            *ngIf="columnIndex === 1 && isMappable && dataType !== 1"
+            *ngIf="columnIndex === 1 && isMappable && dataType !== 1 && (paleolatitudeResults === undefined || paleolatitudeResults === null)"
             class="fas fa-eye{{ someOnMapHide && !toggleOnMapDisabled ? '-slash' : '' }} action {{ toggleOnMapDisabled ? 'disabled' : '' }}"
             aria-hidden="true"
             [matTooltip]="'Toggle all data on map (' + dataSource.filteredData.length + ')' + toggleOnMapDisabledMessage"

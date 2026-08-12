@@ -84,14 +84,6 @@ app-epos-leaflet-map ::ng-deep {
     width: 500px;
   }
 
-  .leaflet-popup.paleolatitude-marker-popup {
-    width: auto;
-
-    .leaflet-popup-content-wrapper .leaflet-popup-content {
-      padding: 3px 6px;
-    }
-  }
-
   .leaflet-popup-content-wrapper,
   .leaflet-popup.paginated-features-wrapper .paginated-features .slide-navigation,
   .leaflet-popup.paginated-features-wrapper .paginated-features {

@@ -221,6 +221,9 @@ export class GraphPanelComponent implements OnInit {
       this.panelsEvent.removePaleolatitudeObs.subscribe((id: string) => {
         this.removePaleolatitude(id);
       }),
+      this.panelsEvent.viewPaleolatitudeOnGraphObs.subscribe((id: string) => {
+        this.viewPaleolatitudeOnGraph(id);
+      }),
     );
   }
 
@@ -455,6 +458,15 @@ export class GraphPanelComponent implements OnInit {
       this.triggerChangedTraces();
       this.updateGraphCounter();
     }
+  }
+
+  private viewPaleolatitudeOnGraph(id: string): void {
+    const configurable = Array.from(this.currentTraces.keys()).find((item) => item.id === id);
+    const trace = configurable == null ? null : this.currentTraces.get(configurable)?.[0] ?? null;
+    if (trace != null && !this.selectedTraces.some((selectedTrace: Trace) => selectedTrace.id === trace.id)) {
+      this.traceSelector.setTraceSelector(id, trace.id, true);
+    }
+    this.panelsEvent.graphPanelOpen(id, false);
   }
 
   private updateGraphCounter(): void {
