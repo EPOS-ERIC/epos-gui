@@ -46,8 +46,7 @@ type PersistedExternalLayer = {
   layerIdentifier?: string;
 };
 
-type ExternalLayersStorageV2 = {
-  version: 2;
+type ExternalLayersStorage = {
   layers: Array<PersistedExternalLayer>;
 };
 
@@ -1104,31 +1103,30 @@ export class LayerControlComponent implements OnInit {
     this.registerPersistedExternalLayer(layer.id, storageRecord, false);
   }
 
-  private getExternalLayersStorage(): ExternalLayersStorageV2 {
+  private getExternalLayersStorage(): ExternalLayersStorage {
     const persistedValue = this.localStoragePersister.getValue(
       LocalStorageVariables.LS_EXTERNAL_LAYERS,
     ) as string | null;
     if (!persistedValue) {
-      return { version: 2, layers: [] };
+      return { layers: [] };
     }
     try {
       const parsed = JSON.parse(persistedValue) as unknown;
-      if (!this.isRecord(parsed) || parsed.version !== 2 || !Array.isArray(parsed.layers)) {
-        return { version: 2, layers: [] };
+      if (!this.isRecord(parsed) || !Array.isArray(parsed.layers)) {
+        return { layers: [] };
       }
       return {
-        version: 2,
         layers: (parsed.layers as Array<unknown>).filter(
           (layer): layer is PersistedExternalLayer => this.isPersistedExternalLayer(layer)
         ),
       };
     } catch (error) {
       console.warn('Unable to read external layers from browser storage.', error);
-      return { version: 2, layers: [] };
+      return { layers: [] };
     }
   }
 
-  private setExternalLayersStorage(storage: ExternalLayersStorageV2): void {
+  private setExternalLayersStorage(storage: ExternalLayersStorage): void {
     try {
       this.localStoragePersister.set(
         LocalStorageVariables.LS_EXTERNAL_LAYERS,

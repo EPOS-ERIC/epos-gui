@@ -19,15 +19,15 @@
                 <app-layer-legend [layer]="layer" [showLabel]="false" [showImage]="false"></app-layer-legend>
               </span>
 
-              <span class="layer-title">{{ layer.name }}<ng-container *ngIf="layer.id.startsWith('external-layer-')"> - External</ng-container></span>
+              <span class="layer-title">{{ layer.name }}<ng-container *ngIf="layer.id.startsWith('external-layer-')"> -
+                  External</ng-container></span>
 
               <span class="layer-actions">
                 <span *ngIf="layer.id.startsWith('external-layer-')" class="external-layer-remove"
                   (click)="$event.stopPropagation()">
-                  <button mat-icon-button (click)="removeExternalLayer(layer)"
-                    (mousedown)="$event.stopPropagation()" (pointerdown)="$event.stopPropagation()"
-                    matTooltip="Remove external layer" aria-label="Remove external layer"
-                    data-cy="remove-external-layer-button">
+                  <button mat-icon-button (click)="removeExternalLayer(layer)" (mousedown)="$event.stopPropagation()"
+                    (pointerdown)="$event.stopPropagation()" matTooltip="Remove external layer"
+                    aria-label="Remove external layer" data-cy="remove-external-layer-button">
                     <mat-icon>delete</mat-icon>
                   </button>
                 </span>
@@ -70,8 +70,8 @@
     </mat-expansion-panel>
 
     <div class="external-layer-control">
-      <button *ngIf="!externalLayerFormOpened" mat-stroked-button color="primary"
-        (click)="toggleExternalLayerForm()" data-cy="add-external-layer-button">
+      <button *ngIf="!externalLayerFormOpened" mat-stroked-button color="primary" (click)="toggleExternalLayerForm()"
+        data-cy="add-external-layer-button">
         <mat-icon>add</mat-icon>
         Add external layer
       </button>
@@ -99,10 +99,12 @@
         </mat-form-field>
 
         <div *ngIf="isExternalMultiLayerSource" class="external-layer-catalog-note">
-          Only compatible layers are shown. If the layer you are looking for is not listed, it is not currently supported.
+          Only compatible layers are shown. If the layer you are looking for is not listed, it is not currently
+          supported.
         </div>
 
-        <mat-form-field *ngIf="externalCatalogLayers.length > 0 && !isExternalMultiLayerSource" appearance="fill" class="external-layer-catalog">
+        <mat-form-field *ngIf="externalCatalogLayers.length > 0 && !isExternalMultiLayerSource" appearance="fill"
+          class="external-layer-catalog">
           <mat-label>Layer</mat-label>
           <mat-select [(ngModel)]="selectedExternalLayerIdentifier" data-cy="external-layer-catalog">
             <mat-option *ngFor="let catalogLayer of compatibleExternalCatalogLayers" [value]="catalogLayer.identifier">
@@ -111,10 +113,17 @@
           </mat-select>
         </mat-form-field>
 
-        <div *ngIf="externalLayerError" class="external-layer-error" role="alert"
-          data-cy="external-layer-error">{{ externalLayerError }}</div>
+        <div *ngIf="externalLayerError" class="external-layer-error" role="alert" data-cy="external-layer-error">{{
+          externalLayerError }}</div>
 
         <div class="external-layer-actions">
+          <button mat-icon-button type="button" class="external-layer-info"
+            matTooltip="Supported URL types: GeoJSON, CovJSON, WFS and WMS. Only layers compatible with the current EPOS map configuration are available; incompatible layers may be rejected or not displayed."
+            matTooltipPosition="left" matTooltipClass="external-layer-info-tooltip"
+            aria-label="Information about supported external layer URLs"
+            data-cy="external-layer-info">
+            <mat-icon>help</mat-icon>
+          </button>
           <button mat-button (click)="resetExternalLayerForm()" [disabled]="externalLayerLoading"
             data-cy="cancel-external-layer">Cancel</button>
           <button mat-flat-button color="primary" (click)="addExternalLayer()"

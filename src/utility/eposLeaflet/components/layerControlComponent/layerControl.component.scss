@@ -135,9 +135,31 @@
 
   .external-layer-actions {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     gap: 8px;
     width: 100%;
+
+    .external-layer-info {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: auto;
+      color: $color-primary;
+      background-color: transparent;
+
+      mat-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 28px;
+        line-height: 19px;
+      }
+
+      &:hover,
+      &:focus {
+        background-color: transparent;
+      }
+    }
 
     mat-spinner {
       margin: auto;
@@ -205,4 +227,11 @@
       justify-content: center;
     }
   }
+}
+
+::ng-deep .mat-tooltip.external-layer-info-tooltip {
+  max-width: 320px;
+  padding: 10px 12px;
+  font-size: 14px;
+  line-height: 20px;
 }
