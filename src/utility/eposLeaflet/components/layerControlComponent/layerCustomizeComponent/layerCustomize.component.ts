@@ -8,6 +8,7 @@ import { Stylable } from 'utility/styler/stylable.interface';
 import { defaultMarkerIcons, FaMarkerOption } from 'utility/styler/styler';
 import { MapLayer } from '../../layers/mapLayer.abstract';
 import { GeoJsonLayer } from '../../layers/public_api';
+import { ExternalTileServiceLayer } from '../../layers/externalTileServiceLayer';
 import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 import { DataConfigurableDataSearch } from 'utility/configurablesDataSearch/dataConfigurableDataSearch';
 import { CONTEXT_FACILITY, CONTEXT_RESOURCE, CONTEXT_SOFTWARE } from 'api/api.service.factory';
@@ -100,6 +101,10 @@ export class LayerCustomizeComponent implements OnInit {
   /** The above code is declaring a public property called "clustering" with a type of boolean or null. */
   public clustering: boolean | null;
 
+  public externalTileServiceLayer: ExternalTileServiceLayer | null = null;
+
+  public selectedExternalLayerIdentifiers = new Array<string>();
+
   /** The above code is declaring a public property called "tools" which is an object. This object has
   several boolean properties such as "opacity", "colorOpacity", "fillColorOpacity", "weight", "size",
   and "cluster". These properties are used to control various features or settings related to a map or
@@ -133,6 +138,11 @@ export class LayerCustomizeComponent implements OnInit {
    * style of a layer.
    */
   ngOnInit(): void {
+
+    if (this.layer instanceof ExternalTileServiceLayer) {
+      this.externalTileServiceLayer = this.layer;
+      this.selectedExternalLayerIdentifiers = this.layer.getSelectedLayerIdentifiers();
+    }
 
     this.stylable = this.layer.options.customLayerOptionStylable.get();
 
@@ -181,7 +191,11 @@ export class LayerCustomizeComponent implements OnInit {
       // if one marker on map set clustering false (remove cluster toogle tool)
       if (this.layer instanceof GeoJsonLayer && (this.layer as GeoJSONMapLayer).getMarkerLayer().getMarkers().length === 1) {
         this.clustering = false;
-        this.setClustering(false);
+        if (this.layer.id.startsWith('external-layer-')) {
+          this.layer.options.customLayerOptionClustering.set(false);
+        } else {
+          this.setClustering(false);
+        }
         this.tools.cluster = false;
       }
     }, 100);
@@ -199,6 +213,17 @@ export class LayerCustomizeComponent implements OnInit {
     if (this.clustering) {
       this.redrawLayer();
     }
+  }
+
+  public updateExternalLayerSelection(selectedLayerIdentifiers: Array<string>): void {
+    if (this.externalTileServiceLayer == null) {
+      return;
+    }
+    this.selectedExternalLayerIdentifiers = selectedLayerIdentifiers;
+    this.externalTileServiceLayer.setSelectedLayerIdentifiers(selectedLayerIdentifiers);
+    void this.layer.getEposLeaflet().redrawLayer(this.layer).then(() => {
+      this.layersService.layerChange(this.layer);
+    });
   }
 
   /**
@@ -349,6 +374,10 @@ export class LayerCustomizeComponent implements OnInit {
   private setClustering(clustering: boolean) {
     this.layer.options.customLayerOptionClustering.set(clustering);
     this.layersService.layerChange(this.layer);
+
+    if (this.layer.id.startsWith('external-layer-') && this.layer instanceof GeoJsonLayer) {
+      this.layer.setClusteredMarkers(clustering);
+    }
 
     const style = this.stylable?.getStyle();
     if (style !== undefined) {

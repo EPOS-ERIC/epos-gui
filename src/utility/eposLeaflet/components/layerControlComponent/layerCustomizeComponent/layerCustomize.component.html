@@ -1,4 +1,27 @@
 <ul class="list-options">
+  <ng-container *ngIf="externalTileServiceLayer as externalService">
+    <li class="option external-layer-selector">
+      <div class="label">Layers</div>
+      <div class="content">
+        <mat-form-field appearance="fill">
+          <mat-select [ngModel]="selectedExternalLayerIdentifiers" multiple
+            (ngModelChange)="updateExternalLayerSelection($event)" data-cy="external-layer-customize-catalog">
+            <mat-option *ngFor="let catalogLayer of externalService.getCompatibleCatalogLayers()"
+              [value]="catalogLayer.identifier">
+              {{ catalogLayer.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </li>
+    <li class="option external-layer-catalog-note">
+      <div class="label"></div>
+      <div class="content">
+        Only compatible layers are shown. If the layer you are looking for is not listed, it is not currently supported.
+      </div>
+    </li>
+  </ng-container>
+
   <!-- opacity and color -->
   <li class="option" *ngIf="tools.opacity">
     <div class="label">Opacity</div>

@@ -107,7 +107,7 @@ export class LayerLegendComponent implements OnInit {
   ngOnInit(): void {
     this.subscriptions.push(
       this.layersService.layerChangeSourceObs.subscribe((layer: MapLayer) => {
-        this.updateLegendContent();
+        this.updateLegendContent(layer);
       }),
 
       this.mapInteractionService.featureOnlayerToggle.subscribe((featureOnLayer: Map<string, Array<number> | string | boolean>) => {
@@ -243,7 +243,14 @@ export class LayerLegendComponent implements OnInit {
    * The function `updateLegendContent` updates the legend content based on the style options of a
    * GeoJSONMapLayer.
    */
-  private updateLegendContent(): void {
+  private updateLegendContent(changedLayer: MapLayer): void {
+    if (this._layer.id.startsWith('external-layer-')) {
+      if (changedLayer?.id === this._layer.id) {
+        this.getLegendContent(this._layer);
+      }
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/dot-notation
     if (typeof this._layer['getStylable'] === 'function') {
       const styleable = (this._layer as GeoJSONMapLayer).getStylable();

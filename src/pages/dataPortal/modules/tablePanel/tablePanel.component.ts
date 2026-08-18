@@ -9,7 +9,7 @@ import { UnparseData } from 'ngx-papaparse/lib/interfaces/unparse-data';
 import { Papa } from 'ngx-papaparse';
 import { TableExportObject } from './tableDisplay/tableDisplay.component';
 import { NotificationService } from 'services/notification.service';
-import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
+import { ExternalVisualisationSource, MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 import { LocalStorageVariables } from 'services/model/persisters/localStorageVariables.enum';
 import { LocalStoragePersister } from 'services/model/persisters/localStoragePersister';
 import { DataConfigurableDataSearchI } from 'utility/configurablesDataSearch/dataConfigurableDataSearchI.interface';
@@ -36,6 +36,7 @@ export class TablePanelComponent implements OnInit {
   @Output() closeSideNav = new EventEmitter<void>();
 
   public currentDataConfigurables = new Array<DataConfigurableI>();
+  public externalSources = new Array<ExternalVisualisationSource>();
 
   public showSpinner = false;
   public selectedIndex = 0;
@@ -121,8 +122,17 @@ export class TablePanelComponent implements OnInit {
         this.checkHiddenMarkerOnMap(layerId);
       }),
 
+      this.mapInteractionService.externalVisualisationSources.subscribe(sources => {
+        this.externalSources = Array.from(sources.values()).filter(source => source.type === 'geojson');
+        this.updateCounter();
+      }),
+
       this.panelsEvent.invokeTablePanelToggle.subscribe((id: string) => {
-        this.selectedIndex = this.currentDataConfigurables.findIndex(tab => tab.id === id);
+        const configurableIndex = this.currentDataConfigurables.findIndex(tab => tab.id === id);
+        const externalIndex = this.externalSources.findIndex(source => source.id === id);
+        this.selectedIndex = configurableIndex > -1
+          ? configurableIndex
+          : this.currentDataConfigurables.length + externalIndex;
       }),
     );
   }
@@ -201,8 +211,12 @@ export class TablePanelComponent implements OnInit {
       }, 100);
     }
 
-    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length);
+    this.updateCounter();
 
+  }
+
+  private updateCounter(): void {
+    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length + this.externalSources.length);
   }
 
   private ensureReloadFuncSet(configurables: Array<DataConfigurableDataSearchI>, context: string): void {

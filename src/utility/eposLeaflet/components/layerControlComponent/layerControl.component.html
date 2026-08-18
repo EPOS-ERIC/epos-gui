@@ -19,10 +19,22 @@
                 <app-layer-legend [layer]="layer" [showLabel]="false" [showImage]="false"></app-layer-legend>
               </span>
 
-              <span class="layer-title">{{ layer.name }}</span>
+              <span class="layer-title">{{ layer.name }}<ng-container *ngIf="layer.id.startsWith('external-layer-')"> - External</ng-container></span>
 
-              <span class="layer-toggle" (click)="$event.stopPropagation()">
-                <app-layer-toggle [layer]="layer"></app-layer-toggle>
+              <span class="layer-actions">
+                <span *ngIf="layer.id.startsWith('external-layer-')" class="external-layer-remove"
+                  (click)="$event.stopPropagation()">
+                  <button mat-icon-button (click)="removeExternalLayer(layer)"
+                    (mousedown)="$event.stopPropagation()" (pointerdown)="$event.stopPropagation()"
+                    matTooltip="Remove external layer" aria-label="Remove external layer"
+                    data-cy="remove-external-layer-button">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </span>
+
+                <span class="layer-toggle" (click)="$event.stopPropagation()">
+                  <app-layer-toggle [layer]="layer"></app-layer-toggle>
+                </span>
               </span>
 
             </mat-panel-title>
@@ -56,5 +68,63 @@
         [layers]="arcticOverlays"></app-arctic-overlay-selection>
 
     </mat-expansion-panel>
+
+    <div class="external-layer-control">
+      <button *ngIf="!externalLayerFormOpened" mat-stroked-button color="primary"
+        (click)="toggleExternalLayerForm()" data-cy="add-external-layer-button">
+        <mat-icon>add</mat-icon>
+        Add external layer
+      </button>
+
+      <div *ngIf="externalLayerFormOpened" class="external-layer-form" data-cy="external-layer-form">
+        <mat-form-field appearance="fill" class="external-layer-url">
+          <mat-label>URL</mat-label>
+          <input matInput type="url" [(ngModel)]="externalLayerUrl" (ngModelChange)="externalLayerSourceChanged()"
+            [disabled]="externalLayerLoading" data-cy="external-layer-url">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Name (optional)</mat-label>
+          <input matInput type="text" [(ngModel)]="externalLayerName" [disabled]="externalLayerLoading"
+            data-cy="external-layer-name">
+        </mat-form-field>
+
+        <mat-form-field *ngIf="isExternalMultiLayerSource" appearance="fill" class="external-layer-catalog">
+          <mat-label>Layers</mat-label>
+          <mat-select [(ngModel)]="selectedExternalLayerIdentifiers" multiple data-cy="external-layer-catalog">
+            <mat-option *ngFor="let catalogLayer of compatibleExternalCatalogLayers" [value]="catalogLayer.identifier">
+              {{ catalogLayer.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="isExternalMultiLayerSource" class="external-layer-catalog-note">
+          Only compatible layers are shown. If the layer you are looking for is not listed, it is not currently supported.
+        </div>
+
+        <mat-form-field *ngIf="externalCatalogLayers.length > 0 && !isExternalMultiLayerSource" appearance="fill" class="external-layer-catalog">
+          <mat-label>Layer</mat-label>
+          <mat-select [(ngModel)]="selectedExternalLayerIdentifier" data-cy="external-layer-catalog">
+            <mat-option *ngFor="let catalogLayer of compatibleExternalCatalogLayers" [value]="catalogLayer.identifier">
+              {{ catalogLayer.title }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div *ngIf="externalLayerError" class="external-layer-error" role="alert"
+          data-cy="external-layer-error">{{ externalLayerError }}</div>
+
+        <div class="external-layer-actions">
+          <button mat-button (click)="resetExternalLayerForm()" [disabled]="externalLayerLoading"
+            data-cy="cancel-external-layer">Cancel</button>
+          <button mat-flat-button color="primary" (click)="addExternalLayer()"
+            [disabled]="externalLayerLoading || !externalLayerUrl.trim() || !canAddExternalLayer"
+            data-cy="confirm-external-layer">
+            <mat-spinner *ngIf="externalLayerLoading" diameter="20"></mat-spinner>
+            <span *ngIf="!externalLayerLoading">Add layer</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </mat-accordion>

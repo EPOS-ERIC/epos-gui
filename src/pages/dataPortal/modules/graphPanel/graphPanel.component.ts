@@ -17,7 +17,9 @@ import { TraceSelectorService } from './traceSelector/traceSelector.service';
 import { NotificationService } from 'components/notification/notification.service';
 import { DataConfigurableDataSearchI } from 'utility/configurablesDataSearch/dataConfigurableDataSearchI.interface';
 import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
-import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
+import { ExternalVisualisationSource, MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
+
+export type TraceSource = DataConfigurableDataSearch | ExternalVisualisationSource;
 
 /**
  * Wrapper for the visualization graphing functionality.
@@ -44,7 +46,7 @@ export class GraphPanelComponent implements OnInit {
   @Output() closeSideNav = new EventEmitter<void>();
 
   /** A Map associating a {@link DataConfigurable} with the {@link Trace}s that were derived from it. */
-  public currentTraces = new Map<DataConfigurableDataSearch, null | Array<Trace>>();
+  public currentTraces = new Map<TraceSource, null | Array<Trace>>();
   /** The {@link Trace}s that have been selected in the {@link TraceSelector} component. */
   public selectedTraces = new Array<Trace>();
   /** Whether the loading spinner should show */
@@ -130,8 +132,8 @@ export class GraphPanelComponent implements OnInit {
           });
 
           // remove the configurables that have been remove in the interface
-          Array.from(this.currentTraces.keys()).forEach((thisConfig: DataConfigurableDataSearch) => {
-            if (!graphableConfigurables.includes(thisConfig)) {
+          Array.from(this.currentTraces.keys()).forEach((thisConfig: TraceSource) => {
+            if (!this.isExternalSource(thisConfig) && !graphableConfigurables.includes(thisConfig)) {
               this.currentTraces.delete(thisConfig);
             }
           });
@@ -149,10 +151,33 @@ export class GraphPanelComponent implements OnInit {
           });
           this.triggerChangedTraces();
 
-          this.resultPanelService.setCounterGraph(graphableConfigurables.length);
+          this.updateCounter(graphableConfigurables.length);
           this.loading = false;
 
         }
+      }),
+      this.mapInteractionService.externalVisualisationSources.subscribe(sources => {
+        const externalSources = Array.from(sources.values()).filter(source => source.type === 'covjson');
+        Array.from(this.currentTraces.keys()).forEach(source => {
+          if (this.isExternalSource(source) && !externalSources.some(external => external.id === source.id)) {
+            this.currentTraces.delete(source);
+          }
+        });
+        externalSources.forEach(source => {
+          const currentSource = Array.from(this.currentTraces.keys()).find(item => item.id === source.id);
+          if (currentSource != null && currentSource !== source) {
+            this.currentTraces.delete(currentSource);
+          }
+          if (source.covJsonData != null && !this.currentTraces.has(source)) {
+            try {
+              this.currentTraces.set(source, new CovJsonData(source.id).createTraces(source.covJsonData));
+            } catch {
+              this.currentTraces.set(source, []);
+            }
+          }
+        });
+        this.triggerChangedTraces();
+        this.updateCounter();
       }),
       this.panelsEvent.invokeGraphPanelOpen.subscribe((itemId: string) => {
         this.selectedId = itemId;
@@ -186,7 +211,7 @@ export class GraphPanelComponent implements OnInit {
               this.currentTraces.set(thisConfig as DataConfigurableDataSearch, traces);
               this.triggerChangedTraces();
 
-              this.resultPanelService.setCounterGraph(graphableConfigurables.length + 1);
+              this.resultPanelService.setCounterGraph(graphableConfigurables.length + this.getExternalGraphSourceCount() + 1);
 
               this.panelsEvent.graphPanelOpen(id, false);
 
@@ -196,7 +221,7 @@ export class GraphPanelComponent implements OnInit {
           });
         } else {
           this.currentTraces.delete(thisConfig as DataConfigurableDataSearch);
-          this.resultPanelService.setCounterGraph(graphableConfigurables.length - 1);
+          this.resultPanelService.setCounterGraph(Math.max(0, graphableConfigurables.length + this.getExternalGraphSourceCount() - 1));
         }
       }),
     );
@@ -228,12 +253,26 @@ export class GraphPanelComponent implements OnInit {
    * {@link TraceSelector} and {@link GraphDisplay} components;
    */
   private triggerChangedTraces(): void {
-    const newMap = new Map<DataConfigurableDataSearch, Array<Trace>>();
-    Array.from(this.currentTraces.keys()).forEach((configurable: DataConfigurableDataSearch) => {
+    const newMap = new Map<TraceSource, Array<Trace>>();
+    Array.from(this.currentTraces.keys()).forEach((configurable: TraceSource) => {
       this.loading = (this.loading || (null == this.currentTraces.get(configurable)));
       newMap.set(configurable, this.currentTraces.get(configurable)!);
     });
     this.currentTraces = newMap;
+  }
+
+  private getExternalGraphSourceCount(): number {
+    return Array.from(this.mapInteractionService.externalVisualisationSources.value.values())
+      .filter(source => source.type === 'covjson').length;
+  }
+
+  private isExternalSource(source: TraceSource): source is ExternalVisualisationSource {
+    return source.id.startsWith('external-layer-');
+  }
+
+  private updateCounter(internalCount?: number): void {
+    const graphableCount = internalCount ?? this.configurables.getAll().filter(config => config.isGraphable).length;
+    this.resultPanelService.setCounterGraph(graphableCount + this.getExternalGraphSourceCount());
   }
 
   /**
