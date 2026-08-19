@@ -1,23 +1,15 @@
 <ul class="list-options">
   <ng-container *ngIf="externalTileServiceLayer as externalService">
     <li class="option external-layer-selector">
-      <div class="label">Layers</div>
+      <div class="label">Source URL</div>
       <div class="content">
-        <mat-form-field appearance="fill">
-          <mat-select [ngModel]="selectedExternalLayerIdentifiers" multiple
-            (ngModelChange)="updateExternalLayerSelection($event)" data-cy="external-layer-customize-catalog">
-            <mat-option *ngFor="let catalogLayer of externalService.getCompatibleCatalogLayers()"
-              [value]="catalogLayer.identifier">
-              {{ catalogLayer.title }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <input matInput type="text" [value]="externalService.getSourceUrl()" readonly>
       </div>
     </li>
-    <li class="option external-layer-catalog-note">
-      <div class="label"></div>
+    <li class="option external-layer-selector">
+      <div class="label">Layer</div>
       <div class="content">
-        Only compatible layers are shown. If the layer you are looking for is not listed, it is not currently supported.
+        <input matInput type="text" [value]="layer.name" readonly>
       </div>
     </li>
   </ng-container>
@@ -46,8 +38,8 @@
       <mcc-color-picker [hideHexForms]="true" [hideUsedColors]="true" [colorPickerSelectorHeight]="170"
         [selectedColor]="fillColor" [hideButtons]="true" (change)="updateFillColor($event)" matTooltip="Change color">
       </mcc-color-picker>
-      <mat-slider (input)="updateFillColorOpacity($event)" [value]="fillColorOpacity" [min]="0" [max]="1"
-        [step]="0.01" matTooltip="Change opacity"></mat-slider>
+      <mat-slider (input)="updateFillColorOpacity($event)" [value]="fillColorOpacity" [min]="0" [max]="1" [step]="0.01"
+        matTooltip="Change opacity"></mat-slider>
     </div>
   </li>
 
@@ -136,7 +128,8 @@
     <li class="option">
       <div class="label">Cluster</div>
       <div class="content">
-        <mat-slide-toggle [checked]="clustering" (change)="updateClustering($event)" matTooltip="Cluster marker on map" data-cy="layer-control-cluster-toggle">
+        <mat-slide-toggle [checked]="clustering" (change)="updateClustering($event)" matTooltip="Cluster marker on map"
+          data-cy="layer-control-cluster-toggle">
         </mat-slide-toggle>
       </div>
     </li>

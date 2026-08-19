@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, Injector } from '@angular/core';
 import * as L from 'leaflet';
 import { Map as LMap } from 'leaflet';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -28,6 +28,9 @@ import { PopupProperty } from 'utility/maplayers/popupProperty';
 import { LocalStoragePersister } from 'services/model/persisters/localStoragePersister';
 import { LocalStorageVariables } from 'services/model/persisters/localStorageVariables.enum';
 import { NotificationService } from 'services/notification.service';
+import { DialogService } from 'components/dialog/dialog.service';
+import { FaMarker } from '../marker/faMarker/faMarker';
+import { defaultMarkerIcons } from 'utility/styler/styler';
 
 type WmsCrsRow = { layerName: string; crs: string; status: boolean };
 type ExternalLayerType = 'geojson' | 'covjson' | 'wms' | 'wmts' | 'wfs';
@@ -62,6 +65,8 @@ export class LayerControlComponent implements OnInit {
     '#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f',
     '#edc948', '#b07aa1', '#ff9da7', '#9c755f', '#bab0ab',
   ];
+
+  private static readonly EXTERNAL_WFS_FEATURE_LIMIT = 3000;
 
   @Output() externalLayerAdd = new EventEmitter<MapLayer>();
 
@@ -126,7 +131,8 @@ export class LayerControlComponent implements OnInit {
     private mapInteractionService: MapInteractionService,
     private localStoragePersister: LocalStoragePersister,
     private notificationService: NotificationService,
-  ) {}
+    private injector: Injector,
+  ) { }
 
   get activeArcticOverlaysCount(): number {
     if (!this.arcticOverlays) {
@@ -233,9 +239,19 @@ export class LayerControlComponent implements OnInit {
 
   public removeExternalLayer(layer: MapLayer): void {
     if (layer.id.startsWith('external-layer-')) {
-      this.removePersistedExternalLayer(layer.id);
-      this.mapInteractionService.removeHiddenMarkerByLayerId(layer.id, false);
-      layer.getEposLeaflet().removeLayerById(layer.id);
+      void this.injector.get(DialogService).openConfirmationDialog(
+        `Remove external layer "${layer.name}"?`,
+        false,
+        'Remove',
+        'confirm',
+        'Cancel',
+      ).then(confirmed => {
+        if (confirmed) {
+          this.removePersistedExternalLayer(layer.id);
+          this.mapInteractionService.removeHiddenMarkerByLayerId(layer.id, false);
+          layer.getEposLeaflet().removeLayerById(layer.id);
+        }
+      });
     }
   }
 
@@ -495,24 +511,38 @@ export class LayerControlComponent implements OnInit {
     url.searchParams.set('request', 'GetFeature');
     url.searchParams.set(this.pendingWfsSource.version.startsWith('2.') ? 'typeNames' : 'typeName', selectedLayer.identifier);
     url.searchParams.set('outputFormat', selectedLayer.format);
+    url.searchParams.set(
+      this.pendingWfsSource.version.startsWith('2.') ? 'count' : 'maxFeatures',
+      String(LayerControlComponent.EXTERNAL_WFS_FEATURE_LIMIT + 1),
+    );
 
     const data = this.tryParseJson(await this.http.get(url.toString(), { responseType: 'text' }).toPromise() ?? null);
-    if (!this.isGeoJsonObject(data)) {
+    const limitedWfsData = this.limitExternalWfsFeatures(data);
+    const wfsData = limitedWfsData.data;
+    if (!this.isGeoJsonObject(wfsData)) {
       throw new Error('The WFS GetFeature response is not valid GeoJSON.');
     }
     try {
-      L.geoJSON(data);
+      L.geoJSON(wfsData);
     } catch {
       throw new Error('The WFS GetFeature response contains invalid GeoJSON geometries.');
     }
 
     const name = this.resolveExternalLayerName(selectedLayer.title || this.detectedExternalSourceName);
-    this.emitExternalGeoJsonLayer(data, name, this.getGeoJsonMarkerType(data), 'wfs', null, {
+    this.emitExternalGeoJsonLayer(wfsData, name, this.getGeoJsonMarkerType(wfsData), 'wfs', null, {
       url: url.toString(),
       name,
       type: 'wfs',
       layerIdentifier: selectedLayer.identifier,
     });
+    if (limitedWfsData.truncated) {
+      this.notificationService.sendNotification(
+        `The WFS layer is too heavy. Only the first ${LayerControlComponent.EXTERNAL_WFS_FEATURE_LIMIT} features were added.`,
+        'x',
+        NotificationService.TYPE_WARNING,
+        5000,
+      );
+    }
   }
 
   private emitExternalGeoJsonLayer(
@@ -551,13 +581,32 @@ export class LayerControlComponent implements OnInit {
         fillOpacity: layer.options.customLayerOptionFillColorOpacity.get() ?? 0.2,
         weight: layer.options.customLayerOptionWeight.get() ?? 3,
       }))
-      .setPointToLayerFunction((_feature, latlng) => L.circleMarker(latlng, {
-        radius: 6,
-        color: layer.options.customLayerOptionColor.get() ?? color,
-        fillColor: layer.options.customLayerOptionFillColor.get() ?? color,
-        fillOpacity: layer.options.customLayerOptionFillColorOpacity.get() ?? 0.8,
-        weight: layer.options.customLayerOptionWeight.get() ?? 2,
-      }))
+      .setPointToLayerFunction((_feature, latlng) => {
+        const selectedMarkerType = layer.options.customLayerOptionMarkerType.get();
+        const markerClasses = (layer.options.customLayerOptionMarkerValue.get()
+          ?? defaultMarkerIcons[0].value.join(' ')).split(' ');
+        const markerColor = layer.options.customLayerOptionColor.get() ?? color;
+        const markerFillColor = layer.options.customLayerOptionFillColor.get() ?? color;
+        const markerSize = layer.options.customLayerOptionMarkerIconSize.get();
+
+        if (selectedMarkerType === MapLayer.MARKERTYPE_FA) {
+          const icon = new FaMarker().configure(markerClasses, markerColor, markerSize, markerSize, 70);
+          return L.marker(latlng, { icon, bubblingMouseEvents: true });
+        }
+        if (selectedMarkerType === MapLayer.MARKERTYPE_PIN_FA) {
+          const icon = new FaMarker()
+            .configure(['fas', 'fa-map-marker'], markerColor, markerSize, markerSize, 70)
+            .configureIcon(markerClasses, markerFillColor);
+          return L.marker(latlng, { icon, bubblingMouseEvents: true });
+        }
+        return L.circleMarker(latlng, {
+          radius: 6,
+          color: markerColor,
+          fillColor: markerFillColor,
+          fillOpacity: layer.options.customLayerOptionFillColorOpacity.get() ?? 0.8,
+          weight: layer.options.customLayerOptionWeight.get() ?? 2,
+        });
+      })
       .setFeatureDisplayContentFunc(feature => type === 'covjson'
         ? CovJSONHelper.getPopupContentFromProperties(feature.properties, name, id)
         : GeoJSONHelper.getExternalPopupContentFromProperties(
@@ -723,13 +772,13 @@ export class LayerControlComponent implements OnInit {
     const getFeatureFormats = this.getWfsGetFeatureFormats(xml);
     const layers: Array<ExternalTileServiceCatalogLayer> = [];
 
-    xml.find('FeatureType').each((_, element) => {
+    this.findXmlElementsByLocalName(xml, 'FeatureType').each((_featureTypeIndex, element) => {
       const featureType = $(element);
-      const identifier = featureType.children('Name').first().text().trim();
+      const identifier = featureType.children().filter((_childIndex, child) => child.localName === 'Name').first().text().trim();
       if (!identifier) {
         return;
       }
-      const formats = featureType.find('OutputFormats > Format')
+      const formats = featureType.find('*').filter((_formatIndex, child) => child.localName === 'Format')
         .map((formatIndex, formatElement) => $(formatElement).text().trim()).get();
       const format = [...formats, ...getFeatureFormats].find(value => this.isGeoJsonFormat(value));
       if (!format) {
@@ -737,7 +786,7 @@ export class LayerControlComponent implements OnInit {
       }
       layers.push({
         identifier,
-        title: featureType.children('Title').first().text().trim() || identifier,
+        title: featureType.children().filter((_childIndex, child) => child.localName === 'Title').first().text().trim() || identifier,
         style: '',
         format,
         compatible: true,
@@ -748,7 +797,9 @@ export class LayerControlComponent implements OnInit {
   }
 
   private getWfsGetFeatureFormats(xml: JQuery<XMLDocument>): Array<string> {
-    const formats = xml.find('Operation[name="GetFeature"] Parameter[name="outputFormat"] Value')
+    const formats = this.findXmlElementsByLocalName(xml, 'Operation').filter((_, element) => {
+      return element.getAttribute('name') === 'GetFeature';
+    }).find('*').filter((_, element) => element.localName === 'Value')
       .map((_, element) => $(element).text().trim()).get();
     xml.find('Request > GetFeature > ResultFormat').children().each((_, element) => {
       formats.push(element.localName);
@@ -862,14 +913,15 @@ export class LayerControlComponent implements OnInit {
         const xml = await this.getWfsCapabilitiesXml(baseUrl, additionalParams);
         if (this.isWfsCapabilities(xml)) {
           this.detectedExternalLayerType = 'wfs';
-          this.detectedExternalSourceName = xml.find('ServiceIdentification').first().children()
+          const wfsCapabilities = this.findXmlElementsByLocalName(xml, 'WFS_Capabilities').first();
+          this.detectedExternalSourceName = this.findXmlElementsByLocalName(xml, 'ServiceIdentification').first().children()
             .filter((_, element) => element.localName === 'Title').first().text().trim()
             || xml.find('Service > Title').first().text().trim();
           this.externalCatalogLayers = this.parseWfsCatalog(xml);
           this.pendingWfsSource = {
             baseUrl,
             parameters: additionalParams,
-            version: xml.find('WFS_Capabilities').first().attr('version') ?? '1.0.0',
+            version: wfsCapabilities.attr('version') ?? '1.0.0',
           };
           if (this.externalCatalogLayers.length === 0) {
             throw new Error('No WFS feature types supporting GeoJSON were found.');
@@ -962,7 +1014,11 @@ export class LayerControlComponent implements OnInit {
   }
 
   private isWfsCapabilities(xml: JQuery<XMLDocument>): boolean {
-    return xml.find('WFS_Capabilities').length > 0;
+    return this.findXmlElementsByLocalName(xml, 'WFS_Capabilities').length > 0;
+  }
+
+  private findXmlElementsByLocalName(xml: JQuery<XMLDocument>, localName: string): JQuery<Element> {
+    return xml.find('*').filter((_, element) => element.localName === localName);
   }
 
   private getExternalQueryParameters(url: URL): Record<string, string> {
@@ -1320,8 +1376,26 @@ export class LayerControlComponent implements OnInit {
     return data != null && typeof data === 'object' && !Array.isArray(data);
   }
 
+  private limitExternalWfsFeatures(data: unknown): { data: unknown; truncated: boolean } {
+    if (!this.isRecord(data)) {
+      return { data, truncated: false };
+    }
+    const totalFeatures = Number(data.numberMatched ?? data.totalFeatures);
+    const truncated = (Number.isFinite(totalFeatures) && totalFeatures > LayerControlComponent.EXTERNAL_WFS_FEATURE_LIMIT)
+      || (Array.isArray(data.features) && data.features.length > LayerControlComponent.EXTERNAL_WFS_FEATURE_LIMIT);
+    return {
+      data: truncated && Array.isArray(data.features)
+        ? { ...data, features: data.features.slice(0, LayerControlComponent.EXTERNAL_WFS_FEATURE_LIMIT) }
+        : data,
+      truncated,
+    };
+  }
+
   private getExternalLayerError(error: unknown, fallback: string): string {
     if (error instanceof HttpErrorResponse) {
+      if (this.detectedExternalLayerType === 'wfs' && [413, 429, 503].includes(error.status)) {
+        return 'The WFS layer is too heavy for the remote server and was not added.';
+      }
       return error.status === 0
         ? 'The remote server could not be reached or does not allow cross-origin requests (CORS).'
         : `${fallback} HTTP ${error.status}.`;

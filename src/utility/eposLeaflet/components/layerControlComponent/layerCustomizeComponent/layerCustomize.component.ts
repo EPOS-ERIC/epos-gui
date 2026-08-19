@@ -103,7 +103,7 @@ export class LayerCustomizeComponent implements OnInit {
 
   public externalTileServiceLayer: ExternalTileServiceLayer | null = null;
 
-  public selectedExternalLayerIdentifiers = new Array<string>();
+  public isExternalPointGeoJsonLayer = false;
 
   /** The above code is declaring a public property called "tools" which is an object. This object has
   several boolean properties such as "opacity", "colorOpacity", "fillColorOpacity", "weight", "size",
@@ -141,7 +141,6 @@ export class LayerCustomizeComponent implements OnInit {
 
     if (this.layer instanceof ExternalTileServiceLayer) {
       this.externalTileServiceLayer = this.layer;
-      this.selectedExternalLayerIdentifiers = this.layer.getSelectedLayerIdentifiers();
     }
 
     this.stylable = this.layer.options.customLayerOptionStylable.get();
@@ -157,13 +156,27 @@ export class LayerCustomizeComponent implements OnInit {
     this.markerType = this.layer.options.customLayerOptionMarkerType.get() ?? null;
     this.markerIconSize = this.layer.options.customLayerOptionMarkerIconSize.get() ?? this.stylable?.getStyle()?.getMarkerIconSize();
     this.markerValue = this.layer.options.customLayerOptionMarkerValue.get() ?? '';
+    this.isExternalPointGeoJsonLayer = this.layer.id.startsWith('external-layer-')
+      && this.layer instanceof GeoJsonLayer
+      && this.mapInteractionService.externalVisualisationSources.value.get(this.layer.id)?.type === 'geojson'
+      && this.hasPointGeometry(this.layer.getGeoJsonData());
+    if (this.isExternalPointGeoJsonLayer) {
+      if (!this.markerValue) {
+        this.markerValue = defaultMarkerIcons[0].value.join(' ');
+        this.layer.options.customLayerOptionMarkerValue.set(this.markerValue);
+      }
+      if (this.markerIconSize == null) {
+        this.markerIconSize = 20;
+        this.layer.options.customLayerOptionMarkerIconSize.set(this.markerIconSize);
+      }
+    }
 
     // remove facility from defaultMarkerIcons if context resources
     let context = CONTEXT_RESOURCE;
     if (this.layer.getStylable() !== undefined && (this.layer.getStylable() as DataConfigurableDataSearch).context !== undefined) {
       context = (this.layer.getStylable() as DataConfigurableDataSearch).context;
     }
-    if (context === CONTEXT_RESOURCE || context === CONTEXT_SOFTWARE) {
+    if (!this.isExternalPointGeoJsonLayer && (context === CONTEXT_RESOURCE || context === CONTEXT_SOFTWARE)) {
       // remove facility by list
       this.markerIcons = defaultMarkerIcons.filter((_markerOpt: FaMarkerOption) => _markerOpt.context !== CONTEXT_FACILITY);
     }
@@ -213,17 +226,6 @@ export class LayerCustomizeComponent implements OnInit {
     if (this.clustering) {
       this.redrawLayer();
     }
-  }
-
-  public updateExternalLayerSelection(selectedLayerIdentifiers: Array<string>): void {
-    if (this.externalTileServiceLayer == null) {
-      return;
-    }
-    this.selectedExternalLayerIdentifiers = selectedLayerIdentifiers;
-    this.externalTileServiceLayer.setSelectedLayerIdentifiers(selectedLayerIdentifiers);
-    void this.layer.getEposLeaflet().redrawLayer(this.layer).then(() => {
-      this.layersService.layerChange(this.layer);
-    });
   }
 
   /**
@@ -353,9 +355,19 @@ export class LayerCustomizeComponent implements OnInit {
    * value of a mat-select component changes. It contains information about the selected value.
    */
   changeMarkerIconFa(event: MatSelectChange): void {
+    const redrawAsIcon = this.isExternalPointGeoJsonLayer
+      && this.layer.options.customLayerOptionMarkerType.get() === MapLayer.MARKERTYPE_POINT;
+    if (redrawAsIcon) {
+      this.markerType = MapLayer.MARKERTYPE_FA;
+      this.layer.options.customLayerOptionMarkerType.set(this.markerType);
+      this.setTools();
+    }
     this.selectedMarkerIcon = this.markerIcons.find(e => e.id === event.value)?.value.join(' ');
     this.layer.options.customLayerOptionMarkerValue.set(this.markerIcons.find(e => e.id === event.value)?.value.join(' '));
     this.layersService.layerChange(this.layer);
+    if (redrawAsIcon) {
+      this.redrawLayer();
+    }
   }
 
   /**
@@ -364,6 +376,31 @@ export class LayerCustomizeComponent implements OnInit {
   private redrawLayer(): void {
     const map = this.layer.getEposLeaflet();
     void map.redrawLayer(this.layer);
+  }
+
+  private hasPointGeometry(value: unknown): boolean {
+    if (value == null || typeof value !== 'object') {
+      return false;
+    }
+    const geoJson = value as {
+      type?: string;
+      geometry?: unknown;
+      geometries?: Array<unknown>;
+      features?: Array<unknown>;
+    };
+    if (geoJson.type === 'Point' || geoJson.type === 'MultiPoint') {
+      return true;
+    }
+    if (geoJson.type === 'Feature') {
+      return this.hasPointGeometry(geoJson.geometry);
+    }
+    if (geoJson.type === 'FeatureCollection') {
+      return geoJson.features?.some(feature => this.hasPointGeometry(feature)) ?? false;
+    }
+    if (geoJson.type === 'GeometryCollection') {
+      return geoJson.geometries?.some(geometry => this.hasPointGeometry(geometry)) ?? false;
+    }
+    return false;
   }
 
   /**
@@ -448,8 +485,8 @@ export class LayerCustomizeComponent implements OnInit {
           colorOpacity: true,
           fillColorOpacity: true,
           weight: true,
-          changeMarker: '',
-          size: false,
+          changeMarker: this.isExternalPointGeoJsonLayer ? 'font' : '',
+          size: this.isExternalPointGeoJsonLayer,
           cluster: true,
         };
         break;

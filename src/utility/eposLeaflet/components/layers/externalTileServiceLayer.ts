@@ -69,6 +69,10 @@ export class ExternalTileServiceLayer extends MapLayer {
     return this.catalogLayers;
   }
 
+  public getSourceUrl(): string {
+    return this.url;
+  }
+
   public getSelectedLayerIdentifiers(): Array<string> {
     return [...this.selectedLayerIdentifiers];
   }
