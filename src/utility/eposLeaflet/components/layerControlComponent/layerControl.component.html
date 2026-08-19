@@ -98,11 +98,6 @@
           </mat-select>
         </mat-form-field>
 
-        <div *ngIf="isExternalMultiLayerSource" class="external-layer-catalog-note">
-          Only compatible layers are shown. If the layer you are looking for is not listed, it is not currently
-          supported.
-        </div>
-
         <mat-form-field *ngIf="externalCatalogLayers.length > 0 && !isExternalMultiLayerSource" appearance="fill"
           class="external-layer-catalog">
           <mat-label>Layer</mat-label>
@@ -112,13 +107,15 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-
+        <div *ngIf="showExternalLayerCatalogNote" class="external-layer-catalog-note">
+          Select the layers to add to the map. Only compatible layers are listed.
+        </div>
         <div *ngIf="externalLayerError" class="external-layer-error" role="alert" data-cy="external-layer-error">{{
           externalLayerError }}</div>
 
         <div class="external-layer-actions">
           <button mat-icon-button type="button" class="external-layer-info"
-            matTooltip="Supported URL types: GeoJSON, CovJSON, WFS, and WMS. Only layers compatible with the current EPOS map configuration can be displayed. Incompatible layers may be rejected or may not appear on the map."
+            matTooltip="External layers may be added to the map by providing a URL. The URL can point either to data in a supported format (GeoJSON or CovJSON) or to a supported web service (WFS or WMS). Incompatible layers may be rejected or may not be displayed."
             matTooltipPosition="left" matTooltipClass="external-layer-info-tooltip"
             aria-label="Information about supported external layer URLs" data-cy="external-layer-info">
             <mat-icon>help</mat-icon>

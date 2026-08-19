@@ -154,6 +154,10 @@ export class LayerControlComponent implements OnInit {
     return this.detectedExternalLayerType === 'wms' || this.detectedExternalLayerType === 'wmts';
   }
 
+  public get showExternalLayerCatalogNote(): boolean {
+    return this.isExternalMultiLayerSource || this.detectedExternalLayerType === 'wfs';
+  }
+
   public get compatibleExternalCatalogLayers(): Array<ExternalTileServiceCatalogLayer> {
     return this.externalCatalogLayers.filter(layer => layer.compatible);
   }
