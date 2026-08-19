@@ -8,9 +8,17 @@ import { MapLayer } from '../eposLeaflet';
 import { LocalStoragePersister } from 'services/model/persisters/localStoragePersister';
 import { LocalStorageVariables } from 'services/model/persisters/localStorageVariables.enum';
 import { WMTSLayerTableData } from '../eposLeaflet';
+import { FeatureCollection } from 'geojson';
 
-
-
+export interface ExternalVisualisationSource {
+  id: string;
+  name: string;
+  type: 'geojson' | 'covjson';
+  geoJsonData?: FeatureCollection;
+  covJsonData?: Record<string, unknown>;
+  sourceUrl?: string;
+  layerName?: string;
+}
 
 /** The MapInteractionService class provides methods for interacting with a map, such as setting the
 spatial range, centering the map on a bounding box or coordinates, and triggering events when
@@ -43,6 +51,8 @@ export class MapInteractionService {
 
   // Wmts Layer Storage
   public  wmtsLayerStorage = new BehaviorSubject<null | Map<string, WMTSLayerTableData>>(null);
+
+  public externalVisualisationSources = new BehaviorSubject<Map<string, ExternalVisualisationSource>>(new Map());
 
   /**
    * The constructor function takes in a LoadingService and a LocalStoragePersister as parameters.
@@ -83,6 +93,21 @@ export class MapInteractionService {
   }
   public setWmtsLayersMapStorage(layerMapStructure: null | Map<string, WMTSLayerTableData>): void {
     this.wmtsLayerStorage.next(layerMapStructure);
+  }
+
+  public setExternalVisualisationSource(source: ExternalVisualisationSource): void {
+    const sources = new Map(this.externalVisualisationSources.value);
+    sources.set(source.id, source);
+    this.externalVisualisationSources.next(sources);
+  }
+
+  public retainExternalVisualisationSources(layerIds: Array<string>): void {
+    const sources = new Map(
+      Array.from(this.externalVisualisationSources.value.entries()).filter(([id]) => layerIds.includes(id))
+    );
+    if (sources.size !== this.externalVisualisationSources.value.size) {
+      this.externalVisualisationSources.next(sources);
+    }
   }
 
   /**

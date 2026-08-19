@@ -8,7 +8,8 @@ import { Stylable } from 'utility/styler/stylable.interface';
 import { defaultMarkerIcons, FaMarkerOption } from 'utility/styler/styler';
 import { MapLayer } from '../../layers/mapLayer.abstract';
 import { GeoJsonLayer } from '../../layers/public_api';
-import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
+import { ExternalTileServiceLayer } from '../../layers/externalTileServiceLayer';
+import { ExternalVisualisationSource, MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 import { DataConfigurableDataSearch } from 'utility/configurablesDataSearch/dataConfigurableDataSearch';
 import { CONTEXT_FACILITY, CONTEXT_RESOURCE, CONTEXT_SOFTWARE } from 'api/api.service.factory';
 
@@ -100,6 +101,12 @@ export class LayerCustomizeComponent implements OnInit {
   /** The above code is declaring a public property called "clustering" with a type of boolean or null. */
   public clustering: boolean | null;
 
+  public externalTileServiceLayer: ExternalTileServiceLayer | null = null;
+
+  public externalVectorSource: ExternalVisualisationSource | null = null;
+
+  public isExternalPointGeoJsonLayer = false;
+
   /** The above code is declaring a public property called "tools" which is an object. This object has
   several boolean properties such as "opacity", "colorOpacity", "fillColorOpacity", "weight", "size",
   and "cluster". These properties are used to control various features or settings related to a map or
@@ -134,6 +141,14 @@ export class LayerCustomizeComponent implements OnInit {
    */
   ngOnInit(): void {
 
+    if (this.layer instanceof ExternalTileServiceLayer) {
+      this.externalTileServiceLayer = this.layer;
+    }
+    const externalSource = this.mapInteractionService.externalVisualisationSources.value.get(this.layer.id);
+    if (externalSource?.sourceUrl != null) {
+      this.externalVectorSource = externalSource;
+    }
+
     this.stylable = this.layer.options.customLayerOptionStylable.get();
 
     this.opacity = this.layer.options.customLayerOptionOpacity.get();
@@ -147,13 +162,27 @@ export class LayerCustomizeComponent implements OnInit {
     this.markerType = this.layer.options.customLayerOptionMarkerType.get() ?? null;
     this.markerIconSize = this.layer.options.customLayerOptionMarkerIconSize.get() ?? this.stylable?.getStyle()?.getMarkerIconSize();
     this.markerValue = this.layer.options.customLayerOptionMarkerValue.get() ?? '';
+    this.isExternalPointGeoJsonLayer = this.layer.id.startsWith('external-layer-')
+      && this.layer instanceof GeoJsonLayer
+      && this.mapInteractionService.externalVisualisationSources.value.get(this.layer.id)?.type === 'geojson'
+      && this.hasPointGeometry(this.layer.getGeoJsonData());
+    if (this.isExternalPointGeoJsonLayer) {
+      if (!this.markerValue) {
+        this.markerValue = defaultMarkerIcons[0].value.join(' ');
+        this.layer.options.customLayerOptionMarkerValue.set(this.markerValue);
+      }
+      if (this.markerIconSize == null) {
+        this.markerIconSize = 20;
+        this.layer.options.customLayerOptionMarkerIconSize.set(this.markerIconSize);
+      }
+    }
 
     // remove facility from defaultMarkerIcons if context resources
     let context = CONTEXT_RESOURCE;
     if (this.layer.getStylable() !== undefined && (this.layer.getStylable() as DataConfigurableDataSearch).context !== undefined) {
       context = (this.layer.getStylable() as DataConfigurableDataSearch).context;
     }
-    if (context === CONTEXT_RESOURCE || context === CONTEXT_SOFTWARE) {
+    if (!this.isExternalPointGeoJsonLayer && (context === CONTEXT_RESOURCE || context === CONTEXT_SOFTWARE)) {
       // remove facility by list
       this.markerIcons = defaultMarkerIcons.filter((_markerOpt: FaMarkerOption) => _markerOpt.context !== CONTEXT_FACILITY);
     }
@@ -181,7 +210,11 @@ export class LayerCustomizeComponent implements OnInit {
       // if one marker on map set clustering false (remove cluster toogle tool)
       if (this.layer instanceof GeoJsonLayer && (this.layer as GeoJSONMapLayer).getMarkerLayer().getMarkers().length === 1) {
         this.clustering = false;
-        this.setClustering(false);
+        if (this.layer.id.startsWith('external-layer-')) {
+          this.layer.options.customLayerOptionClustering.set(false);
+        } else {
+          this.setClustering(false);
+        }
         this.tools.cluster = false;
       }
     }, 100);
@@ -328,9 +361,19 @@ export class LayerCustomizeComponent implements OnInit {
    * value of a mat-select component changes. It contains information about the selected value.
    */
   changeMarkerIconFa(event: MatSelectChange): void {
+    const redrawAsIcon = this.isExternalPointGeoJsonLayer
+      && this.layer.options.customLayerOptionMarkerType.get() === MapLayer.MARKERTYPE_POINT;
+    if (redrawAsIcon) {
+      this.markerType = MapLayer.MARKERTYPE_FA;
+      this.layer.options.customLayerOptionMarkerType.set(this.markerType);
+      this.setTools();
+    }
     this.selectedMarkerIcon = this.markerIcons.find(e => e.id === event.value)?.value.join(' ');
     this.layer.options.customLayerOptionMarkerValue.set(this.markerIcons.find(e => e.id === event.value)?.value.join(' '));
     this.layersService.layerChange(this.layer);
+    if (redrawAsIcon) {
+      this.redrawLayer();
+    }
   }
 
   /**
@@ -341,6 +384,31 @@ export class LayerCustomizeComponent implements OnInit {
     void map.redrawLayer(this.layer);
   }
 
+  private hasPointGeometry(value: unknown): boolean {
+    if (value == null || typeof value !== 'object') {
+      return false;
+    }
+    const geoJson = value as {
+      type?: string;
+      geometry?: unknown;
+      geometries?: Array<unknown>;
+      features?: Array<unknown>;
+    };
+    if (geoJson.type === 'Point' || geoJson.type === 'MultiPoint') {
+      return true;
+    }
+    if (geoJson.type === 'Feature') {
+      return this.hasPointGeometry(geoJson.geometry);
+    }
+    if (geoJson.type === 'FeatureCollection') {
+      return geoJson.features?.some(feature => this.hasPointGeometry(feature)) ?? false;
+    }
+    if (geoJson.type === 'GeometryCollection') {
+      return geoJson.geometries?.some(geometry => this.hasPointGeometry(geometry)) ?? false;
+    }
+    return false;
+  }
+
   /**
    * The function sets the clustering option for a custom layer and triggers a redraw of the layer.
    * @param {boolean} clustering - A boolean value indicating whether clustering should be enabled or
@@ -349,6 +417,10 @@ export class LayerCustomizeComponent implements OnInit {
   private setClustering(clustering: boolean) {
     this.layer.options.customLayerOptionClustering.set(clustering);
     this.layersService.layerChange(this.layer);
+
+    if (this.layer.id.startsWith('external-layer-') && this.layer instanceof GeoJsonLayer) {
+      this.layer.setClusteredMarkers(clustering);
+    }
 
     const style = this.stylable?.getStyle();
     if (style !== undefined) {
@@ -419,8 +491,8 @@ export class LayerCustomizeComponent implements OnInit {
           colorOpacity: true,
           fillColorOpacity: true,
           weight: true,
-          changeMarker: '',
-          size: false,
+          changeMarker: this.isExternalPointGeoJsonLayer ? 'font' : '',
+          size: this.isExternalPointGeoJsonLayer,
           cluster: true,
         };
         break;

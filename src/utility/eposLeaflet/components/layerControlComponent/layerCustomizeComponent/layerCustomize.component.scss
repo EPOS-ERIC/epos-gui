@@ -41,5 +41,17 @@
       border-bottom: none;
     }
 
+    li.external-layer-selector,
+    li.external-layer-catalog-note {
+      height: auto;
+      min-height: 40px;
+    }
+
+    li.external-layer-catalog-note .content {
+      padding: 8px 0;
+      font-size: 12px;
+      line-height: 16px;
+    }
+
   }
 }

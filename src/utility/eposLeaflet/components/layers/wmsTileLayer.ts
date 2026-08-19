@@ -170,6 +170,11 @@ import * as L from 'leaflet';
      }
    }
 
+   public setGetCapabilitiesXml(xml: JQuery<XMLDocument>): this {
+     this.getCapabilitiesXML = xml;
+     return this;
+   }
+
    public getLayerBboxFromGetCapabilitiesXml(layer: WmsTileLayer, http: HttpClient, dataSearchConfigurablesServiceResource: DataSearchConfigurablesServiceResource, dataSearchConfigurablesServiceRegistry: DataSearchConfigurablesServiceRegistry){
      const layerNames = layer.options.get('layers') != null ? layer.options.get<string>('layers')!.split(',') : [];
      return Promise.resolve(

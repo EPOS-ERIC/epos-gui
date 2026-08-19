@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { GeoJsonObject, Feature, GeometryObject, Point } from 'geojson'; //  CoverageCollection
+import { GeoJsonObject, Feature, FeatureCollection, GeometryObject, Point } from 'geojson'; //  CoverageCollection
 import { MapLayer } from '../mapLayer.abstract';
 import { MarkerClusterOptions, MarkerLayer } from '../markerLayer';
 import { FaMarker } from '../../marker/faMarker/faMarker';
@@ -8,6 +8,7 @@ import { GeoJsonLayerFeatureItemGenerator } from './geoJsonLayerFeatureItemGener
 import { LayerWithMarkers } from '../layerWithMarkers.interface';
 import { LocalStorageVariables } from 'services/model/persisters/localStorageVariables.enum';
 import { PopupProperty } from 'utility/maplayers/popupProperty';
+import { FeatureDisplayItem } from '../../featureDisplay/featureDisplayItem';
 export class GeoJsonMarkerLayer extends MarkerLayer {
   public setMapObject(eposLeaflet: EposLeafletComponent): void {
     this.eposLeaflet = eposLeaflet;
@@ -78,6 +79,28 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
    */
   public getLeafletLayer(): Promise<null | L.Layer> {
     return this.populateData().then(() => this.createLayer(this.geoJsonData));
+  }
+
+  public getFeatureDisplayItemById(
+    propertyId: Array<number> | string | undefined,
+    layerName: string,
+  ): Promise<Array<FeatureDisplayItem> | void> {
+    if (propertyId === undefined || this.geoJsonData.type !== 'FeatureCollection') {
+      return Promise.resolve<Array<FeatureDisplayItem>>([]);
+    }
+    const feature = (this.geoJsonData as FeatureCollection).features.find(item => {
+      return item.properties?.[PopupProperty.PROPERTY_ID] === propertyId;
+    }) as Feature<GeometryObject, Record<string, unknown>> | undefined;
+    if (feature == null || this.featureDisplayContentFunc == null) {
+      return Promise.resolve<Array<FeatureDisplayItem>>([]);
+    }
+    return Promise.resolve([
+      new FeatureDisplayItem(
+        feature,
+        () => this.featureDisplayContentFunc(feature),
+        event => this.featureContentClickFunction(event, feature),
+      ),
+    ]);
   }
 
   /**

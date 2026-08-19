@@ -94,7 +94,6 @@ export class WmtsTileLayer extends TileLayer {
   protected getCapabilitiesXML: JQuery<XMLDocument>;
   protected getCapabilitiesPromise: null | Promise<JQuery<XMLDocument>>;
 
-
   constructor(id: string, name?: string, pane?: string) {
     super(id, name);
     // Default options
@@ -112,6 +111,11 @@ export class WmtsTileLayer extends TileLayer {
     this.setLegendCreatorFunction(this.createLegendsDefault.bind(this) as (layer: MapLayer, http: HttpClient) => Promise<null | Array<Legend>>);
     this.setLayerBboxRetrieverFunction(this.getLayerBboxFromGetCapabilitiesXml.bind(this) as (layer: MapLayer, http: HttpClient) => Promise<null | Array<number>>);
     this.setLayerInfoForTableRetrieverFunction(this.getLayerInfoForTableVisualization.bind(this) as (layer: MapLayer, http: HttpClient) => Promise<null | Array<JQuery<Element>>>);
+  }
+
+  public setGetCapabilitiesXml(xml: JQuery<XMLDocument>): this {
+    this.getCapabilitiesXML = xml;
+    return this;
   }
 
   public getLeafletLayer(http: HttpClient): Promise<null | L.Layer> {
@@ -180,7 +184,23 @@ export class WmtsTileLayer extends TileLayer {
             }
 
             // PARSE GetCapabilities XML
-            capabilities.find('Layer').each(function(mainIterIndex) {
+            const selectedLayerIdentifier = this.options.get<string>(WMTSParameter.LAYER);
+            const capabilityLayers = capabilities.find('Layer').filter(function() {
+              if (!selectedLayerIdentifier) {
+                return true;
+              }
+              const identifier = $(this).children().filter(function() {
+                return this.localName === 'Identifier';
+              }).first().text().trim();
+              return identifier === selectedLayerIdentifier;
+            });
+
+            if (capabilityLayers.length === 0) {
+              console.error(`WMTS layer '${selectedLayerIdentifier}' was not found in GetCapabilities.`);
+              return resolve(null);
+            }
+
+            capabilityLayers.each(function(mainIterIndex) {
               const layerEl = $(this);
                 // EXTRACT metadata from Layer
 
@@ -213,7 +233,7 @@ export class WmtsTileLayer extends TileLayer {
                   );
                   // check if bounds of the current layer intersect with the spatial filter bounds -> if not so, go to next iteration/layer
                   if(!mainBounds.intersects(layerSpecificBounds)){
-                    if(mainIterIndex === capabilities.find('Layer').length - 1){
+                    if(mainIterIndex === capabilityLayers.length - 1){
                       return resolve(null);
                     }
                     return; // skip to next iteration

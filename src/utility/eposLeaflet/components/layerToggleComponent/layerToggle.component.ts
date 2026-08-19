@@ -59,7 +59,7 @@ export class LayerToggleComponent implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.stylable = this.layer.options.customLayerOptionStylable.get();
-    this.enable = this.stylable?.getStyle()?.getEnable();
+    this.enable = this.stylable?.getStyle()?.getEnable() ?? !this.layer.hidden.get();
     this.layer.hidden.set(!this.enable);
 
     this.hiddenStateSubscription = this.layer.hidden.watch().subscribe((isHidden: boolean) => {
