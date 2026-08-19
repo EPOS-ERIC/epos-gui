@@ -14,6 +14,21 @@
     </li>
   </ng-container>
 
+  <ng-container *ngIf="externalVectorSource as externalSource">
+    <li class="option external-layer-selector">
+      <div class="label">Source URL</div>
+      <div class="content">
+        <input matInput type="text" [value]="externalSource.sourceUrl" readonly>
+      </div>
+    </li>
+    <li *ngIf="externalSource.layerName" class="option external-layer-selector">
+      <div class="label">Layer</div>
+      <div class="content">
+        <input matInput type="text" [value]="externalSource.layerName" readonly>
+      </div>
+    </li>
+  </ng-container>
+
   <!-- opacity and color -->
   <li class="option" *ngIf="tools.opacity">
     <div class="label">Opacity</div>

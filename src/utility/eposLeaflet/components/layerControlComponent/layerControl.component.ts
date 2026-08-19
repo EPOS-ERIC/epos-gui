@@ -47,6 +47,8 @@ type PersistedExternalLayer = {
   name: string;
   type: ExternalLayerType;
   layerIdentifier?: string;
+  sourceUrl?: string;
+  layerName?: string;
 };
 
 type ExternalLayersStorage = {
@@ -151,7 +153,9 @@ export class LayerControlComponent implements OnInit {
   }
 
   public get isExternalMultiLayerSource(): boolean {
-    return this.detectedExternalLayerType === 'wms' || this.detectedExternalLayerType === 'wmts';
+    return this.detectedExternalLayerType === 'wms'
+      || this.detectedExternalLayerType === 'wmts'
+      || this.detectedExternalLayerType === 'wfs';
   }
 
   public get showExternalLayerCatalogNote(): boolean {
@@ -501,11 +505,21 @@ export class LayerControlComponent implements OnInit {
     if (this.pendingWfsSource == null) {
       throw new Error('Detect the WFS source before adding it.');
     }
-    const selectedLayer = this.externalCatalogLayers.find(
-      layer => layer.identifier === this.selectedExternalLayerIdentifier,
-    );
-    if (selectedLayer == null) {
-      throw new Error('Select a WFS feature type.');
+    const selectedLayers = this.externalCatalogLayers.filter(layer => {
+      return layer.compatible && this.selectedExternalLayerIdentifiers.includes(layer.identifier);
+    });
+    if (selectedLayers.length === 0) {
+      throw new Error('Select at least one WFS feature type.');
+    }
+
+    for (const selectedLayer of selectedLayers) {
+      await this.addDetectedExternalWfsCatalogLayer(selectedLayer);
+    }
+  }
+
+  private async addDetectedExternalWfsCatalogLayer(selectedLayer: ExternalTileServiceCatalogLayer): Promise<void> {
+    if (this.pendingWfsSource == null) {
+      throw new Error('Detect the WFS source before adding it.');
     }
 
     const url = new URL(this.pendingWfsSource.baseUrl);
@@ -538,6 +552,8 @@ export class LayerControlComponent implements OnInit {
       name,
       type: 'wfs',
       layerIdentifier: selectedLayer.identifier,
+      sourceUrl: this.pendingWfsSource.baseUrl,
+      layerName: selectedLayer.title || selectedLayer.identifier,
     });
     if (limitedWfsData.truncated) {
       this.notificationService.sendNotification(
@@ -648,6 +664,8 @@ export class LayerControlComponent implements OnInit {
       type: type === 'covjson' ? 'covjson' : 'geojson',
       geoJsonData: type !== 'covjson' ? featureCollection : undefined,
       covJsonData: type === 'covjson' ? covJsonData ?? undefined : undefined,
+      sourceUrl: storageRecord?.sourceUrl ?? storageRecord?.url,
+      layerName: storageRecord?.layerName,
     });
     layer.hidden.set(hidden);
     this.externalLayerAdd.emit(layer);
@@ -1218,7 +1236,9 @@ export class LayerControlComponent implements OnInit {
       || !['geojson', 'covjson', 'wfs', 'wms', 'wmts'].includes(value.type as string)) {
       return false;
     }
-    return value.layerIdentifier === undefined || typeof value.layerIdentifier === 'string';
+    return (value.layerIdentifier === undefined || typeof value.layerIdentifier === 'string')
+      && (value.sourceUrl === undefined || typeof value.sourceUrl === 'string')
+      && (value.layerName === undefined || typeof value.layerName === 'string');
   }
 
   private arePersistedExternalLayersEqual(

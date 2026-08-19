@@ -16,6 +16,8 @@ export interface ExternalVisualisationSource {
   type: 'geojson' | 'covjson';
   geoJsonData?: FeatureCollection;
   covJsonData?: Record<string, unknown>;
+  sourceUrl?: string;
+  layerName?: string;
 }
 
 /** The MapInteractionService class provides methods for interacting with a map, such as setting the

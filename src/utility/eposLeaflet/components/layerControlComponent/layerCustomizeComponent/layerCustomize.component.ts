@@ -9,7 +9,7 @@ import { defaultMarkerIcons, FaMarkerOption } from 'utility/styler/styler';
 import { MapLayer } from '../../layers/mapLayer.abstract';
 import { GeoJsonLayer } from '../../layers/public_api';
 import { ExternalTileServiceLayer } from '../../layers/externalTileServiceLayer';
-import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
+import { ExternalVisualisationSource, MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 import { DataConfigurableDataSearch } from 'utility/configurablesDataSearch/dataConfigurableDataSearch';
 import { CONTEXT_FACILITY, CONTEXT_RESOURCE, CONTEXT_SOFTWARE } from 'api/api.service.factory';
 
@@ -103,6 +103,8 @@ export class LayerCustomizeComponent implements OnInit {
 
   public externalTileServiceLayer: ExternalTileServiceLayer | null = null;
 
+  public externalVectorSource: ExternalVisualisationSource | null = null;
+
   public isExternalPointGeoJsonLayer = false;
 
   /** The above code is declaring a public property called "tools" which is an object. This object has
@@ -141,6 +143,10 @@ export class LayerCustomizeComponent implements OnInit {
 
     if (this.layer instanceof ExternalTileServiceLayer) {
       this.externalTileServiceLayer = this.layer;
+    }
+    const externalSource = this.mapInteractionService.externalVisualisationSources.value.get(this.layer.id);
+    if (externalSource?.sourceUrl != null) {
+      this.externalVectorSource = externalSource;
     }
 
     this.stylable = this.layer.options.customLayerOptionStylable.get();
