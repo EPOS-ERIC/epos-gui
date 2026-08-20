@@ -77,6 +77,10 @@ export class ExternalTileServiceLayer extends MapLayer {
     return [...this.selectedLayerIdentifiers];
   }
 
+  public getSelectedLayerNames(): Array<string> {
+    return this.getSelectedCatalogLayers().map(layer => layer.title);
+  }
+
   public setSelectedLayerIdentifiers(identifiers: Array<string>): this {
     const selected = new Set(identifiers);
     this.selectedLayerIdentifiers = this.catalogLayers

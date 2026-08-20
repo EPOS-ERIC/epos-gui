@@ -1,6 +1,7 @@
 import { MapLayerFactory } from './mapLayerFactory.interface';
+import { GeoJsonLayer } from 'utility/eposLeaflet/components/layers/geoJsonLayer/geoJsonLayer';
 import {
-  EposLeafletComponent, GeoJsonLayer
+  EposLeafletComponent
 } from 'utility/eposLeaflet/eposLeaflet';
 import { ParameterValue } from 'api/webApi/data/parameterValue.interface';
 import { Stylable } from 'utility/styler/stylable.interface';

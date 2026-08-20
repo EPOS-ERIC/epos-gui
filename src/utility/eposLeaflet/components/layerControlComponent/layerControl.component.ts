@@ -3,14 +3,14 @@ import * as L from 'leaflet';
 import { Map as LMap } from 'leaflet';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { MapLayer } from '../layers/mapLayer.abstract';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { LayersService } from 'utility/eposLeaflet/services/layers.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BaseLayerOption } from '../controls/public_api';
 import { baseLayerOptions } from '../controls/baseLayerControl/baseLayerOptions';
 import { Style } from 'utility/styler/style';
 import { Unsubscriber } from 'decorators/unsubscriber.decorator';
-import { GeoJSONImageOverlayMapLayer } from 'utility/maplayers/geoJSONImageOverlayMapLayer';
+import type { GeoJSONImageOverlayMapLayer } from 'utility/maplayers/geoJSONImageOverlayMapLayer';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Feature, FeatureCollection, GeoJsonObject, GeometryObject, Point } from 'geojson';
 import { GeoJsonLayer } from '../layers/geoJsonLayer/geoJsonLayer';
@@ -31,6 +31,8 @@ import { NotificationService } from 'services/notification.service';
 import { DialogService } from 'components/dialog/dialog.service';
 import { FaMarker } from '../marker/faMarker/faMarker';
 import { defaultMarkerIcons } from 'utility/styler/styler';
+import { Stylable } from 'utility/styler/stylable.interface';
+import { GeoJSONMapLayer } from 'utility/maplayers/geoJSONMapLayer';
 
 type WmsCrsRow = { layerName: string; crs: string; status: boolean };
 type ExternalLayerType = 'geojson' | 'covjson' | 'wms' | 'wmts' | 'wfs';
@@ -255,9 +257,15 @@ export class LayerControlComponent implements OnInit {
         'Cancel',
       ).then(confirmed => {
         if (confirmed) {
-          this.removePersistedExternalLayer(layer.id);
-          this.mapInteractionService.removeHiddenMarkerByLayerId(layer.id, false);
-          layer.getEposLeaflet().removeLayerById(layer.id);
+          const layerId = layer.id.endsWith(GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX)
+            ? layer.id.slice(0, -GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX.length)
+            : layer.id;
+          this.removePersistedExternalLayer(layerId);
+          this.mapInteractionService.removeHiddenMarkerByLayerId(layerId, false);
+          layer.getEposLeaflet().removeLayerById(layerId);
+          if (layer.getEposLeaflet().getLayers().some(item => item.id === layerId + GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX)) {
+            layer.getEposLeaflet().removeLayerById(layerId + GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX);
+          }
         }
       });
     }
@@ -358,7 +366,7 @@ export class LayerControlComponent implements OnInit {
 
     try {
       if (this.detectedExternalLayerType === 'geojson' || this.detectedExternalLayerType === 'covjson') {
-        this.addDetectedExternalGeoJsonLayer();
+        await this.addDetectedExternalGeoJsonLayer();
       } else if (this.detectedExternalLayerType === 'wfs') {
         await this.addDetectedExternalWfsLayer();
       } else {
@@ -484,14 +492,14 @@ export class LayerControlComponent implements OnInit {
       && Array.isArray((layer as any).crsCompatibilityResults);
   }
 
-  private addDetectedExternalGeoJsonLayer(): void {
+  private async addDetectedExternalGeoJsonLayer(): Promise<void> {
     if (this.detectedExternalLayerType === null || this.detectedExternalGeoJsonData === null) {
       throw new Error('Detect the external source before adding it.');
     }
     const isCovJson = this.detectedExternalLayerType === 'covjson';
     const sourceUrl = this.getExternalLayerUrl();
     const name = this.resolveExternalLayerName(this.getExternalJsonSourceName(sourceUrl));
-    this.emitExternalGeoJsonLayer(
+    await this.emitExternalGeoJsonLayer(
       this.detectedExternalGeoJsonData,
       name,
       isCovJson ? MapLayer.MARKERTYPE_POINT : this.getGeoJsonMarkerType(this.detectedExternalGeoJsonData),
@@ -547,7 +555,7 @@ export class LayerControlComponent implements OnInit {
     }
 
     const name = this.resolveExternalLayerName(selectedLayer.title || this.detectedExternalSourceName);
-    this.emitExternalGeoJsonLayer(wfsData, name, this.getGeoJsonMarkerType(wfsData), 'wfs', null, {
+    await this.emitExternalGeoJsonLayer(wfsData, name, this.getGeoJsonMarkerType(wfsData), 'wfs', null, {
       url: url.toString(),
       name,
       type: 'wfs',
@@ -565,7 +573,7 @@ export class LayerControlComponent implements OnInit {
     }
   }
 
-  private emitExternalGeoJsonLayer(
+  private async emitExternalGeoJsonLayer(
     data: GeoJsonObject,
     name: string,
     markerType: string,
@@ -574,65 +582,73 @@ export class LayerControlComponent implements OnInit {
     storageRecord: PersistedExternalLayer | null = null,
     persistStorageRecord = true,
     hidden = false,
-  ): void {
+  ): Promise<void> {
     const id = this.createExternalLayerId();
     const color = this.getNextExternalLayerColor();
-    const sourceFeatureCollection = this.toFeatureCollection(data);
-    const featureCollection: FeatureCollection = {
-      ...sourceFeatureCollection,
-      features: sourceFeatureCollection.features.map((feature, index) => {
-        const featureId = `${id}#${index}#`;
-        return {
-          ...feature,
-          id: featureId,
-          properties: {
-            ...feature.properties,
-            [PopupProperty.PROPERTY_ID]: featureId,
-          },
-        };
-      }),
-    };
-    const layer = new GeoJsonLayer(id, name);
-    layer.setGeoJsonData(featureCollection)
-      .setStylingFunction(() => ({
-        color: layer.options.customLayerOptionColor.get() ?? color,
-        fillColor: layer.options.customLayerOptionFillColor.get() ?? color,
-        opacity: layer.options.customLayerOptionOpacity.get() ?? 1,
-        fillOpacity: layer.options.customLayerOptionFillColorOpacity.get() ?? 0.2,
-        weight: layer.options.customLayerOptionWeight.get() ?? 3,
-      }))
-      .setPointToLayerFunction((_feature, latlng) => {
-        const selectedMarkerType = layer.options.customLayerOptionMarkerType.get();
-        const markerClasses = (layer.options.customLayerOptionMarkerValue.get()
-          ?? defaultMarkerIcons[0].value.join(' ')).split(' ');
-        const markerColor = layer.options.customLayerOptionColor.get() ?? color;
-        const markerFillColor = layer.options.customLayerOptionFillColor.get() ?? color;
-        const markerSize = layer.options.customLayerOptionMarkerIconSize.get();
+    const featureCollection = this.createExternalFeatureCollection(data, id);
+    const stylable = new ExternalLayerStylable(
+      new Style(color.slice(1), color.slice(1), id, 1, 0.2, 3, '', 20, Style.ZINDEX_TOP, !hidden)
+    );
+    const hasEposStyle = type !== 'covjson' && this.hasEposGeoJsonStyle(data);
+    const layer = hasEposStyle
+      ? new GeoJSONMapLayer(
+        this.injector,
+        id,
+        name,
+        stylable,
+        () => Promise.resolve(data),
+        { maxZoom: this._map.getMaxZoom() },
+        feature => GeoJSONHelper.getExternalPopupContentFromProperties(
+          feature.properties,
+          name,
+          String(feature.properties[PopupProperty.PROPERTY_ID]),
+          id,
+        ),
+      )
+      : new GeoJsonLayer(id, name);
 
-        if (selectedMarkerType === MapLayer.MARKERTYPE_FA) {
-          const icon = new FaMarker().configure(markerClasses, markerColor, markerSize, markerSize, 70);
-          return L.marker(latlng, { icon, bubblingMouseEvents: true });
-        }
-        if (selectedMarkerType === MapLayer.MARKERTYPE_PIN_FA) {
-          const icon = new FaMarker()
-            .configure(['fas', 'fa-map-marker'], markerColor, markerSize, markerSize, 70)
-            .configureIcon(markerClasses, markerFillColor);
-          return L.marker(latlng, { icon, bubblingMouseEvents: true });
-        }
-        return L.circleMarker(latlng, {
-          radius: 6,
-          color: markerColor,
-          fillColor: markerFillColor,
-          fillOpacity: layer.options.customLayerOptionFillColorOpacity.get() ?? 0.8,
-          weight: layer.options.customLayerOptionWeight.get() ?? 2,
-        });
-      })
-      .setFeatureDisplayContentFunc(feature => type === 'covjson'
-        ? CovJSONHelper.getPopupContentFromProperties(feature.properties, name, id)
-        : GeoJSONHelper.getExternalPopupContentFromProperties(
-          feature.properties, name, String(feature.id), id
-        ));
-    layer.options.customLayerOptionHasMarker.set(true);
+    if (!hasEposStyle) {
+      layer.setGeoJsonData(featureCollection)
+        .setStylingFunction(() => ({
+          color: layer.options.customLayerOptionColor.get() ?? color,
+          fillColor: layer.options.customLayerOptionFillColor.get() ?? color,
+          opacity: layer.options.customLayerOptionOpacity.get() ?? 1,
+          fillOpacity: layer.options.customLayerOptionFillColorOpacity.get() ?? 0.2,
+          weight: layer.options.customLayerOptionWeight.get() ?? 3,
+        }))
+        .setPointToLayerFunction((_feature, latlng) => {
+          const selectedMarkerType = layer.options.customLayerOptionMarkerType.get();
+          const markerClasses = (layer.options.customLayerOptionMarkerValue.get()
+            ?? defaultMarkerIcons[0].value.join(' ')).split(' ');
+          const markerColor = layer.options.customLayerOptionColor.get() ?? color;
+          const markerFillColor = layer.options.customLayerOptionFillColor.get() ?? color;
+          const markerSize = layer.options.customLayerOptionMarkerIconSize.get();
+
+          if (selectedMarkerType === MapLayer.MARKERTYPE_FA) {
+            const icon = new FaMarker().configure(markerClasses, markerColor, markerSize, markerSize, 70);
+            return L.marker(latlng, { icon, bubblingMouseEvents: true });
+          }
+          if (selectedMarkerType === MapLayer.MARKERTYPE_PIN_FA) {
+            const icon = new FaMarker()
+              .configure(['fas', 'fa-map-marker'], markerColor, markerSize, markerSize, 70)
+              .configureIcon(markerClasses, markerFillColor);
+            return L.marker(latlng, { icon, bubblingMouseEvents: true });
+          }
+          return L.circleMarker(latlng, {
+            radius: 6,
+            color: markerColor,
+            fillColor: markerFillColor,
+            fillOpacity: layer.options.customLayerOptionFillColorOpacity.get() ?? 0.8,
+            weight: layer.options.customLayerOptionWeight.get() ?? 2,
+          });
+        })
+        .setFeatureDisplayContentFunc(feature => type === 'covjson'
+          ? CovJSONHelper.getPopupContentFromProperties(feature.properties, name, id)
+          : GeoJSONHelper.getExternalPopupContentFromProperties(
+            feature.properties, name, String(feature.id), id
+          ));
+    }
+    layer.options.customLayerOptionHasMarker.set(featureCollection.features.length > 0);
     layer.options.customLayerOptionMarkerType.set(markerType);
     layer.options.customLayerOptionColor.set(color);
     layer.options.customLayerOptionFillColor.set(color);
@@ -644,18 +660,20 @@ export class LayerControlComponent implements OnInit {
       const label = properties?.name ?? properties?.title ?? properties?.id;
       return label == null ? name : String(label);
     });
-    layer.setLegendCreatorFunction(() => {
-      const symbol = document.createElement('span');
-      symbol.dataset.externalLayerLegend = id;
-      symbol.style.backgroundColor = layer.options.customLayerOptionFillColor.get() ?? color;
-      symbol.style.border = `2px solid ${layer.options.customLayerOptionColor.get() ?? color}`;
-      symbol.style.display = 'inline-block';
-      symbol.style.height = '12px';
-      symbol.style.width = '12px';
-      return Promise.resolve([
-        new Legend(id, name).addLegendItem(new ElementLegendItem('External GeoJSON', symbol)),
-      ]);
-    });
+    if (!hasEposStyle) {
+      layer.setLegendCreatorFunction(() => {
+        const symbol = document.createElement('span');
+        symbol.dataset.externalLayerLegend = id;
+        symbol.style.backgroundColor = layer.options.customLayerOptionFillColor.get() ?? color;
+        symbol.style.border = `2px solid ${layer.options.customLayerOptionColor.get() ?? color}`;
+        symbol.style.display = 'inline-block';
+        symbol.style.height = '12px';
+        symbol.style.width = '12px';
+        return Promise.resolve([
+          new Legend(id, name).addLegendItem(new ElementLegendItem('External GeoJSON', symbol)),
+        ]);
+      });
+    }
 
     this.externalLayerNames.add(name);
     this.mapInteractionService.setExternalVisualisationSource({
@@ -669,9 +687,59 @@ export class LayerControlComponent implements OnInit {
     });
     layer.hidden.set(hidden);
     this.externalLayerAdd.emit(layer);
+    if (type !== 'covjson' && this.toFeatureCollection(data).features.some(
+      feature => feature[GeoJSONHelper.IMAGE_OVERLAY_ATTR] != null
+    )) {
+      const { GeoJSONImageOverlayMapLayer } = await import('utility/maplayers/geoJSONImageOverlayMapLayer');
+      const imageOverlayLayer = new GeoJSONImageOverlayMapLayer(
+        this.injector,
+        id,
+        name,
+        stylable,
+        () => Promise.resolve(data),
+      );
+      imageOverlayLayer.options.customLayerOptionOpacity.set(
+        layer.options.customLayerOptionOpacity.get() ?? 1
+      );
+      layer.options.customLayerOptionOpacity.watch().subscribe(opacity => {
+        imageOverlayLayer.options.customLayerOptionOpacity.set(opacity);
+      });
+      imageOverlayLayer.setPostLayerAddFunction(() => {
+        if (imageOverlayLayer.isEmpty()) {
+          imageOverlayLayer.getEposLeaflet().removeLayerById(imageOverlayLayer.id);
+        }
+        return Promise.resolve();
+      });
+      imageOverlayLayer.hidden.set(hidden);
+      this.externalLayerAdd.emit(imageOverlayLayer);
+    }
     if (storageRecord != null) {
       this.registerPersistedExternalLayer(layer.id, storageRecord, persistStorageRecord);
     }
+  }
+
+  private createExternalFeatureCollection(data: GeoJsonObject, id: string): FeatureCollection {
+    const sourceFeatureCollection = this.toFeatureCollection(data);
+    return {
+      ...sourceFeatureCollection,
+      features: sourceFeatureCollection.features
+        .map((feature, index) => {
+          const featureId = `${id}#${index}#`;
+          return {
+            ...feature,
+            id: featureId,
+            properties: {
+              ...feature.properties,
+              [PopupProperty.PROPERTY_ID]: featureId,
+            },
+          };
+        })
+        .filter(feature => feature.geometry != null),
+    };
+  }
+
+  private hasEposGeoJsonStyle(data: GeoJsonObject): boolean {
+    return Object.keys(data).includes(GeoJSONHelper.STYLE_ATTR);
   }
 
   private addExternalServiceLayer(): void {
@@ -1114,7 +1182,7 @@ export class LayerControlComponent implements OnInit {
         throw new Error('The saved CovJSON source no longer returns CovJSON.');
       }
       const geoJsonData = this.convertCovJsonToGeoJson(data);
-      this.emitExternalGeoJsonLayer(
+      await this.emitExternalGeoJsonLayer(
         geoJsonData,
         storageRecord.name,
         MapLayer.MARKERTYPE_POINT,
@@ -1131,7 +1199,7 @@ export class LayerControlComponent implements OnInit {
       throw new Error('The saved source no longer returns GeoJSON.');
     }
     L.geoJSON(data);
-    this.emitExternalGeoJsonLayer(
+    await this.emitExternalGeoJsonLayer(
       data,
       storageRecord.name,
       this.getGeoJsonMarkerType(data),
@@ -1463,8 +1531,13 @@ export class LayerControlComponent implements OnInit {
 
       // if layer is imageOverlay
       if (layer.options.customLayerOptionPaneType.get() === MapLayer.IMAGE_OVERLAY_LAYER_TYPE) {
+        const realId = (layer as GeoJSONImageOverlayMapLayer).getRealId();
+        const vectorLayer = layers.find(candidate => candidate.id === realId);
+        if (vectorLayer?.options.customLayerOptionHasMarker.get()) {
+          return false;
+        }
         // add realId of layerImageOverlay to remove from list layers
-        layersImageOverlayExtra.push((layer as GeoJSONImageOverlayMapLayer).getRealId());
+        layersImageOverlayExtra.push(realId);
       }
 
       return layer.visibleOnLayerControl.get() && layer.addedToMap.get();
@@ -1488,15 +1561,29 @@ export class LayerControlComponent implements OnInit {
 
       if (layer !== null) {
         ++index;
+        const layerId = layer.id.endsWith(GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX)
+          ? layer.id.slice(0, -GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX.length)
+          : layer.id;
+        const relatedLayers = layers.length > 0
+          ? layer.getEposLeaflet().getLayers().filter(item =>
+            item.id === layerId || item.id === layerId + GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX
+          )
+          : [layer];
         const pane = this._map.getPane(layer.id);
         if (pane !== undefined && pane !== null) {
 
           const zIndex = (index + Number(Style.ZINDEX_TOP)).toString();
 
-          pane!.style.zIndex = zIndex;
+          relatedLayers.forEach(relatedLayer => {
+            const relatedPane = this._map.getPane(relatedLayer.id);
+            if (relatedPane != null) {
+              relatedPane.style.zIndex = zIndex;
+            }
+            relatedLayer.options.customLayerOptionZIndex.set(zIndex);
+          });
 
           // persist zIndex value
-          this.layersService.setLayerOrder(layer.id, zIndex, layersOrder);
+          this.layersService.setLayerOrder(layerId, zIndex, layersOrder);
           layer.options.customLayerOptionZIndex.set(zIndex);
           this.layersService.layerChange(layer);
 
@@ -1505,4 +1592,22 @@ export class LayerControlComponent implements OnInit {
     });
   }
 
+}
+
+class ExternalLayerStylable implements Stylable {
+  public readonly styleObs;
+  private readonly styleSource: BehaviorSubject<null | Style>;
+
+  constructor(style: Style) {
+    this.styleSource = new BehaviorSubject<null | Style>(style);
+    this.styleObs = this.styleSource.asObservable();
+  }
+
+  public setStyle(style: null | Style): void {
+    this.styleSource.next(style);
+  }
+
+  public getStyle(): null | Style {
+    return this.styleSource.value;
+  }
 }

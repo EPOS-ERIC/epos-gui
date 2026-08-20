@@ -15,6 +15,8 @@ import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteracti
 })
 export class LayerToggleComponent implements OnInit, OnDestroy {
 
+  private static readonly IMAGE_OVERLAY_ID_SUFFIX = '_geojson_image_layer';
+
   /** The `@Input() layer: MapLayer;` is a decorator that marks the `layer` property as an input property.
   This means that the value of `layer` can be passed into the `LayerToggleComponent` component from
   its parent component. The `layer` property is of type `MapLayer`, which is a custom class
@@ -80,6 +82,11 @@ export class LayerToggleComponent implements OnInit, OnDestroy {
    */
   public updateEnable(event: MatSlideToggleChange): void {
     this.layer.hidden.set(!event.checked);
+
+    const pairedLayerId = this.layer.id.endsWith(LayerToggleComponent.IMAGE_OVERLAY_ID_SUFFIX)
+      ? this.layer.id.slice(0, -LayerToggleComponent.IMAGE_OVERLAY_ID_SUFFIX.length)
+      : this.layer.id + LayerToggleComponent.IMAGE_OVERLAY_ID_SUFFIX;
+    this.layer.getEposLeaflet().getLayers().find(layer => layer.id === pairedLayerId)?.hidden.set(!event.checked);
 
     // WMTS
     const layers = this.layer.getEposLeaflet().layers;
