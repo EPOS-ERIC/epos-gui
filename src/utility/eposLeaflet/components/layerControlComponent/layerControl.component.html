@@ -114,8 +114,15 @@
           externalLayerError }}</div>
 
         <div class="external-layer-actions">
-          <button mat-icon-button type="button" class="external-layer-info"
-            matTooltip="External layers may be added to the map by providing a URL. The URL can point either to data in a supported format (GeoJSON or CovJSON) or to a supported web service (WFS or WMS). Incompatible layers may be rejected or may not be displayed."
+          <button mat-icon-button type="button" class="external-layer-info" matTooltip="External layers may be added to the map by providing a URL pointing either to data in a supported format (GeoJSON or CovJSON) or to a supported web service (WFS or WMS).
+
+To use an external layer, the server must:
+
+- support the required CORS headers;
+- support HTTPS;
+- support imagery in the Web Mercator projection (EPSG:3857) in the case of a WMS layers.
+
+Layers that do not meet these requirements may be rejected or may not be displayed correctly."
             matTooltipPosition="left" matTooltipClass="external-layer-info-tooltip"
             aria-label="Information about supported external layer URLs" data-cy="external-layer-info">
             <mat-icon>help</mat-icon>
