@@ -88,6 +88,9 @@
           <input matInput type="url" [(ngModel)]="externalLayerUrl" (ngModelChange)="externalLayerSourceChanged()"
             [disabled]="externalLayerLoading" data-cy="external-layer-url">
         </mat-form-field>
+        <div class="external-layer-catalog-note">
+          <i>*Note: Layers added in this way are not saved or made visible to others.</i>
+        </div>
 
         <mat-form-field *ngIf="isExternalMultiLayerSource" appearance="fill" class="external-layer-catalog">
           <mat-label>Layers</mat-label>
