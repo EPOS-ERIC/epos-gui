@@ -207,12 +207,14 @@ export class LayerLegendComponent implements OnInit {
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const dataSearchToggleOnMap: Array<string> = JSON.parse(this.localStoragePersister.getValue(LocalStorageVariables.LS_CONFIGURABLES, LocalStorageVariables.LS_TOGGLE_ON_MAP) as string || '[]');
-        void layer.getLegendData(this.http).then((legendArray: Array<Legend>) => {
-          if (legendArray !== null) {
-            legendArray.forEach((legend: Legend) => {
+        void Promise.all(this.getLogicalLegendLayers(layer).map(legendLayer =>
+          legendLayer.getLegendData(this.http)
+        )).then(legendArrays => {
+          legendArrays.forEach((legendArray: null | Array<Legend>) => {
+            legendArray?.forEach((legend: Legend) => {
               (this.legendContent.nativeElement as HTMLElement).appendChild(legend.createDisplayContent(dataSearchToggleOnMap));
             });
-          }
+          });
         });
       } else if (this.showImage === false) {
 
@@ -237,6 +239,16 @@ export class LayerLegendComponent implements OnInit {
       }
     }, 100);
 
+  }
+
+  private getLogicalLegendLayers(layer: MapLayer): Array<MapLayer> {
+    if (layer.id.endsWith(GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX) || layer.getEposLeaflet() == null) {
+      return [layer];
+    }
+    const overlayLayer = layer.getEposLeaflet().getLayers().find(candidate =>
+      candidate.id === layer.id + GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX
+    );
+    return overlayLayer == null ? [layer] : [layer, overlayLayer];
   }
 
   /**

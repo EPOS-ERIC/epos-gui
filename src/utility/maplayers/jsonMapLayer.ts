@@ -1,5 +1,6 @@
+import { GeoJsonLayer } from 'utility/eposLeaflet/components/layers/geoJsonLayer/geoJsonLayer';
 import {
-  GeoJsonLayer, EposLeafletComponent, MarkerClusterOptions, FaMarker, MapLayer, Legend,
+  EposLeafletComponent, MarkerClusterOptions, FaMarker, MapLayer, Legend,
   LegendItem, AnchorLocation, ElementLegendItem, Marker as MapMarker
 } from 'utility/eposLeaflet/eposLeaflet';
 import * as L from 'leaflet';
@@ -302,7 +303,7 @@ export class JsonMapLayer extends GeoJsonLayer {
    * markers
    * @param [clustering=true] - boolean - whether or not to cluster the markers
    */
-  protected tryAddClustering(mapConfig: EposLeafletComponent, stylable?: Stylable, clustering = true): void {
+  protected tryAddClustering(mapConfig: Pick<EposLeafletComponent, 'maxZoom'>, stylable?: Stylable, clustering = true): void {
 
     const clusterOptions = new MarkerClusterOptions();
     if (stylable != null) {
@@ -641,6 +642,7 @@ enum Anchor {
 }
 
 
+
 /** The `Marker` class represents a marker used for clustering and pinning on a map, with various
 properties such as marker type, value, and anchor. */
 export class Marker {
@@ -839,6 +841,4 @@ class PointStyle {
     return this.marker;
   }
 }
-
-
 

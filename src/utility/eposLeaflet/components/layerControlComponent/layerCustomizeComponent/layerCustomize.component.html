@@ -9,7 +9,7 @@
     <li class="option external-layer-selector">
       <div class="label">Layer</div>
       <div class="content">
-        <input matInput type="text" [value]="layer.name" readonly>
+        <input matInput type="text" [value]="externalService.getSelectedLayerNames().join(', ')" readonly>
       </div>
     </li>
   </ng-container>

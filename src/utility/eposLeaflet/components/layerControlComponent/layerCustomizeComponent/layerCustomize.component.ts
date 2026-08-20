@@ -230,7 +230,7 @@ export class LayerCustomizeComponent implements OnInit {
     this.layersService.layerChange(this.layer);
 
     if (this.clustering) {
-      this.redrawLayer();
+      void this.redrawLayer();
     }
   }
 
@@ -245,7 +245,7 @@ export class LayerCustomizeComponent implements OnInit {
     this.layersService.layerChange(this.layer);
 
     if (this.clustering) {
-      this.redrawLayer();
+      void this.redrawLayer();
     }
   }
 
@@ -260,7 +260,7 @@ export class LayerCustomizeComponent implements OnInit {
     this.layersService.layerChange(this.layer);
 
     if (this.clustering) {
-      this.redrawLayer();
+      void this.redrawLayer();
     }
   }
 
@@ -275,7 +275,7 @@ export class LayerCustomizeComponent implements OnInit {
     this.layersService.layerChange(this.layer);
 
     if (this.clustering) {
-      this.redrawLayer();
+      void this.redrawLayer();
     }
   }
 
@@ -320,6 +320,17 @@ export class LayerCustomizeComponent implements OnInit {
    * emitted when the value of a MatSlider component changes.
    */
   updateSize(event: MatSliderChange): void {
+    if (this.isExternalPointGeoJsonLayer && this.layer instanceof GeoJSONMapLayer && event.value != null) {
+      const style = this.stylable?.getStyle();
+      style?.setMarkerIconSize(event.value);
+      if (style != null) {
+        this.stylable?.setStyle(style, true);
+      }
+      void this.redrawLayer().then(() => {
+        this.layersService.layerChange(this.layer);
+      });
+      return;
+    }
     this.layer.options.customLayerOptionMarkerIconSize.set(event.value);
     this.layersService.layerChange(this.layer);
   }
@@ -361,6 +372,21 @@ export class LayerCustomizeComponent implements OnInit {
    * value of a mat-select component changes. It contains information about the selected value.
    */
   changeMarkerIconFa(event: MatSelectChange): void {
+    const markerValue = this.markerIcons.find(e => e.id === event.value)?.value.join(' ');
+    if (markerValue == null) {
+      return;
+    }
+    if (this.isExternalPointGeoJsonLayer && this.layer instanceof GeoJSONMapLayer) {
+      this.markerType = MapLayer.MARKERTYPE_FA;
+      this.selectedMarkerIcon = markerValue;
+      this.layer.setMarkerOverride(markerValue);
+      this.setTools();
+      void this.redrawLayer().then(() => {
+        this.layer.options.customLayerOptionMarkerValue.set(markerValue);
+        this.layersService.layerChange(this.layer);
+      });
+      return;
+    }
     const redrawAsIcon = this.isExternalPointGeoJsonLayer
       && this.layer.options.customLayerOptionMarkerType.get() === MapLayer.MARKERTYPE_POINT;
     if (redrawAsIcon) {
@@ -368,20 +394,20 @@ export class LayerCustomizeComponent implements OnInit {
       this.layer.options.customLayerOptionMarkerType.set(this.markerType);
       this.setTools();
     }
-    this.selectedMarkerIcon = this.markerIcons.find(e => e.id === event.value)?.value.join(' ');
-    this.layer.options.customLayerOptionMarkerValue.set(this.markerIcons.find(e => e.id === event.value)?.value.join(' '));
+    this.selectedMarkerIcon = markerValue;
+    this.layer.options.customLayerOptionMarkerValue.set(markerValue);
     this.layersService.layerChange(this.layer);
     if (redrawAsIcon) {
-      this.redrawLayer();
+      void this.redrawLayer();
     }
   }
 
   /**
    * The function redraws a layer on a map using the EposLeaflet library.
    */
-  private redrawLayer(): void {
+  private redrawLayer(): Promise<void> {
     const map = this.layer.getEposLeaflet();
-    void map.redrawLayer(this.layer);
+    return map.redrawLayer(this.layer);
   }
 
   private hasPointGeometry(value: unknown): boolean {
@@ -424,16 +450,30 @@ export class LayerCustomizeComponent implements OnInit {
 
     const style = this.stylable?.getStyle();
     if (style !== undefined) {
+      style?.setClustering(clustering);
       this.stylable?.setStyle(style, true);
     }
 
-    this.redrawLayer();
+    void this.redrawLayer();
   }
 
   /**
    * The function sets the tools based on the marker type.
    */
   private setTools(): void {
+
+    if (this.isExternalPointGeoJsonLayer && this.layer instanceof GeoJSONMapLayer) {
+      this.tools = {
+        opacity: true,
+        colorOpacity: false,
+        fillColorOpacity: false,
+        weight: false,
+        changeMarker: 'font',
+        size: true,
+        cluster: true,
+      };
+      return;
+    }
 
     switch (this.markerType) {
       // WMS
