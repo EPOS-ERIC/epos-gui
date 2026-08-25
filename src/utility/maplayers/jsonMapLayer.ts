@@ -131,6 +131,8 @@ export class JsonMapLayer extends GeoJsonLayer {
       legend.addLegendItem(this.createLegendOtherItem(this.stylable, label.value, layerType as 'point' | 'poly' | 'line'));
     }
 
+    this.addMarkerParameterLegendItems(legend);
+
     return Promise.resolve([legend]);
   }
 
@@ -156,7 +158,15 @@ export class JsonMapLayer extends GeoJsonLayer {
         pointStyle = found;
       }
     }
-    return this.createLeafletMarker(this.stylable, pointStyle.getMarker(), latlng, true);
+    const parameterStyle = this.resolveMarkerParameterStyle(geoJsonPoint);
+    return this.createLeafletMarker(
+      this.stylable,
+      pointStyle.getMarker(),
+      latlng,
+      true,
+      parameterStyle.color,
+      parameterStyle.size,
+    );
   }
 
   /**
@@ -321,11 +331,18 @@ export class JsonMapLayer extends GeoJsonLayer {
  * @param latlng - L.LatLng
  * @returns A layer
  */
-  protected createLeafletMarker(stylable: Stylable, marker: null | Marker, latlng: L.LatLng, bubblingMouseEvents: boolean): L.Layer {
+  protected createLeafletMarker(
+    stylable: Stylable,
+    marker: null | Marker,
+    latlng: L.LatLng,
+    bubblingMouseEvents: boolean,
+    colorOverride?: string,
+    sizeOverride?: number,
+  ): L.Layer {
     latlng = (null == latlng) ? L.latLng(0, 0) : latlng;
 
     // create custom marker from payload
-    const mapMarker = this.createCustomMarker(stylable, marker);
+    const mapMarker = this.createCustomMarker(stylable, marker, false, colorOverride, sizeOverride);
 
     let layer: L.Layer;
 
@@ -341,7 +358,11 @@ export class JsonMapLayer extends GeoJsonLayer {
     } else {
 
       layer = L.circleMarker(latlng, {
-        radius: this.CIRCLE_MARKER_RADIUS_PX,
+        radius: sizeOverride == null ? this.CIRCLE_MARKER_RADIUS_PX : sizeOverride / 2,
+        color: this.getStylableColor1(stylable),
+        fillColor: colorOverride ?? this.getStylableColor2(stylable),
+        opacity: this.getStylableOpacity(stylable),
+        fillOpacity: this.getStylableFillOpacity(stylable),
         weight: 1,
       });
     }
@@ -465,17 +486,29 @@ export class JsonMapLayer extends GeoJsonLayer {
    * @param [legendMarker=false] - boolean - if true, the marker will be used for the legend.
    * @returns A map marker
    */
-  private createCustomMarker(stylable: Stylable, marker: null | Marker, legendMarker = false): null | MapMarker {
+  private createCustomMarker(
+    stylable: Stylable,
+    marker: null | Marker,
+    legendMarker = false,
+    colorOverride?: string,
+    sizeOverride?: number,
+  ): null | MapMarker {
     let mapMarker: null | MapMarker = null;
 
     // size
-    let size = this.SIZE_MARKER;
-    if (stylable.getStyle()?.getMarkerIconSize() !== null && !legendMarker) {
+    let size = sizeOverride ?? this.SIZE_MARKER;
+    if (sizeOverride == null && stylable.getStyle()?.getMarkerIconSize() !== null && !legendMarker) {
       size = stylable.getStyle()?.getMarkerIconSize() ?? this.SIZE_MARKER;
     }
 
+    const markerColor = marker?.getPin()
+      ? this.getStylableColor1(stylable)
+      : colorOverride ?? this.getStylableColor1(stylable);
+    const markerFillColor = colorOverride ?? this.getStylableColor2(stylable);
+    const isColorByParameter = !legendMarker && this.getMarkerParameterStyle().color.mode === 'parameter';
+
     const defaultMarker = new FaMarker()
-      .configure(['fas', 'fa-map-marker'], this.getStylableColor1(stylable), size, size, 70);
+      .configure(['fas', 'fa-map-marker'], markerColor, size, size, isColorByParameter ? 100 : 70);
 
     if (marker != null) {
 
@@ -489,7 +522,7 @@ export class JsonMapLayer extends GeoJsonLayer {
             this.options.customLayerOptionMarkerType.set(MapLayer.MARKERTYPE_PIN_FA);
 
             mapMarker = defaultMarker
-              .configureIcon(markerValue.split(' '), this.getStylableColor2(stylable));
+              .configureIcon(markerValue.split(' '), markerFillColor);
             defaultMarker.setSize(size);
 
             break;
@@ -502,7 +535,7 @@ export class JsonMapLayer extends GeoJsonLayer {
               .setIcon(() => {
                 const element = document.createElement('span');
                 element.innerHTML = markerValue;
-                element.style.color = this.getStylableColor2(stylable);
+                element.style.color = markerFillColor;
                 element.style.fontWeight = 'bold';
                 element.style.fontSize = '50%';
                 return element;
@@ -510,6 +543,7 @@ export class JsonMapLayer extends GeoJsonLayer {
             break;
           }
           case (MarkerType.IMAGE): {
+            this.options.customLayerOptionMarkerType.set(MapLayer.MARKERTYPE_IMAGE);
             mapMarker = defaultMarker.setIcon(() => {
               const element = document.createElement('span');
               element.innerHTML = `<img src="${marker.getMarkerValue()}" style="max-width: 60%!important; max-height: 50%px!important;"/>`;
@@ -536,7 +570,8 @@ export class JsonMapLayer extends GeoJsonLayer {
             this.options.customLayerOptionMarkerType.set(MapLayer.MARKERTYPE_FA);
 
             mapMarker = new FaMarker()
-              .configure(markerValue.split(' '), this.getStylableColor1(stylable), size, size, 70);
+              .configure(markerValue.split(' '), markerColor, size, size, isColorByParameter ? 100 : 70)
+              .setStrokeColor(colorOverride ?? null);
 
             break;
           }
@@ -544,7 +579,7 @@ export class JsonMapLayer extends GeoJsonLayer {
             mapMarker = new CharacterIcon().configure(
               marker.getMarkerValue(),
               size,
-              this.getStylableColor1(stylable),
+              markerColor,
             );
             break;
           }
@@ -841,4 +876,3 @@ class PointStyle {
     return this.marker;
   }
 }
-

@@ -498,6 +498,9 @@ export class MarkerLayer extends MapLayer implements LayerWithMarkers {
             } as L.PathOptions;
 
             marker.setStyle(style);
+            if (size != null) {
+              marker.setRadius(size / 2);
+            }
           }
         }
 
