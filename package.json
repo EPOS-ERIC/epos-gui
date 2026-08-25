@@ -48,7 +48,7 @@
     "html2canvas": "^1.4.1",
     "jquery": "^3.7.0",
     "jquery-ui-dist": "^1.13.2",
-    "jsonpath": "^1.1.1",
+    "jsonpath": "^1.2.1",
     "jszip": "^3.10.1",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^0.4.14",
