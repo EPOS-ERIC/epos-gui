@@ -1,5 +1,29 @@
 import { GNSS_STATIONS_WITH_PRODUCTS } from '../support/constants';
 
+const addExternalGeoJsonLayer = (name: string, url: string, response: object, alias: string): void => {
+  cy.intercept('GET', url, {
+    body: JSON.stringify(response),
+    headers: { 'content-type': 'application/geo+json' },
+  }).as(alias);
+
+  cy.getByDataCy('add-external-layer-button').click();
+  cy.get('input[data-cy="external-layer-name"]').type(name);
+  cy.get('input[data-cy="external-layer-url"]').type(url);
+  cy.getByDataCy('confirm-external-layer').click();
+  cy.wait(`@${alias}`);
+  cy.contains('.layer-title', name).should('be.visible');
+};
+
+const openExternalLayerCustomize = (name: string): Cypress.Chainable<JQuery<HTMLElement>> => {
+  cy.contains('.layer-title', name).click();
+  cy.contains('.layer-title', name)
+    .parents('.layer')
+    .first()
+    .as('externalLayer');
+  cy.get('@externalLayer').find('[role="tab"]').contains('Customize').click();
+  return cy.get('@externalLayer').find('app-layer-customize').should('be.visible');
+};
+
 describe('Test marker cluster', () => {
   beforeEach(() => {
     cy.init();
@@ -147,5 +171,173 @@ describe('Test marker cluster', () => {
           }
         },
       );
+  });
+
+  it('Shows character controls for an EPOS-styled external GeoJSON', () => {
+    const service = GNSS_STATIONS_WITH_PRODUCTS;
+    const layerName = 'GNSS character markers';
+    const layerUrl = 'https://example.test/gnss-character.geojson';
+
+    cy.fixture(service.rawServiceResponse()).then((response: object) => {
+      cy.getByDataCy('layer-control-content').click({ force: true });
+      addExternalGeoJsonLayer(layerName, layerUrl, response, 'externalCharacterGeoJson');
+      openExternalLayerCustomize(layerName).within(() => {
+        cy.contains('.option .label', 'Stroke color').should('be.visible');
+        cy.contains('li.option', 'Fill color').find('mcc-color-picker').should('be.visible');
+        cy.contains('.option .label', 'Size').should('be.visible');
+        cy.contains('.option .label', 'Cluster').should('be.visible');
+        cy.contains('.option .label', 'Marker Icon').should('not.exist');
+        cy.contains('li.option', 'Value').as('characterValue');
+        cy.get('@characterValue').find('input').should('have.value', 'S').clear().type('A');
+        cy.get('@characterValue').find('button').first().click();
+      });
+
+      cy.get('.leaflet-marker-pane .fa-marker-icon-icon')
+        .should('have.length.greaterThan', 0)
+        .each(marker => expect(marker.text()).to.equal('A'));
+
+      cy.get('@externalLayer').find('app-layer-customize').within(() => {
+        cy.get('@characterValue').find('button').eq(1).click();
+        cy.get('@characterValue').find('input').should('have.value', 'S');
+      });
+      cy.get('.leaflet-marker-pane .fa-marker-icon-icon')
+        .each(marker => expect(marker.text()).to.equal('S'));
+
+      let fixedFillColor = '';
+      cy.get('.leaflet-marker-pane .fa-marker-icon-icon').first().then(marker => {
+        fixedFillColor = marker.css('color');
+      });
+      cy.get('@externalLayer').find('[data-cy="marker-color-mode"]').click();
+      cy.get('mat-option').contains('By parameter').click();
+      cy.get('@externalLayer').find('[data-cy="marker-color-property"]').click();
+      cy.get('mat-option').contains('Altitude').click();
+
+      cy.get('@externalLayer').find('app-layer-customize')
+        .contains('li.option', 'Fill color')
+        .find('mcc-color-picker')
+        .should('be.visible');
+      cy.get('.leaflet-marker-pane .fa-marker-icon-icon')
+        .each(marker => expect(marker.css('color')).to.equal(fixedFillColor));
+      cy.get('.leaflet-marker-pane .marker-gradient').should(markers => {
+        const backgrounds = [...markers].map(marker => (marker as HTMLElement).style.background);
+        expect(new Set(backgrounds).size).to.be.greaterThan(1);
+      });
+
+      cy.get('@externalLayer').find('app-layer-customize')
+        .contains('li.option', 'Fill color')
+        .find('.btn-picker')
+        .click();
+      cy.get('[role="dialog"][aria-label="Color picker"] canvas#colors').click(10, 100);
+      cy.get('[role="dialog"][aria-label="Color picker"] .mcc-picker-selector').click(180, 40);
+      let updatedFillColor = '';
+      cy.get('@externalLayer').find('app-layer-customize')
+        .contains('li.option', 'Fill color')
+        .find('.btn-picker-background')
+        .should(swatch => {
+          updatedFillColor = swatch.css('background-color');
+          expect(updatedFillColor).not.to.equal(fixedFillColor);
+        });
+      cy.get('.leaflet-marker-pane .fa-marker-icon-icon').should(markers => {
+        markers.each((_index, marker) => {
+          expect(Cypress.$(marker).css('color')).to.equal(updatedFillColor);
+        });
+      });
+    });
+  });
+
+  it('Applies parameter colors to pinned Font Awesome marker strokes', () => {
+    const layerName = 'Pinned Font Awesome markers';
+    const layerUrl = 'https://example.test/pinned-fa.geojson';
+    const response = {
+      type: 'FeatureCollection',
+      '@epos_style': {
+        station: {
+          label: 'Station',
+          marker: { fontawesome_class: 'fas fa-star', pin: true, clustering: false },
+        },
+      },
+      features: [
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [12, 42] },
+          properties: { '@epos_type': 'station', Value: 0 },
+        },
+        {
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [13, 43] },
+          properties: { '@epos_type': 'station', Value: 10 },
+        },
+      ],
+    };
+
+    cy.getByDataCy('layer-control-content').click({ force: true });
+    addExternalGeoJsonLayer(layerName, layerUrl, response, 'externalPinnedFaGeoJson');
+    openExternalLayerCustomize(layerName);
+
+    let fixedFillColor = '';
+    cy.get('.leaflet-marker-pane .fa-marker-icon-icon').first().then(marker => {
+      fixedFillColor = marker.css('color');
+    });
+    cy.get('@externalLayer').find('[data-cy="marker-color-mode"]').click();
+    cy.get('mat-option').contains('By parameter').click();
+    cy.get('@externalLayer').find('[data-cy="marker-color-property"]').click();
+    cy.get('mat-option').contains('Value').click();
+
+    cy.get('@externalLayer').find('app-layer-customize')
+      .contains('li.option', 'Fill color')
+      .find('mcc-color-picker')
+      .should('be.visible');
+    cy.get('.leaflet-marker-pane .fa-marker-icon-icon')
+      .should('have.length', 2)
+      .each(marker => expect(marker.css('color')).to.equal(fixedFillColor));
+    cy.get('.leaflet-marker-pane .marker-gradient').should(markers => {
+      const backgrounds = [...markers].map(marker => (marker as HTMLElement).style.background);
+      expect(new Set(backgrounds).size).to.equal(2);
+    });
+  });
+
+  it('Keeps image and raw marker sources isolated', () => {
+    const pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZlZkAAAAASUVORK5CYII=';
+    const pngDataUrl = `data:image/png;base64,${pngBase64}`;
+    const gifDataUrl = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+    const makeGeoJson = (marker: object) => ({
+      type: 'FeatureCollection',
+      '@epos_style': { station: { label: 'Station', marker } },
+      features: [{
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [12, 42] },
+        properties: { '@epos_type': 'station', Title: 'Station' },
+      }],
+    });
+    let unexpectedSRequests = 0;
+
+    cy.intercept('GET', '**/S', request => {
+      unexpectedSRequests++;
+      request.reply(404);
+    });
+    cy.getByDataCy('layer-control-content').click({ force: true });
+    addExternalGeoJsonLayer(
+      'Image marker',
+      'https://example.test/image-marker.geojson',
+      makeGeoJson({ href: pngDataUrl, pin: false, clustering: false }),
+      'externalImageGeoJson',
+    );
+    addExternalGeoJsonLayer(
+      'Raw marker',
+      'https://example.test/raw-marker.geojson',
+      makeGeoJson({ raw: pngBase64, pin: false, clustering: false }),
+      'externalRawGeoJson',
+    );
+
+    cy.get(`.leaflet-marker-pane img[src="${pngDataUrl}"]`).should('have.length', 2);
+    openExternalLayerCustomize('Image marker').within(() => {
+      cy.contains('li.option', 'Icon url').as('imageUrl');
+      cy.get('@imageUrl').find('input').clear().type(gifDataUrl, { parseSpecialCharSequences: false });
+      cy.get('@imageUrl').find('button').first().click();
+    });
+
+    cy.get(`.leaflet-marker-pane img[src="${gifDataUrl}"]`).should('have.length', 1);
+    cy.get(`.leaflet-marker-pane img[src="${pngDataUrl}"]`).should('have.length', 1);
+    cy.then(() => expect(unexpectedSRequests).to.equal(0));
   });
 });

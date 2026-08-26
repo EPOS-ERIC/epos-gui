@@ -70,7 +70,7 @@
         matTooltip="Change opacity"></mat-slider>
     </div>
   </li>
-  <li class="option" *ngIf="tools.fillColorOpacity && (!canConfigureColorByParameter || colorMode === 'fixed')">
+  <li class="option" *ngIf="tools.fillColorOpacity && (!canConfigureColorByParameter || colorMode === 'fixed' || isParameterColorOnStroke)">
     <div class="label">Fill color</div>
     <div class="content">
       <mcc-color-picker [hideHexForms]="true" [hideUsedColors]="true" [colorPickerSelectorHeight]="170"

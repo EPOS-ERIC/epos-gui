@@ -176,6 +176,11 @@ export class LayerCustomizeComponent implements OnInit {
     return this.isParameterStylingAvailable;
   }
 
+  public get isParameterColorOnStroke(): boolean {
+    return this.markerType === MapLayer.MARKERTYPE_CHARACTER
+      || this.markerType === MapLayer.MARKERTYPE_PIN_FA;
+  }
+
   /**
    * The ngOnInit function initializes various properties and sets up tools based on the options and
    * style of a layer.
@@ -316,9 +321,14 @@ export class LayerCustomizeComponent implements OnInit {
    */
   updateFillColor(newcolor: string): void {
     this.layer.options.customLayerOptionFillColor.set(newcolor);
+    if (this.colorMode === 'parameter' && this.isParameterColorOnStroke) {
+      this.stylable?.getStyle()?.setColor2(newcolor.substring(1));
+    }
     this.layersService.layerChange(this.layer);
 
-    if (this.clustering || this.sizeMode === 'parameter') {
+    if (this.clustering
+      || (this.colorMode === 'parameter' && this.isParameterColorOnStroke)
+      || this.sizeMode === 'parameter') {
       void this.redrawLayer();
     }
   }
@@ -672,7 +682,9 @@ export class LayerCustomizeComponent implements OnInit {
    */
   private setTools(): void {
 
-    if (this.isExternalPointGeoJsonLayer && this.layer instanceof GeoJSONMapLayer) {
+    if (this.isExternalPointGeoJsonLayer
+      && this.layer instanceof GeoJSONMapLayer
+      && this.markerType === MapLayer.MARKERTYPE_POINT) {
       this.tools = {
         opacity: false,
         colorOpacity: true,

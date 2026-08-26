@@ -473,8 +473,10 @@ export class MarkerLayer extends MapLayer implements LayerWithMarkers {
           } else if (type === MapLayer.MARKERTYPE_IMAGE) {
 
             const icon = marker.options?.icon as ImageIcon;
-            icon.configure(value, size, size);
-            marker.setIcon(icon);
+            if (icon instanceof ImageIcon) {
+              icon.configure(value, size, size);
+              marker.setIcon(icon);
+            }
 
           } else {
             const icon = marker.options?.icon as FaMarker;

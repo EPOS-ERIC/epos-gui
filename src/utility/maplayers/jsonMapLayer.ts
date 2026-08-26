@@ -501,10 +501,15 @@ export class JsonMapLayer extends GeoJsonLayer {
       size = stylable.getStyle()?.getMarkerIconSize() ?? this.SIZE_MARKER;
     }
 
-    const markerColor = marker?.getPin()
-      ? this.getStylableColor1(stylable)
-      : colorOverride ?? this.getStylableColor1(stylable);
-    const markerFillColor = colorOverride ?? this.getStylableColor2(stylable);
+    const isPinnedColorOnStroke = marker?.getPin()
+      && (marker.getMarkerType() === MarkerType.CHARACTER
+        || marker.getMarkerType() === MarkerType.FONT_AWESOME);
+    const markerColor = !marker?.getPin() || isPinnedColorOnStroke
+      ? colorOverride ?? this.getStylableColor1(stylable)
+      : this.getStylableColor1(stylable);
+    const markerFillColor = isPinnedColorOnStroke
+      ? this.getStylableColor2(stylable)
+      : colorOverride ?? this.getStylableColor2(stylable);
     const isColorByParameter = !legendMarker && this.getMarkerParameterStyle().color.mode === 'parameter';
 
     const defaultMarker = new FaMarker()
