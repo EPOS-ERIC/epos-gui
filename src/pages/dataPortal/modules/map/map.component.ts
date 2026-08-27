@@ -1026,6 +1026,12 @@ export class MapComponent implements OnInit {
 
     // APPLICA LE PREFERENZE A OGNI LAYER APPENA CREATO
     mapLayers.forEach(layer => {
+      const existingLayer = this.eposLeaflet.getLayers().find(candidate =>
+        candidate.id === layer.id && candidate instanceof GeoJSONMapLayer
+      );
+      if (layer instanceof GeoJSONMapLayer && existingLayer instanceof GeoJSONMapLayer) {
+        layer.setMarkerParameterStyle(existingLayer.getMarkerParameterStyle());
+      }
       const savedState = savedVisibilities.get(layer.id);
       if (savedState !== undefined) {
         layer.options.customLayerOptionStylable.get()?.getStyle()?.setEnable(savedState);

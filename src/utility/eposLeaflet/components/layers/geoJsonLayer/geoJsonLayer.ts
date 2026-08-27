@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { GeoJsonObject, Feature, GeometryObject, Point } from 'geojson'; //  CoverageCollection
+import { GeoJsonObject, Feature, FeatureCollection, GeometryObject, Point } from 'geojson'; //  CoverageCollection
 import { MapLayer } from '../mapLayer.abstract';
 import { MarkerClusterOptions, MarkerLayer } from '../markerLayer';
 import { FaMarker } from '../../marker/faMarker/faMarker';
@@ -8,13 +8,131 @@ import { GeoJsonLayerFeatureItemGenerator } from './geoJsonLayerFeatureItemGener
 import { LayerWithMarkers } from '../layerWithMarkers.interface';
 import { LocalStorageVariables } from 'services/model/persisters/localStorageVariables.enum';
 import { PopupProperty } from 'utility/maplayers/popupProperty';
+import { FeatureDisplayItem } from '../../featureDisplay/featureDisplayItem';
+import { Legend } from '../../controls/legendControl/legend';
+import { ElementLegendItem } from '../../controls/legendControl/elementLegendItem';
+import * as D3Chromatic from 'd3-scale-chromatic';
+import { color as parseD3Color } from 'd3-color';
+
+export type MarkerStyleMode = 'fixed' | 'parameter';
+
+export interface NumericGeoJsonProperty {
+  name: string;
+  min: number;
+  max: number;
+}
+
+export interface GeoJsonMarkerParameterStyle {
+  color: {
+    mode: MarkerStyleMode;
+    property: string | null;
+    paletteId: string | null;
+  };
+  size: {
+    mode: MarkerStyleMode;
+    property: string | null;
+    minPx: number;
+    maxPx: number;
+  };
+}
+
+export interface ResolvedGeoJsonMarkerStyle {
+  color?: string;
+  size?: number;
+}
+
+export interface GeoJsonMarkerColorPalette {
+  id: string;
+  colors: Array<string>;
+  interpolator: (value: number) => string;
+}
+
+const D3_INTERPOLATOR_PREFIX = 'interpolate';
+const PALETTE_SAMPLE_COUNT = 17;
+
+const D3_MARKER_COLOR_PALETTES = Object.entries(D3Chromatic)
+  .filter(([name, value]) => name.startsWith(D3_INTERPOLATOR_PREFIX) && typeof value === 'function')
+  .sort(([nameA], [nameB]) => {
+    const defaultPaletteOrder = Number(nameA !== 'interpolateViridis') - Number(nameB !== 'interpolateViridis');
+    return defaultPaletteOrder || nameA.localeCompare(nameB);
+  })
+  .map(([name, value]): GeoJsonMarkerColorPalette => {
+    const d3Interpolator = value as (normalized: number) => string;
+    const interpolator = (normalized: number): string => {
+      const interpolatedColor = d3Interpolator(normalized);
+      return parseD3Color(interpolatedColor)?.formatHex() ?? interpolatedColor;
+    };
+    return {
+      id: name.substring(D3_INTERPOLATOR_PREFIX.length).toLowerCase(),
+      colors: Array.from(
+        { length: PALETTE_SAMPLE_COUNT },
+        (_item, index) => interpolator(index / (PALETTE_SAMPLE_COUNT - 1)),
+      ),
+      interpolator,
+    };
+  });
+
 export class GeoJsonMarkerLayer extends MarkerLayer {
   public setMapObject(eposLeaflet: EposLeafletComponent): void {
     this.eposLeaflet = eposLeaflet;
   }
+
+  public updateMarkerSize(size: number): void {
+    this.getMarkers().forEach(marker => {
+      if (marker instanceof L.CircleMarker) {
+        marker.setRadius(size / 2);
+      } else {
+        const icon = marker.options.icon;
+        if (icon instanceof FaMarker) {
+          icon.setSize(size);
+          marker.setIcon(icon);
+        }
+      }
+    });
+  }
+
+  public previewMarkerSizeScale(scaleFactor: number, previousScaleFactor: number): void {
+    if (previousScaleFactor <= 0) {
+      return;
+    }
+    const incrementalScale = scaleFactor / previousScaleFactor;
+    this.getMarkers().forEach(marker => {
+      if (marker instanceof L.CircleMarker) {
+        marker.setRadius(marker.getRadius() * incrementalScale);
+      } else {
+        const markerContent = marker.getElement()?.firstElementChild;
+        if (markerContent instanceof HTMLElement) {
+          markerContent.style.transform = `scale(${scaleFactor})`;
+          markerContent.style.transformOrigin = marker.options.icon instanceof FaMarker
+            ? '50% 100%'
+            : '50% 50%';
+        }
+      }
+    });
+  }
+
+  public updateMarkerStrokeColor(color: string): void {
+    this.getMarkers().forEach(marker => {
+      if (marker instanceof L.CircleMarker) {
+        marker.setStyle({ color });
+      } else {
+        const icon = marker.options.icon;
+        if (icon instanceof FaMarker) {
+          if (icon.icon == null) {
+            icon.setStrokeColor(color);
+          } else {
+            icon.setColor(color);
+          }
+          marker.setIcon(icon);
+        }
+      }
+    });
+  }
 }
 
 export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
+
+  public static readonly MARKER_COLOR_PALETTES = D3_MARKER_COLOR_PALETTES;
 
   /** The `protected geoJsonData: GeoJsonObject;` is declaring a protected property named `geoJsonData`
   of type `GeoJsonObject`. This property is used to store the GeoJSON data that will be displayed on
@@ -52,6 +170,13 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
   Record<string, unknown>>` and returns a string. */
   protected tooltipFunction: (feature: Feature<GeometryObject, Record<string, unknown>>) => string;
 
+  private markerParameterStyle: GeoJsonMarkerParameterStyle = {
+    color: { mode: 'fixed', property: null, paletteId: null },
+    size: { mode: 'fixed', property: null, minPx: 10, maxPx: 50 },
+  };
+
+  private numericMarkerProperties = new Array<NumericGeoJsonProperty>();
+
   /**
    * The constructor initializes a GeoJsonMarkerLayer with default options.
    * @param {string} id - The `id` parameter is a string that represents the unique identifier for the
@@ -78,6 +203,28 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
    */
   public getLeafletLayer(): Promise<null | L.Layer> {
     return this.populateData().then(() => this.createLayer(this.geoJsonData));
+  }
+
+  public getFeatureDisplayItemById(
+    propertyId: Array<number> | string | undefined,
+    layerName: string,
+  ): Promise<Array<FeatureDisplayItem> | void> {
+    if (propertyId === undefined || this.geoJsonData.type !== 'FeatureCollection') {
+      return Promise.resolve<Array<FeatureDisplayItem>>([]);
+    }
+    const feature = (this.geoJsonData as FeatureCollection).features.find(item => {
+      return item.properties?.[PopupProperty.PROPERTY_ID] === propertyId;
+    }) as Feature<GeometryObject, Record<string, unknown>> | undefined;
+    if (feature == null || this.featureDisplayContentFunc == null) {
+      return Promise.resolve<Array<FeatureDisplayItem>>([]);
+    }
+    return Promise.resolve([
+      new FeatureDisplayItem(
+        feature,
+        () => this.featureDisplayContentFunc(feature),
+        event => this.featureContentClickFunction(event, feature),
+      ),
+    ]);
   }
 
   /**
@@ -143,6 +290,7 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
    */
   public setGeoJsonData(data: GeoJsonObject): this {
     this.geoJsonData = data;
+    this.numericMarkerProperties = this.extractNumericMarkerProperties(data);
     return this;
   }
 
@@ -152,6 +300,121 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
    */
   public getGeoJsonData(): GeoJsonObject {
     return this.geoJsonData;
+  }
+
+  public getNumericMarkerProperties(): Array<NumericGeoJsonProperty> {
+    return this.numericMarkerProperties.map(property => ({ ...property }));
+  }
+
+  public getMarkerParameterStyle(): GeoJsonMarkerParameterStyle {
+    return {
+      color: { ...this.markerParameterStyle.color },
+      size: { ...this.markerParameterStyle.size },
+    };
+  }
+
+  public setMarkerParameterStyle(style: GeoJsonMarkerParameterStyle): this {
+    let minPx = Math.max(5, Math.min(100, style.size.minPx));
+    let maxPx = Math.max(5, Math.min(100, style.size.maxPx));
+    if (minPx >= maxPx) {
+      minPx = Math.min(minPx, 95);
+      maxPx = minPx + 5;
+    }
+    this.markerParameterStyle = {
+      color: { ...style.color },
+      size: {
+        ...style.size,
+        minPx,
+        maxPx,
+      },
+    };
+    return this;
+  }
+
+  public getMarkerColorPalette(): GeoJsonMarkerColorPalette | null {
+    return GeoJsonLayer.MARKER_COLOR_PALETTES.find(
+      palette => palette.id === this.markerParameterStyle.color.paletteId
+    ) ?? null;
+  }
+
+  public resolveMarkerParameterStyle(
+    feature: Feature<Point, Record<string, unknown>>,
+  ): ResolvedGeoJsonMarkerStyle {
+    const resolved: ResolvedGeoJsonMarkerStyle = {};
+    const colorConfig = this.markerParameterStyle.color;
+    const colorProperty = colorConfig.property == null
+      ? null
+      : this.numericMarkerProperties.find(property => property.name === colorConfig.property);
+    if (colorConfig.mode === 'parameter' && colorProperty != null) {
+      const value = this.toFiniteNumber(feature.properties?.[colorProperty.name]);
+      if (value != null) {
+        resolved.color = this.interpolateMarkerColor(
+          colorConfig.paletteId,
+          this.normalizeMarkerValue(value, colorProperty.min, colorProperty.max),
+        );
+      }
+    }
+
+    const sizeConfig = this.markerParameterStyle.size;
+    const sizeProperty = sizeConfig.property == null
+      ? null
+      : this.numericMarkerProperties.find(property => property.name === sizeConfig.property);
+    if (sizeConfig.mode === 'parameter' && sizeProperty != null) {
+      const value = this.toFiniteNumber(feature.properties?.[sizeProperty.name]);
+      if (value != null) {
+        const normalized = this.normalizeMarkerValue(value, sizeProperty.min, sizeProperty.max);
+        resolved.size = sizeConfig.minPx + normalized * (sizeConfig.maxPx - sizeConfig.minPx);
+      }
+    }
+    return resolved;
+  }
+
+  public addMarkerParameterLegendItems(legend: Legend): void {
+    const colorConfig = this.markerParameterStyle.color;
+    const colorProperty = colorConfig.property == null
+      ? null
+      : this.numericMarkerProperties.find(property => property.name === colorConfig.property);
+    const palette = this.getMarkerColorPalette();
+    if (colorConfig.mode === 'parameter' && colorProperty != null && palette != null) {
+      const gradient = document.createElement('span');
+      gradient.style.display = 'inline-block';
+      gradient.style.width = '70px';
+      gradient.style.height = '12px';
+      gradient.style.border = '1px solid #777';
+      gradient.style.background = colorProperty.min === colorProperty.max
+        ? this.interpolateMarkerColor(palette.id, 0.5)
+        : `linear-gradient(to right, ${this.getPaletteGradientStops(palette).join(', ')})`;
+      const colorRange = colorProperty.min === colorProperty.max
+        ? this.formatLegendNumber(colorProperty.min)
+        : `${this.formatLegendNumber(colorProperty.min)} – ${this.formatLegendNumber(colorProperty.max)}`;
+      legend.addLegendItem(new ElementLegendItem(
+        `Color · ${colorProperty.name}: ${colorRange}`,
+        gradient,
+      ));
+    }
+
+    const sizeConfig = this.markerParameterStyle.size;
+    const sizeProperty = sizeConfig.property == null
+      ? null
+      : this.numericMarkerProperties.find(property => property.name === sizeConfig.property);
+    if (sizeConfig.mode === 'parameter' && sizeProperty != null) {
+      const normalizedValues = sizeProperty.min === sizeProperty.max ? [0.5] : [0, 0.5, 1];
+      normalizedValues.forEach(normalized => {
+        const value = sizeProperty.min + normalized * (sizeProperty.max - sizeProperty.min);
+        const previewSize = 6 + normalized * 14;
+        const marker = document.createElement('span');
+        marker.style.display = 'inline-block';
+        marker.style.width = `${previewSize}px`;
+        marker.style.height = `${previewSize}px`;
+        marker.style.border = '1px solid currentColor';
+        marker.style.borderRadius = '50%';
+        marker.style.backgroundColor = 'currentColor';
+        legend.addLegendItem(new ElementLegendItem(
+          `Size · ${sizeProperty.name}: ${this.formatLegendNumber(value)}`,
+          marker,
+        ));
+      });
+    }
   }
 
   /**
@@ -302,6 +565,15 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
           },
           pointToLayer: (geoJsonPoint: Feature<Point, Record<string, unknown>>, latlng: L.LatLng): null | L.Layer => {
             let layer: null | L.Layer = this.pointToLayerFunction(geoJsonPoint, latlng);
+            if (layer instanceof L.CircleMarker) {
+              const resolvedStyle = this.resolveMarkerParameterStyle(geoJsonPoint);
+              if (resolvedStyle.color != null) {
+                layer.setStyle({ color: resolvedStyle.color, fillColor: resolvedStyle.color });
+              }
+              if (resolvedStyle.size != null) {
+                layer.setRadius(resolvedStyle.size / 2);
+              }
+            }
             layer.options[PopupProperty.PROPERTY_ID] = geoJsonPoint.properties[PopupProperty.PROPERTY_ID];
             // if it's a marker remove it and to our own marker layer,
             //  so that we can optionally cluster
@@ -343,7 +615,7 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
       if (this.dataPromise == null) {
         this.dataPromise = this.getDataFunc()
           .then((data: GeoJsonObject) => {
-            this.geoJsonData = data;
+            this.setGeoJsonData(data);
           })
           .catch(() => {
             console.warn(`Failed to populate GeoJson data of '${this.name}' layer.`);
@@ -351,10 +623,10 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
       }
       return this.dataPromise;
     } else {
-      this.geoJsonData = {
+      this.setGeoJsonData({
         type: 'FeatureCollection',
         features: [],
-      } as GeoJsonObject;
+      } as GeoJsonObject);
       return Promise.resolve();
     }
   }
@@ -465,14 +737,21 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
     }
 
     if (this.markerLayer != null) {
-      this.markerLayer.options.customLayerOptionMarkerType.set(this.options.customLayerOptionMarkerType.get());
-      this.markerLayer.options.customLayerOptionMarkerValue.set(this.options.customLayerOptionMarkerValue.get()!);
-      this.markerLayer.options.customLayerOptionMarkerIconSize.set(this.options.customLayerOptionMarkerIconSize.get()!);
-      this.markerLayer.options.customLayerOptionColor.set(this.options.customLayerOptionColor.get()!);
       this.markerLayer.options.customLayerOptionOpacity.set(this.options.customLayerOptionOpacity.get()!);
-      this.markerLayer.options.customLayerOptionFillColor.set(this.options.customLayerOptionFillColor.get()!);
-      this.markerLayer.options.customLayerOptionFillColorOpacity.set(this.options.customLayerOptionFillColorOpacity.get()!);
-      this.markerLayer.options.customLayerOptionWeight.set(this.options.customLayerOptionWeight.get()!);
+      if (this.markerParameterStyle.color.mode === 'fixed' && this.markerParameterStyle.size.mode === 'fixed') {
+        this.markerLayer.options.customLayerOptionMarkerType.set(this.options.customLayerOptionMarkerType.get());
+        this.markerLayer.options.customLayerOptionMarkerValue.set(this.options.customLayerOptionMarkerValue.get()!);
+        this.markerLayer.options.customLayerOptionMarkerIconSize.set(this.options.customLayerOptionMarkerIconSize.get()!);
+        this.markerLayer.options.customLayerOptionColor.set(this.options.customLayerOptionColor.get()!);
+        this.markerLayer.options.customLayerOptionFillColor.set(this.options.customLayerOptionFillColor.get()!);
+        this.markerLayer.options.customLayerOptionFillColorOpacity.set(this.options.customLayerOptionFillColorOpacity.get()!);
+        this.markerLayer.options.customLayerOptionWeight.set(this.options.customLayerOptionWeight.get()!);
+      } else if (this.markerParameterStyle.size.mode === 'fixed') {
+        const markerSize = this.options.customLayerOptionMarkerIconSize.get();
+        if (markerSize != null) {
+          this.markerLayer.updateMarkerSize(markerSize);
+        }
+      }
     }
 
     return this;
@@ -502,5 +781,115 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
     if (this.geoLayer != null) {
       this.geoLayer.bringToBack();
     }
+  }
+
+  private extractNumericMarkerProperties(data: GeoJsonObject): Array<NumericGeoJsonProperty> {
+    const features = this.getPointFeatures(data);
+    const preferredKeys = new Array<string>();
+    const valuesByKey = new Map<string, Array<number>>();
+    const excludedKeys = new Set([PopupProperty.PROPERTY_ID, '@epos_style_id', '@epos_style_lookup_id']);
+
+    features.forEach(feature => {
+      const properties = feature.properties ?? {};
+      ['@epos_map_keys', '@epos_data_keys'].forEach(metadataKey => {
+        const metadataValue = properties[metadataKey];
+        if (Array.isArray(metadataValue)) {
+          metadataValue.forEach(key => {
+            if (typeof key === 'string' && !preferredKeys.includes(key)) {
+              preferredKeys.push(key);
+            }
+          });
+        }
+      });
+      Object.keys(properties).forEach(key => {
+        if (excludedKeys.has(key)) {
+          return;
+        }
+        const value = this.toFiniteNumber(properties[key]);
+        if (value != null) {
+          const values = valuesByKey.get(key) ?? [];
+          values.push(value);
+          valuesByKey.set(key, values);
+        }
+      });
+    });
+
+    const orderedKeys = preferredKeys.filter(key => valuesByKey.has(key));
+    Array.from(valuesByKey.keys())
+      .filter(key => !orderedKeys.includes(key))
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+      .forEach(key => orderedKeys.push(key));
+
+    return orderedKeys.map(name => {
+      const values = valuesByKey.get(name)!;
+      return { name, min: Math.min(...values), max: Math.max(...values) };
+    });
+  }
+
+  private getPointFeatures(data: unknown): Array<Feature<Point, Record<string, unknown>>> {
+    if (data == null || typeof data !== 'object') {
+      return [];
+    }
+    const geoJson = data as {
+      type?: string;
+      geometry?: unknown;
+      features?: Array<unknown>;
+    };
+    if (geoJson.type === 'FeatureCollection') {
+      return (geoJson.features ?? []).reduce<Array<Feature<Point, Record<string, unknown>>>>(
+        (features, feature) => features.concat(this.getPointFeatures(feature)),
+        [],
+      );
+    }
+    if (geoJson.type === 'Feature' && this.geometryContainsPoint(geoJson.geometry)) {
+      return [geoJson as unknown as Feature<Point, Record<string, unknown>>];
+    }
+    return [];
+  }
+
+  private geometryContainsPoint(geometry: unknown): boolean {
+    if (geometry == null || typeof geometry !== 'object') {
+      return false;
+    }
+    const value = geometry as { type?: string; geometries?: Array<unknown> };
+    if (value.type === 'Point' || value.type === 'MultiPoint') {
+      return true;
+    }
+    return value.type === 'GeometryCollection'
+      && (value.geometries?.some(item => this.geometryContainsPoint(item)) ?? false);
+  }
+
+  private toFiniteNumber(value: unknown): number | null {
+    if (typeof value === 'number') {
+      return Number.isFinite(value) ? value : null;
+    }
+    if (typeof value === 'string' && value.trim() !== '') {
+      const numericValue = Number(value);
+      return Number.isFinite(numericValue) ? numericValue : null;
+    }
+    return null;
+  }
+
+  private normalizeMarkerValue(value: number, min: number, max: number): number {
+    if (min === max) {
+      return 0.5;
+    }
+    return Math.max(0, Math.min(1, (value - min) / (max - min)));
+  }
+
+  private interpolateMarkerColor(paletteId: string | null, normalized: number): string {
+    const palette = GeoJsonLayer.MARKER_COLOR_PALETTES.find(item => item.id === paletteId)
+      ?? GeoJsonLayer.MARKER_COLOR_PALETTES[0];
+    return palette.interpolator(normalized);
+  }
+
+  private getPaletteGradientStops(palette: GeoJsonMarkerColorPalette): Array<string> {
+    return palette.colors.map(
+      (color, index) => `${color} ${(index / (palette.colors.length - 1)) * 100}%`
+    );
+  }
+
+  private formatLegendNumber(value: number): string {
+    return new Intl.NumberFormat(undefined, { maximumFractionDigits: 3 }).format(value);
   }
 }

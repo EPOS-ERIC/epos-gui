@@ -10,7 +10,7 @@ import { Injector } from '@angular/core';
 import { Feature, GeoJsonObject, GeoJsonProperties, GeometryObject, Point } from 'geojson';
 import { FeatureCollection } from '@turf/turf';
 import { PopupProperty } from './popupProperty';
-import { JsonMapLayer } from './jsonMapLayer';
+import { JsonMapLayer, Marker } from './jsonMapLayer';
 import { JsonHelper } from './jsonHelper';
 import { HttpClient } from '@angular/common/http';
 
@@ -24,13 +24,18 @@ export class GeoJSONMapLayer extends JsonMapLayer {
 
   public dataAsFC: FeatureCollection;
 
+  private markerOverrideValue: null | string = null;
+
   constructor(
     injector: Injector,
     id: string,
     name: string,
     protected stylable: Stylable,
     getDataFunction: () => Promise<GeoJsonObject>,
-    mapConfig: EposLeafletComponent,
+    mapConfig: Pick<EposLeafletComponent, 'maxZoom'>,
+    featureDisplayContentFunc: (feature: Feature<GeometryObject, Record<string, unknown>>) => string =
+      (feature: Feature<GeometryObject, Record<string, unknown>>) =>
+        GeoJSONHelper.getPopupContentFromProperties(feature.properties, name),
   ) {
     super(injector, id, name, stylable);
     this.markerLayer.options.set('pane', this.id);
@@ -40,14 +45,14 @@ export class GeoJSONMapLayer extends JsonMapLayer {
       return getDataFunction()
         .then((data: GeoJsonObject) => {
 
-          // check imageoverlay is present
-          if (!this.hasImageOverlay(data)) {
+          const vectorData = this.filterOutImageLayers(data);
+          if (this.hasVectorData(vectorData)) {
             this.setLayerClickFeatureItemGenerator(
               new GeoJsonLayerFeatureItemGenerator(
                 this,
-                data,
+                vectorData,
                 (feature: Feature<GeometryObject, Record<string, unknown>>) => {
-                  return GeoJSONHelper.getPopupContentFromProperties(feature.properties, this.layerName);
+                  return featureDisplayContentFunc(feature);
                 },
                 (ev: MouseEvent, feature: Feature<GeometryObject, Record<string, unknown>>) => {
                   JsonHelper.popupClick(ev, this.executionService, this.authenticatedClickService);
@@ -56,7 +61,7 @@ export class GeoJSONMapLayer extends JsonMapLayer {
 
 
             // remove image layers in display data
-            this.setGeoJsonData(this.filterOutImageLayers(data));
+            this.setGeoJsonData(vectorData);
             this.initData();
 
             // check if cluster options is true on layer stylable
@@ -81,7 +86,7 @@ export class GeoJSONMapLayer extends JsonMapLayer {
       })
       .setPointToLayerFunction(this.pointToLayer.bind(this) as null | ((geoJsonPoint: Feature<Point, Record<string, unknown>>, latlng: L.LatLng) => L.Layer))
       .setFeatureDisplayContentFunc((feature: Feature<GeometryObject, Record<string, unknown>>) => {
-        return GeoJSONHelper.getPopupContentFromProperties(feature.properties, this.layerName);
+        return featureDisplayContentFunc(feature);
       })
       .setFeatureContentClickFunc((ev: MouseEvent, feature: Feature<GeometryObject, Record<string, unknown>>) => {
         JsonHelper.popupClick(ev, this.executionService, this.authenticatedClickService);
@@ -103,10 +108,18 @@ export class GeoJSONMapLayer extends JsonMapLayer {
       .setLegendCreatorFunction(this.createLegend.bind(this) as (layer: MapLayer, http: HttpClient) => Promise<null | Array<Legend>>)
 
       .setPostLayerAddFunction(() => {
-        (this.getLayerClickFeatureItemGenerator() as GeoJsonLayerFeatureItemGenerator)
-          .setFixedZoomBufferPx(this.CIRCLE_MARKER_RADIUS_PX);
+        const featureItemGenerator = this.getLayerClickFeatureItemGenerator();
+        if (featureItemGenerator instanceof GeoJsonLayerFeatureItemGenerator) {
+          featureItemGenerator.setFixedZoomBufferPx(this.CIRCLE_MARKER_RADIUS_PX);
+        }
         return Promise.resolve();
       });
+  }
+
+  public setMarkerOverride(markerValue: string): this {
+    this.markerOverrideValue = markerValue;
+    this.options.customLayerOptionMarkerType.set(MapLayer.MARKERTYPE_FA);
+    return this;
   }
 
 
@@ -133,6 +146,27 @@ export class GeoJSONMapLayer extends JsonMapLayer {
     return Promise.resolve().then(() => this.getEposLeaflet().ensurePaneExists(this.id));
   }
 
+  protected pointToLayer(geoJsonPoint: Feature<Point, Record<string, unknown>>, latlng: L.LatLng): L.Layer {
+    if (this.markerOverrideValue != null) {
+      const markerOverride: Record<string, unknown> = {
+        pin: false,
+        clustering: this.getStylableClustering(this.stylable) ?? false,
+      };
+      const markerValueKey = 'fontawesome_class';
+      markerOverride[markerValueKey] = this.markerOverrideValue;
+      const parameterStyle = this.resolveMarkerParameterStyle(geoJsonPoint);
+      return this.createLeafletMarker(
+        this.stylable,
+        Marker.makeFromJSON(markerOverride),
+        latlng,
+        true,
+        parameterStyle.color,
+        parameterStyle.size,
+      );
+    }
+    return super.pointToLayer(geoJsonPoint, latlng);
+  }
+
   // filter out the image features that don't have any geometry (badly formed?)
   private filterOutImageLayers(data: GeoJsonObject): GeoJsonObject {
     // clone so's not to affect the original object
@@ -142,6 +176,10 @@ export class GeoJSONMapLayer extends JsonMapLayer {
       featureCollection.features = featureCollection.features.filter(feature => null != feature.geometry);
     }
     return data;
+  }
+
+  private hasVectorData(data: GeoJsonObject): boolean {
+    return data.type !== 'FeatureCollection' || (data as FeatureCollection).features.length > 0;
   }
 
   private initData(): void {

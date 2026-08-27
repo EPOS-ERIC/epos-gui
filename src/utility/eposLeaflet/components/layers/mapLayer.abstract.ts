@@ -480,6 +480,11 @@ export abstract class MapLayer {
     return this.eposLeaflet;
   }
 
+  public setEposLeaflet(eposLeaflet: EposLeafletComponent): this {
+    this.eposLeaflet = eposLeaflet;
+    return this;
+  }
+
   /**
    * The function returns an instance of the Stylable class or void.
    */

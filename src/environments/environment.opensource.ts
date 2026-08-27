@@ -10,7 +10,7 @@ export const environment = {
     eposSiteApiRestUrl: '',
     eposSiteApiRestKey: '',
     esriApiKey: '',
-    shareSalt: 'CHANGE_ME',
+    shareSalt: 'fxUoIlLqLVuN',
     authRootUrl: authRootUrl.startsWith('http') ? authRootUrl : 'http://localhost:35000',
     matomoTrackEvent: false,
     showPoliciesPopup: false,

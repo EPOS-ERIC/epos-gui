@@ -7,10 +7,14 @@ import { GeoJSONMapLayer } from 'utility/maplayers/geoJSONMapLayer';
 import { Stylable } from 'utility/styler/stylable.interface';
 import { defaultMarkerIcons, FaMarkerOption } from 'utility/styler/styler';
 import { MapLayer } from '../../layers/mapLayer.abstract';
-import { GeoJsonLayer } from '../../layers/public_api';
-import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
+import {
+  GeoJsonLayer, GeoJsonMarkerParameterStyle, MarkerStyleMode, NumericGeoJsonProperty
+} from '../../layers/public_api';
+import { ExternalTileServiceLayer } from '../../layers/externalTileServiceLayer';
+import { ExternalVisualisationSource, MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 import { DataConfigurableDataSearch } from 'utility/configurablesDataSearch/dataConfigurableDataSearch';
 import { CONTEXT_FACILITY, CONTEXT_RESOURCE, CONTEXT_SOFTWARE } from 'api/api.service.factory';
+import { CovJSONMapLayer } from 'utility/maplayers/covJSONMapLayer';
 
 @Component({
   selector: 'app-layer-customize',
@@ -100,6 +104,32 @@ export class LayerCustomizeComponent implements OnInit {
   /** The above code is declaring a public property called "clustering" with a type of boolean or null. */
   public clustering: boolean | null;
 
+  public externalTileServiceLayer: ExternalTileServiceLayer | null = null;
+
+  public externalVectorSource: ExternalVisualisationSource | null = null;
+
+  public isExternalPointGeoJsonLayer = false;
+
+  public isParameterStylingAvailable = false;
+
+  public numericMarkerProperties = new Array<NumericGeoJsonProperty>();
+
+  public colorMode: MarkerStyleMode = 'fixed';
+
+  public colorProperty: string | null = null;
+
+  public sizeMode: MarkerStyleMode = 'fixed';
+
+  public sizeProperty: string | null = null;
+
+  public markerSizeScale = 100;
+
+  public minMarkerSizeScale = 50;
+
+  public maxMarkerSizeScale = 125;
+
+  public colorPaletteBackground = '';
+
   /** The above code is declaring a public property called "tools" which is an object. This object has
   several boolean properties such as "opacity", "colorOpacity", "fillColorOpacity", "weight", "size",
   and "cluster". These properties are used to control various features or settings related to a map or
@@ -115,6 +145,14 @@ export class LayerCustomizeComponent implements OnInit {
     cluster: false,
   };
 
+  private redrawPromise: Promise<void> = Promise.resolve();
+
+  private baseMinMarkerSize = 10;
+
+  private baseMaxMarkerSize = 80;
+
+  private appliedMarkerSizeScale = 100;
+
   /**
    * The constructor initializes the markerIcons property with the defaultMarkerIcons value and injects
    * the LayersService dependency.
@@ -128,11 +166,34 @@ export class LayerCustomizeComponent implements OnInit {
     this.markerIcons = defaultMarkerIcons;
   }
 
+  public get canConfigureColorByParameter(): boolean {
+    return this.isParameterStylingAvailable
+      && this.markerType !== MapLayer.MARKERTYPE_IMAGE
+      && this.markerType !== MapLayer.MARKERTYPE_RAW;
+  }
+
+  public get canConfigureSizeByParameter(): boolean {
+    return this.isParameterStylingAvailable;
+  }
+
+  public get isParameterColorOnStroke(): boolean {
+    return this.markerType === MapLayer.MARKERTYPE_CHARACTER
+      || this.markerType === MapLayer.MARKERTYPE_PIN_FA;
+  }
+
   /**
    * The ngOnInit function initializes various properties and sets up tools based on the options and
    * style of a layer.
    */
   ngOnInit(): void {
+
+    if (this.layer instanceof ExternalTileServiceLayer) {
+      this.externalTileServiceLayer = this.layer;
+    }
+    const externalSource = this.mapInteractionService.externalVisualisationSources.value.get(this.layer.id);
+    if (externalSource?.sourceUrl != null) {
+      this.externalVectorSource = externalSource;
+    }
 
     this.stylable = this.layer.options.customLayerOptionStylable.get();
 
@@ -147,13 +208,40 @@ export class LayerCustomizeComponent implements OnInit {
     this.markerType = this.layer.options.customLayerOptionMarkerType.get() ?? null;
     this.markerIconSize = this.layer.options.customLayerOptionMarkerIconSize.get() ?? this.stylable?.getStyle()?.getMarkerIconSize();
     this.markerValue = this.layer.options.customLayerOptionMarkerValue.get() ?? '';
+    this.isExternalPointGeoJsonLayer = this.layer.id.startsWith('external-layer-')
+      && this.layer instanceof GeoJsonLayer
+      && this.mapInteractionService.externalVisualisationSources.value.get(this.layer.id)?.type === 'geojson'
+      && this.hasPointGeometry(this.layer.getGeoJsonData());
+    this.isParameterStylingAvailable = this.layer instanceof GeoJsonLayer
+      && !(this.layer instanceof CovJSONMapLayer)
+      && this.hasPointGeometry(this.layer.getGeoJsonData());
+    if (this.isParameterStylingAvailable && this.layer instanceof GeoJsonLayer) {
+      this.numericMarkerProperties = this.layer.getNumericMarkerProperties();
+      const parameterStyle = this.layer.getMarkerParameterStyle();
+      this.colorMode = parameterStyle.color.mode;
+      this.colorProperty = parameterStyle.color.property;
+      this.sizeMode = parameterStyle.size.mode;
+      this.sizeProperty = parameterStyle.size.property;
+      this.initializeMarkerSizeScale(parameterStyle.size.minPx, parameterStyle.size.maxPx);
+      this.updatePalettePreview();
+    }
+    if (this.isExternalPointGeoJsonLayer) {
+      if (!this.markerValue) {
+        this.markerValue = defaultMarkerIcons[0].value.join(' ');
+        this.layer.options.customLayerOptionMarkerValue.set(this.markerValue);
+      }
+      if (this.markerIconSize == null) {
+        this.markerIconSize = 20;
+        this.layer.options.customLayerOptionMarkerIconSize.set(this.markerIconSize);
+      }
+    }
 
     // remove facility from defaultMarkerIcons if context resources
     let context = CONTEXT_RESOURCE;
     if (this.layer.getStylable() !== undefined && (this.layer.getStylable() as DataConfigurableDataSearch).context !== undefined) {
       context = (this.layer.getStylable() as DataConfigurableDataSearch).context;
     }
-    if (context === CONTEXT_RESOURCE || context === CONTEXT_SOFTWARE) {
+    if (!this.isExternalPointGeoJsonLayer && (context === CONTEXT_RESOURCE || context === CONTEXT_SOFTWARE)) {
       // remove facility by list
       this.markerIcons = defaultMarkerIcons.filter((_markerOpt: FaMarkerOption) => _markerOpt.context !== CONTEXT_FACILITY);
     }
@@ -181,7 +269,11 @@ export class LayerCustomizeComponent implements OnInit {
       // if one marker on map set clustering false (remove cluster toogle tool)
       if (this.layer instanceof GeoJsonLayer && (this.layer as GeoJSONMapLayer).getMarkerLayer().getMarkers().length === 1) {
         this.clustering = false;
-        this.setClustering(false);
+        if (this.layer.id.startsWith('external-layer-')) {
+          this.layer.options.customLayerOptionClustering.set(false);
+        } else {
+          this.setClustering(false);
+        }
         this.tools.cluster = false;
       }
     }, 100);
@@ -197,7 +289,7 @@ export class LayerCustomizeComponent implements OnInit {
     this.layersService.layerChange(this.layer);
 
     if (this.clustering) {
-      this.redrawLayer();
+      void this.redrawLayer();
     }
   }
 
@@ -209,10 +301,15 @@ export class LayerCustomizeComponent implements OnInit {
    */
   updateColor(newcolor: string): void {
     this.layer.options.customLayerOptionColor.set(newcolor);
+    if (this.colorMode === 'parameter' && this.layer instanceof GeoJsonLayer) {
+      this.layer.getMarkerLayer().updateMarkerStrokeColor(newcolor);
+      this.stylable?.getStyle()?.setColor1(newcolor.substring(1));
+      return;
+    }
     this.layersService.layerChange(this.layer);
 
-    if (this.clustering) {
-      this.redrawLayer();
+    if (this.clustering || this.sizeMode === 'parameter') {
+      void this.redrawLayer();
     }
   }
 
@@ -224,10 +321,15 @@ export class LayerCustomizeComponent implements OnInit {
    */
   updateFillColor(newcolor: string): void {
     this.layer.options.customLayerOptionFillColor.set(newcolor);
+    if (this.colorMode === 'parameter' && this.isParameterColorOnStroke) {
+      this.stylable?.getStyle()?.setColor2(newcolor.substring(1));
+    }
     this.layersService.layerChange(this.layer);
 
-    if (this.clustering) {
-      this.redrawLayer();
+    if (this.clustering
+      || (this.colorMode === 'parameter' && this.isParameterColorOnStroke)
+      || this.sizeMode === 'parameter') {
+      void this.redrawLayer();
     }
   }
 
@@ -241,8 +343,8 @@ export class LayerCustomizeComponent implements OnInit {
     this.layer.options.customLayerOptionFillColorOpacity.set(event.value);
     this.layersService.layerChange(this.layer);
 
-    if (this.clustering) {
-      this.redrawLayer();
+    if (this.clustering || this.sizeMode === 'parameter') {
+      void this.redrawLayer();
     }
   }
 
@@ -261,6 +363,9 @@ export class LayerCustomizeComponent implements OnInit {
     }
 
     this.layersService.layerChange(this.layer);
+    if (this.sizeMode === 'parameter') {
+      void this.redrawLayer();
+    }
   }
 
   /**
@@ -279,6 +384,9 @@ export class LayerCustomizeComponent implements OnInit {
     }
 
     this.layersService.layerChange(this.layer);
+    if (this.colorMode === 'parameter' || this.sizeMode === 'parameter') {
+      void this.redrawLayer();
+    }
   }
 
   /**
@@ -287,8 +395,90 @@ export class LayerCustomizeComponent implements OnInit {
    * emitted when the value of a MatSlider component changes.
    */
   updateSize(event: MatSliderChange): void {
+    if (this.isExternalPointGeoJsonLayer && this.layer instanceof GeoJSONMapLayer && event.value != null) {
+      const style = this.stylable?.getStyle();
+      style?.setMarkerIconSize(event.value);
+      if (style != null) {
+        this.stylable?.setStyle(style, true);
+      }
+      if (this.colorMode === 'parameter' && this.sizeMode === 'fixed') {
+        this.layer.options.customLayerOptionMarkerIconSize.set(event.value);
+        this.layersService.layerChange(this.layer);
+        return;
+      }
+      void this.redrawLayer().then(() => {
+        this.layersService.layerChange(this.layer);
+      });
+      return;
+    }
     this.layer.options.customLayerOptionMarkerIconSize.set(event.value);
     this.layersService.layerChange(this.layer);
+    if (this.sizeMode === 'parameter') {
+      void this.redrawLayer();
+    }
+  }
+
+  public updateColorMode(event: MatSelectChange): void {
+    this.colorMode = event.value as MarkerStyleMode;
+    const style = this.getParameterStyle();
+    style.color.mode = this.colorMode;
+    if (this.colorMode === 'parameter') {
+      style.color.paletteId = this.getAutomaticPaletteId();
+    }
+    this.applyParameterStyle(style);
+  }
+
+  public updateColorProperty(event: MatSelectChange): void {
+    this.colorProperty = event.value as string;
+    const style = this.getParameterStyle();
+    style.color.property = this.colorProperty;
+    this.applyParameterStyle(style);
+  }
+
+  public updateSizeMode(event: MatSelectChange): void {
+    this.sizeMode = event.value as MarkerStyleMode;
+    const style = this.getParameterStyle();
+    style.size.mode = this.sizeMode;
+    this.applyParameterStyle(style);
+  }
+
+  public updateSizeProperty(event: MatSelectChange): void {
+    this.sizeProperty = event.value as string;
+    const style = this.getParameterStyle();
+    style.size.property = this.sizeProperty;
+    this.applyParameterStyle(style);
+  }
+
+  public updateMarkerSizeScale(event: MatSliderChange): void {
+    if (event.value == null) {
+      return;
+    }
+    if (event.value !== this.markerSizeScale) {
+      this.previewMarkerSizeScale(event);
+    }
+    this.markerSizeScale = event.value;
+    const scale = this.markerSizeScale / 100;
+    const style = this.getParameterStyle();
+    style.size.minPx = this.baseMinMarkerSize * scale;
+    style.size.maxPx = this.baseMaxMarkerSize * scale;
+    this.appliedMarkerSizeScale = this.markerSizeScale;
+    this.applyParameterStyle(style);
+  }
+
+  public previewMarkerSizeScale(event: MatSliderChange): void {
+    if (event.value == null || !(this.layer instanceof GeoJsonLayer)) {
+      return;
+    }
+    const previousScale = this.markerSizeScale;
+    this.markerSizeScale = event.value;
+    this.layer.getMarkerLayer().previewMarkerSizeScale(
+      this.markerSizeScale / this.appliedMarkerSizeScale,
+      previousScale / this.appliedMarkerSizeScale,
+    );
+  }
+
+  public formatMarkerSizeScale(value: number): string {
+    return `${value}%`;
   }
 
   /**
@@ -300,6 +490,9 @@ export class LayerCustomizeComponent implements OnInit {
   updateWeight(event: MatSliderChange): void {
     this.layer.options.customLayerOptionWeight.set(event.value);
     this.layersService.layerChange(this.layer);
+    if (this.colorMode === 'parameter' || this.sizeMode === 'parameter') {
+      void this.redrawLayer();
+    }
   }
 
   /**
@@ -328,17 +521,138 @@ export class LayerCustomizeComponent implements OnInit {
    * value of a mat-select component changes. It contains information about the selected value.
    */
   changeMarkerIconFa(event: MatSelectChange): void {
-    this.selectedMarkerIcon = this.markerIcons.find(e => e.id === event.value)?.value.join(' ');
-    this.layer.options.customLayerOptionMarkerValue.set(this.markerIcons.find(e => e.id === event.value)?.value.join(' '));
+    const markerValue = this.markerIcons.find(e => e.id === event.value)?.value.join(' ');
+    if (markerValue == null) {
+      return;
+    }
+    if (this.isExternalPointGeoJsonLayer && this.layer instanceof GeoJSONMapLayer) {
+      this.markerType = MapLayer.MARKERTYPE_FA;
+      this.selectedMarkerIcon = markerValue;
+      this.layer.setMarkerOverride(markerValue);
+      this.setTools();
+      void this.redrawLayer().then(() => {
+        this.layer.options.customLayerOptionMarkerValue.set(markerValue);
+        this.layersService.layerChange(this.layer);
+      });
+      return;
+    }
+    const redrawAsIcon = this.isExternalPointGeoJsonLayer
+      && this.layer.options.customLayerOptionMarkerType.get() === MapLayer.MARKERTYPE_POINT;
+    if (redrawAsIcon) {
+      this.markerType = MapLayer.MARKERTYPE_FA;
+      this.layer.options.customLayerOptionMarkerType.set(this.markerType);
+      this.setTools();
+    }
+    this.selectedMarkerIcon = markerValue;
+    this.layer.options.customLayerOptionMarkerValue.set(markerValue);
     this.layersService.layerChange(this.layer);
+    if (redrawAsIcon) {
+      void this.redrawLayer();
+    } else if (this.colorMode === 'parameter' || this.sizeMode === 'parameter') {
+      void this.redrawLayer();
+    }
+  }
+
+  private getParameterStyle(): GeoJsonMarkerParameterStyle {
+    return this.layer instanceof GeoJsonLayer
+      ? this.layer.getMarkerParameterStyle()
+      : {
+        color: { mode: 'fixed', property: null, paletteId: null },
+        size: { mode: 'fixed', property: null, minPx: 10, maxPx: 70 },
+      };
+  }
+
+  private applyParameterStyle(style: GeoJsonMarkerParameterStyle): void {
+    if (!(this.layer instanceof GeoJsonLayer)) {
+      return;
+    }
+    this.layer.setMarkerParameterStyle(style);
+    this.colorMode = style.color.mode;
+    this.colorProperty = style.color.property;
+    this.sizeMode = style.size.mode;
+    this.sizeProperty = style.size.property;
+    this.updatePalettePreview();
+    void this.redrawLayer().then(() => this.layersService.layerChange(this.layer));
+  }
+
+  private initializeMarkerSizeScale(minPx: number, maxPx: number): void {
+    this.baseMinMarkerSize = minPx;
+    this.baseMaxMarkerSize = maxPx;
+    this.markerSizeScale = 100;
+    this.appliedMarkerSizeScale = 100;
+    this.minMarkerSizeScale = Math.ceil((500 / minPx) / 5) * 5;
+    this.maxMarkerSizeScale = Math.floor((10000 / maxPx) / 5) * 5;
+  }
+
+  private getAutomaticPaletteId(): string {
+    if (!(this.layer instanceof GeoJsonLayer)) {
+      return GeoJsonLayer.MARKER_COLOR_PALETTES[0].id;
+    }
+    const currentPaletteId = this.layer.getMarkerParameterStyle().color.paletteId;
+    const paletteIds = this.layer.getEposLeaflet().getLayers()
+      .filter(candidate => candidate !== this.layer && candidate instanceof GeoJsonLayer)
+      .filter(candidate => !candidate.hidden.get())
+      .filter(candidate => (candidate as GeoJsonLayer).getMarkerParameterStyle().color.mode === 'parameter')
+      .map(candidate => (candidate as GeoJsonLayer).getMarkerParameterStyle().color.paletteId)
+      .filter((paletteId): paletteId is string => paletteId != null);
+    if (currentPaletteId != null && !paletteIds.includes(currentPaletteId)) {
+      return currentPaletteId;
+    }
+    return GeoJsonLayer.MARKER_COLOR_PALETTES.reduce((selected, palette) => {
+      const selectedUses = paletteIds.filter(id => id === selected.id).length;
+      const paletteUses = paletteIds.filter(id => id === palette.id).length;
+      return paletteUses < selectedUses ? palette : selected;
+    }).id;
+  }
+
+  private updatePalettePreview(): void {
+    if (!(this.layer instanceof GeoJsonLayer)) {
+      this.colorPaletteBackground = '';
+      return;
+    }
+    const palette = this.layer.getMarkerColorPalette();
+    this.colorPaletteBackground = palette == null
+      ? ''
+      : `linear-gradient(to right, ${palette.colors.map((color, index) => {
+        return `${color} ${(index / (palette.colors.length - 1)) * 100}%`;
+      }).join(', ')})`;
   }
 
   /**
    * The function redraws a layer on a map using the EposLeaflet library.
    */
-  private redrawLayer(): void {
+  private redrawLayer(): Promise<void> {
     const map = this.layer.getEposLeaflet();
-    void map.redrawLayer(this.layer);
+    this.redrawPromise = this.redrawPromise.then(
+      () => map.redrawLayer(this.layer),
+      () => map.redrawLayer(this.layer),
+    );
+    return this.redrawPromise;
+  }
+
+  private hasPointGeometry(value: unknown): boolean {
+    if (value == null || typeof value !== 'object') {
+      return false;
+    }
+    const geoJson = value as {
+      type?: string;
+      geometry?: unknown;
+      geometries?: Array<unknown>;
+      features?: Array<unknown>;
+    };
+    if (geoJson.type === 'Point' || geoJson.type === 'MultiPoint') {
+      return true;
+    }
+    if (geoJson.type === 'Feature') {
+      return this.hasPointGeometry(geoJson.geometry);
+    }
+    if (geoJson.type === 'FeatureCollection') {
+      return geoJson.features?.some(feature => this.hasPointGeometry(feature)) ?? false;
+    }
+    if (geoJson.type === 'GeometryCollection') {
+      return geoJson.geometries?.some(geometry => this.hasPointGeometry(geometry)) ?? false;
+    }
+    return false;
   }
 
   /**
@@ -350,18 +664,38 @@ export class LayerCustomizeComponent implements OnInit {
     this.layer.options.customLayerOptionClustering.set(clustering);
     this.layersService.layerChange(this.layer);
 
+    if (this.layer.id.startsWith('external-layer-') && this.layer instanceof GeoJsonLayer) {
+      this.layer.setClusteredMarkers(clustering);
+    }
+
     const style = this.stylable?.getStyle();
     if (style !== undefined) {
+      style?.setClustering(clustering);
       this.stylable?.setStyle(style, true);
     }
 
-    this.redrawLayer();
+    void this.redrawLayer();
   }
 
   /**
    * The function sets the tools based on the marker type.
    */
   private setTools(): void {
+
+    if (this.isExternalPointGeoJsonLayer
+      && this.layer instanceof GeoJSONMapLayer
+      && this.markerType === MapLayer.MARKERTYPE_POINT) {
+      this.tools = {
+        opacity: false,
+        colorOpacity: true,
+        fillColorOpacity: false,
+        weight: false,
+        changeMarker: 'font',
+        size: true,
+        cluster: true,
+      };
+      return;
+    }
 
     switch (this.markerType) {
       // WMS
@@ -419,8 +753,8 @@ export class LayerCustomizeComponent implements OnInit {
           colorOpacity: true,
           fillColorOpacity: true,
           weight: true,
-          changeMarker: '',
-          size: false,
+          changeMarker: this.isExternalPointGeoJsonLayer ? 'font' : '',
+          size: this.isParameterStylingAvailable,
           cluster: true,
         };
         break;

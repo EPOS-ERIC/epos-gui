@@ -2,4 +2,4 @@
   <mat-spinner></mat-spinner>
 </div>
 <div #mapElement class="leaflet-touch"></div>
-<app-layer-control [ngStyle]="{ display: (layerControlOpened | async) ? 'block' : 'none' }" class="custom-layer-control" [map]="leafletMapObj" data-cy="map-layer-control-panel"></app-layer-control>
+<app-layer-control [ngStyle]="{ display: (layerControlOpened | async) ? 'block' : 'none' }" class="custom-layer-control" [map]="leafletMapObj" (externalLayerAdd)="addLayer($event)" data-cy="map-layer-control-panel"></app-layer-control>

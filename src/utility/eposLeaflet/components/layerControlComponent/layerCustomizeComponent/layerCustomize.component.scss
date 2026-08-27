@@ -4,6 +4,7 @@
   ul.list-options {
 
     height: 30vh;
+    overflow-y: auto;
 
     li.option {
 
@@ -24,6 +25,17 @@
         width: 75%;
         gap: 5px;
 
+        mat-select {
+          width: 100%;
+        }
+
+        .palette-preview {
+          width: 70px;
+          height: 14px;
+          flex-shrink: 0;
+          border: 1px solid lightgrey;
+        }
+
         .mat-form-field {
           width: 100%;
         }
@@ -39,6 +51,18 @@
 
     li.option:last-child {
       border-bottom: none;
+    }
+
+    li.external-layer-selector,
+    li.external-layer-catalog-note {
+      height: auto;
+      min-height: 40px;
+    }
+
+    li.external-layer-catalog-note .content {
+      padding: 8px 0;
+      font-size: 12px;
+      line-height: 16px;
     }
 
   }

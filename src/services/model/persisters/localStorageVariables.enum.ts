@@ -25,6 +25,7 @@ export enum LocalStorageVariables {
   LS_BASEMAP_ARTIC_POLAR = 'baseMapArticPolar',
   LS_LAYERS_ORDER = 'layersOrder',
   LS_LAYERS_ORDER_ARTIC_POLAR = 'layersOrderArticPolar',
+  LS_EXTERNAL_LAYERS = 'externalLayers',
   LS_LAST_DETAIL_DIALOG_ID = 'lastDetailDialogId',
   LS_TS_POPUP_LAYER_ID = 'timeSeriesPopupLayerId',
   LS_BBOX_STYLE = 'bboxStyle',

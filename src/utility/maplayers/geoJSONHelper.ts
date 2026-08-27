@@ -12,6 +12,15 @@ export class GeoJSONHelper extends JsonHelper {
   public static readonly IMAGE_OVERLAY_ID_SUFFIX = '_geojson_image_layer';
   public static readonly IMAGE_OVERLAY_ATTR = this.ATTR_PREFIX + '_image_overlay';
 
+  public static getExternalPopupContentFromProperties(
+    propertiesObj: Record<string, unknown>, layerName: string, propertyId: string, layerId: string
+  ): string {
+    const propertiesToUse = this.getPropertiesToUse(propertiesObj, this.MAP_KEYS_ATTR)
+      .filter(property => property.name !== PopupProperty.PROPERTY_ID);
+    propertiesToUse.push(new PopupProperty(PopupProperty.PROPERTY_ID, [propertyId]));
+    return this.createDetailsTableHtml(layerName, propertiesToUse, 'View on Table', 'showOnTable', layerId);
+  }
+
   /**
    * It takes an array of objects, and returns an array of all the unique property names that exist in
    * those objects
@@ -48,6 +57,7 @@ export class GeoJSONHelper extends JsonHelper {
   public static getTableObjectsFromProperties(
     layerId: string,
     propertyObjArray: Array<Feature>,
+    propertyIdResolver?: (feature: Feature, rowIndex: number) => string,
   ): Map<string, Array<null | PopupProperty>> {
     const tableData = new Map<string, Array<null | PopupProperty>>();
 
@@ -57,7 +67,10 @@ export class GeoJSONHelper extends JsonHelper {
     propertyObjArray.forEach((propertiesObj: Feature, rowIndex: number) => {
 
       // feature's properties
-      const propertiesToUse = this.getPropertiesToUse(propertiesObj.properties as Record<string, unknown>, this.DATA_KEY_ATTR);
+      let propertiesToUse = this.getPropertiesToUse(propertiesObj.properties as Record<string, unknown>, this.DATA_KEY_ATTR);
+      if (propertyIdResolver != null) {
+        propertiesToUse = propertiesToUse.filter(property => property.name !== PopupProperty.PROPERTY_ID);
+      }
 
       const pointData = propertiesObj.geometry;
       let coords: Position | null = null;
@@ -100,7 +113,9 @@ export class GeoJSONHelper extends JsonHelper {
       }
 
       // add property id
-      propertiesToUse.push(new PopupProperty(PopupProperty.PROPERTY_ID, [layerId + '#' + rowIndex.toString() + '#']));
+      propertiesToUse.push(new PopupProperty(PopupProperty.PROPERTY_ID, [
+        propertyIdResolver?.(propertiesObj, rowIndex) ?? layerId + '#' + rowIndex.toString() + '#'
+      ]));
 
       // Map used to assess and handle label re-use issues.
       // This is required as the geoJson format was not designed for use in a table!

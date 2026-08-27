@@ -1,17 +1,16 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { DataConfigurable } from 'utility/configurables/dataConfigurable.abstract';
 import { Trace } from '../objects/trace';
 import { Styler, graphDefaultStyles } from 'utility/styler/styler';
 import { YAxis } from '../objects/yAxis';
 import { Subscription } from 'rxjs';
-import { DataConfigurableDataSearch } from 'utility/configurablesDataSearch/dataConfigurableDataSearch';
 import { PanelsEmitterService } from 'services/panelsEventEmitter.service';
 import { TraceSelectorService } from './traceSelector.service';
 import { Unsubscriber } from 'decorators/unsubscriber.decorator';
 import { LocalStoragePersister } from 'services/model/persisters/localStoragePersister';
 import { LocalStorageVariables } from 'services/model/persisters/localStorageVariables.enum';
 import { DataSearchConfigurablesServiceResource } from '../../dataPanel/services/dataSearchConfigurables.service';
+import type { TraceSource } from '../graphPanel.component';
 import { YAxisDisplayType } from '../objects/yAxisDisplayType.enum';
 import { PALEOLATITUDE_CONFIG_ID } from '../objects/paleolatitude.interface';
 
@@ -44,7 +43,7 @@ export class TraceSelectorComponent implements OnInit {
   public traceRecord: Record<string, null | Array<Trace>>;
 
   /** {@link DataConfigurable} associated with traces.  Used for iterating through in the display */
-  public configurables = new Array<DataConfigurableDataSearch>();
+  public configurables = new Array<TraceSource>();
 
   /** Used in the display to disable the add buttons when the trace count limit is reached. */
   public addIsDisabled = false;
@@ -59,7 +58,7 @@ export class TraceSelectorComponent implements OnInit {
   /**
    * Setter that sets {@link #traceMap} then calls {@link #updateDistributionPlotList}.
    */
-  @Input() set traceMap(traceMap: Map<DataConfigurableDataSearch, null | Array<Trace>>) {
+  @Input() set traceMap(traceMap: Map<TraceSource, null | Array<Trace>>) {
     this.updateDistributionPlotList(traceMap);
   }
 
@@ -150,6 +149,10 @@ export class TraceSelectorComponent implements OnInit {
     this.traceSelector.setTraceSelector(layerId, trace.id, selected);
   }
 
+  public isExternalSource(source: TraceSource): boolean {
+    return source.id.startsWith('external-layer-');
+  }
+
 
   /**
    * Selects or deselects a {@link Trace} from the current selection.
@@ -199,7 +202,9 @@ export class TraceSelectorComponent implements OnInit {
    */
   private persistSelectedTracesByFavourites(): void {
     // Collect the IDs of all currently selected Trace objects.
-    const allSelectedTraceIds = Object.values(this._selectedTraces).map(t => t.id);
+    const allSelectedTraceIds = Object.values(this._selectedTraces)
+      .filter(trace => !trace.originatingConfigurableId.startsWith('external-layer-'))
+      .map(trace => trace.id);
 
     // Persist all collected IDs to localStorage under LS_DATA_TRACES_SELECTED.
     this.localStoragePersister.set(
@@ -214,7 +219,7 @@ export class TraceSelectorComponent implements OnInit {
   /** Called after the {@link #traceRecord} variable changes to update the component. */
   /** Called after the {@link #traceRecord} variable changes to update the component. */
   private updateDistributionPlotList(
-    traceMap: Map<DataConfigurableDataSearch, null | Array<Trace>>
+    traceMap: Map<TraceSource, null | Array<Trace>>
   ): void {
 
     // 1) Snapshot previous state (used to detect new data additions)
@@ -222,7 +227,7 @@ export class TraceSelectorComponent implements OnInit {
 
     // 2) Rebuild current state (configurableId -> traces/null)
     this.traceRecord = {};
-    traceMap.forEach((traces: null | Array<Trace>, config: DataConfigurable) => {
+    traceMap.forEach((traces: null | Array<Trace>, config: TraceSource) => {
       this.traceRecord[config.id] = traces;
     });
 
