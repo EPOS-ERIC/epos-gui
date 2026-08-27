@@ -4,6 +4,7 @@ import { MapLayer } from '../../layers/mapLayer.abstract';
 import { Legend, LegendItem } from '../../controls/public_api';
 import { Subscription } from 'rxjs';
 import { GeoJSONMapLayer } from 'utility/maplayers/geoJSONMapLayer';
+import { GeoJsonLayer } from '../../layers/geoJsonLayer/geoJsonLayer';
 import { WmtsTileLayer } from 'utility/eposLeaflet/eposLeaflet';
 import { LayersService } from 'utility/eposLeaflet/services/layers.service';
 import { Unsubscriber } from 'decorators/unsubscriber.decorator';
@@ -212,7 +213,11 @@ export class LayerLegendComponent implements OnInit {
         )).then(legendArrays => {
           legendArrays.forEach((legendArray: null | Array<Legend>) => {
             legendArray?.forEach((legend: Legend) => {
-              (this.legendContent.nativeElement as HTMLElement).appendChild(legend.createDisplayContent(dataSearchToggleOnMap));
+              const content = legend.createDisplayContent(dataSearchToggleOnMap);
+              if (layer instanceof GeoJsonLayer) {
+                this.applyMarkerParameterPreview(content, layer);
+              }
+              (this.legendContent.nativeElement as HTMLElement).appendChild(content);
             });
           });
         });
@@ -241,6 +246,43 @@ export class LayerLegendComponent implements OnInit {
 
   }
 
+  private applyMarkerParameterPreview(content: HTMLElement, layer: GeoJsonLayer): void {
+    if (layer.getMarkerParameterStyle().color.mode !== 'parameter') {
+      return;
+    }
+    const palette = layer.getMarkerColorPalette();
+    if (palette == null) {
+      return;
+    }
+    const gradient = `linear-gradient(to right, ${palette.colors.join(', ')})`;
+    const markerFronts = Array.from(content.querySelectorAll<HTMLElement>('.marker-gradient'));
+    if (markerFronts.length > 0) {
+      markerFronts.forEach(markerFront => {
+        const markerWrapper = markerFront.closest<HTMLElement>('.fa-marker-wrapper');
+        const markerBack = markerWrapper?.querySelector<HTMLElement>('.marker-gradient-back');
+        const innerIcon = markerWrapper?.querySelector<HTMLElement>('.fa-marker-icon-icon');
+        markerFront.style.background = gradient;
+        markerFront.style.color = 'transparent';
+        if (markerBack != null) {
+          markerBack.style.color = 'transparent';
+        }
+        if (innerIcon != null) {
+          innerIcon.style.color = '#fff';
+        }
+      });
+      return;
+    }
+    const previewIcon = content.querySelector<HTMLElement>('.legend-details-row:first-child .legend-icon');
+    if (previewIcon == null) {
+      return;
+    }
+    const previewShape = previewIcon.firstElementChild instanceof HTMLSpanElement
+      ? previewIcon.firstElementChild
+      : previewIcon;
+    previewShape.style.background = gradient;
+    previewShape.style.borderColor = 'transparent';
+  }
+
   private getLogicalLegendLayers(layer: MapLayer): Array<MapLayer> {
     if (layer.id.endsWith(GeoJSONHelper.IMAGE_OVERLAY_ID_SUFFIX) || layer.getEposLeaflet() == null) {
       return [layer];
@@ -256,10 +298,32 @@ export class LayerLegendComponent implements OnInit {
    * GeoJSONMapLayer.
    */
   private updateLegendContent(changedLayer: MapLayer): void {
-    if (this._layer.id.startsWith('external-layer-')) {
-      if (changedLayer?.id === this._layer.id) {
-        this.getLegendContent(this._layer);
+    if (changedLayer?.id !== this._layer?.id) {
+      return;
+    }
+    if (this._layer instanceof GeoJsonLayer) {
+      if (this._layer instanceof GeoJSONMapLayer) {
+        const styleable = this._layer.getStylable();
+        const style = styleable?.getStyle();
+        if (styleable != null && style != null) {
+          const color = this._layer.options.customLayerOptionColor.get();
+          const fillColor = this._layer.options.customLayerOptionFillColor.get();
+          if (color != null) {
+            style.setColor1(color.substring(1));
+          }
+          if (fillColor != null) {
+            style.setColor2(fillColor.substring(1));
+          }
+          style.setOpacityColor1(this._layer.options.customLayerOptionOpacity.get() ?? 100);
+          style.setOpacityColor2(this._layer.options.customLayerOptionFillColorOpacity.get() ?? 100);
+          styleable.setStyle(style);
+        }
       }
+      this.getLegendContent(this._layer);
+      return;
+    }
+    if (this._layer.id.startsWith('external-layer-')) {
+      this.getLegendContent(this._layer);
       return;
     }
 

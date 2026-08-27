@@ -616,26 +616,31 @@ export class LayerControlComponent implements OnInit {
           fillOpacity: layer.options.customLayerOptionFillColorOpacity.get() ?? 0.2,
           weight: layer.options.customLayerOptionWeight.get() ?? 3,
         }))
-        .setPointToLayerFunction((_feature, latlng) => {
+        .setPointToLayerFunction((feature, latlng) => {
           const selectedMarkerType = layer.options.customLayerOptionMarkerType.get();
           const markerClasses = (layer.options.customLayerOptionMarkerValue.get()
             ?? defaultMarkerIcons[0].value.join(' ')).split(' ');
-          const markerColor = layer.options.customLayerOptionColor.get() ?? color;
-          const markerFillColor = layer.options.customLayerOptionFillColor.get() ?? color;
-          const markerSize = layer.options.customLayerOptionMarkerIconSize.get();
+          const parameterStyle = layer.resolveMarkerParameterStyle(feature);
+          const isColorByParameter = layer.getMarkerParameterStyle().color.mode === 'parameter';
+          const fixedMarkerColor = layer.options.customLayerOptionColor.get() ?? color;
+          const markerColor = parameterStyle.color ?? fixedMarkerColor;
+          const markerFillColor = parameterStyle.color ?? layer.options.customLayerOptionFillColor.get() ?? color;
+          const markerSize = parameterStyle.size ?? layer.options.customLayerOptionMarkerIconSize.get();
 
           if (selectedMarkerType === MapLayer.MARKERTYPE_FA) {
-            const icon = new FaMarker().configure(markerClasses, markerColor, markerSize, markerSize, 70);
+            const icon = new FaMarker()
+              .configure(markerClasses, markerColor, markerSize, markerSize, isColorByParameter ? 100 : 70)
+              .setStrokeColor(parameterStyle.color ?? null);
             return L.marker(latlng, { icon, bubblingMouseEvents: true });
           }
           if (selectedMarkerType === MapLayer.MARKERTYPE_PIN_FA) {
             const icon = new FaMarker()
-              .configure(['fas', 'fa-map-marker'], markerColor, markerSize, markerSize, 70)
+              .configure(['fas', 'fa-map-marker'], markerColor, markerSize, markerSize, isColorByParameter ? 100 : 70)
               .configureIcon(markerClasses, markerFillColor);
             return L.marker(latlng, { icon, bubblingMouseEvents: true });
           }
           return L.circleMarker(latlng, {
-            radius: 6,
+            radius: parameterStyle.size == null ? 6 : parameterStyle.size / 2,
             color: markerColor,
             fillColor: markerFillColor,
             fillOpacity: layer.options.customLayerOptionFillColorOpacity.get() ?? 0.8,
@@ -669,9 +674,9 @@ export class LayerControlComponent implements OnInit {
         symbol.style.display = 'inline-block';
         symbol.style.height = '12px';
         symbol.style.width = '12px';
-        return Promise.resolve([
-          new Legend(id, name).addLegendItem(new ElementLegendItem('External GeoJSON', symbol)),
-        ]);
+        const legend = new Legend(id, name).addLegendItem(new ElementLegendItem('External GeoJSON', symbol));
+        layer.addMarkerParameterLegendItems(legend);
+        return Promise.resolve([legend]);
       });
     }
 

@@ -7,6 +7,7 @@ export class FaMarker extends Marker {
   public icon: HTMLElement;
   protected faClasses = ['fas', 'fa-map-marker'];
   protected colorHex = '#d03f3f';
+  protected strokeColorHex: string | null = null;
   protected sizePx = 40;
   protected widthGuidePx = 30;
   protected transparencyPercent = 50;
@@ -101,16 +102,23 @@ export class FaMarker extends Marker {
     markerGradient.classList.add('fa-marker-icon-marker');
     markerGradient.classList.add('fa-marker-overlay');
     markerGradient.classList.add('marker-gradient-back');
+    if (this.strokeColorHex != null) {
+      markerGradient.style.color = this.strokeColorHex;
+    }
     wrapperDiv.appendChild(markerGradient);
 
-    const gradientTransparencyPercent = FaMarker.percentToHex(this.transparencyPercent);
     const marker = document.createElement('i');
     this.faClasses.forEach((cssClass: string) => marker.classList.add(cssClass));
     marker.classList.add('fa-marker-icon-marker');
     marker.classList.add('marker-gradient');
     // marker.style.fontSize = `${this.sizePx}px`;
     marker.style.color = this.colorHex;
-    marker.style.background = `linear-gradient(${this.colorHex}, ${this.colorHex}${gradientTransparencyPercent})`;
+    if (this.transparencyPercent >= 100) {
+      marker.style.background = this.colorHex;
+    } else {
+      const gradientTransparencyPercent = FaMarker.percentToHex(this.transparencyPercent);
+      marker.style.background = `linear-gradient(${this.colorHex}, ${this.colorHex}${gradientTransparencyPercent})`;
+    }
     wrapperDiv.appendChild(marker);
 
     return wrapperDiv;
@@ -122,6 +130,11 @@ export class FaMarker extends Marker {
 
   public setColor(color: string): void {
     this.colorHex = color;
+  }
+
+  public setStrokeColor(color: string | null): this {
+    this.strokeColorHex = color;
+    return this;
   }
 
   public setSize(size: number): void {

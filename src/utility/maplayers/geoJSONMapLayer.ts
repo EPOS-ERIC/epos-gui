@@ -154,11 +154,14 @@ export class GeoJSONMapLayer extends JsonMapLayer {
       };
       const markerValueKey = 'fontawesome_class';
       markerOverride[markerValueKey] = this.markerOverrideValue;
+      const parameterStyle = this.resolveMarkerParameterStyle(geoJsonPoint);
       return this.createLeafletMarker(
         this.stylable,
         Marker.makeFromJSON(markerOverride),
         latlng,
         true,
+        parameterStyle.color,
+        parameterStyle.size,
       );
     }
     return super.pointToLayer(geoJsonPoint, latlng);

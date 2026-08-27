@@ -4,6 +4,7 @@
   ul.list-options {
 
     height: 30vh;
+    overflow-y: auto;
 
     li.option {
 
@@ -23,6 +24,17 @@
         align-items: center;
         width: 75%;
         gap: 5px;
+
+        mat-select {
+          width: 100%;
+        }
+
+        .palette-preview {
+          width: 70px;
+          height: 14px;
+          flex-shrink: 0;
+          border: 1px solid lightgrey;
+        }
 
         .mat-form-field {
           width: 100%;
