@@ -48,6 +48,7 @@ import { WmsCrsCheckService } from 'utility/eposLeaflet/services/wms-crs-check.s
 import { WmsCrsNotifierService } from 'utility/eposLeaflet/services/wms-crs-notifier.service';
 import { DataSearchConfigurablesServiceSoftware } from '../softwarePanel/services/dataSearchConfigurables.service';
 import { MeasureDistanceControl } from 'utility/eposLeaflet/components/controls/measureDistanceControl/measureDistanceControl';
+import { PaleolatitudeControl } from 'utility/eposLeaflet/components/controls/paleolatitudeControl/paleolatitudeControl';
 import { HttpClient } from '@angular/common/http';
 import { WmtsTileJSON as TileJSON } from 'api/webApi/data/wmtsTileJSON.interface';
 import { WMTSFeatureIdentifier } from 'utility/maplayers/wmtsFeatureIdentifier';
@@ -80,6 +81,7 @@ export class MapComponent implements OnInit {
   public readonly maxZoom3995 = RES_3995.length - 1; // use full resolution range of RES_3995
   private readonly subscriptions: Array<Subscription> = new Array<Subscription>();
   private measureControlInstance: MeasureDistanceControl | null = null;
+  private paleolatitudeControlInstance: PaleolatitudeControl | null = null;
 
   private readonly mapLayerGenerator: MapLayerGenerator;
 
@@ -272,6 +274,7 @@ export class MapComponent implements OnInit {
     const customLayerControl = new CustomLayerControl(this.injector).setPosition('topright');
     const exportMapAsImage = new ExportMapAsImage(this.injector, this.componentFactoryResolver, this.viewContainerRef, this.exportMapAsImageService, this.dialogService);
     this.measureControlInstance = new MeasureDistanceControl(this.dialogService);
+    this.paleolatitudeControlInstance = new PaleolatitudeControl(this.dialogService, this.panelsEvent).addTo(this.eposLeaflet);
     const scaleControl = L.control.scale({ metric: true, imperial: false, maxWidth: 200 }).setPosition('bottomright');
     const resetZoomControl = new ResetZoomControl(this.layersService).setPosition('topright');
 
@@ -327,6 +330,12 @@ export class MapComponent implements OnInit {
    * the function and is used to filter and manipulate the data configurables based on their context.
    */
   private configurablesExecute(dataConfigurables: Array<DataConfigurableI>, context: string) {
+
+    if (context === CONTEXT_RESOURCE) {
+      this.paleolatitudeControlInstance?.setEnabled(dataConfigurables.some((configurable: DataConfigurableI) => {
+        return configurable.getDistributionDetails().getKeywords().some(keyword => keyword.trim().toLowerCase() === 'eposdynamic');
+      }));
+    }
 
     // set context. TODO: move it on dataConfigurables creation logic
     dataConfigurables.map(conf => {
@@ -1088,6 +1097,7 @@ export class MapComponent implements OnInit {
     if (this.measureControlInstance) {
       this.measureControlInstance.stopMeasurement();
     }
+    this.paleolatitudeControlInstance?.remove();
 
     try {
 

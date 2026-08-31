@@ -4,9 +4,11 @@
       <mat-label>
         <span *ngIf="!showFilterRowCounter">Search table rows</span>
         <span *ngIf="showFilterRowCounter">Filter table results:</span>
-        <span *ngIf="showFilterRowCounter" class="column-count">{{ dataSource.filteredData.length }}/{{ dataSource.data.length }} Rows</span>
+        <span *ngIf="showFilterRowCounter" class="column-count">{{ dataSource.filteredData.length }}/{{
+          dataSource.data.length }} Rows</span>
       </mat-label>
-      <input #filterInput matInput name="epos-table-data-filter" (keyup)="applyFilter($event)" placeholder="Search table rows" />
+      <input #filterInput matInput name="epos-table-data-filter" (keyup)="applyFilter($event)"
+        placeholder="Search table rows" />
     </mat-form-field>
 
     <mat-form-field [hidden]="showSpinner">
@@ -14,8 +16,11 @@
         <span>Select Columns</span>
         <span class="column-count">{{ activeColumnCount | async }}/{{ totalColumnCount }}</span>
       </mat-label>
-      <mat-select [(value)]="customHeaders" multiple (valueChange)="updateTable($event)" (selectionChange)="handleSelectionChange($event)" data-cy="table-component-select-columns">
-        <mat-option *ngFor="let header of tableHeaders" [value]="header" [class]="{ hide: header === pointsOnMapHeader || header === propertyIdHeader || header === imagesHeader }" data-cy="table-component-select-columns-option">
+      <mat-select [(value)]="customHeaders" multiple (valueChange)="updateTable($event)"
+        (selectionChange)="handleSelectionChange($event)" data-cy="table-component-select-columns">
+        <mat-option *ngFor="let header of tableHeaders" [value]="header"
+          [class]="{ hide: header === pointsOnMapHeader || header === propertyIdHeader || header === imagesHeader }"
+          data-cy="table-component-select-columns-option">
           {{ header }}
         </mat-option>
       </mat-select>
@@ -25,14 +30,17 @@
 
     <mat-form-field class="page-number">
       <mat-label>Page number:</mat-label>
-      <input matInput type="number" placeholder="Enter page number" [(ngModel)]="pageNumber" (ngModelChange)="goToPage()" min="1" max="{{ maxPageNumber ? maxPageNumber : 0 }}" />
+      <input matInput type="number" placeholder="Enter page number" [(ngModel)]="pageNumber"
+        (ngModelChange)="goToPage()" min="1" max="{{ maxPageNumber ? maxPageNumber : 0 }}" />
     </mat-form-field>
-    <mat-paginator #paginator matPaginator [pageSize]="rowInPage" [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="checkingPageData()" data-cy="table-component-paginator"></mat-paginator>
+    <mat-paginator #paginator matPaginator [pageSize]="rowInPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
+      (page)="checkingPageData()" data-cy="table-component-paginator"></mat-paginator>
 
 
     <span class="total">Total Results: {{ dataSource.data.length }}</span>
 
-    <button id="exportButton" mat-mini-fab color="primary" (click)="exportTableData()" matTooltip="Export Data"><mat-icon>download</mat-icon></button>
+    <button id="exportButton" mat-mini-fab color="primary" (click)="exportTableData()"
+      matTooltip="Export Data"><mat-icon>download</mat-icon></button>
   </div>
 
   <div class="table-container">
@@ -40,45 +48,33 @@
       <caption>{{ sourceName }} - Data</caption>
 
       <ng-container [matColumnDef]="label" *ngFor="let label of customHeaders; let columnIndex = index">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          mat-sort-header
-          [disabled]="columnIndex < 2 && isMappable"
-          mwlResizable
-          [enableGhostResize]="false"
-          scope="col"
-          (resizeEnd)="onResizeEnd($event, label)"
-          (click)="selectedRow = null">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="columnIndex < 2 && isMappable" mwlResizable
+          [enableGhostResize]="false" scope="col" (resizeEnd)="onResizeEnd($event, label)" (click)="selectedRow = null">
           <span *ngIf="columnIndex > 1 || !isMappable">{{ label }}</span>
-          <i
-            *ngIf="columnIndex === 1 && isMappable && dataType !== 1"
+          <i *ngIf="columnIndex === 1 && isMappable && dataType !== 1 && (paleolatitudeResults === undefined || paleolatitudeResults === null)"
             class="fas fa-eye{{ someOnMapHide && !toggleOnMapDisabled ? '-slash' : '' }} action {{ toggleOnMapDisabled ? 'disabled' : '' }}"
             aria-hidden="true"
             [matTooltip]="'Toggle all data on map (' + dataSource.filteredData.length + ')' + toggleOnMapDisabledMessage"
             (click)="!toggleOnMapDisabled ? toggleAllMapFeature() : false"></i>
         </th>
 
-        <td
-          mat-cell
-          class="normal-row"
-          *matCellDef="let rowData; let rowIndex = index"
+        <td mat-cell class="normal-row" *matCellDef="let rowData; let rowIndex = index"
           [class.expand-row]="selectedRow === rowIndex || checkBox.checked"
           (click)="expandRow(rowIndex, rowData, columnIndex)">
           <!-- switch on name -->
           <ng-container *ngIf="(rowData[columnIndex] ?? null) !== null" [ngSwitch]="rowData[columnIndex].name">
             <!-- show on map action -->
             <ng-container *ngSwitchCase="showOnMapHeader">
-              <i *ngIf="isMappable && dataType !== 1" class="fa-solid fa-location-crosshairs action" matTooltip="Show on map" (click)="showOnMap(rowData, rowData[columnIndex].valuesConcatString)" data-cy="table-component-show-on-map"></i>
+              <i *ngIf="isMappable && dataType !== 1" class="fa-solid fa-location-crosshairs action"
+                matTooltip="Show on map" (click)="showOnMap(rowData, rowData[columnIndex].valuesConcatString)"
+                data-cy="table-component-show-on-map"></i>
             </ng-container>
 
             <!-- toggle on map action -->
             <ng-container *ngSwitchCase="toggleOnMapHeader">
-              <i
-                *ngIf="isMappable"
+              <i *ngIf="isMappable"
                 class="fas fa-eye{{ !toggleOnMapSelected[rowData[columnIndex].valuesConcatString] && !toggleOnMapDisabled ? '-slash' : '' }} action {{ toggleOnMapDisabled ? 'disabled' : '' }}"
-                aria-hidden="true"
-                [matTooltip]="'Toggle data on map' + toggleOnMapDisabledMessage"
+                aria-hidden="true" [matTooltip]="'Toggle data on map' + toggleOnMapDisabledMessage"
                 (click)="!toggleOnMapDisabled ? toggleMapFeature(rowData, !toggleOnMapSelected[rowData[columnIndex].valuesConcatString]) : false"
                 data-cy="table-component-toggle-data-on-map"></i>
             </ng-container>
@@ -101,7 +97,8 @@
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="customHeaders; sticky: true" [style.display]="dataSource.data.length === 0 ? 'none' : ''"></tr>
+      <tr mat-header-row *matHeaderRowDef="customHeaders; sticky: true"
+        [style.display]="dataSource.data.length === 0 ? 'none' : ''"></tr>
       <tr mat-row *matRowDef="let element; columns: customHeaders; let i = index" class="row"></tr>
       <tr class="no-data-row" *matNoDataRow>
         <td class="no-filtered-data" *ngIf="dataSource.data.length > 0" colspan="4">
@@ -109,9 +106,13 @@
           <span class="italic">{{ filterInput.value }}</span>
           "
         </td>
-        <td class="no-data" *ngIf="dataSource.data.length === 0 && (sourceContext === CONTEXT_RESOURCE || externalSource !== null)" colspan="4">No data available for this service.</td>
-        <td class="no-data" *ngIf="dataSource.data.length === 0 && sourceContext === CONTEXT_FACILITY" colspan="4">No equipment available for this service.</td>
-        <td class="no-data" *ngIf="dataSource.data.length === 0 && sourceContext === CONTEXT_SOFTWARE" colspan="4">No software available for this service.</td>
+        <td class="no-data"
+          *ngIf="dataSource.data.length === 0 && (sourceContext === CONTEXT_RESOURCE || externalSource !== null)"
+          colspan="4">No data available for this service.</td>
+        <td class="no-data" *ngIf="dataSource.data.length === 0 && sourceContext === CONTEXT_FACILITY" colspan="4">No
+          equipment available for this service.</td>
+        <td class="no-data" *ngIf="dataSource.data.length === 0 && sourceContext === CONTEXT_SOFTWARE" colspan="4">No
+          software available for this service.</td>
       </tr>
     </table>
   </div>

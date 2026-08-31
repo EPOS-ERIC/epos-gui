@@ -11,6 +11,8 @@ import { LocalStoragePersister } from 'services/model/persisters/localStoragePer
 import { LocalStorageVariables } from 'services/model/persisters/localStorageVariables.enum';
 import { DataSearchConfigurablesServiceResource } from '../../dataPanel/services/dataSearchConfigurables.service';
 import type { TraceSource } from '../graphPanel.component';
+import { YAxisDisplayType } from '../objects/yAxisDisplayType.enum';
+import { PALEOLATITUDE_CONFIG_ID } from '../objects/paleolatitude.interface';
 
 
 
@@ -24,6 +26,7 @@ import type { TraceSource } from '../graphPanel.component';
   styleUrls: ['./traceSelector.component.scss']
 })
 export class TraceSelectorComponent implements OnInit {
+
   /** An EventEmitter that allows changes in the selected items to be passed to the parent */
   @Output() selectedTraces = new EventEmitter<Array<Trace>>();
 
@@ -50,12 +53,18 @@ export class TraceSelectorComponent implements OnInit {
 
   // Pending IDs to restore once traces are available
   private pendingRestoreIds = new Set<string>();
+  private _selectedDisplayType = YAxisDisplayType.STACK;
 
   /**
    * Setter that sets {@link #traceMap} then calls {@link #updateDistributionPlotList}.
    */
   @Input() set traceMap(traceMap: Map<TraceSource, null | Array<Trace>>) {
     this.updateDistributionPlotList(traceMap);
+  }
+
+  @Input() set selectedDisplayType(displayType: YAxisDisplayType) {
+    this._selectedDisplayType = displayType;
+    this.updatePaleolatitudeAxesForDisplayType();
   }
 
   /**
@@ -177,7 +186,7 @@ export class TraceSelectorComponent implements OnInit {
       // set styling
       this.styler.assignStyle(trace, Object.values(this._selectedTraces));
       // set yaxis
-      trace.yAxis = (null == yAxis) ? trace.generateYAxis() : yAxis;
+      trace.yAxis = yAxis ?? this.getSharedPaleolatitudeYAxis(trace) ?? trace.generateYAxis();
     }
     // Update UI outputs
     this.setSelectedTraces(Object.values(this._selectedTraces));
@@ -191,7 +200,7 @@ export class TraceSelectorComponent implements OnInit {
    *
    * IMPORTANT: Do NOT overwrite LS_DATA_TRACES_SELECTED if favourites aren't loaded yet.
    */
-    private persistSelectedTracesByFavourites(): void {
+  private persistSelectedTracesByFavourites(): void {
     // Collect the IDs of all currently selected Trace objects.
     const allSelectedTraceIds = Object.values(this._selectedTraces)
       .filter(trace => !trace.originatingConfigurableId.startsWith('external-layer-'))
@@ -299,7 +308,7 @@ export class TraceSelectorComponent implements OnInit {
     if (restorable.length > 0) {
       restorable.forEach(t => {
         if (!this._selectedTraces[t.id]) {
-          t.yAxis = t.yAxis ?? t.generateYAxis();
+          t.yAxis = t.yAxis ?? this.getSharedPaleolatitudeYAxis(t) ?? t.generateYAxis();
           this.styler.assignStyle(t, Object.values(this._selectedTraces));
           this._selectedTraces[t.id] = t;
         }
@@ -354,6 +363,51 @@ export class TraceSelectorComponent implements OnInit {
   private getAllTraces(traceRecord: Record<string, null | Array<Trace>>): Array<Trace> {
     const traceArrays = Object.values(traceRecord).filter(array => (null != array)) as Array<Array<Trace>>;
     return new Array<Trace>().concat(...traceArrays);
+  }
+
+  private getSharedPaleolatitudeYAxis(trace: Trace): YAxis | null {
+    if (!this.isPaleolatitudeTrace(trace) || this._selectedDisplayType !== YAxisDisplayType.OVERLAY) {
+      return null;
+    }
+
+    return Object.values(this._selectedTraces).find((selectedTrace: Trace) => {
+      return this.isPaleolatitudeTrace(selectedTrace) && selectedTrace.yAxis != null;
+    })?.yAxis ?? null;
+  }
+
+  private updatePaleolatitudeAxesForDisplayType(): void {
+    const selectedTraces = Object.values(this._selectedTraces);
+    if (selectedTraces.length === 0) {
+      return;
+    }
+
+    let changed = false;
+    let sharedYAxis: YAxis | null = null;
+    selectedTraces.forEach((trace: Trace) => {
+      if (!this.isPaleolatitudeTrace(trace)) {
+        return;
+      }
+
+      if (this._selectedDisplayType === YAxisDisplayType.OVERLAY) {
+        sharedYAxis = sharedYAxis ?? trace.yAxis ?? trace.generateYAxis();
+        if (trace.yAxis !== sharedYAxis) {
+          trace.yAxis = sharedYAxis;
+          changed = true;
+        }
+        return;
+      }
+
+      trace.yAxis = trace.generateYAxis();
+      changed = true;
+    });
+
+    if (changed) {
+      this.setSelectedTraces(selectedTraces);
+    }
+  }
+
+  private isPaleolatitudeTrace(trace: Trace): boolean {
+    return trace.originatingConfigurableId.startsWith(PALEOLATITUDE_CONFIG_ID);
   }
 
 }

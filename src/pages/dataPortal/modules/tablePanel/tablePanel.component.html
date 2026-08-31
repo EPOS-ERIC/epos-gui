@@ -1,4 +1,5 @@
-<ng-container class="wrapper" *ngIf="currentDataConfigurables.length + externalSources.length > 0">
+<ng-container class="wrapper"
+  *ngIf="currentDataConfigurables.length + externalSources.length + paleolatitudeResults.length > 0">
   <div class="toggle-container">
     <mat-tab-group [(selectedIndex)]="selectedIndex">
       <mat-tab *ngFor="let config of currentDataConfigurables; let i = index">
@@ -8,20 +9,31 @@
           <span [outerHTML]="config.name"></span>
           <mat-icon *ngIf="favouritesList[config.id]" class="yellow">star</mat-icon>
           <i *ngIf="hiddenMarkerOnMapList[config.id]" aria-hidden="true" class="fas fa-eye-slash warning"></i>
-        </ng-template> 
-        <app-table-display [dataConfigurable]="config" (exportData)="exportFile($event)" [onDialogComponent]="onDialogComponent"></app-table-display>
+        </ng-template>
+        <app-table-display [dataConfigurable]="config" (exportData)="exportFile($event)"
+          [onDialogComponent]="onDialogComponent"></app-table-display>
       </mat-tab>
       <mat-tab *ngFor="let source of externalSources">
         <ng-template mat-tab-label>
           <i class="fa-solid fa-earth-europe">&nbsp;</i>
           <span [outerHTML]="source.name"></span>
         </ng-template>
-        <app-table-display [externalSource]="source" (exportData)="exportFile($event)" [onDialogComponent]="onDialogComponent"></app-table-display>
+        <app-table-display [externalSource]="source" (exportData)="exportFile($event)"
+          [onDialogComponent]="onDialogComponent"></app-table-display>
+      </mat-tab>
+      <mat-tab *ngIf="paleolatitudeResults.length > 0">
+        <ng-template mat-tab-label>
+          <i class="fa-solid fa-earth-europe">&nbsp;</i>
+          <span [outerHTML]="paleolatitudeServiceName"></span>
+        </ng-template>
+        <app-table-display [paleolatitudeResults]="paleolatitudeResults" (exportData)="exportFile($event)"
+          [onDialogComponent]="onDialogComponent"></app-table-display>
       </mat-tab>
     </mat-tab-group>
   </div>
 </ng-container>
 
-<ng-container class="wrapper" *ngIf="currentDataConfigurables.length + externalSources.length === 0">
+<ng-container class="wrapper"
+  *ngIf="currentDataConfigurables.length + externalSources.length + paleolatitudeResults.length === 0">
   <div class="toggle-container no-data">Data cannot be visualised in a tabular format.</div>
 </ng-container>
