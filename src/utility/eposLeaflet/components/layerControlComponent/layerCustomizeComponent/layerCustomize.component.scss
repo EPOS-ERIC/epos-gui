@@ -29,15 +29,45 @@
           width: 100%;
         }
 
-        .palette-preview {
-          width: 70px;
-          height: 14px;
-          flex-shrink: 0;
-          border: 1px solid lightgrey;
-        }
-
         .mat-form-field {
           width: 100%;
+        }
+
+        &.range-content {
+          justify-content: space-between;
+
+          label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+            min-width: 0;
+          }
+
+          input {
+            min-width: 0;
+            width: 100%;
+          }
+
+          .range-reset,
+          .range-apply {
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            flex-shrink: 0;
+
+            mat-icon {
+              width: 16px;
+              height: 16px;
+              font-size: 16px;
+              line-height: 16px;
+            }
+          }
+
+          .range-apply {
+            color: $color-light-text;
+            background-color: $color-primary;
+          }
         }
 
         .buttons {
@@ -66,4 +96,13 @@
     }
 
   }
+}
+
+.palette-preview {
+  display: inline-block;
+  width: 70px;
+  height: 14px;
+  margin-right: 5px;
+  vertical-align: middle;
+  border: 1px solid lightgrey;
 }
