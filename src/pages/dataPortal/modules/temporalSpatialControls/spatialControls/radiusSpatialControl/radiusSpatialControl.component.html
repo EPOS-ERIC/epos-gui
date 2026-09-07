@@ -1,0 +1,17 @@
+<div class="wrapper" [class.disabled]="inputsDisabled">
+  <mat-form-field appearance="fill">
+    <input matInput [ngModel]="latitude" (ngModelChange)="latitude = $event == null ? '' : $event.toString(); onChange()" [disabled]="inputsDisabled"
+      (keyup.enter)="applyExtent()" id="radius-latitude" type="number" step="0.01" min="-90" max="90"
+      matTooltip="Latitude" placeholder="Latitude" data-cy="spatial-filter-radius-latitude-input">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [ngModel]="longitude" (ngModelChange)="longitude = $event == null ? '' : $event.toString(); onChange()" [disabled]="inputsDisabled"
+      (keyup.enter)="applyExtent()" id="radius-longitude" type="number" step="0.01" min="-180" max="180"
+      matTooltip="Longitude" placeholder="Longitude" data-cy="spatial-filter-radius-longitude-input">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [ngModel]="radiusKm" (ngModelChange)="radiusKm = $event == null ? '' : $event.toString(); onChange()" [disabled]="inputsDisabled"
+      (keyup.enter)="applyExtent()" id="radius-km" type="number" step="0.1" min="0"
+      matTooltip="Radius (km)" placeholder="Radius (km)" data-cy="spatial-filter-radius-input">
+  </mat-form-field>
+</div>

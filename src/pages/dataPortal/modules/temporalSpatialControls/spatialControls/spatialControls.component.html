@@ -1,6 +1,7 @@
 <div class="spatio-temporal-control">
   <ng-container class="container">
     <app-simple-spatial-control
+      *ngIf="mode === 'bbox'"
       [context]="context"
       [class.north-change]="northEdited"
       [class.east-change]="eastEdited"
@@ -13,12 +14,25 @@
       [inputsDisabled]="disabled"
       [showClearButton]="true"></app-simple-spatial-control>
 
+    <app-radius-spatial-control
+      *ngIf="mode === 'radius'"
+      [context]="context"
+      [selection]="currentRadius"
+      [inputsDisabled]="disabled"
+      (applyEdited)="applyEdited()"
+      (changeRadius)="changeEditableRadius($event)"></app-radius-spatial-control>
+
     <div class="button-wrapper">
       <button id="apply-button" class="small-button" *ngIf="showApplyButton" [disabled]="!boundsEdited" mat-flat-button color="primary" matTooltip="Confirm" (click)="applyEdited(false)">
         <i class="fas fa-check icon" aria-hidden="true"></i>
       </button>
 
-      <app-drawing-spatial-control *ngIf="showDrawButton" data-cy="drawing-spatial-control-button"></app-drawing-spatial-control>
+      <app-drawing-spatial-control
+        *ngIf="showDrawButton"
+        data-cy="drawing-spatial-control-button"
+        [mode]="mode"
+        [radiusEnabled]="radiusEnabled"
+        (modeChange)="changeMode($event)"></app-drawing-spatial-control>
     </div>
   </ng-container>
 </div>

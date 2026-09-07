@@ -1,4 +1,26 @@
-<button mat-flat-button class="small-button" [color]="(drawingBbox) ? 'secondary' : 'primary'"
+<button *ngIf="!radiusEnabled" mat-flat-button class="small-button" [color]="(drawingBbox) ? 'secondary' : 'primary'"
   matTooltip="Rectangular Selection" (click)="startDrawExtent()">
   <i class="fas fa-expand" aria-hidden="true"></i>
 </button>
+
+<div *ngIf="radiusEnabled" class="split-button">
+  <button mat-flat-button class="small-button draw-button" [color]="(drawingBbox) ? 'secondary' : 'primary'"
+    [matTooltip]="mode === 'radius' ? 'Circular Selection' : 'Rectangular Selection'" (click)="startDrawExtent()">
+    <i class="fas" [class.fa-expand]="mode === 'bbox'" [class.fa-circle]="mode === 'radius'" aria-hidden="true"></i>
+  </button>
+  <button mat-flat-button class="small-button menu-button" color="primary" [matMenuTriggerFor]="spatialModeMenu"
+    matTooltip="Selection mode">
+    <i class="fas fa-caret-down" aria-hidden="true"></i>
+  </button>
+</div>
+
+<mat-menu #spatialModeMenu="matMenu">
+  <button mat-menu-item (click)="selectMode('bbox')">
+    <i class="fas fa-expand" aria-hidden="true"></i>
+    <span> Bounding Box</span>
+  </button>
+  <button mat-menu-item (click)="selectMode('radius')">
+    <i class="fas fa-circle" aria-hidden="true"></i>
+    <span> Radius</span>
+  </button>
+</mat-menu>
