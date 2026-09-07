@@ -1,7 +1,45 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.59] - 2026-08-10
+- Fix: Table mixing values
+- Cite the source of a definition (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20301)
+- Multiple Bounding Boxes in Details dialog mini-map (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20593)
+- Chore: changed GetFeatInfo format priority (1.application/json, 2.text/plain, 3.text/html)
+- Notification: extended token lifetime
+- Minor fixes and improvements
 
+## [1.0.58] - 2026-06-19
+- Remove Silent Refresh
+- Minor fixes and improvements
+## [1.0.57] - 2026-05-26
+- Feature: Covjson + Geojson (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20393)
+- Feature: multiple locations covjson(related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/19297)
+- Fix: export Map image (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20308)
+- Improve Matomo filter Date input usability
+- Minor fixes and improvements
+
+## [1.0.56] - 2026-05-11
+- Fix: remove duplicated bbox underneath drawn bbox (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20328)
+- Fix: map image export (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20308)
+- Minor fixes and improvements
+
+## [1.0.55] - 2026-04-09
+- Solved generic 'download' filename to actual name in the payload (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20097)
+- Fix Date/Time Misalignment (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20302)
+- Minor fixes and improvements
+
+## [1.0.54] - 2026-03-06
+- Unified <b>Terms and Conditions</b> and <b>News Letter Dialog</b>
+- In Software tab New Details are shown: <b>Creator(s)</b>, <b>Run Time Platform</b> and <b>Software Requirements</b>
+- Improvements to the Layout of <b>Analysis Tab</b>
+- Now User can select to what VRE to add data to
+- Changed the style of <b>add to favorites</b> popup when Switching Services
+- Changed the style of <b>activate metadata preview</b> popup
+- Fixed and improved the <b>Metadata Preview Area</b> 
+- Implemented <b>Versioning Status</b> info for Facilities and Software tabs
+- Integration of <b>Geometry Collection</b> type (related Issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/issues/19464)
+- Show all available formats for <b>WMS</b> type (related Issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/issues/20091)
 ## [1.0.53] - 2026-02-16
 - Update 'T&C' references
 - Requests fix on Temporal Range set

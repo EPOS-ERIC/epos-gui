@@ -24,6 +24,7 @@ import { LocalStorageVariables } from 'services/model/persisters/localStorageVar
 import { Environment } from 'api/webApi/data/environments/environment.interface';
 import { AnalysisConfigurablesService } from 'pages/dataPortal/services/analysisConfigurables.service';
 import { DataConfigurationType } from 'utility/configurables/dataConfigurationType.enum';
+import { EnvironmentService } from 'services/environment.service';
 import { Tracker } from 'utility/tracker/tracker.service';
 import { TrackerAction, TrackerCategory } from 'utility/tracker/tracker.enum';
 
@@ -69,6 +70,7 @@ export class DataConfigurationComponent implements OnInit, AfterViewInit {
   public showApplyButton = false;
 
   public environmentSelected: Environment | null = null;
+  public environments: Environment[] = [];
 
   public serviceDocumentation: string;
 
@@ -76,6 +78,8 @@ export class DataConfigurationComponent implements OnInit, AfterViewInit {
 
   public searchTerms: { [key: string]: string } = {};
   public filteredAllowedValues: { [key: string]: string[] } = {};
+
+  public isAnalysisPanelOpen = false;
 
   protected parameterDefinitions: ParameterDefinitions;
 
@@ -90,6 +94,7 @@ export class DataConfigurationComponent implements OnInit, AfterViewInit {
     protected readonly localStoragePersister: LocalStoragePersister,
     protected readonly analysisConfigurables: AnalysisConfigurablesService,
     protected readonly tracker: Tracker,
+    protected readonly environmentService: EnvironmentService,
   ) {
   }
 
@@ -101,6 +106,9 @@ export class DataConfigurationComponent implements OnInit, AfterViewInit {
       }),
       this.analysisConfigurables.triggerEnvironmentSelectionObs.subscribe((environment: Environment | null) => {
         this.environmentSelected = environment;
+      }),
+      this.analysisConfigurables.analysisPanelOpenObs.subscribe((isOpen: boolean) => {
+        this.isAnalysisPanelOpen = isOpen;
       })
     );
   }
@@ -216,46 +224,46 @@ export class DataConfigurationComponent implements OnInit, AfterViewInit {
     );
   }
 
-// When the user types in the search bar inside a card, this funciton is called, which then
-// calls searchValuesinAdSearch to filter the allowed values based on the search term, and finally updates
-// the filteredAllowedValues for that parameter definition so that the user sees the filtered list.
-public onSearchInput(paramDef: ParameterDefinition, event: Event): void {
-  const inputElement = event.target as HTMLInputElement;
-  const value = inputElement.value;
-  this.searchTerms[paramDef.name] = value.toLowerCase();
-  this.filteredAllowedValues[paramDef.name] = this.searchValuesinAdSearch(paramDef);
-  this.cdr.detectChanges();
-}
+  // When the user types in the search bar inside a card, this funciton is called, which then
+  // calls searchValuesinAdSearch to filter the allowed values based on the search term, and finally updates
+  // the filteredAllowedValues for that parameter definition so that the user sees the filtered list.
+  public onSearchInput(paramDef: ParameterDefinition, event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const value = inputElement.value;
+    this.searchTerms[paramDef.name] = value.toLowerCase();
+    this.filteredAllowedValues[paramDef.name] = this.searchValuesinAdSearch(paramDef);
+    this.cdr.detectChanges();
+  }
 
-// this method is used so that when the dropdown is oppended, the search input is focused automatically, this is optional feature
-public onSelectOpened(paramDef: ParameterDefinition): void {
-  this.searchTerms[paramDef.name] = '';
-  this.filteredAllowedValues[paramDef.name] = paramDef.allowedValues;
+  // this method is used so that when the dropdown is oppended, the search input is focused automatically, this is optional feature
+  public onSelectOpened(paramDef: ParameterDefinition): void {
+    this.searchTerms[paramDef.name] = '';
+    this.filteredAllowedValues[paramDef.name] = paramDef.allowedValues;
 
-  // this focuses the search input inside the dropdown
+    // this focuses the search input inside the dropdown
     const inputs = document.querySelectorAll('.mat-option-search');
     const input = Array.from(inputs).find(el =>
       (el as HTMLInputElement).placeholder === 'Search...'
     ) as HTMLInputElement;
-    if (input) {input.focus();}
-}
-// when the card or dropdown is closed, reset the search bar
-public onSelectClosed(paramDef: ParameterDefinition): void {
-  this.searchTerms[paramDef.name] = '';
-  this.filteredAllowedValues[paramDef.name] = paramDef.allowedValues;
-}
-// this method filters the allowed values of a parameter definition based on the search term entered by the user
-// the filter uses includes not starstwith
-public searchValuesinAdSearch(paramDef: ParameterDefinition): string[] {
-  const term = (this.searchTerms[paramDef.name] || '').toLowerCase().trim();
+    if (input) { input.focus(); }
+  }
+  // when the card or dropdown is closed, reset the search bar
+  public onSelectClosed(paramDef: ParameterDefinition): void {
+    this.searchTerms[paramDef.name] = '';
+    this.filteredAllowedValues[paramDef.name] = paramDef.allowedValues;
+  }
+  // this method filters the allowed values of a parameter definition based on the search term entered by the user
+  // the filter uses includes not starstwith
+  public searchValuesinAdSearch(paramDef: ParameterDefinition): string[] {
+    const term = (this.searchTerms[paramDef.name] || '').toLowerCase().trim();
 
-  if (!term) {return paramDef.allowedValues;}
-  const filtered = paramDef.allowedValues.filter(v => {
-    const valueStr = (v || '').toString().toLowerCase();
-    return valueStr.includes(term);
-  });
-  return filtered;
-}
+    if (!term) { return paramDef.allowedValues; }
+    const filtered = paramDef.allowedValues.filter(v => {
+      const valueStr = (v || '').toString().toLowerCase();
+      return valueStr.includes(term);
+    });
+    return filtered;
+  }
   /**
    * The saveForm function closes a popup.
    */

@@ -10,6 +10,8 @@ export enum LocalStorageVariables {
   LS_METADATA_PREVIEW_MODE = 'metadataPreviewMode',
   // Metadata Preview Mode selected statuses ('published', 'draft'...)
   LS_METADATA_PREVIEW_SELECTED_STATUSES = 'metadataPreviewSelectedStatuses',
+  // Session key for post-login metadata prompt
+  LS_METADATA_PROMPT_PENDING = 'metadataPreviewPromptPending',
   LS_CONFIGURABLES = 'configurables',
   LS_TOUR_ACTIVE = 'tourActive',
   LS_MAP_CRS = 'mapCrs',
@@ -23,6 +25,7 @@ export enum LocalStorageVariables {
   LS_BASEMAP_ARTIC_POLAR = 'baseMapArticPolar',
   LS_LAYERS_ORDER = 'layersOrder',
   LS_LAYERS_ORDER_ARTIC_POLAR = 'layersOrderArticPolar',
+  LS_EXTERNAL_LAYERS = 'externalLayers',
   LS_LAST_DETAIL_DIALOG_ID = 'lastDetailDialogId',
   LS_TS_POPUP_LAYER_ID = 'timeSeriesPopupLayerId',
   LS_BBOX_STYLE = 'bboxStyle',
@@ -78,3 +81,5 @@ export enum LocalStorageVariables {
   LS_ANALYSIS_SIDENAV = 'analysisSidenav',
 }
 
+// Session key for post-login metadata prompt TTL (5 minutes)
+export const METADATA_PROMPT_PENDING_TTL_MS = 5 * 60 * 1000;

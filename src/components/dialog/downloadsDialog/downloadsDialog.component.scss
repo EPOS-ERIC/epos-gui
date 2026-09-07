@@ -12,7 +12,6 @@
     justify-content: space-between;
   }
 
-  .mat-spinner {}
 
   .spinner-wrapper {
     padding: 18px;
@@ -48,24 +47,26 @@
     }
 
   }
-  .citation-content {
-  flex: 1;
-  max-height: 90px;      
-  overflow-y: auto;       
-  padding-right: 8px;     
-  word-break: break-word;
-  overflow-y: auto; 
-}
 
-/* Optional: nicer scrollbar (Chrome/WebKit) */
-.citation-content::-webkit-scrollbar {
-  width: 6px;
-}
-.citation-content::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-}
- 
+  .citation-content {
+    flex: 1;
+    max-height: 90px;
+    overflow-y: auto;
+    padding-right: 8px;
+    word-break: break-word;
+    overflow-y: auto;
+  }
+
+  /* Optional: nicer scrollbar (Chrome/WebKit) */
+  .citation-content::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .citation-content::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+  }
+
 
   div.citation-wrapper {
     padding-top: 7px;
@@ -143,6 +144,24 @@
       font-weight: bold;
       padding-top: 15px;
       padding-bottom: 15px;
+
+      &.env-select-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        position: relative;
+
+        mat-icon {
+          margin-right: -4px;
+        }
+
+        .hidden-select {
+          position: absolute;
+          width: 0;
+          height: 0;
+          visibility: hidden;
+        }
+      }
     }
   }
 

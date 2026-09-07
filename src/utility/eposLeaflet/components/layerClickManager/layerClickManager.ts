@@ -16,6 +16,7 @@ import { GeoJSONHelper } from 'utility/maplayers/geoJSONHelper';
 import { Lightbox} from 'ngx-lightbox';
 import { CustomLightbox} from 'utility/eposLeaflet/lightboxComponent/customLightbox.component';
 import { LightboxImage } from 'utility/eposLeaflet/lightboxComponent/customLightbox.model';
+import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 
 export class LayerClickManager {
   protected leafletMapObj: L.Map;
@@ -27,12 +28,14 @@ export class LayerClickManager {
   private panelEvent: PanelsEmitterService;
   private localStoragePersister: LocalStoragePersister;
   private lightbox: Lightbox;
+  private mapInteractionService: MapInteractionService;
   private customLightbox: CustomLightbox | null = null;
 
   constructor(protected injector: Injector,) {
     this.panelEvent = injector.get<PanelsEmitterService>(PanelsEmitterService);
     this.localStoragePersister = injector.get<LocalStoragePersister>(LocalStoragePersister);
     this.lightbox = injector.get<Lightbox>(Lightbox);
+    this.mapInteractionService = injector.get<MapInteractionService>(MapInteractionService);
   }
 
   public init(leafletMapObj: L.Map, http: HttpClient, eposLeaflet: EposLeafletComponent): this {
@@ -250,7 +253,10 @@ export class LayerClickManager {
 
       if (featureId !== null && layerTitle !== null) {
 
-        let layer = this.eposLeaflet.getLayers().find((l: MapLayer) => { return l.name === layerTitle; });
+        const externalLayerId = slideTitleContent[0].getAttribute('data-layer-id');
+        let layer = this.eposLeaflet.getLayers().find((l: MapLayer) => {
+          return externalLayerId != null ? l.id === externalLayerId : l.name === layerTitle;
+        });
 
         // if layer is imageOverlay => get its geoJson layer
         if (layer !== undefined && layer.options.customLayerOptionPaneType.get() === MapLayer.IMAGE_OVERLAY_LAYER_TYPE) {
@@ -264,10 +270,13 @@ export class LayerClickManager {
         if (layer !== undefined) {
 
           const dataConfigurable = layer.getStylable() as DataConfigurableDataSearch | undefined;
+          const externalSource = this.mapInteractionService.externalVisualisationSources.value.get(layer.id);
 
           if (dataConfigurable !== undefined && dataConfigurable.isTabularable) {
 
             // open table panel on layer and feature
+            this.eposLeaflet.selectRowOnTablePanel(layer.id, featureId);
+          } else if (externalSource?.type === 'geojson') {
             this.eposLeaflet.selectRowOnTablePanel(layer.id, featureId);
           }
         }
@@ -290,20 +299,23 @@ export class LayerClickManager {
     if (slideTitleContent.length > 0) {
       const layerTitle = slideTitleContent[0].innerHTML;
 
-      // get feature Id
-      const featureId = slideTitleContent[0].getAttribute('data-id');
+      if (layerTitle !== null) {
 
-      if (featureId !== null && layerTitle !== null) {
-
-        const layer = this.eposLeaflet.getLayers().find((l: MapLayer) => { return l.name === layerTitle; });
+        const externalLayerId = slideTitleContent[0].getAttribute('data-layer-id');
+        const layer = this.eposLeaflet.getLayers().find((l: MapLayer) => {
+          return externalLayerId != null ? l.id === externalLayerId : l.name === layerTitle;
+        });
 
         if (layer !== undefined) {
 
           const dataConfigurable = layer.getStylable() as DataConfigurableDataSearch | undefined;
+          const externalSource = this.mapInteractionService.externalVisualisationSources.value.get(layer.id);
 
           if (dataConfigurable !== undefined && dataConfigurable.isGraphable) {
 
             // open graph panel on layer and feature
+            this.panelEvent.graphPanelOpen(layer.id, false);
+          } else if (externalSource?.type === 'covjson') {
             this.panelEvent.graphPanelOpen(layer.id, false);
           }
         }

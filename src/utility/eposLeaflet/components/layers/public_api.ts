@@ -1,4 +1,5 @@
 export * from './esriBaseLayer';
+export * from './externalTileServiceLayer';
 export * from './geoJsonLayer/geoJsonLayer';
 export * from './geoJsonLayer/geoJsonLayerFeatureItemGenerator';
 export * from './imageOverlayLayer.abstract';
@@ -9,4 +10,3 @@ export * from './wmsTileLayer';
 export * from './wmtsTileLayer';
 export * from './wmsFeatureDisplayItemGenerator';
 export * from './wmtsFeatureDisplayItemGenerator';
-

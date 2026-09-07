@@ -25,6 +25,7 @@ import { DistributionContactPoint } from '../distributionContactPoint.interface'
 import { DistributionCategories } from '../distributionCategories.interface';
 import { Organization } from '../organization.interface';
 import { SimpleOrganization } from './simpleOrganization';
+import { Creator } from '../creator.interface';
 import { CONTEXT_SOFTWARE } from 'api/api.service.factory';
 
 export class JSONDistributionFactory {
@@ -170,6 +171,43 @@ export class JSONDistributionFactory {
     }
 
     return providers;
+  }
+
+  /**
+   * Parses JSON to create an array of Creator objects
+   */
+  public static jsonToArrayCreator(jsonWithParams: Record<string, unknown>, value: string): Array<Creator> {
+    const creators = new Array<Creator>();
+    const creatorObjects = ObjectAccessUtility.getObjectArray<Record<string, unknown>>(jsonWithParams, value, false);
+
+    if (creatorObjects != null) {
+      creatorObjects.forEach((creatorObj: Record<string, unknown>) => {
+        // check required fields
+        let name = ObjectAccessUtility.getObjectValueString(creatorObj, 'name', false, null);
+        const url = ObjectAccessUtility.getObjectValueString(creatorObj, 'url', false, null);
+        const uid = ObjectAccessUtility.getObjectValueString(creatorObj, 'uid', false, '');
+        const instanceId = ObjectAccessUtility.getObjectValueString(creatorObj, 'instanceid', false, '');
+        const country = ObjectAccessUtility.getObjectValueString(creatorObj, 'country', false, '');
+
+        if (name == null) {
+          console.log('Creator no name', creatorObj);
+        } else {
+          // Append the country code after the name of the creator
+          name = name + (country ? (' - ' + country) : '');
+
+          const createdCreator: Creator = {
+            name,
+            url,
+            uid,
+            instanceId,
+            country
+          };
+          creators.push(createdCreator);
+        }
+      });
+    }
+
+    return creators;
   }
 
   /**
@@ -379,17 +417,21 @@ export class JSONDistributionFactory {
     // temporary object to hold versioning info
     const tempVersioningInfo: { [key: string]: Partial<{ changeDate: string; editorFullName: string }> } = {};
     const versioningStatusInfoKey = 'versioningStatusInfo';
-     // Initialize temp object for this key if it doesn't exist
+    // Initialize temp object for this key if it doesn't exist
     const uid = ObjectAccessUtility.getObjectValueString(distJson, 'uid', false, null);
-     if (!tempVersioningInfo[versioningStatusInfoKey]) {
+    if (!tempVersioningInfo[versioningStatusInfoKey]) {
       tempVersioningInfo[versioningStatusInfoKey] = {};
     }
     JSONDistributionFactory.versioningStatusInfoProperties.forEach((property: string) => {
-      if(property in distJson && (distJson[property] != null && distJson[property] !== '')) {
+      if (property in distJson && (distJson[property] != null && distJson[property] !== '')) {
         const value = ObjectAccessUtility.getObjectValueString(distJson, property, false);
         tempVersioningInfo[versioningStatusInfoKey][property as 'changeDate' | 'editorFullName'] = value;
       }
     });
+    // fallback: if editorFullName is missing, use editorId as author
+    if (!tempVersioningInfo[versioningStatusInfoKey].editorFullName) {
+      tempVersioningInfo[versioningStatusInfoKey].editorFullName = 'Unknown';
+    }
     Object.entries(tempVersioningInfo).forEach(([key, partial]) => {
       if (partial.changeDate && partial.editorFullName) {
         // finally assigning the actual versioning info to the versioningStatusInfo object with which the DistSummary will be created
@@ -424,7 +466,7 @@ export class JSONDistributionFactory {
 
     if (Confirm.isValidString(id) && //
       Confirm.isValidString(title)) {
-      return Optional.ofNonNullable(SimpleDistributionSummary.make(id, title, formatsAppendTo, status, statusTimestamp,statusURL, versioningStatus, versioningStatusInfo,serviceProvider,uid));
+      return Optional.ofNonNullable(SimpleDistributionSummary.make(id, title, formatsAppendTo, status, statusTimestamp, statusURL, versioningStatus, versioningStatusInfo, serviceProvider, uid));
     } else {
       return Optional.empty();
     }
@@ -507,7 +549,7 @@ export class JSONDistributionFactory {
     return organizations;
   }
 
-public static jsonToOrganization(json: unknown): Organization | null {
+  public static jsonToOrganization(json: unknown): Organization | null {
     // Assert json is an array and has at least one element
     if (Array.isArray(json) && json.length > 0) {
       // Extract the first element of the array and assert its type
@@ -527,7 +569,7 @@ public static jsonToOrganization(json: unknown): Organization | null {
     }
     // Return null if json is not an array or is empty
     return null;
-}
+  }
 
   /**
    * Builds a standard DistributionDetails object (e.g., for web services or file distributions).
@@ -565,7 +607,10 @@ public static jsonToOrganization(json: unknown): Organization | null {
       const dataProvider = JSONDistributionFactory.jsonToArrayDataProvider(rawData, 'dataProvider');
       // DDSS ID for internal usage/check during implementation phase
       const internalID = ObjectAccessUtility.getObjectArray<string>(rawData, 'internalID', false);
-      const doi = ObjectAccessUtility.getObjectArray<string>(rawData, 'DOI', false);
+      let doi = ObjectAccessUtility.getObjectArray<string>(rawData, 'DOI', false);
+      if (doi.length === 0) {
+        doi = ObjectAccessUtility.getObjectArray<string>(rawData, 'doi', false);
+      }
       const downloadURL = ObjectAccessUtility.getObjectValueString(rawData, 'downloadURL', false, '');
       const contactPoints = ObjectAccessUtility.getObjectArray<string>(rawData, 'contactPoints', false);
       const keywords = ObjectAccessUtility.getObjectArray<string>(rawData, 'keywords', false);
@@ -641,8 +686,8 @@ public static jsonToOrganization(json: unknown): Organization | null {
           [], // programmingLanguage
           null, // mainEntityofPage
           null, // softwareVersion
-          [],   // requirements
-          [],   // runtimePlatform
+          '',   // requirements
+          '',   // runtimePlatform
           []    // creator
         );
       } else {
@@ -676,7 +721,10 @@ public static jsonToOrganization(json: unknown): Organization | null {
     return summary.map(sum => {
 
       // Initialize lists
-      const doiList = ObjectAccessUtility.getObjectArray<string>(rawData, 'DOI', false) || [];
+      let doiList = ObjectAccessUtility.getObjectArray<string>(rawData, 'DOI', false);
+      if (doiList.length === 0) {
+        doiList = ObjectAccessUtility.getObjectArray<string>(rawData, 'doi', false);
+      }
       const internalIdList = ObjectAccessUtility.getObjectArray<string>(rawData, 'internalID', false) || [];
 
       // details
@@ -726,22 +774,23 @@ public static jsonToOrganization(json: unknown): Organization | null {
 
       let softwareDownloadLink: string | null = null;
       let codeRepoLink: string | null = null;
-      let runtimePlatform: Array<string> = [];
-
+      let runtimePlatform: string = '';
+      let requirements: string = '';
       if (detailsType === 'software_source_code') {
+        requirements = ObjectAccessUtility.getObjectValueString(rawData, 'softwareRequirements', false);
         codeRepoLink = ObjectAccessUtility.getObjectValueString(rawData, 'codeRepository', false, null);
         softwareDownloadLink = codeRepoLink;
-        runtimePlatform = ObjectAccessUtility.getObjectArray<string>(rawData, 'runtimePlatform', false);
+        runtimePlatform = ObjectAccessUtility.getObjectValueString(rawData, 'runtimePlatform', false);
       } else if (detailsType === 'software_application') {
-        softwareDownloadLink = ObjectAccessUtility.getObjectValueString(rawData, 'downloadUrl', false, null);
-        runtimePlatform = ObjectAccessUtility.getObjectArray<string>(rawData, 'operatingSystem', false);
+        requirements = ObjectAccessUtility.getObjectValueString(rawData, 'softwareRequirements', false);
+        softwareDownloadLink = ObjectAccessUtility.getObjectValueString(rawData, 'downloadURL', false, null);
+        runtimePlatform = ObjectAccessUtility.getObjectValueString(rawData, 'operatingSystem', false);
       }
 
       const programmingLanguage = ObjectAccessUtility.getObjectArray<string>(rawData, 'programmingLanguage', false);
       const mainEntityOfPage = ObjectAccessUtility.getObjectValueString(rawData, 'mainEntityOfPage', false, null);
       const softwareVersion = ObjectAccessUtility.getObjectValueString(rawData, 'softwareVersion', false, null);
-      const requirements = ObjectAccessUtility.getObjectArray<string>(rawData, 'requirements', false);
-      const creator = ObjectAccessUtility.getObjectArray<string>(rawData, 'creator', false);
+      const creator = JSONDistributionFactory.jsonToArrayCreator(rawData, 'creator');
 
       const finalDownloadURL = softwareDownloadLink ?? standardDownloadURL;
       const finalLicense = softwareLicense ?? standardLicense;

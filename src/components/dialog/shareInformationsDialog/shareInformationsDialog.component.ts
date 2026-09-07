@@ -42,6 +42,7 @@ export class ShareInformationsDialogComponent implements OnInit {
   private configurables: Array<unknown> = [];
   private dataSearchConfigurables: string = '';
   private dataSearchConfigurablesReg: string = '';
+  private externalLayers: string = '';
 
   private readonly subscriptions: Array<Subscription> = new Array<Subscription>();
 
@@ -82,6 +83,7 @@ export class ShareInformationsDialogComponent implements OnInit {
                   this.configurables = JSON.parse(shareConf.configurables as string);
                   this.dataSearchConfigurables = shareConf.dataSearchConfigurables;
                   this.dataSearchConfigurablesReg = shareConf.dataSearchConfigurablesReg;
+                  this.externalLayers = shareConf.externalLayers ?? '';
 
                   if (this.configurables !== undefined) {
 
@@ -174,6 +176,7 @@ export class ShareInformationsDialogComponent implements OnInit {
       }
 
       this.localStoragePersister.set(LocalStorageVariables.LS_CONFIGURABLES, this.configurables);
+      this.localStoragePersister.set(LocalStorageVariables.LS_EXTERNAL_LAYERS, this.externalLayers, false);
 
       // remove parameter from query string
       this.removeParams();

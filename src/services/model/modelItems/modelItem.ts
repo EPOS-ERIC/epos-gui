@@ -388,7 +388,10 @@ export class ModelItem<T> {
                 ? Promise.resolve(rawValue)
                 : this.postPersistConverter(this, rawValue)
               ).then((value: T) => {
-                this.set(value);
+                // Force emit even if init() has not completed yet.
+                // populateValueOnInit() runs in parallel with initFunctions, so without forcing
+                // this can race and intermittently skip persisted state on refresh.
+                this.set(value, true);
                 resolve();
                 this.log('ModelItem: set value from persistence', this.identifier, value);
               });

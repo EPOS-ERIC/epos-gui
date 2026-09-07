@@ -1,7 +1,10 @@
 <div class="list">
   <div *ngFor="let keyword of results">
-    <span class="keyword">
-      {{ keyword.keyword }}
+    <span class="keyword" [class.keyword-with-definition]="keyword.rawDataLink && keyword.definition !== ''">
+      <a *ngIf="keyword.uri && keyword.uri !== '' && keyword.definition !== ''" [href]="keyword.uri" target="_blank" rel="noopener noreferrer"
+         class="keyword-link" [attr.aria-label]="'View source definition for ' + keyword.keyword">{{ keyword.keyword }}</a>
+      <span *ngIf="!keyword.uri || keyword.uri === '' || keyword.definition === ''">{{ keyword.keyword }}</span>
+      <span *ngIf="keyword.rawDataLink && keyword.definition !== ''" class="keyword-definition-inline">{{ keyword.definition }}</span>
       <mat-icon *ngIf="keyword.definition !== ''" matTooltipClass="vocabulary-tooltip-definition" matTooltip="{{ keyword.keyword }}: {{ keyword.definition }}'">help</mat-icon>
       ;
     </span>

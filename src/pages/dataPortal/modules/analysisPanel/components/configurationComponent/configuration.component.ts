@@ -11,6 +11,7 @@ import { BehaviorSubject } from 'rxjs';
 import { LocalStoragePersister } from 'services/model/persisters/localStoragePersister';
 import { DataConfigurationType } from 'utility/configurables/dataConfigurationType.enum';
 import { Tracker } from 'utility/tracker/tracker.service';
+import { EnvironmentService } from 'services/environment.service';
 
 @Component({
   selector: 'app-configuration',
@@ -35,8 +36,9 @@ export class ConfigurationComponent extends DataConfigurationComponent implement
     protected readonly localStoragePersister: LocalStoragePersister,
     protected readonly analysisConfigurables: AnalysisConfigurablesService,
     protected readonly tracker: Tracker,
+    protected readonly environmentService: EnvironmentService,
   ) {
-    super(cdr, dialogService, paramsDialogService, localStoragePersister, analysisConfigurables, tracker);
+    super(cdr, dialogService, paramsDialogService, localStoragePersister, analysisConfigurables, tracker, environmentService);
   }
 
 

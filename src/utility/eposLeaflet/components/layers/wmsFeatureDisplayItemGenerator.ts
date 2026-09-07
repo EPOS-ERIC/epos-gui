@@ -129,15 +129,15 @@ export class WmsFeatureDisplayItemGenerator implements FeatureDisplayItemGenerat
           .map((key) => `${key}=${parameters.get(key)}`)
           .join('&');
 
-/*
-        const parametersBbox = parameters.get('bbox');
+      /*
+              const parametersBbox = parameters.get('bbox');
 
-        const parametersBboxArray: string [] = [];
+              const parametersBboxArray: string [] = [];
 
-        parametersBboxArray.push(parametersBbox as string);
-        console.log(parametersBboxArray);
+              parametersBboxArray.push(parametersBbox as string);
+              console.log(parametersBboxArray);
 
- */
+       */
       return url.replace(/ /g, '');
     } else {
       return '';
@@ -249,8 +249,8 @@ export class WmsFeatureDisplayItemGenerator implements FeatureDisplayItemGenerat
 
     this.preferredFormats.push(WmsFeatureFormat.GEO_JSON);
     this.preferredFormats.push(WmsFeatureFormat.JSON);
-    this.preferredFormats.push(WmsFeatureFormat.HTML_TEXT);
     this.preferredFormats.push(WmsFeatureFormat.PLAIN_TEXT);
+    this.preferredFormats.push(WmsFeatureFormat.HTML_TEXT);
   }
 
   /**

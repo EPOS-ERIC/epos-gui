@@ -16,6 +16,7 @@ export class DrawBBoxControl extends L.Control.Draw implements SetMapComponentab
       rectangle: {
         shapeOptions: {
           clickable: false,
+          pane: 'overlayPane',
         },
       },
     },
@@ -108,7 +109,7 @@ export class DrawBBoxControl extends L.Control.Draw implements SetMapComponentab
         [bbox.getMaxLat(), bbox.getMaxLon()],
         [bbox.getMinLat(), bbox.getMinLon()],
       ]);
-      this.setBoundsDrawLayer(L.rectangle(rect));
+      this.setBoundsDrawLayer(L.rectangle(rect, { pane: 'overlayPane' }));
     }
     return this;
   }

@@ -33,11 +33,12 @@ Build output is written to `dist/`.
 
 The container image supports runtime configuration via environment variables.
 
-| Variable      | Default                   | Description                                                                           |
-| ------------- | ------------------------- | ------------------------------------------------------------------------------------- |
-| `BASE_URL`    | `/`                       | Base path where the app is served. Must start and end with `/` (for example `/gui/`). |
-| `API_HOST`    | `http://gateway:5000/api` | Upstream API URL used by nginx for `/api` requests.                                   |
-| `SERVER_NAME` | `_`                       | nginx `server_name` value.                                                            |
+| Variable        | Default                   | Description                                                                                 |
+| --------------- | ------------------------- | ------------------------------------------------------------------------------------------- |
+| `BASE_URL`      | `/`                       | Base path where the app is served. Must start and end with `/` (for example `/gui/`).      |
+| `API_HOST`      | `http://gateway:5000/api` | Upstream API URL used by nginx for `/api` requests.                                         |
+| `AUTH_ROOT_URL` | `http://localhost:35000`  | Browser-visible OAuth root URL injected into the OSS build at container startup. Internal builds keep `https://aaai.epos-eu.org`. |
+| `SERVER_NAME`   | `_`                       | nginx `server_name` value.                                                                  |
 
 Example:
 
@@ -45,6 +46,7 @@ Example:
 docker run --rm -p 8080:80 \
   -e BASE_URL=/gui/ \
   -e API_HOST=https://api.example.org/ \
+  -e AUTH_ROOT_URL=https://aaai.epos-eu.org \
   -e SERVER_NAME=_ \
   epos-gui:latest
 ```

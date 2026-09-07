@@ -16,12 +16,32 @@ span.keyword {
   white-space: nowrap;
 }
 
+span.keyword.keyword-with-definition {
+  justify-content: flex-start;
+  white-space: normal;
+}
+
 .mat-icon {
   font-size: 15px;
   height: 15px;
   width: 15px;
   cursor: pointer;
   color: $color-primary;
+}
+
+.keyword-link {
+  color: $color-primary;
+  text-decoration: underline dotted;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+.keyword-definition-inline {
+  margin-left: 4px;
 }
 
 ::ng-deep .vocabulary-tooltip-definition {

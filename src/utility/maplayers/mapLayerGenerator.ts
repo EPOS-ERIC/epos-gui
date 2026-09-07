@@ -86,13 +86,22 @@ export class MapLayerGenerator {
     mapConfig: EposLeafletComponent,
   ): Array<MapLayer> {
     const dist = dataConfigurable.getDistributionDetails();
-    const format = dist.getMappableFormats()[0];
-    const formatString: string = format.getFormat().toLowerCase();
+    const formats = dist.getMappableFormats();
+    const allLayers = new Array<MapLayer>();
 
-    const factory = this.factoryMap.get(formatString);
-    if (null == factory) {
-      return new Array<MapLayer>();
-    } else {
+    // Track which factories have already been used to avoid duplicate layers
+    // (e.g. APP_GEOJSON and APP_EPOS_GEOJSON share the same factory)
+    const processedFactories = new Set<MapLayerFactory<unknown, MapLayer>>();
+
+    for (const format of formats) {
+      const formatString: string = format.getFormat().toLowerCase();
+      const factory = this.factoryMap.get(formatString);
+
+      if (null == factory || processedFactories.has(factory)) {
+        continue;
+      }
+      processedFactories.add(factory);
+
       // Switch on format
       switch (true) {
         case (DistributionFormatType.in(formatString, [
@@ -102,24 +111,28 @@ export class MapLayerGenerator {
           DistributionFormatType.APP_COV_JSON,
           DistributionFormatType.APP_EPOS_COV_JSON,
         ])):
-          return this.createGeoJSONLayers(dataConfigurable, mapConfig, factory, format);
+          allLayers.push(...this.createGeoJSONLayers(dataConfigurable, mapConfig, factory, format));
+          break;
         case (DistributionFormatType.is(formatString, DistributionFormatType.APP_OGC_WMS)):
-          return this.fromConfigurable.createMapLayersFrom(
+          allLayers.push(...this.fromConfigurable.createMapLayersFrom(
             dataConfigurable,
             mapConfig,
             factory,
             () => Promise.resolve(this.executionService.getExecuteUrl(format)),
-          );
+          ));
+          break;
         case (DistributionFormatType.is(formatString, DistributionFormatType.APP_OGC_WMTS)):
-          return this.fromConfigurable.createMapLayersFrom(
+          allLayers.push(...this.fromConfigurable.createMapLayersFrom(
             dataConfigurable,
             mapConfig,
             factory,
             () => Promise.resolve(this.executionService.getExecuteUrl(format)),
-          );
-        default: return new Array<MapLayer>();
+          ));
+          break;
       }
     }
+
+    return allLayers;
   }
 
   public retrieveBoundsFromPlainFeatureCollection(features: Feature[]): number[] {
@@ -286,6 +299,51 @@ export class MapLayerGenerator {
                 console.log(e);
               }
             }
+          }
+          // if type 'CoverageCollection' (CovJSON with multiple coverages)
+          else if ((data as unknown as Record<string, unknown>).type === 'CoverageCollection') {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const asCC = data as unknown as Record<string, any>;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            const coverages: unknown[] = asCC.coverages ?? [];
+            const validCoords: Array<number[]> = [];
+
+            coverages.forEach((cov: unknown) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              const c = cov as Record<string, any>;
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+              const yValues = c.domain?.axes?.y?.values;
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+              const xValues = c.domain?.axes?.x?.values;
+              if (yValues != null && xValues != null) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                const lat = Number(yValues[0]);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                const lng = Number(xValues[0]);
+                if (lat != null && lng != null) {
+                  validCoords.push([lat, lng]);
+                }
+              }
+            });
+
+            if (validCoords.length > 0) {
+              try {
+                const features = validCoords.map(([lat, lng]) => ({
+                  type: 'Feature' as const,
+                  geometry: { type: 'Point' as const, coordinates: [lng, lat] },
+                  properties: {}
+                }));
+                const bounds = this.retrieveBoundsFromPlainFeatureCollection(features as GeoJSON.Feature[]);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                void this.dataSearchConfigurablesServiceResource.updateLayerBbox(dataConfigurable.id, bounds);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                void this.dataSearchConfigurablesServiceRegistry.updateLayerBbox(dataConfigurable.id, bounds);
+              } catch (e) {
+                console.log(e);
+              }
+            }
+            // If all coordinates are null (service intentionally omits map position),
+            // skip the bbox update gracefully — no log needed.
           }
           else {
             console.log('Type of data is not a FeatureCollection');

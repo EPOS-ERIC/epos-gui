@@ -42,10 +42,13 @@ export class ShareService {
 
         void this.localStorage.get(LocalStorageVariables.LS_CONFIGURABLES).then((configurables) => {
 
+          void this.localStorage.get(LocalStorageVariables.LS_EXTERNAL_LAYERS).then((externalLayers: string) => {
+
           const shareConfiguration: ShareConfigurables = {
             dataSearchConfigurables: dataSearchConfigurables,
             dataSearchConfigurablesReg: dataSearchConfigurablesReg,
-            configurables: JSON.stringify(configurables)
+            configurables: JSON.stringify(configurables),
+            externalLayers: externalLayers
           };
 
           const encryptConfigurables = this.encrypt((JSON.stringify(shareConfiguration)));
@@ -57,6 +60,8 @@ export class ShareService {
           }).catch((_) => {
             // Show an error notification
             this.notificationService.sendNotification('Failed to copy EPOS Platform URL to clipboard', 'x', NotificationService.TYPE_ERROR, 5000);
+          });
+
           });
 
         });
@@ -115,4 +120,5 @@ export interface ShareConfigurables {
   dataSearchConfigurables: string;
   dataSearchConfigurablesReg: string;
   configurables: string;
+  externalLayers: string;
 }

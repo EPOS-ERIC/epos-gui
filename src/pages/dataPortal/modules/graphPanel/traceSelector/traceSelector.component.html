@@ -17,7 +17,7 @@
             <tr class="group-row">
               <td colspan="99">
                 {{ configurable.name }}
-                <mat-icon *ngIf="$any(configurable.pinnedObs | async)" class="yellow">star</mat-icon>
+                <mat-icon *ngIf="!isExternalSource(configurable) && $any($any(configurable).pinnedObs | async)" class="yellow">star</mat-icon>
               </td>
             </tr>
             <tr *ngIf="null === (traceRecord[configurable.id] ?? null) || traceRecord[configurable.id]?.length === 0; else gotTraces">

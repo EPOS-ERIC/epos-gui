@@ -10,6 +10,7 @@ import { DataProvider } from '../dataProvider.interface';
 import { DistributionLevel } from '../distributionLevel.interface';
 import { DistributionContactPoint } from '../distributionContactPoint.interface';
 import { DistributionCategories } from '../distributionCategories.interface';
+import { Creator } from '../creator.interface';
 
 export class SimpleDistributionDetails implements DistributionDetails {
   public readonly isDownloadable: boolean;
@@ -23,7 +24,7 @@ export class SimpleDistributionDetails implements DistributionDetails {
   public readonly metadataStatusVersion: null | Array<string>;
   public readonly metadataStatusInfo: null | Record<string, { changeDate: string; editorFullName: string }[]>;
   public readonly uid: string;
-  public readonly serviceProvider: null | Record<string, {dataProviderLegalName: string; dataProviderUrl: string; instanceid: string; metaid: string; uid: string}>;
+  public readonly serviceProvider: null | Record<string, { dataProviderLegalName: string; dataProviderUrl: string; instanceid: string; metaid: string; uid: string }>;
 
   private constructor( //
     private readonly summary: DistributionSummary, //
@@ -61,9 +62,9 @@ export class SimpleDistributionDetails implements DistributionDetails {
     private readonly programmingLanguage: Array<string>,
     private readonly mainEntityOfPage: string | null,
     private readonly softwareVersion: string | null,
-    private readonly requirements: Array<string>,
-    private readonly runtimePlatform: Array<string>,
-    private readonly creator: Array<string>
+    private readonly requirements: string,
+    private readonly runtimePlatform: string,
+    private readonly creator: Array<Creator>
   ) {
     this.uid = (uid);
     this.isMappable = this.summary.isMappable;
@@ -115,9 +116,9 @@ export class SimpleDistributionDetails implements DistributionDetails {
     programmingLanguage: Array<string>,
     mainEntityOfPage: string | null,
     softwareVersion: string | null,
-    requirements: Array<string>,
-    runtimePlatform: Array<string>,
-    creator: Array<string>
+    requirements: string,
+    runtimePlatform: string,
+    creator: Array<Creator>
   ): DistributionDetails {
     // objects
     Confirm.requiresValid(summary);
@@ -253,10 +254,10 @@ export class SimpleDistributionDetails implements DistributionDetails {
       [], // programmingLanguage
       null, // mainEntityOfPage
       null, // softwareVersion
-      [],   // requirements
-      [],   // runtimePlatform
+      '',   // requirements
+      '',   // runtimePlatform
       []    // creator
-          );
+    );
   }
 
 
@@ -264,9 +265,9 @@ export class SimpleDistributionDetails implements DistributionDetails {
   getName(): string {
     return this.summary.getName();
   }
-    getUid(): string {
-  return this.uid;
-}
+  getUid(): string {
+    return this.uid;
+  }
 
 
   getIdentifier(): string {
@@ -441,7 +442,7 @@ export class SimpleDistributionDetails implements DistributionDetails {
     return this.metadataStatusInfo;
   }
   // service provider
-  getServiceProvider(): null | Record<string, {dataProviderLegalName: string; dataProviderUrl: string; instanceid: string; metaid: string; uid: string}> {
+  getServiceProvider(): null | Record<string, { dataProviderLegalName: string; dataProviderUrl: string; instanceid: string; metaid: string; uid: string }> {
     return this.serviceProvider;
   }
 
@@ -465,15 +466,15 @@ export class SimpleDistributionDetails implements DistributionDetails {
     return this.softwareVersion;
   }
 
-  getRequirements(): Array<string> {
+  getRequirements(): string {
     return this.requirements;
   }
 
-  getRuntimePlatform(): Array<string> {
+  getRuntimePlatform(): string {
     return this.runtimePlatform;
   }
 
-  getCreator(): Array<string> {
+  getCreator(): Array<Creator> {
     return this.creator;
   }
 }

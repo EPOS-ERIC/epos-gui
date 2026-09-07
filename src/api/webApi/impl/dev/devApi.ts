@@ -21,6 +21,8 @@ import { EnvironmentResource } from 'api/webApi/data/environments/environmentRes
 import { Organization } from 'api/webApi/data/organization.interface';
 import { Domain } from 'api/webApi/data/domain.interface';
 import { ShareApi } from 'api/webApi/classes/shareApi.interface';
+import { SimpleBackOfficeUser } from 'api/webApi/data/impl/simpleBackofficeUser';
+import { BackOfficeUserApi } from 'api/webApi/classes/backOfficeUser.interface';
 
 export class DevCompositeApi implements Api {
 
@@ -34,6 +36,7 @@ export class DevCompositeApi implements Api {
     private readonly shareApi: ShareApi,
     private readonly environmentApi: EnvironmentApi,
     private readonly environmentTypeApi: EnvironmentTypeApi,
+    private readonly backofficeUserApi: BackOfficeUserApi
   ) { }
 
   // ---------------------------
@@ -185,6 +188,10 @@ export class DevCompositeApi implements Api {
 
   getEnvironmentTypes(): Promise<Array<EnvironmentType>> {
     return this.environmentTypeApi.getEnvironmentTypes();
+  }
+
+  getBackOfficeUser(id: string): Promise<SimpleBackOfficeUser> {
+    return this.backofficeUserApi.getBackOfficeUser('self');
   }
 
 }

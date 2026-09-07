@@ -1,21 +1,41 @@
-<app-base-dialog [data]="data" [title]="data.dataIn.dialogTitle" style="overflow: hidden;">
-    <ng-container class="content">
-      <p style="margin-bottom: 23px;">
-        You are about to explore new data. This action will remove the current <b>"<span [innerHTML]="data.dataIn.expandedElementName"></span>"</b> data from views (Map, Table, Graph). <br>
-        To keep this data, select 'Add to Favourites and Continue.' If you don't need to save it, just click 'Continue.' <br>
-        <br>
-        <i>Tip: You can also keep data by clicking the  "<mat-icon class="yellow">star</mat-icon>" next to the item name.</i>
-      </p>
-      <div class="buttons-wrapper">
-        <button class="cancel" mat-flat-button color="primary" (click)="continue()"
-          [innerHTML]="data.dataIn.continueButtonHtml"></button>
-        <button type="submit" [ngClass]="data.dataIn.addTofavouriteAndContinueButtonCssClass" mat-flat-button color="primary"
-          (click)="favouriteAndContinue()"><mat-icon class="yellow">star</mat-icon> Add to Favourites and Continue</button>
+<app-base-dialog [data]="data" [title]="data.dataIn.dialogTitle" class="explore-dialog">
+  <ng-container class="content">
+
+    <div class="dialog-body">
+
+      <!-- Green-tinted header area: message + tip -->
+      <div class="dialog-header-bg">
+        <p class="dialog-message">
+          Exploring new data will remove
+          <strong class="dataset-name">"<span [innerHTML]="data.dataIn.expandedElementName"></span>"</strong>
+          from your Map, Table &amp; Graph views.
+          Save it first, or continue without saving.
+        </p>
+
+        <div class="tip-banner">
+          <mat-icon class="tip-icon">lightbulb</mat-icon>
+          <span>Tip: click the <mat-icon class="star-inline yellow">star</mat-icon> next to any item to favourite it
+            anytime.</span>
+        </div>
       </div>
-      <div style=" display: flex; width: 100%; justify-content: end;">
-        <mat-checkbox  [(ngModel)]="noShowAgain" (change)="setCheckbox()">
+
+      <div class="dialog-actions">
+        <button class="btn-secondary" mat-stroked-button (click)="continue()"
+          [innerHTML]="data.dataIn.continueButtonHtml"></button>
+
+        <button type="submit" [ngClass]="data.dataIn.addTofavouriteAndContinueButtonCssClass" class="btn-primary"
+          mat-flat-button (click)="favouriteAndContinue()">
+          <mat-icon class="yellow">star</mat-icon> Add to Favourites &amp; Continue
+        </button>
+      </div>
+
+      <div class="dont-show">
+        <mat-checkbox [(ngModel)]="noShowAgain" (change)="setCheckbox()">
           Don't show again
         </mat-checkbox>
       </div>
-    </ng-container>
+
+    </div>
+
+  </ng-container>
 </app-base-dialog>

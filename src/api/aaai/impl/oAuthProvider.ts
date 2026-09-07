@@ -7,11 +7,12 @@ import { AAAIUser } from '../aaaiUser.interface';
 import { BasicUser } from './basicUser';
 import { Injector } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'environments/environment';
 
 /** OAuth provider implementation */
 export class OAuthAuthenticationProvider implements AuthenticationProvider {
   private static readonly EPOS_CLIENT = 'eposICS';
-  private static readonly CYFRONET_ROOT = 'https://aaai.epos-eu.org';
+  private static readonly CYFRONET_ROOT = environment.authRootUrl;
   private static readonly CYFRONET_ISSUER = OAuthAuthenticationProvider.CYFRONET_ROOT + '/oauth2';
   private static readonly REVOKE_ENDPOINT = OAuthAuthenticationProvider.CYFRONET_ISSUER + '/revoke';
   private static readonly REDIRECTION_PAGE = '/last-page-redirect';
@@ -83,10 +84,7 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
       // The SPA's id. The SPA is registerd with this id at the auth-server
       clientId: OAuthAuthenticationProvider.EPOS_CLIENT,
 
-      // URL of the SPA to redirect the user after silent refresh
-      silentRefreshRedirectUri: window.location.origin + '/silent-token-refresh.html',
-
-      timeoutFactor: 0.75,
+      timeoutFactor: 1,
 
       // set the scope for the permissions the client should request
       // The first three are defined by OIDC. The 4th is a usecase-specific one
@@ -103,7 +101,6 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
 
   private init() {
     this.configure();
-    this.oAuthService.setupAutomaticSilentRefresh();
     this.oAuthService.tokenValidationHandler = new JwksValidationHandler();
     void this.oAuthService.loadDiscoveryDocumentAndTryLogin()
       // maybe we should do this like this
@@ -122,6 +119,9 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
         case ('token_received'): // first logged in
         case ('logout'): // logout to clear user info
           this.updateUserProfile();
+          break;
+        case ('token_expires'): // token expires, but we might still have a valid refresh token
+          this.logout();
           break;
       }
     });
@@ -194,4 +194,3 @@ export class OAuthAuthenticationProvider implements AuthenticationProvider {
     return this.oAuthService.getAccessToken();
   }
 }
-

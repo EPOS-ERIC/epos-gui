@@ -89,7 +89,9 @@ export class SearchFacilityComponent implements OnInit {
 
   private metadataStatusModeActive: boolean = false;
 
-  private selectedStatuses: Array<string> = [];
+  private selectedStatuses: null | Array<string> = null;
+
+  private deferredMetadataPreviewSearch = false;
 
   /** Constructor. */
   public constructor(
@@ -130,42 +132,16 @@ export class SearchFacilityComponent implements OnInit {
       }),
 
 
-      this.model.metadataPreviewMode.valueObs.subscribe((active: boolean)=>{
-        if(active){
-          this.metadataStatusModeActive = true;
-        }
-        else{
-          this.metadataStatusModeActive = false;
-        }
-      }),
-      // using this subscription for startup, page reload, trigger of search call from Header component
-      this.model.metadataPreviewModeStatuses.valueObs.subscribe((selectedStatuses: null | Array<string>)=>{
-        if(this.metadataStatusModeActive && selectedStatuses !== null ){
-          // ADJUST THIS CHECK!!!
-          if(selectedStatuses.length === 0){
-            this.selectedStatuses = [];
-            this.triggerAdvancedSearch();
-            return;
-          }
-          this.selectedStatuses = selectedStatuses as Array<string>;
-          // at startup, loggedIn not immediately available, so subscription
-          if(this.model.user.get() == null){
-            this.model.user.valueObs.subscribe((logged)=>{
-              if(logged !== null){
-                this.triggerAdvancedSearch();
-              }
-            });
-          }
-          // if already loggedIn and just selecting/deselecting statuses
-          else{
-            this.triggerAdvancedSearch();
-          }
-        }
-        else if(this.metadataStatusModeActive === false){
-          this.selectedStatuses = [];
-          this.triggerAdvancedSearch();
-        }
-      }),
+       // Metadata Preview Mode: react to combined state (mode, statuses, user)
+       this.model.metadataPreviewMode.valueObs.subscribe(() => {
+         this.handleMetadataPreviewStateChange();
+       }),
+       this.model.metadataPreviewModeStatuses.valueObs.subscribe(() => {
+         this.handleMetadataPreviewStateChange();
+       }),
+       this.model.user.valueObs.subscribe(() => {
+         this.handleMetadataPreviewStateChange();
+       }),
 
       // ----------------------------------------------------------------------------------
 
@@ -188,7 +164,7 @@ export class SearchFacilityComponent implements OnInit {
       this.listKeyString = this.model.dataSearchKeywords.get();
     }
 
-    this.triggerAdvancedSearch();
+    this.handleMetadataPreviewStateChange();
 
     setTimeout(() => {
       if (this.filterPanel !== undefined) {
@@ -203,6 +179,15 @@ export class SearchFacilityComponent implements OnInit {
    * triggering search using {@link #doSearch} function.
    */
   public triggerAdvancedSearch(): void {
+    const mode = this.getMetadataPreviewSearchMode();
+    if (mode === 'defer') {
+      this.deferredMetadataPreviewSearch = true;
+      this.loadingService.showLoading(true);
+      return;
+    }
+
+    this.deferredMetadataPreviewSearch = false;
+
     this.loadingService.showLoading(true);
 
     // disable buttons
@@ -210,8 +195,9 @@ export class SearchFacilityComponent implements OnInit {
     // reset text
     this.newText = this.listKeyString.toString();
 
+    const statuses = this.selectedStatuses;
     // if metadata preview mode active and selectedStatuses not empty
-    if(this.metadataStatusModeActive === true && this.selectedStatuses.length > 0 && this.model.user.get() !== null){
+    if (mode === 'auth' && this.metadataStatusModeActive === true && statuses != null && statuses.length > 0) {
       this.doSearchWithAuth(SimpleDiscoverRequest.makeFullQuery(
         CONTEXT_RESOURCE,
         this.newText,
@@ -221,7 +207,7 @@ export class SearchFacilityComponent implements OnInit {
         this.model.dataSearchFacetLeafItems.get(),
         null,
         null,
-        this.selectedStatuses
+        statuses
       ));
     }
     else{
@@ -357,6 +343,34 @@ export class SearchFacilityComponent implements OnInit {
     this.configurables.clearPinned();
     filterPanel.open();
     this.panelsEvent.setTogglePanelRef(filterPanel); // eslint-disable-line
+  }
+
+  private handleMetadataPreviewStateChange(): void {
+    const modeActive = this.model.metadataPreviewMode.get() === true;
+    const statuses = this.model.metadataPreviewModeStatuses.get();
+
+    this.metadataStatusModeActive = modeActive;
+    this.selectedStatuses = statuses;
+
+    this.triggerAdvancedSearch();
+  }
+
+  private getMetadataPreviewSearchMode(): 'defer' | 'plain' | 'auth' {
+    const modeActive = this.model.metadataPreviewMode.get() === true;
+    if (!modeActive) {
+      return 'plain';
+    }
+
+    const statuses = this.model.metadataPreviewModeStatuses.get();
+    if (statuses == null) {
+      return 'defer';
+    }
+
+    if (statuses.length === 0) {
+      return 'plain';
+    }
+
+    return (this.model.user.get() == null) ? 'defer' : 'auth';
   }
 
   /**

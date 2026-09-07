@@ -26,6 +26,7 @@ import { ConfigurationComponent } from './components/configurationComponent/conf
 import { SimpleEnvironmentResource } from 'api/webApi/data/environments/impl/simpleEnvironmentResource';
 import { EnvironmentResourceStatus } from 'api/webApi/data/environments/environmentResourceStatus.enum';
 import { DataSearchConfigurablesServiceAnalysis } from './services/dataSearchConfigurables.service';
+import { MetaDataStatusService } from 'services/metaDataStatus.service';
 
 @Unsubscriber('subscriptions')
 @Component({
@@ -66,6 +67,7 @@ export class AnalysisPanelComponent implements OnInit {
     private readonly notifier: UserNotificationService,
     private readonly dataSearchConfigurables: DataSearchConfigurablesServiceAnalysis,
     private readonly paramsDialogService: ParametersDialogService,
+    private readonly metadataStatusService: MetaDataStatusService,
   ) {
 
     this.expandedEnvironment = null;
@@ -429,6 +431,7 @@ export class AnalysisPanelComponent implements OnInit {
    * The logInOut function calls the login method of the aaai object.
    */
   public logInOut(): void {
+    this.metadataStatusService.setPromptPending(true);
     this.aaai.login();
   }
 

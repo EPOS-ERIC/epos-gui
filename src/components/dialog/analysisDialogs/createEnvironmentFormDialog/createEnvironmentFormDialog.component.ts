@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { DialogData } from '../../baseDialogService.abstract';
 import { EnvironmentService as EnvironmentRealService } from 'services/environment.service';
 import { Environment } from 'api/webApi/data/environments/environment.interface';
@@ -20,7 +21,18 @@ export interface AddEditEnvironmentDialogDataIn {
 @Component({
   selector: 'app-analysis-create-environment-form-dialog',
   templateUrl: './createEnvironmentFormDialog.component.html',
-  styleUrls: ['./createEnvironmentFormDialog.component.scss']
+  styleUrls: ['./createEnvironmentFormDialog.component.scss'],
+  animations: [
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ opacity: 0, height: 0 }),
+        animate('200ms ease-out', style({ opacity: 1, height: '*' }))
+      ]),
+      transition(':leave', [
+        animate('200ms ease-in', style({ opacity: 0, height: 0 }))
+      ])
+    ])
+  ]
 })
 export class CreateEnvironmentFormDialogComponent implements OnInit {
 
@@ -68,6 +80,16 @@ export class CreateEnvironmentFormDialogComponent implements OnInit {
 
   public cancel(): void {
     this.data.close();
+  }
+
+  public getSelectedProviderName(): string {
+    const selected = this.environmentServiceSelectArray.find(s => s.id === this.envService);
+    return selected ? selected.name : '';
+  }
+
+  public getSelectedProviderDescription(): string {
+    const selected = this.environmentServiceSelectArray.find(s => s.id === this.envService);
+    return selected?.description || '';
   }
 
   public confirm(): void {

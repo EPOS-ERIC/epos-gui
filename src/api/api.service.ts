@@ -13,6 +13,7 @@ import { EnvironmentType } from './webApi/data/environments/environmentType.inte
 import { EnvironmentResource } from './webApi/data/environments/environmentResource.interface';
 import { Organization } from './webApi/data/organization.interface';
 import { Domain } from './webApi/data/domain.interface';
+import { SimpleBackOfficeUser } from './webApi/data/impl/simpleBackofficeUser';
 
 export class ApiService implements Api {
 
@@ -257,6 +258,12 @@ export class ApiService implements Api {
     this.checkApiBeforeCall();
     return this.delegate!.getEnvironmentTypes();
   }
+
+  public getBackOfficeUser(self: string): Promise<SimpleBackOfficeUser> {
+    this.checkApiBeforeCall();
+    return this.delegate!.getBackOfficeUser('self');
+  }
+
 
   private checkApiBeforeCall() {
     if (!this.delegate) {

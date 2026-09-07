@@ -12,6 +12,15 @@ export class GeoJSONHelper extends JsonHelper {
   public static readonly IMAGE_OVERLAY_ID_SUFFIX = '_geojson_image_layer';
   public static readonly IMAGE_OVERLAY_ATTR = this.ATTR_PREFIX + '_image_overlay';
 
+  public static getExternalPopupContentFromProperties(
+    propertiesObj: Record<string, unknown>, layerName: string, propertyId: string, layerId: string
+  ): string {
+    const propertiesToUse = this.getPropertiesToUse(propertiesObj, this.MAP_KEYS_ATTR)
+      .filter(property => property.name !== PopupProperty.PROPERTY_ID);
+    propertiesToUse.push(new PopupProperty(PopupProperty.PROPERTY_ID, [propertyId]));
+    return this.createDetailsTableHtml(layerName, propertiesToUse, 'View on Table', 'showOnTable', layerId);
+  }
+
   /**
    * It takes an array of objects, and returns an array of all the unique property names that exist in
    * those objects
@@ -48,6 +57,7 @@ export class GeoJSONHelper extends JsonHelper {
   public static getTableObjectsFromProperties(
     layerId: string,
     propertyObjArray: Array<Feature>,
+    propertyIdResolver?: (feature: Feature, rowIndex: number) => string,
   ): Map<string, Array<null | PopupProperty>> {
     const tableData = new Map<string, Array<null | PopupProperty>>();
 
@@ -57,13 +67,26 @@ export class GeoJSONHelper extends JsonHelper {
     propertyObjArray.forEach((propertiesObj: Feature, rowIndex: number) => {
 
       // feature's properties
-      const propertiesToUse = this.getPropertiesToUse(propertiesObj.properties as Record<string, unknown>, this.DATA_KEY_ATTR);
+      let propertiesToUse = this.getPropertiesToUse(propertiesObj.properties as Record<string, unknown>, this.DATA_KEY_ATTR);
+      if (propertyIdResolver != null) {
+        propertiesToUse = propertiesToUse.filter(property => property.name !== PopupProperty.PROPERTY_ID);
+      }
 
       const pointData = propertiesObj.geometry;
       let coords: Position | null = null;
 
       if (null != pointData) {
-        coords = (pointData as Point).coordinates;
+        // Handle GeometryCollection
+        if (pointData.type === 'GeometryCollection') {
+          // Extract first Point from GeometryCollection
+          const firstPoint = pointData.geometries?.find(g => g.type === 'Point') as Point | undefined;
+          if (firstPoint) {
+            coords = firstPoint.coordinates;
+          }
+        } else if (pointData.type === 'Point') {
+          coords = (pointData as Point).coordinates;
+        }
+        // For other geometry types, coords remains null
       } else {
         // check in epos_image_overlay
         if (null != propertiesObj[this.IMAGE_OVERLAY_ATTR]) {
@@ -83,8 +106,16 @@ export class GeoJSONHelper extends JsonHelper {
         propertiesToUse.push(new PopupProperty(PopupProperty.POINTS_ON_MAP, coords as Position));
       }
 
+      // if "geometry" property is present and has null value, insert it into the table with '--' value (which is: don't just skip it, otherwise data will be messed up)
+      if('geometry' in propertiesObj && pointData == null){
+        propertiesToUse.push(new PopupProperty(PopupProperty.LONG_LAT, ['--']));
+        propertiesToUse.push(new PopupProperty(PopupProperty.POINTS_ON_MAP, ['--']));
+      }
+
       // add property id
-      propertiesToUse.push(new PopupProperty(PopupProperty.PROPERTY_ID, [layerId + '#' + rowIndex.toString() + '#']));
+      propertiesToUse.push(new PopupProperty(PopupProperty.PROPERTY_ID, [
+        propertyIdResolver?.(propertiesObj, rowIndex) ?? layerId + '#' + rowIndex.toString() + '#'
+      ]));
 
       // Map used to assess and handle label re-use issues.
       // This is required as the geoJson format was not designed for use in a table!
@@ -144,7 +175,7 @@ export class GeoJSONHelper extends JsonHelper {
         ? String(property.values[0]).valueOf()
         : AuthenticatedLink.getUrlFromElement(target);
 
-      const filename = (null != property)
+      let filename = (null != property)
         ? property.authenticatedDownloadFileName
         : AuthenticatedLink.getFilenameFromElement(target);
 
@@ -160,6 +191,9 @@ export class GeoJSONHelper extends JsonHelper {
         }
       } else if ((null != property) && (PopupPropertyType.SIMPLE === property.type)) {
         if (null != link) {
+          if(property.name){
+            filename = property.name;
+          }
           void executionService.doDownload(link, filename);
         }
       }

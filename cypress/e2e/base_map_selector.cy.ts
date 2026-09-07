@@ -17,7 +17,8 @@ describe('Simple gui tests (data indipendent)', () => {
       .should('be.visible');
 
     // Click on the accordion header
-    cy.getByDataCy('layer-control-accordion')
+    cy.getByDataCy('layer-control-expansion-panel')
+      .find('mat-expansion-panel-header')
       .should('be.visible').click();
 
     // Then the layer control expansion panel should be visible
@@ -25,7 +26,9 @@ describe('Simple gui tests (data indipendent)', () => {
       .should('be.visible');
 
     // Click on the Dark Gray base map
-    cy.contains('Open Street Map - Topographic')
+    cy.getByDataCy('layer-control-expansion-panel')
+      .contains('Open Street Map - Topographic')
+      .should('be.visible')
       .click();
 
     // Then the Dark Gray base map should be visible (the src attribute of the tiles should contain "Dark_Gray")

@@ -46,6 +46,8 @@ export class MatomoStatsDialogComponent implements OnInit {
     this.applyRange(this.defaultStartDate, this.today);
     // clear any input values
     this.resetForm();
+    this.startDate = this.defaultStartDate;
+    this.endDate = this.today;
   }
 
     // Toggle sidebar state
@@ -57,7 +59,7 @@ export class MatomoStatsDialogComponent implements OnInit {
   public onDateChange(): void {
     this.applyRange(this.safeStart, this.safeEnd);
     // optional: clear inputs after applying
-    this.resetForm();
+    /* this.resetForm(); */
   }
 
   /** Reset ONLY inputs (not active range) */
@@ -94,6 +96,7 @@ export class MatomoStatsDialogComponent implements OnInit {
 
     this.dateError = null;
 
+    // for active range in header section of the dialog
     this.activeStartDate = start;
     this.activeEndDate = end;
 

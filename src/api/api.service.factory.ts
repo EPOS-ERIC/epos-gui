@@ -32,6 +32,8 @@ import { DevEnvironmentTypeApi } from './webApi/impl/dev/devEnvironmentType';
 import { MatDialog } from '@angular/material/dialog';
 import { ShareApi } from './webApi/classes/shareApi.interface';
 import { DevShareApi } from './webApi/impl/dev/devShare';
+import { BackOfficeUserApi } from './webApi/classes/backOfficeUser.interface';
+import { DevBackofficeUserApi } from './webApi/impl/dev/devBackofficeUser';
 
 const AUTHENTICATING_API_URL = '/api/v1';
 
@@ -110,8 +112,10 @@ export const devApiFactory = (
   const environmentApi: EnvironmentApi = new DevEnvironmentApi(baseUrl, rest);
   const environmentTypeApi: EnvironmentTypeApi = new DevEnvironmentTypeApi(baseUrl, rest);
 
+  const backofficeUserApi: BackOfficeUserApi = new DevBackofficeUserApi(baseUrl, rest);
+
   return new DevCompositeApi(discoverApi, aaaiApi, dictionaryApi, searchApi,
-    detailsApi, executionApi, shareApi, environmentApi, environmentTypeApi);
+    detailsApi, executionApi, shareApi, environmentApi, environmentTypeApi, backofficeUserApi);
 };
 
 /**

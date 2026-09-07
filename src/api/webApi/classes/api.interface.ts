@@ -7,7 +7,8 @@ import { DiscoverApi } from './discoverApi.interface';
 import { EnvironmentApi } from './environments/environmentApi.interface';
 import { EnvironmentTypeApi } from './environments/environmentTypeApi.interface';
 import { ShareApi } from './shareApi.interface';
+import { BackOfficeUserApi } from './backOfficeUser.interface';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Api extends DiscoverApi, DictionaryApi, SearchApi, DetailsApi, AaaiApi, ExecutionApi, ShareApi, EnvironmentApi, EnvironmentTypeApi {
+export interface Api extends DiscoverApi, DictionaryApi, SearchApi, DetailsApi, AaaiApi, ExecutionApi, ShareApi, EnvironmentApi, EnvironmentTypeApi, BackOfficeUserApi {
 }

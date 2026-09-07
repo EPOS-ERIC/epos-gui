@@ -133,7 +133,7 @@ export class JsonHelper {
         ? String(property.values[0]).valueOf()
         : AuthenticatedLink.getUrlFromElement(target);
 
-      const filename = (null != property)
+      let filename = (null != property)
         ? property.authenticatedDownloadFileName
         : AuthenticatedLink.getFilenameFromElement(target);
 
@@ -149,6 +149,9 @@ export class JsonHelper {
         }
       } else if ((null != property) && (PopupPropertyType.SIMPLE === property.type)) {
         if (null != link) {
+          if(property.name){
+            filename = property.name;
+          }
           void executionService.doDownload(link, filename);
         }
       }
@@ -167,7 +170,7 @@ export class JsonHelper {
     return this.createDetailsTableHtml(layerName, propertiesToUse);
   }
 
-  public static createDetailsTableHtml(headline: string, propertiesKeyToUse: Array<PopupProperty>, linkName = 'View on Table', linkClass = 'showOnTable'): string {
+  public static createDetailsTableHtml(headline: string, propertiesKeyToUse: Array<PopupProperty>, linkName = 'View on Table', linkClass = 'showOnTable', layerId?: string): string {
     let response = '';
     if (ObjectHelper.isValidString(headline)) {
       response += '<h5 class="popup-title"';
@@ -178,6 +181,9 @@ export class JsonHelper {
       });
       if (propertyId !== undefined && propertyId?.values.length === 1) {
         response += ' data-id="' + propertyId?.values[0].toString() + '"';
+      }
+      if (layerId != null) {
+        response += ' data-layer-id="' + layerId + '"';
       }
 
       response += `>${headline}</h5>`;

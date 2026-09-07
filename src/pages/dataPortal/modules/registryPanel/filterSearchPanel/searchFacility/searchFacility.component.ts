@@ -31,6 +31,7 @@ import { DataSearchConfigurablesServiceRegistry } from '../../services/dataSearc
 import { CONTEXT_FACILITY } from 'api/api.service.factory';
 import { LandingService } from '../../services/landing.service';
 import { FacetLeafItemMI } from 'services/model/modelItems/facetLeafItemMI';
+import { MetaDataStatusService } from 'services/metaDataStatus.service';
 
 
 @OnAttachDetach('onAttachComponents')
@@ -59,7 +60,6 @@ export class SearchFacilityComponent implements OnInit {
   /** The filtered display objects only including ones that aren't hidden. */
   public shownDisplayItems: null | Array<FacetDisplayItem> = null;
 
-
   /** The keywords objects */
   public keywords: null | Array<FacetLeafItem> = null;
 
@@ -70,8 +70,8 @@ export class SearchFacilityComponent implements OnInit {
   public newText = '';
 
   /**
-   * Whether the "Clear" button should be disabled.
-   */
+  * Whether the "Clear" button should be disabled.
+  */
   public clearEnabled = false;
 
   public typeFilters: string[] = [];
@@ -111,6 +111,11 @@ export class SearchFacilityComponent implements OnInit {
   /** Timer used to ensure that the search isn't done too many times in quick succession. */
   private searchTimer: NodeJS.Timeout;
 
+  private metadataStatusModeActive: boolean = false;
+  private selectedStatuses: null | Array<string> = null;
+
+  private deferredMetadataPreviewSearch = false;
+
   /** Constructor. */
   public constructor(
     private readonly dataSearchService: SearchService,
@@ -121,6 +126,7 @@ export class SearchFacilityComponent implements OnInit {
     private readonly panelsEvent: PanelsEmitterService,
     private readonly configurables: DataSearchConfigurablesServiceRegistry,
     private readonly localStoragePersister: LocalStoragePersister,
+    private readonly metadataStatusService: MetaDataStatusService
   ) {
     this.filteredKeys = this.autoCompleteFormControl.valueChanges.pipe(
       startWith(''),
@@ -207,6 +213,21 @@ export class SearchFacilityComponent implements OnInit {
         }
       }),
 
+      this.model.metadataPreviewMode.valueObs.subscribe(() => {
+        // Keep local state in sync with the model and trigger a coherent search.
+        // Ordering between "mode" and "statuses" emissions is not guaranteed on refresh.
+        this.handleMetadataPreviewStateChange();
+      }),
+      // using this subscription for startup, page reload, trigger of search call from Header component
+      this.model.metadataPreviewModeStatuses.valueObs.subscribe(() => {
+        this.handleMetadataPreviewStateChange();
+      }),
+
+      // Re-run when auth state becomes available after refresh
+      this.model.user.valueObs.subscribe(() => {
+        this.handleMetadataPreviewStateChange();
+      }),
+
     );
 
     if (this.model.dataSearchKeywordsReg.get() !== null) {
@@ -218,7 +239,7 @@ export class SearchFacilityComponent implements OnInit {
       this.countrySelected = this.model.dataSearchGeolocationReg.get();
     }
 
-    this.triggerAdvancedSearch();
+    this.handleMetadataPreviewStateChange();
 
     setTimeout(() => {
       if (this.filterPanel !== undefined) {
@@ -226,7 +247,7 @@ export class SearchFacilityComponent implements OnInit {
       }
     }, 100);
 
-    // Commenting OUT the getOrganizations - facilitiesproviders: temporary BE problem (404)
+    // Commenting OUT the getOrganizations - facilitiesproviders: NOT used in this panel
     /* void this.dataSearchService.getOrganizations('facilitiesproviders').then(r => {
       this.dataProviders = r;
     }); */
@@ -307,6 +328,15 @@ export class SearchFacilityComponent implements OnInit {
    * triggering search using {@link #doSearch} function.
    */
   public triggerAdvancedSearch(): void {
+    const mode = this.getMetadataPreviewSearchMode();
+    if (mode === 'defer') {
+      this.deferredMetadataPreviewSearch = true;
+      this.loadingService.showLoading(true);
+      return;
+    }
+
+    this.deferredMetadataPreviewSearch = false;
+
     this.loadingService.showLoading(true);
 
     // disable buttons
@@ -315,6 +345,11 @@ export class SearchFacilityComponent implements OnInit {
     this.newText = this.listKeyString.toString();
 
     setTimeout(() => {
+      const modeNow = this.getMetadataPreviewSearchMode();
+      if (modeNow === 'defer') {
+        return;
+      }
+
       const listEquipmentType = this.model.dataSearchEquipmentTypeReg.get();
       const equipmentToSearch: Array<string> = [];
       if (listEquipmentType !== null && this.equipmentType !== undefined) {
@@ -325,15 +360,30 @@ export class SearchFacilityComponent implements OnInit {
         });
       }
 
-      this.doSearch(SimpleDiscoverRequest.makeFullQuery(
-        CONTEXT_FACILITY,
-        this.newText,
-        this.model.dataSearchBoundsReg.get(),
-        null,
-        this.model.dataSearchFacetLeafItemsReg.get(),
-        this.model.dataSearchFacilityTypeReg.get(),
-        equipmentToSearch,
-      ));
+      const statuses = this.selectedStatuses;
+      // if metadata preview mode active and selectedStatuses not empty
+      if (modeNow === 'auth' && this.metadataStatusModeActive === true && statuses != null && statuses.length > 0) {
+        this.doSearch(SimpleDiscoverRequest.makeFullQuery(
+          CONTEXT_FACILITY,
+          this.newText,
+          this.model.dataSearchBoundsReg.get(),
+          null,
+          this.model.dataSearchFacetLeafItemsReg.get(),
+          this.model.dataSearchFacilityTypeReg.get(),
+          equipmentToSearch,
+          statuses
+        ));
+      } else {
+        this.doSearch(SimpleDiscoverRequest.makeFullQuery(
+          CONTEXT_FACILITY,
+          this.newText,
+          this.model.dataSearchBoundsReg.get(),
+          null,
+          this.model.dataSearchFacetLeafItemsReg.get(),
+          this.model.dataSearchFacilityTypeReg.get(),
+          equipmentToSearch,
+        ));
+      }
 
     }, 500);
 
@@ -467,6 +517,34 @@ export class SearchFacilityComponent implements OnInit {
     this.configurables.clearPinned();
     filterPanel.open();
     this.panelsEvent.setTogglePanelRef(filterPanel); // eslint-disable-line
+  }
+
+  private handleMetadataPreviewStateChange(): void {
+    const modeActive = this.model.metadataPreviewMode.get() === true;
+    const statuses = this.model.metadataPreviewModeStatuses.get();
+
+    this.metadataStatusModeActive = modeActive;
+    this.selectedStatuses = statuses;
+
+    this.triggerAdvancedSearch();
+  }
+
+  private getMetadataPreviewSearchMode(): 'defer' | 'plain' | 'auth' {
+    const modeActive = this.model.metadataPreviewMode.get() === true;
+    if (!modeActive) {
+      return 'plain';
+    }
+
+    const statuses = this.model.metadataPreviewModeStatuses.get();
+    if (statuses == null) {
+      return 'defer';
+    }
+
+    if (statuses.length === 0) {
+      return 'plain';
+    }
+
+    return (this.model.user.get() == null) ? 'defer' : 'auth';
   }
 
   /**

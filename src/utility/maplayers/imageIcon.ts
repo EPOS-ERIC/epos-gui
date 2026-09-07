@@ -1,4 +1,5 @@
-import { Marker, AnchorLocation } from 'utility/eposLeaflet/eposLeaflet';
+import { Marker } from 'utility/eposLeaflet/components/marker/marker';
+import { AnchorLocation } from 'utility/eposLeaflet/components/marker/anchorLocation.enum';
 
 export class ImageIcon extends Marker {
   private url = '';

@@ -7,6 +7,7 @@ import { DataProvider } from './dataProvider.interface';
 import { DistributionLevel } from './distributionLevel.interface';
 import { DistributionContactPoint } from './distributionContactPoint.interface';
 import { DistributionCategories } from './distributionCategories.interface';
+import { Creator } from './creator.interface';
 
 
 export interface DistributionDetails extends DistributionSummary {
@@ -53,7 +54,7 @@ export interface DistributionDetails extends DistributionSummary {
   getProgrammingLanguage(): Array<string>;
   getMainEntityofPage(): string | null;
   getSoftwareVersion(): string | null;
-  getRequirements(): Array<string>;
-  getRuntimePlatform(): Array<string>;
-  getCreator(): Array<string>;
+  getRequirements(): string;
+  getRuntimePlatform(): string;
+  getCreator(): Array<Creator>;
 }

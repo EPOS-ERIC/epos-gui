@@ -269,15 +269,12 @@ export class SimpleParameterDefinitions implements ParameterDefinitions {
       this.getTemporalParameters()!.forEach((def: ParameterDefinition) => {
         const paramValue = paramValues.find((thisParamValue: ParameterValue) => (thisParamValue.name === def.name));
         const stringValue = (paramValue != null) ? paramValue.value : '';
-        console.warn(stringValue);
         const format = def.format;
         valuesArray.push((stringValue === '') ? null : (
 
           moment(stringValue, format, true).isValid() ? moment.utc(stringValue, format) : moment.utc(stringValue))
 
         );
-        console.warn('Moment.UTC: ', moment.utc(stringValue));
-        console.warn('Moment: ', moment(stringValue));
       });
     }
     return SimpleTemporalRange.makeUnchecked(valuesArray[0], valuesArray[1]);

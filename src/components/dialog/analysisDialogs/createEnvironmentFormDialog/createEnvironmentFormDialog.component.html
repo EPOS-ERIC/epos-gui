@@ -1,44 +1,61 @@
-<app-base-dialog [data]="data" [title]="(isAddMode ? 'Add' : 'Edit') + ' Environment'">
+<app-base-dialog [data]="data" [title]="(isAddMode ? 'Create' : 'Edit') + ' Environment'">
   <ng-container class="content">
-    <form [formGroup]="form" *ngIf="!loading">
-      <mat-form-field>
-        <mat-label>Name:</mat-label>
-        <input matInput formControlName="name" placeholder="Name" required name="environment-name" aria-label="environment name" />
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Description:</mat-label>
-        <input matInput formControlName="description" placeholder="Description" required name="environment-description" aria-label="environment description" />
+    <!-- Loading State -->
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span class="loading-text">{{ isAddMode ? 'Creating' : 'Updating' }} environment...</span>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" *ngIf="!loading" class="environment-form">
+      <!-- Name Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" placeholder="e.g. My Analysis Environment" required name="environment-name" aria-label="environment name" />
       </mat-form-field>
 
+      <!-- Description Field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" placeholder="Describe the purpose of this environment" required name="environment-description" aria-label="environment description" rows="3"></textarea>
+      </mat-form-field>
+
+      <!-- Environment Type (Add mode only) -->
       <ng-template [ngIf]="isAddMode">
-        <mat-form-field>
-          <mat-label>Environment type:</mat-label>
-          <mat-select [(ngModel)]="envType" formControlName="type" required>
+        <mat-form-field appearance="outline">
+          <mat-label>Environment Type</mat-label>
+          <mat-select [(ngModel)]="envType" formControlName="type" required placeholder="Select a type">
             <mat-option *ngFor="let type of environmentTypeArray" [value]="type.type">
               {{ type.type }}
             </mat-option>
           </mat-select>
         </mat-form-field>
 
-        <mat-form-field [hidden]="envType === ''">
-          <mat-label>Provider:</mat-label>
-          <mat-select [(ngModel)]="envService" formControlName="service" required>
-            <mat-option *ngFor="let typeSelect of environmentServiceSelectArray" [value]="typeSelect.id" matTooltip="{{ typeSelect.description }}">
-              {{ typeSelect.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <!-- Provider Selection (shown when type is selected) -->
+        <div class="provider-wrapper" *ngIf="envType !== ''" @slideIn>
+          <mat-form-field appearance="outline">
+            <mat-label>Provider</mat-label>
+            <mat-select [(ngModel)]="envService" formControlName="service" required placeholder="Select a provider">
+              <mat-option *ngFor="let provider of environmentServiceSelectArray" [value]="provider.id">
+                {{ provider.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <p class="provider-description" *ngIf="getSelectedProviderDescription()">
+            {{ getSelectedProviderDescription() }}
+          </p>
+        </div>
       </ng-template>
 
-      <div class="buttons-wrapper">
-        <button class="cancel" mat-flat-button color="primary" (click)="cancel()">Cancel</button>
-        <button type="submit" class="confirm" mat-flat-button color="primary" [disabled]="form.invalid || form.pristine" (click)="confirm()">{{ isAddMode ? 'Add' : 'Update' }}</button>
+      <!-- Action Buttons -->
+      <div class="form-actions">
+        <button mat-button type="button" class="cancel-btn" (click)="cancel()">
+          Cancel
+        </button>
+        <button mat-flat-button color="primary" type="submit" class="confirm-btn" [disabled]="form.invalid || form.pristine" (click)="confirm()">
+          {{ isAddMode ? 'Create' : 'Save' }}
+        </button>
       </div>
     </form>
-    <div *ngIf="loading" class="loading">
-      <h2>The environment is updating...</h2>
-      <h3>Please Wait</h3>
-      <mat-spinner></mat-spinner>
-    </div>
   </ng-container>
 </app-base-dialog>

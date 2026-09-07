@@ -14,6 +14,7 @@ import { MatButtonToggle } from '@angular/material/button-toggle';
 import { CONTEXT_FACILITY, CONTEXT_RESOURCE, CONTEXT_SOFTWARE } from 'api/api.service.factory';
 import { DialogService } from 'components/dialog/dialog.service';
 import { TourService } from 'services/tour.service';
+import { AnalysisConfigurablesService } from './services/analysisConfigurables.service';
 
 @OnAttachDetach()
 @Unsubscriber('subscriptions')
@@ -70,6 +71,7 @@ export class DataPortalComponent implements AfterViewInit {
     private readonly mapInteractionService: MapInteractionService,
     private readonly dialogService: DialogService,
     private readonly tourService: TourService,
+    private readonly analysisConfigurables: AnalysisConfigurablesService,
     private renderer: Renderer2,
   ) {
     this.hasModuleData = environment.modules.data;
@@ -211,6 +213,7 @@ export class DataPortalComponent implements AfterViewInit {
 
         // leftMidSidenav opened at first time
         this.analysisPanelSidenav.opened = this.localStoragePersister.getValue(LocalStorageVariables.LS_CONFIGURABLES, LocalStorageVariables.LS_ANALYSIS_SIDENAV) === 'true' ? true : false;
+        this.analysisConfigurables.setAnalysisPanelOpen(this.analysisPanelSidenav.opened);
       }
 
       this.checkHiddenMarkerOnMap();
@@ -298,6 +301,7 @@ export class DataPortalComponent implements AfterViewInit {
   public analysisPanelToggle(): void {
     void this.analysisPanelSidenav.toggle().then(() => {
       this.localStoragePersister.set(LocalStorageVariables.LS_CONFIGURABLES, JSON.stringify(this.analysisPanelSidenav.opened), false, LocalStorageVariables.LS_ANALYSIS_SIDENAV);
+      this.analysisConfigurables.setAnalysisPanelOpen(this.analysisPanelSidenav.opened);
 
       if (this.analysisPanelSidenav.opened) {
         if (this.tablePanelSidenav.opened) {

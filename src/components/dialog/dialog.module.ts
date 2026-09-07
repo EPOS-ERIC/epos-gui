@@ -27,7 +27,7 @@ import { ConfirmationDialogComponent } from './confirmationDialog/confirmationDi
 import { DetailsDialogComponent } from './detailsDialog/detailsDialog.component';
 import { DisclaimerDialogComponent } from './disclaimerDialog/disclaimerDialog.component';
 import { RouterModule } from '@angular/router';
-import { PoliciesComponent } from './policiesDialog/policies.component';
+import { PoliciesComponent } from './policies&InformationDialog/policies.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
@@ -40,12 +40,12 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { ParametersDialogComponent } from './parametersDialog/parametersDialog.component';
 import { PipesModule } from 'pipes/pipes.module';
 import { SpatialCoverageMapComponent } from './detailsDialog/spatialCoverageMap/spatialCoverageMap.component';
-import { InformationsDialogComponent } from './informationsDialog/informationsDialog.component';
 import { TourDialogComponent } from './tourDialog/tourDialog.component';
 import { DownloadsDialogComponent } from './downloadsDialog/downloadsDialog.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
 import { VideoGuidesDialogComponent } from './videoGuidesDialog/videoGuidesDialog.component';
 import { VideoComponent } from './videoGuidesDialog/videoComponent/video.component';
 import { MobileDisclaimerDialogComponent } from './mobileDisclaimerDialog/mobileDisclaimerDialog.component';
@@ -86,7 +86,6 @@ import { MetaDataStatusDialogComponent } from './metaDataStatusDialog/metaDataSt
     FirstErrorMessagePipe,
     ParametersDialogComponent,
     SpatialCoverageMapComponent,
-    InformationsDialogComponent,
     ScientificExamplesDialogComponent,
     TourDialogComponent,
     DownloadsDialogComponent,
@@ -136,6 +135,7 @@ import { MetaDataStatusDialogComponent } from './metaDataStatusDialog/metaDataSt
     MatIconModule,
     DragDropModule,
     MatTooltipModule,
+    MatMenuModule,
     NgxMatDatetimePickerModule,
     MatDatepickerModule,
     MatGridListModule,

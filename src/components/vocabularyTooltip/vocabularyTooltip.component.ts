@@ -62,21 +62,40 @@ export class VocabularyTooltipComponent implements OnInit {
                      PREFIX qb: <http://purl.org/linked-data/cube#>
                      PREFIX org: <http://www.w3.org/ns/org#>
                      SELECT DISTINCT
-                     (SAMPLE(?label) AS ?normalizedLabel)
-                     (SAMPLE(?definitionInner) AS ?definition)
+                     (?label AS ?normalizedLabel)
+                     (?definitionInner AS ?definition)
+                     (?term AS ?termUri)
+                     (?linkTarget AS ?linkUri)
+                     (?statusInner AS ?status)
+                     (STR(?label) = ?labelValue AS ?exactLabelMatch)
+                     (EXISTS { ?term a skos:Concept } AS ?isSkosConcept)
                      WHERE {
-                     VALUES ?labelLower {
+                     VALUES ?labelValue {
                      listOfTerm
                      }
                      ?term rdfs:label ?label .
-                     FILTER(LCASE(STR(?label)) = ?labelLower)
+                     FILTER(LCASE(STR(?label)) = LCASE(?labelValue))
                      OPTIONAL {
                        ?term dct:description ?definitionInner .
                      }
+                     OPTIONAL {
+                       ?term dct:isVersionOf ?versionOf .
                      }
-                     GROUP BY LCASE(?label)`;
+                     OPTIONAL {
+                       ?term reg:definition ?termDefinition .
+                       ?termDefinition reg:entity ?entityUri .
+                     }
+                     OPTIONAL {
+                       ?item reg:definition ?itemDefinition .
+                       ?itemDefinition reg:entity ?term .
+                       ?item version:currentVersion ?currentVersion .
+                       ?currentVersion reg:status ?statusInner .
+                     }
+                     BIND(COALESCE(?entityUri, ?versionOf, ?term) AS ?linkTarget)
+                     }
+                     ORDER BY DESC(BOUND(?definitionInner)) DESC(?isSkosConcept) DESC(?exactLabelMatch) ?term`;
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   // groupKeywords() function to group keywords in arrays of MAX length 3
   public groupKeywords = (termsArray: string[], groupSize: number): string[][] => {
@@ -100,6 +119,7 @@ export class VocabularyTooltipComponent implements OnInit {
       this.results.push({
         keyword: _k.trim(),
         definition: '',
+        uri: '',
       });
       if (index < keywordsArray.length - 1) {
         this._queryKeywords += ', ';
@@ -131,13 +151,22 @@ export class VocabularyTooltipComponent implements OnInit {
         .then((value: JsonResponse) => {
           if (value.results.bindings.length > 0) {
             value.results.bindings.forEach((_key: KeyWordObject) => {
-              if (_key.definition !== undefined) {
-                this.results.map((_v: Keyword) => {
-                  if (_v.keyword.toLowerCase() === _key.normalizedLabel.value.toLowerCase()) {
-                    _v.definition = _key.definition.value;
+              this.results.map((_v: Keyword) => {
+                if (_v.keyword.toLowerCase() === _key.normalizedLabel.value.toLowerCase()) {
+                  const exactLabelMatch = _key.exactLabelMatch?.value === 'true';
+                  if (_v.uri !== '' && (_v.definition !== '' || _key.definition === undefined)) {
+                    return;
                   }
-                });
-              }
+                  if (_key.termUri !== undefined) {
+                    _v.definition = _key.definition?.value ?? '';
+                    _v.exactLabelMatch = exactLabelMatch;
+                    _v.rawDataLink = _key.status?.value === 'http://purl.org/linked-data/registry#statusInvalid';
+                    _v.uri = _v.rawDataLink
+                      ? environment.vocabularyEndpoint + '?query=' + encodeURIComponent(`DESCRIBE <${_key.termUri.value}>`)
+                      : _key.linkUri.value;
+                  }
+                }
+              });
             });
           }
         })
@@ -157,6 +186,9 @@ export class VocabularyTooltipComponent implements OnInit {
 interface Keyword {
   keyword: string;
   definition: string;
+  uri?: string;
+  rawDataLink?: boolean;
+  exactLabelMatch?: boolean;
 }
 
 /** The `interface JsonResponse` is defining the structure of the JSON response object that is expected
@@ -182,6 +214,10 @@ interface JsonResponse {
 interface KeyWordObject {
   normalizedLabel: ResponseObject;
   definition: ResponseObject;
+  termUri: ResponseObject;
+  linkUri: ResponseObject;
+  status?: ResponseObject;
+  exactLabelMatch?: ResponseObject;
 }
 
 /** The `interface ResponseObject` is defining the structure of an object that represents a response

@@ -1,0 +1,219 @@
+@import 'src/sassFramework/variables';
+
+::ng-deep .cookies-bottom-sheet {
+  width: 100vw;
+  max-width: unset;
+  min-width: unset;
+  overflow: hidden;
+  -webkit-box-shadow: 1px -11px 8px 4px rgba(0, 0, 0, 0.39);
+  box-shadow: 1px -11px 8px 4px rgba(0, 0, 0, 0.39);
+  border-radius: 20px;
+  //transition-duration:5s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+:host {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  color: black;
+}
+
+//Welcome to the EPOS Platform
+h1 {
+  font-weight: bold;
+  font-size: 22px;
+  margin-bottom: 0.5em;
+  text-align: center;
+}
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+
+  .welcome-logo {
+    max-width: 160px;
+    height: auto;
+  }
+
+  .intro-text {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: $color-primary;
+  }
+}
+
+.two-column-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  max-height: 75vh;
+  overflow-y: hidden;
+  padding: 0 10px;
+  font-size: 1em;
+
+  .column-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid;
+
+    .mat-icon {
+      font-size: 15px;
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  .required-label {
+    color: $color-primary;
+    border-bottom-color: $color-primary;
+  }
+
+  .optional-label {
+    color: rgba(0, 0, 0, 0.5);
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .left-column {
+    padding-right: 16px;
+    border-right: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .right-column {
+    padding-left: 12px;
+  }
+}
+
+//leave your email email for updates
+
+
+// Email form section
+.email-section {
+  .email-form-container {
+    margin-top: 8px;
+    margin-left: 40px;
+  }
+
+  .email-form {
+    display: flex;
+    flex-direction: column;
+
+    .form-element {
+      width: 100%;
+    }
+  }
+
+  .feedback,
+  .errors {
+    color: $color-danger;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+
+    .big {
+      font-size: 1.3em;
+    }
+  }
+}
+
+// Policies section
+.policies-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: black;
+}
+
+.policy-item {
+  .policy-details {
+    summary {
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+    }
+
+    summary.policy-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      width: 100%;
+
+      // I consent to Terms and Conditions/Privacy Policy/Cookies 
+      .policy-label {
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 0.95em;
+        flex: 1;
+        line-height: 1.2;
+      }
+
+      .chevron {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        transition: transform 0.2s ease;
+        color: rgba(0, 0, 0, 0.6);
+        flex-shrink: 0;
+      }
+    }
+
+    &[open] summary.policy-header .chevron {
+      transform: rotate(180deg);
+    }
+
+    // Description of the policy that popus up from the dropdown
+    .policy-description {
+      margin-top: 6px;
+      margin-left: 38px;
+      font-size: 0.85em;
+      text-align: justify;
+      max-width: 500px;
+      color: #2d2d2d;
+
+      .mat-icon {
+        vertical-align: top;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+// Actions
+.actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+
+  .submit-butt {
+    font-weight: bold;
+    font-size: 1.05em;
+    padding: 10px 28px;
+    min-height: 48px;
+    align-items: center;
+    display: inline-grid;
+    min-width: stretch;
+  }
+}
+
+mat-error {
+  text-align: right;
+  margin-top: 4px;
+}

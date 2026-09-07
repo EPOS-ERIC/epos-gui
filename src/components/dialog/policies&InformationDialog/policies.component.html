@@ -1,0 +1,136 @@
+<div class="logo-container">
+  <img src="assets/img/logo/logo.svg" alt="EPOS Logo" class="welcome-logo" />
+  <div class="intro-text">
+    This Platform is regularly updated, more data will be made readily available.
+  </div>
+</div>
+
+<div class="two-column-layout nice-scrollbar">
+
+  <!-- LEFT SIDE: Required -->
+  <div class="left-column">
+    <div class="column-label required-label">
+      <mat-icon>verified</mat-icon> Required
+    </div>
+    <div class="policies-section">
+
+      <!-- Terms and Conditions -->
+      <div class="policy-item">
+        <details class="policy-details" #termsDetails open>
+          <summary class="policy-header">
+            <mat-checkbox #toggleTerms [checked]="false" data-cy="toggle-terms-checkbox"
+              (click)="$event.stopPropagation()"></mat-checkbox>
+            <label class="policy-label" [for]="toggleTerms.inputId">I consent to Terms and Conditions</label>
+            <mat-icon class="chevron">expand_more</mat-icon>
+          </summary>
+          <p class="policy-description">
+            Here you will find the conditions under which you use the EPOS Platform. This includes acceptable use
+            and liability disclaimer. If you do not consent to such use of the platform, further access to the platform
+            is
+            denied.
+            <a target="_blank" rel="noopener noreferrer"
+              href="https://www.epos-eu.org/sites/default/files/2026-02/Terms_and_ConditionsJan26_1.pdf">
+              <mat-icon aria-hidden="false">description</mat-icon>
+            </a>
+          </p>
+        </details>
+      </div>
+
+      <!-- Privacy Policy -->
+      <div class="policy-item">
+        <details class="policy-details" open>
+          <summary class="policy-header">
+            <mat-checkbox #togglePrivacy [checked]="false" data-cy="toggle-privacy-checkbox"
+              (click)="$event.stopPropagation()"></mat-checkbox>
+            <label class="policy-label" [for]="togglePrivacy.inputId">I understand and acknowledge the Privacy Policy
+              document</label>
+            <mat-icon class="chevron">expand_more</mat-icon>
+          </summary>
+          <p class="policy-description">
+            The Privacy policy explains how EPOS ERIC manages and protects personal data, particularly in the sense of
+            GDPR (General Data Protection Regulation).
+            If you do not consent to such use of your personal data, further access to the platform is denied.
+            <a target="_blank" rel="noopener noreferrer"
+              href="https://www.epos-eu.org/sites/default/files/Privacy_Policy.pdf">
+              <mat-icon aria-hidden="false">description</mat-icon>
+            </a>
+          </p>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE: Optional -->
+  <div class="right-column">
+    <div class="column-label optional-label">
+      <mat-icon>info_outline</mat-icon> Optional
+    </div>
+
+
+
+    <!-- Email form -->
+    <div class="policy-item email-section">
+      <details class="policy-details" #emailDetails>
+        <summary class="policy-header">
+          <mat-slide-toggle #emailToggle (click)="$event.stopPropagation()"
+            (change)="toggleEmailDetails(emailDetails, $event)"></mat-slide-toggle>
+          <label class="policy-label" [for]="emailToggle.inputId">Would you like to receive updates about the
+            platform?</label>
+        </summary>
+        <div class="email-form-container">
+          <ng-container *ngIf="show === 'form'">
+            <form class="email-form" [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
+              <mat-form-field class="form-element">
+                <input matInput placeholder="Name" formControlName="firstName">
+              </mat-form-field>
+              <mat-form-field class="form-element">
+                <input matInput placeholder="E-mail address" formControlName="email">
+                <mat-error *ngIf="!emailCtrl.valid && emailCtrl.touched">
+                  {{ getErrorEmail() }}
+                </mat-error>
+              </mat-form-field>
+            </form>
+          </ng-container>
+          <div *ngIf="feedback !== null" class="feedback">
+            <p class="big"><strong>Thank you!</strong></p>
+            <p>Your request has been received.</p>
+          </div>
+          <div *ngIf="errors.length > 0" class="errors">
+            <ng-container *ngFor="let error of errors">
+              <span [innerHTML]="error"></span>
+            </ng-container>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Cookies -->
+    <div class="policy-item">
+      <details class="policy-details" open>
+        <summary class="policy-header">
+          <mat-slide-toggle #cookiesToggle [(ngModel)]="cookiePolicy"
+            (click)="$event.stopPropagation()"></mat-slide-toggle>
+          <label class="policy-label" [for]="cookiesToggle.inputId">COOKIES</label>
+          <mat-icon class="chevron">expand_more</mat-icon>
+        </summary>
+        <p class="policy-description">
+          Websites utilise cookies to store certain information. EPOS Platform uses cookies only to monitor
+          performance anonymously, information used in improving the platform. You may choose to allow these cookies or
+          not. Either choice does not prevent use of the platform.
+          <a target="_blank" rel="noopener noreferrer"
+            href="https://www.epos-eu.org/sites/default/files/Cookie_Policy.pdf">
+            <mat-icon aria-hidden="false">description</mat-icon>
+          </a>
+        </p>
+      </details>
+    </div>
+  </div>
+
+</div>
+
+<!-- Submit button (full width below both columns) -->
+<div class="actions">
+  <button class="submit-butt" mat-flat-button color="primary"
+    [disabled]="isSubmitDisabled(toggleTerms.checked, togglePrivacy.checked)" (click)="submitAll()"
+    data-cy="accept-terms-button">WELCOME TO THE PLATFORM</button>
+</div>

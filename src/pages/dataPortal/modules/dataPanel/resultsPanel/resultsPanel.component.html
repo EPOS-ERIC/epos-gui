@@ -1,25 +1,17 @@
 <span
   *ngIf="totalFacetsSelected !== 0 && !showLoading && totalFacetsSelected < domainResultsCounter[activeDomainData!.code]"
-  matBadge="{{ totalFacetsSelected }}"
-  matBadgeOverlap="false"
-  matBadgePosition="before"
+  matBadge="{{ totalFacetsSelected }}" matBadgeOverlap="false" matBadgePosition="before"
   data-cy="categories-filtered-badge"></span>
 <div class="wrapper" [appResultPanelFluidHeight] [offsetHeight]="50">
   <div *ngIf="showLoading" class="loading">
     <mat-spinner></mat-spinner>
   </div>
-  <div
-    *ngIf="!showLoading"
-    class="results-title"
-    appTour
-    tourName="EPOS Overview"
-    tourStage="8"
-    tourDescription="Click the green funnel icon to view, and sort by associated TCS categories."
-    tourTitle="Categories"
-    tourPosition="right"
-    (tourEnterFunction)="addServiceItemTourStep()"
-    data-cy="results-title">
-    <button class="facet-expand" mat-icon-button [hidden]="activeDomainData.code === 'FAV' || activeDomainData.code === 'ALL'" (click)="toggleFacetExpansionPanel()" data-cy="categories-filter">
+  <div *ngIf="!showLoading" class="results-title" appTour tourName="EPOS Overview" tourStage="8"
+    tourDescription="Click the green funnel icon to view, and sort by associated TCS categories." tourTitle="Categories"
+    tourPosition="right" (tourEnterFunction)="addServiceItemTourStep()" data-cy="results-title">
+    <button class="facet-expand" mat-icon-button
+      [hidden]="activeDomainData.code === 'FAV' || activeDomainData.code === 'ALL'"
+      (click)="toggleFacetExpansionPanel()" data-cy="categories-filter">
       <mat-icon matTooltip="Filter by categories">filter_alt</mat-icon>
     </button>
     <p (click)="toggleDomain(activeDomainData!.code)">
@@ -30,36 +22,38 @@
     </p>
   </div>
   <div class="results-buttons" *ngIf="activeDomainData?.code === 'FAV'">
-    <button id="clear-favourites-button" class="adv-search-buttons" mat-flat-button color="primary" (click)="removeAllFavourites()" matTooltip="Clear all favourites" data-cy="clear-favourites-button">
-      Clear all favourites 
+    <button id="clear-favourites-button" class="adv-search-buttons" mat-flat-button color="primary"
+      (click)="removeAllFavourites()" matTooltip="Clear all favourites" data-cy="clear-favourites-button">
+      Clear all favourites
       <i class="fas fa-times icon" aria-hidden="true"></i>
     </button>
   </div>
   <app-facet-dropdown
     *ngIf="!showLoading && activeDomainData?.code !== 'FAV' && activeDomainData?.code !== 'ALL' && !facetExpansionHidden"
-    [activeDomainData]="activeDomainData"
-    [facetExpansionHidden]="facetExpansionHidden"
-    [rawTreeData]="rawTreeData"
-    (setSelectedFacets)="setSelectedFacets($event)"
-    data-cy="categories-filter-dropdown"></app-facet-dropdown>
-  <div *ngIf="!showLoading && dataSource !== undefined && (dataSource.filteredData.length === 0 || dataSource.filteredData[0] === undefined)" class="results-container">
+    [activeDomainData]="activeDomainData" [facetExpansionHidden]="facetExpansionHidden" [rawTreeData]="rawTreeData"
+    (setSelectedFacets)="setSelectedFacets($event)" data-cy="categories-filter-dropdown"></app-facet-dropdown>
+  <div
+    *ngIf="!showLoading && dataSource !== undefined && (dataSource.filteredData.length === 0 || dataSource.filteredData[0] === undefined)"
+    class="results-container">
     <div class="results-no-data">
       <p>No results found on {{ activeDomainData!.title }}</p>
     </div>
   </div>
   <div
     *ngIf="(!showLoading && dataSource !== undefined && dataSource.filteredData[0] !== undefined) || (messageShow && messageType === 'error')"
-    class="results-container nice-scrollbar"
-    data-cy="results-container">
+    class="results-container nice-scrollbar" data-cy="results-container">
     <div class="results-table">
-      <table mat-table [dataSource]="dataSource" multiTemplateDataRows id="distributionListTable" data-cy="distribution-list-table">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows id="distributionListTable"
+        data-cy="distribution-list-table">
         <ng-container matColumnDef="{{ column }}" *ngFor="let column of columnsToDisplay" sticky>
           <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element; let i = dataIndex" [class]="{ 'cell-result': true }" [style.border-left-color]="element.color">
+          <td mat-cell *matCellDef="let element; let i = dataIndex" [class]="{ 'cell-result': true }"
+            [style.border-left-color]="element.color">
             <div
               [class]="{ container: true, 'mat-elevation-z8': expandedElement !== null && expandedElement.id === element.id }"
               *ngIf="element !== undefined && (activeDomainData?.code === 'FAV' || element.hideToResult === false)">
-              <div [class]="{ 'item-header': true, selected: expandedElement !== null && expandedElement.id === element.id }">
+              <div
+                [class]="{ 'item-header': true, selected: expandedElement !== null && expandedElement.id === element.id }">
                 <div class="item-name">
                   <p (click)="select(element, $event)" data-cy="results-panel-item-name">
                     {{ element.name }}
@@ -67,79 +61,87 @@
                 </div>
                 <div class="item-actions">
                   <ng-container>
-                   <ng-container *ngIf="element.status === 1 || element.status === 2">
-                    <div class="status display-inline">
-                      <div class="icon display-inline">
-                        <mat-icon 
-                          [class]="{'status': true,'green': element.status === 1,'red': element.status === 2}"
-                          matTooltip="Click for Service Monitoring details"(click)="openMonitoringPopup($event, element)"style="cursor: pointer;">
-                          {{ element.status === 1 ? 'check_circle' : (element.status === 2 ? 'warning' : '') }}
-                        </mat-icon>
+                    <ng-container *ngIf="element.status === 1 || element.status === 2">
+                      <div class="status display-inline">
+                        <div class="icon display-inline">
+                          <mat-icon [class]="{'status': true,'green': element.status === 1,'red': element.status === 2}"
+                            matTooltip="Click for Service Monitoring details"
+                            (click)="openMonitoringPopup($event, element)" style="cursor: pointer;">
+                            {{ element.status === 1 ? 'check_circle' : (element.status === 2 ? 'warning' : '') }}
+                          </mat-icon>
+                        </div>
                       </div>
-                    </div>
-                  </ng-container> 
-                    <img class="icon" (click)="openDialog(element)" matTooltip="Details" src="assets/img/info.png" alt="info" data-cy="item-info-button" />
-                    <mat-icon *ngIf="!element.isPinned" (click)="favourite(element, $event)" matTooltip="Add to favourites" data-cy="add-to-favourites">star_border</mat-icon>
+                    </ng-container>
+                    <img class="icon" (click)="openDialog(element)" matTooltip="Details" src="assets/img/info.png"
+                      alt="info" data-cy="item-info-button" />
+                    <mat-icon *ngIf="!element.isPinned" (click)="favourite(element, $event)"
+                      matTooltip="Add to favourites" data-cy="add-to-favourites">star_border</mat-icon>
                   </ng-container>
-                  <mat-icon *ngIf="element.isPinned" (click)="favourite(element, $event)" class="yellow" matTooltip="Remove from favourites" data-cy="remove-from-favourites">star</mat-icon>
+                  <mat-icon *ngIf="element.isPinned" (click)="favourite(element, $event)" class="yellow"
+                    matTooltip="Remove from favourites" data-cy="remove-from-favourites">star</mat-icon>
                   <mat-icon
                     [class]="expandedElement !== null && expandedElement.id === element.id ? 'icon-up' : 'icon-down'"
-                    aria-hidden="true"
-                    aria-label="expand-more"
-                    (click)="select(element, $event)"
-                    class="expand-item"
+                    aria-hidden="true" aria-label="expand-more" (click)="select(element, $event)" class="expand-item"
                     matTooltip="Advanced search filters">
                     expand_more
                   </mat-icon>
                 </div>
               </div>
               <ng-container>
-                <div [class]="{ informations: true, selected: expandedElement !== null && expandedElement.id === element.id }">
-                  <app-breadcrumb [levels]="element.levels" [showFirst]="activeDomainData.code === 'FAV' || activeDomainData.code === 'ALL'"></app-breadcrumb>
+                <div
+                  [class]="{ informations: true, selected: expandedElement !== null && expandedElement.id === element.id }">
+                  <app-breadcrumb [levels]="element.levels"
+                    [showFirst]="activeDomainData.code === 'FAV' || activeDomainData.code === 'ALL'"></app-breadcrumb>
                   <div class="informations-bottom">
                     <div class="informations-bottom-left">
                       <ng-container>
-                        <app-visible-on [item]="element" [configurables]="configurables" data-cy="results-panel-visible-on"></app-visible-on>
+                        <app-visible-on [item]="element" [configurables]="configurables"
+                          data-cy="results-panel-visible-on"></app-visible-on>
                       </ng-container>
                       <!-- Service Provider -->
-                      <ng-container *ngIf="element.serviceProvider !== '' && element.serviceProvider !== null && element.serviceProvider !== undefined">
+                      <ng-container
+                        *ngIf="element.serviceProvider !== '' && element.serviceProvider !== null && element.serviceProvider !== undefined">
                         <div>
-                          Service Provider: <a href="{{element.serviceProvider.dataProviderUrl || ''}}" target="_blank" rel="noopener noreferrer" >
+                          Service Provider: <a href="{{element.serviceProvider.dataProviderUrl || ''}}" target="_blank"
+                            rel="noopener noreferrer">
                             {{ element.serviceProvider.dataProviderLegalName || '' }}
                           </a>
                         </div>
                       </ng-container>
                       <!-- START OF Metadata Preview Area: Author/Date AND Versioning (Published, Draft...) -->
 
-                      <ng-container *ngIf="metadataStatusModeActive === true && element.versioningStatus !== '' && showStatusChipsOnCards ">
-                        
-                        <div *ngIf="element.versioningStatusInfo.versioningStatusInfo[0]" style="display: flex; flex-wrap: wrap; justify-content: start; align-items: center;">
-                          <p style="display: flex; width: 100%; justify-content: start; align-items: center; gap: 2px; margin-bottom: 3px;">
-                            Last change:
-                            <mat-icon>calendar_month</mat-icon>
-                            {{ element.versioningStatusInfo.versioningStatusInfo[0].changeDate | date:'dd/MM/yyyy' }}
-                            <mat-icon>schedule</mat-icon>
-                            {{ element.versioningStatusInfo.versioningStatusInfo[0].changeDate | date:'HH:mm' }}
-                          </p>
-                          <br/>
-                          <p style="display: flex; width: 100%; justify-content: start; align-items: center; gap: 2px; margin-bottom: 3px;">
-                            Author:
-                            <mat-icon>person</mat-icon>
-                            {{ element.versioningStatusInfo.versioningStatusInfo[0].editorFullName }}
+                      <ng-container
+                        *ngIf="metadataStatusModeActive === true && element.versioningStatus !== '' && showStatusChipsOnCards ">
+                        <div class="metadata-preview">
+                          <div *ngIf="element.versioningStatusInfo?.versioningStatusInfo?.[0]">
+                            <p class="metadata-row">
+                              <span class="metadata-label">Last change:</span>
+                              <mat-icon class="metadata-icon">calendar_month</mat-icon>
+                              <span class="metadata-value">{{ element.versioningStatusInfo?.versioningStatusInfo[0]?.changeDate | date:'dd/MM/yyyy' }}</span>
+                              <mat-icon class="metadata-icon">schedule</mat-icon>
+                              <span class="metadata-value">{{ element.versioningStatusInfo?.versioningStatusInfo[0]?.changeDate | date:'HH:mm' }}</span>
+                            </p>
+                            <p class="metadata-row">
+                              <span class="metadata-label">Author:</span>
+                              <mat-icon class="metadata-icon">person</mat-icon>
+                              <span class="metadata-value">{{ element.versioningStatusInfo?.versioningStatusInfo[0]?.editorFullName }}</span>
+                            </p>
+                          </div>
+
+                          <p class="metadata-row metadata-status-row">
+                            <span class="metadata-label">Status:</span>
+                            <mat-chip
+                              class="metadata-chip"
+                              [ngClass]="{
+                                'metadata-published-status': element.versioningStatus === 'PUBLISHED',
+                                'metadata-submitted-status': element.versioningStatus === 'SUBMITTED',
+                                'metadata-draft-status': element.versioningStatus === 'DRAFT',
+                                'metadata-archived-status': element.versioningStatus === 'ARCHIVED'
+                              }">
+                              {{ element.versioningStatus }}
+                            </mat-chip>
                           </p>
                         </div>
-                        
-                        <p style="display: flex; width: 100%; justify-content: start; align-items: center; gap: 2px; margin-bottom: 3px;">
-                          Status:
-                          <mat-chip style="height: auto; font-size: 5px; padding: 0 4px; line-height: 1.2; border-radius: 777px;"
-                          [ngClass]="{
-                          'metadata-published-status': element.versioningStatus === 'PUBLISHED',
-                          'metadata-submitted-status': element.versioningStatus === 'SUBMITTED',
-                          'metadata-draft-status': element.versioningStatus === 'DRAFT',
-                          'metadata-archived-status': element.versioningStatus === 'ARCHIVED'
-                          }">
-                        {{ element.versioningStatus }}</mat-chip>
-                        </p>
                       </ng-container>
 
                       <!-- END OF Metadata Preview Area -->
@@ -149,18 +151,14 @@
                   </div>
                 </div>
               </ng-container>
-              <div [class]="{ 'results-element-detail': true }" *ngIf="element !== undefined && expandedElement?.id === element.id">
-                <div [ngClass]="{ 'advanced-search-container': true, 'nice-scrollbar': true, 'advanced-search-container-min': messageShow }">
-                  <app-notification
-                    id="{{ messageId }}"
-                    [showMessage]="messageShow"
-                    type="{{ messageType }}"
-                    [checkShowAgain]="messageCheckShowAgain"
-                    title="{{ messageTitle }}"
-                    message="{{ messageText }}"
+              <div [class]="{ 'results-element-detail': true }"
+                *ngIf="element !== undefined && expandedElement?.id === element.id">
+                <div
+                  [ngClass]="{ 'advanced-search-container': true, 'nice-scrollbar': true, 'advanced-search-container-min': messageShow }">
+                  <app-notification id="{{ messageId }}" [showMessage]="messageShow" type="{{ messageType }}"
+                    [checkShowAgain]="messageCheckShowAgain" title="{{ messageTitle }}" message="{{ messageText }}"
                     (showMessageEvent)="showMessage($event)"></app-notification>
-                  <app-data-configuration
-                    [ngClass]="{ 'flex, flex-col, flex-grow': true, disabled: messageShow }"
+                  <app-data-configuration [ngClass]="{ 'flex, flex-col, flex-grow': true, disabled: messageShow }"
                     [dataConfigurableSource]="selectedConfigurableSource"
                     [showExpandButton]="true"></app-data-configuration>
                 </div>
@@ -169,15 +167,14 @@
           </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr
-          mat-row
-          *matRowDef="let element; columns: columnsToDisplay"
-          [id]="element !== undefined ? element.id : null"
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay" [id]="element !== undefined ? element.id : null"
           [style.background-color]="expandedElement !== null && expandedElement!.id === element.id ? element.lcolor : ''"
-          [class]="{ hidden: !(element !== undefined && (activeDomainData.code === 'FAV' || element.hideToResult === false)) }"></tr>
+          [class]="{ hidden: !(element !== undefined && (activeDomainData.code === 'FAV' || element.hideToResult === false)) }">
+        </tr>
       </table>
     </div>
   </div>
 
-  <mat-paginator [class]="{ hidden: showLoading }" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons aria-label="results per page" (page)="onPaginateChange()"></mat-paginator>
+  <mat-paginator [class]="{ hidden: showLoading }" [pageSizeOptions]="[10, 15, 20]" showFirstLastButtons
+    aria-label="results per page" (page)="onPaginateChange()"></mat-paginator>
 </div>

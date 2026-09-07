@@ -13,7 +13,7 @@ import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.inter
 import { AuthenticatedClickService } from 'services/authenticatedClick.service';
 import { PanelsEmitterService } from 'services/panelsEventEmitter.service';
 import { BehaviorSubject, Subject, Subscription } from 'rxjs';
-import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
+import { ExternalVisualisationSource, MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 import { MatSelectChange } from '@angular/material/select';
 import { DataSearchConfigurablesServiceResource } from '../../dataPanel/services/dataSearchConfigurables.service';
 import { Unsubscriber } from 'decorators/unsubscriber.decorator';
@@ -42,7 +42,7 @@ export interface TableExportObject {
   fileName: string;
 }
 
-export enum TableDataType{
+export enum TableDataType {
   FEATURE_COLLECTION,
   WMTS
 }
@@ -55,6 +55,7 @@ export enum TableDataType{
 })
 export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() dataConfigurable: DataConfigurableI;
+  @Input() externalSource: ExternalVisualisationSource | null = null;
   @Input() onDialogComponent: boolean = false;
 
   @Output() exportData = new Subject<TableExportObject>();
@@ -127,6 +128,18 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
   }
 
+  public get sourceId(): string {
+    return this.externalSource?.id ?? this.dataConfigurable.id;
+  }
+
+  public get sourceName(): string {
+    return this.externalSource?.name ?? this.dataConfigurable.name;
+  }
+
+  public get sourceContext(): string {
+    return this.dataConfigurable?.context ?? '';
+  }
+
   public static sortPredicate(data: Array<Array<null | PopupProperty>>, sort: Sort): Array<Array<null | PopupProperty>> {
 
     let sortedData = data.slice();
@@ -190,20 +203,27 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.showSpinner = true;
 
     // check if mappable
-    this.isMappable = this.dataConfigurable.isMappable;
+    this.isMappable = this.externalSource != null ? true : this.dataConfigurable.isMappable;
 
     if (this.isMappable) {
       // add header actions on map to headerToRemove variable
       this.headersToRemove.push(...[this.showOnMapHeader, this.toggleOnMapHeader]);
     }
 
-    const distributionFormat = this.dataConfigurable.getDistributionDetails().getTabularableFormats()[0];
+    if (this.externalSource?.geoJsonData != null) {
+      this.dataType = TableDataType.FEATURE_COLLECTION;
+      this.data = this.externalSource.geoJsonData;
+      this.setTableHeaders(this.data);
+      this.updateTable(this.customHeaders);
+      this.showSpinner = false;
+    } else {
+      const distributionFormat = this.dataConfigurable.getDistributionDetails().getTabularableFormats()[0];
 
     // check if it's a WMTS Distribution (this is needed also because a table format is returned from dist. execution but only needs to be shown when clicking on the "Donwnload" button of the card, NOT executed here on Table)
-    const isWmts = this.dataConfigurable.getDistributionDetails().getFormats().find(( frmt )=> frmt.getFormat() === 'application/vnd.ogc.wmts_xml');
-    if(isWmts != null){
+    const isWmts = this.dataConfigurable.getDistributionDetails().getFormats().find((frmt) => frmt.getFormat() === 'application/vnd.ogc.wmts_xml');
+    if (isWmts != null) {
       this.mapInteractionService.getWmtsLayersMapStorageObs().subscribe((infoFromWMTS: null | Map<string, WMTSLayerTableData>) => {
-        if(infoFromWMTS != null && infoFromWMTS.size > 0 && (infoFromWMTS.values().next().value as WMTSLayerTableData).originatorConfig === this.dataConfigurable.id){
+        if (infoFromWMTS != null && infoFromWMTS.size > 0 && (infoFromWMTS.values().next().value as WMTSLayerTableData).originatorConfig === this.dataConfigurable.id) {
           this.dataType = TableDataType.WMTS;
           // clone the map to avoid reference issues (e.g. when cleaning 'this.infoFromWMTS' i MUST not clean the original map)
           const infoFilteredClone = new Map(
@@ -215,13 +235,13 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
           this.updateTable(this.customHeaders);
           this.showSpinner = false;
         }
-        else{
+        else {
           this.showSpinner = false;
         }
       });
     }
     // FeatureCollection
-    else{
+    else {
       this.dataType = TableDataType.FEATURE_COLLECTION;
 
       void this.executionService.executeDistributionFormat(
@@ -259,11 +279,13 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         }
       })
-      .catch((e) => {
-      }).finally(() => {
-        this.showSpinner = false;
-        this.refreshHiddenRowOnTable(1000);
-      });
+        .catch((e) => {
+        }).finally(() => {
+          this.showSpinner = false;
+          this.refreshHiddenRowOnTable(1000);
+        });
+    }
+
     }
 
     this.subscriptions.push(
@@ -278,7 +300,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
       this.panelsEvent.invokeTablePanelToggle.subscribe((layerId: string) => {
 
-        if (layerId === this.dataConfigurable.id) {
+        if (layerId === this.sourceId) {
           void this.getDataSorted().then(res => {
 
             res.forEach((f: [PopupProperty], index) => {
@@ -304,10 +326,10 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       this.panelsEvent.invokeClearRowOnTable.subscribe(() => {
         this.selectedRow = null;
       }),
-      this.dataConfigurable.styleObs.subscribe((style: Style) => {
+      ...(this.dataConfigurable == null ? [] : [this.dataConfigurable.styleObs.subscribe((style: Style) => {
         this.toggleOnMapDisabled = style.getClustering() ?? false;
         this.toggleOnMapDisabledMessage = this.toggleOnMapDisabled ? ' - Remove cluster option on this layer' : '';
-      }),
+      })]),
       this.mapInteractionService.updateStatusHiddenMarker.subscribe(check => {
         if (check === true) {
           this.refreshIconOnTableFromLocalStorage();
@@ -327,7 +349,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.removeLayerIdFromHiddenMarkerOnLocalStorage(this.dataConfigurable.id);
+    this.removeLayerIdFromHiddenMarkerOnLocalStorage(this.sourceId);
   }
 
   /**
@@ -381,7 +403,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     if (checkSomeOnMapHideFunc) {
       this.checkSomeOnMapHide();
     }
-    this.mapInteractionService.toggleFeature(this.dataConfigurable.id, featureIndex, checked, this.imageOverlay);
+    this.mapInteractionService.toggleFeature(this.sourceId, featureIndex, checked, this.imageOverlay);
   }
 
   /**
@@ -412,7 +434,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       this.featureIndexToSelect = propertyId;
 
       if (coordinates[0] !== GeoJSONHelper.NO_DATA[0]) {
-        this.mapInteractionService.clickOnMaps(this.dataConfigurable.id, this.featureIndexToSelect, coordinates as Array<number>, this.imageOverlay);
+        this.mapInteractionService.clickOnMaps(this.sourceId, this.featureIndexToSelect, coordinates as Array<number>, this.imageOverlay);
       }
 
     }
@@ -558,8 +580,12 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public updateTable(headers: Array<string>): void {
 
-    if(this.dataType === TableDataType.FEATURE_COLLECTION){
-      const tableMap = GeoJSONHelper.getTableObjectsFromProperties(this.dataConfigurable.id, this.data.features);
+    if (this.dataType === TableDataType.FEATURE_COLLECTION) {
+      const tableMap = GeoJSONHelper.getTableObjectsFromProperties(
+        this.sourceId,
+        this.data.features,
+        this.externalSource == null ? undefined : feature => String(feature.id),
+      );
 
       // check if mappable table
       this.isMappable = tableMap.has(this.pointsOnMapHeader);
@@ -579,9 +605,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
         ? tableData[0].map((_, colIndex) => tableData.map(row => row[colIndex]))
         : [];
 
-    /** filter out null values */
-    const tableFormatted: PopupProperty[][] = tableData.map((array: Array<PopupProperty>) =>
-      array.filter((val: PopupProperty) => val != null));
+      /** filter out null values */
+      const tableFormatted: PopupProperty[][] = tableData.map((array: Array<PopupProperty>) =>
+        array.filter((val: PopupProperty) => val != null));
 
       if (this.isMappable) {
         // add toggleOnMap on table header list (index 1)
@@ -611,9 +637,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
     }
     // WMTS
-    else if(this.dataType === TableDataType.WMTS){
+    else if (this.dataType === TableDataType.WMTS) {
 
-      if(this.infoFromWMTS && this.infoFromWMTS.size > 0){
+      if (this.infoFromWMTS && this.infoFromWMTS.size > 0) {
         const tableData = this.infoFromWMTS as Map<string, WMTSLayerTableData>;
 
         const popupPropertiesArray: PopupProperty[][] = [];
@@ -625,7 +651,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
           // add showOnMap on table header list (index 0)
           this.customHeaders.unshift(this.showOnMapHeader);
 
-          tableData.forEach((layer, rowIndex)=>{
+          tableData.forEach((layer, rowIndex) => {
             const layerArr: Array<PopupProperty> = [];
 
             // add showOnMap on table data (index 0)
@@ -633,35 +659,35 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
             // add toggleOnMap on table data (index 1)
             layerArr.push(new PopupProperty(this.toggleOnMapHeader, [layer.tableRowPropertyId])); // Hello, hello my friend ... MUST BE EQUAL to the PROPERTY_ID !!!!!
             // checking if each property is in customHeaders before pushing it in the row (on select/deselect columns -> customHeaders change)
-            if(this.customHeaders.includes('Layer')){
+            if (this.customHeaders.includes('Layer')) {
               layerArr.push(new PopupProperty('layer', [layer.title]));
             }
-            if(this.customHeaders.includes('Coordinates')){
+            if (this.customHeaders.includes('Coordinates')) {
               layerArr.push(new PopupProperty('coordinates', [layer.coordinates.toString()]));
             }
-            if(this.customHeaders.includes('Abstract')){
-              if(layer.abstract !== ''){
+            if (this.customHeaders.includes('Abstract')) {
+              if (layer.abstract !== '') {
                 layerArr.push(new PopupProperty('abstract', [layer.abstract]));
               }
-              else{
+              else {
                 layerArr.push(new PopupProperty('abstract', ['--']));
               }
             }
-            if(this.customHeaders.includes('Metadata URL')){
-              if(layer.metadataUrl !== ''){
+            if (this.customHeaders.includes('Metadata URL')) {
+              if (layer.metadataUrl !== '') {
                 layerArr.push(new PopupProperty('metadataUrl', [`<a href="${layer.metadataUrl}">${layer.metadataUrl}</a>`])); // the link to metadata (e.g.: the xml where the Data Product can be found)
               }
-              else{
+              else {
                 layerArr.push(new PopupProperty('metadataUrl', ['--']));
               }
             }
             // Declaring PROPERTY_ID for the row: this is a value which is NOT shown in the table (not in 'customHeaders', 'tableHeaders' nor 'columnsCount') !
             layerArr.push(new PopupProperty(PopupProperty.PROPERTY_ID, [layer.tableRowPropertyId])); // Hello, hello my friend ... MUST BE EQUAL TO THE toggleOnMapHeader !!!!!
 
-            if(layer.isDefaultLayer){
+            if (layer.isDefaultLayer) {
               this.toggleOnMapSelected[layer.tableRowPropertyId] = true;
             }
-            else{
+            else {
               this.toggleOnMapSelected[layer.tableRowPropertyId] = false;
               this.refreshHiddenMarkerOnLocalStorage(layer.tableRowPropertyId, false);
             }
@@ -704,7 +730,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
         return !this.headersToRemove.includes(popupProp.name);
       }).map((popupProp: PopupProperty) => popupProp.valuesConcatString)
       ) as Array<Array<string>>,
-      fileName: this.dataConfigurable.name,
+      fileName: this.sourceName,
     };
 
     this.exportData.next(data);
@@ -724,9 +750,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => {
       dataSearchToggleOnMap.filter(_v => {
         // if marker of layer
-        if (_v.indexOf(this.dataConfigurable.id) !== -1) {
+        if (_v.indexOf(this.sourceId) !== -1) {
 
-          this.mapInteractionService.toggleFeature(this.dataConfigurable.id, _v, false, this.imageOverlay);
+          this.mapInteractionService.toggleFeature(this.sourceId, _v, false, this.imageOverlay);
           // eslint-disable-next-line no-underscore-dangle
           this.toggleOnMapSelected[_v] = false;
         }
@@ -795,13 +821,17 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private setTableHeaders(data: GeoJSON.FeatureCollection | Map<string, WMTSLayerTableData>) {
 
-    if(this.dataType === TableDataType.FEATURE_COLLECTION){
+    if (this.dataType === TableDataType.FEATURE_COLLECTION) {
       // data as FeatureCollection
       const dataAsFC = data as FeatureCollection;
-      const tableMap = GeoJSONHelper.getTableObjectsFromProperties(this.dataConfigurable.id, dataAsFC.features);
+      const tableMap = GeoJSONHelper.getTableObjectsFromProperties(
+        this.sourceId,
+        dataAsFC.features,
+        this.externalSource == null ? undefined : feature => String(feature.id),
+      );
       this.tableHeaders = Array.from(tableMap.keys());
 
-    this.tableHeaders = this.tableHeaders.filter((el) => !el.includes(this.imagesHeader));
+      this.tableHeaders = this.tableHeaders.filter((el) => !el.includes(this.imagesHeader));
 
       this.customHeaders = this.tableHeaders.slice(0, 8);
 
@@ -816,11 +846,11 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       this.totalColumnCount = [...this.tableHeaders].filter((el) => !this.headersToRemove.includes(el)).length;
 
     }
-    else if(this.dataType === TableDataType.WMTS){
-      if(data != null){
+    else if (this.dataType === TableDataType.WMTS) {
+      if (data != null) {
         const dataAsWMTS = data as Map<string, WMTSLayerTableData>;
 
-        if(dataAsWMTS.size > 0){
+        if (dataAsWMTS.size > 0) {
 
           const selectedTableHeaders: string[] = [];
 
@@ -830,9 +860,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
           // filter out unwanted header to keep only the relevant ones (chosen by TCS)
           const filteredDataKeys = dataKeys.filter((key) => {
             return key.toLowerCase() === 'layeridentifier' ||
-                   key.toLowerCase() === 'coordinates' ||
-                   key.toLowerCase() === 'abstract' ||
-                   key.toLowerCase() === 'metadataurl';
+              key.toLowerCase() === 'coordinates' ||
+              key.toLowerCase() === 'abstract' ||
+              key.toLowerCase() === 'metadataurl';
           });
 
           // reorder headers in order of appearance
@@ -843,8 +873,8 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
           // mapping of headers to standard naming
           const correctNamingHeaders: Array<string> = [];
-          for(const header of selectedTableHeaders){
-            switch(header.toLowerCase()){
+          for (const header of selectedTableHeaders) {
+            switch (header.toLowerCase()) {
               case 'layeridentifier':
                 correctNamingHeaders.push('Layer'); // actual naming
                 break;
@@ -968,4 +998,3 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.someOnMapHide = numHiddenOnMap === numFilteredData;
   }
 }
-

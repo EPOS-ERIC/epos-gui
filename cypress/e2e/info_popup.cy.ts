@@ -89,7 +89,7 @@ describe('Test info popup', () => {
               expect(val).to.eq('http://creativecommons.org/licenses/by/4.0/');
               break;
             case 'Keywords':
-              expect(val).to.eq('gnss station  ;  velocities  ;  computed  ;  gnss  ;  estimated  ;  coordinates  ;  time series  ;  gnss geojson products  ;  position  ;  geodesy  ;  products  ;');
+              expect(val).to.eq('gnss station ; velocities ; computed ; gnss ; estimated ; coordinates ; time series ; gnss geojson products ; position ; geodesy ; products ;');
               break;
             case 'Update Frequency':
               expect(val).to.eq('http://purl.org/cld/freq/continuous');
