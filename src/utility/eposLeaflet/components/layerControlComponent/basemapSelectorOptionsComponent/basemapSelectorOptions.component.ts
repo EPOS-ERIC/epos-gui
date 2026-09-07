@@ -1,14 +1,12 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSliderChange } from '@angular/material/slider';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { EposLeafletComponent } from '../../eposLeaflet.component';
 import { WmsTileLayer } from '../../layers/wmsTileLayer';
 import { WmsFeatureDisplayItemGenerator, WmsFeatureFormat } from '../../layers/wmsFeatureDisplayItemGenerator';
-import { euroGeographicsMapOptions, EuroGeographicsMapOption } from '../../controls/basemapSelectorControl/euroGeographicsMapOptions';
+import { euroGeographicsMapOptions, EuroGeographicsMapOption } from './euroGeographicsMapOptions';
 import { LayersService } from 'utility/eposLeaflet/services/layers.service';
-import { baseLayerOptions } from '../../controls/baseLayerControl/baseLayerOptions';
 import { Style } from 'utility/styler/style';
 
 @Component({
@@ -25,34 +23,13 @@ export class BasemapSelectorOptionsComponent implements OnChanges {
 
   public options: EuroGeographicsMapOption[] = euroGeographicsMapOptions;
   public opacityByOptionId = new Map<string, number>();
-  public selectedOriginalBasemapVal = '';
-  public basemapToggled = true;
 
   constructor(private readonly layersService: LayersService) { }
 
   public ngOnChanges(changes: SimpleChanges): void {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     if (changes['crsCode']) {
-      this.applyOriginalBasemapState();
       this.syncSelectionFromMap();
-    }
-  }
-
-  public selectedOriginalBasemap(selectedBaseLayer: string): void {
-    this.selectedOriginalBasemapVal = selectedBaseLayer;
-    this.basemapToggled = selectedBaseLayer !== 'None';
-  }
-
-  public updateOriginalBasemapEnable(event: MatSlideToggleChange): void {
-    if (event.checked) {
-      this.layersService.baseLayerChange(this.layersService.lastActiveBaseLayer, this.crsCode);
-      this.selectedOriginalBasemap(this.layersService.lastActiveBaseLayer.name);
-    } else {
-      const noneLayer = baseLayerOptions.find(b => b.name === 'None');
-      if (noneLayer != null) {
-        this.layersService.baseLayerChange(noneLayer, this.crsCode);
-      }
-      this.selectedOriginalBasemap('None');
     }
   }
 
@@ -110,11 +87,6 @@ export class BasemapSelectorOptionsComponent implements OnChanges {
     if (!this.options.some(option => this.isCrsSupported(option))) {
       this.options.forEach(option => this.removeLayer(option));
     }
-  }
-
-  private applyOriginalBasemapState(): void {
-    const basemap = this.layersService.getBaseLayerFromStorage(this.crsCode);
-    this.selectedOriginalBasemap(basemap.name);
   }
 
   private addLayer(option: EuroGeographicsMapOption): void {
