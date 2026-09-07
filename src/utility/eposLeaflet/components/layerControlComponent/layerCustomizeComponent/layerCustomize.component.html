@@ -44,12 +44,10 @@
         <mat-option value="fixed">Fixed</mat-option>
         <mat-option value="parameter" [disabled]="numericMarkerProperties.length === 0">By Field</mat-option>
       </mat-select>
-      <span *ngIf="colorMode === 'parameter'" class="palette-preview" [style.background]="colorPaletteBackground"
-        matTooltip="Automatically assigned color scale"></span>
     </div>
   </li>
   <li class="option" *ngIf="canConfigureColorByParameter && colorMode === 'parameter'">
-    <div class="label">Parameter</div>
+    <div class="label">Field</div>
     <div class="content">
       <mat-select placeholder="Select property" [value]="colorProperty" (selectionChange)="updateColorProperty($event)"
         data-cy="marker-color-property">
@@ -57,6 +55,50 @@
           {{ property.name }}
         </mat-option>
       </mat-select>
+    </div>
+  </li>
+  <li class="option" *ngIf="canConfigureColorByParameter && colorMode === 'parameter'">
+    <div class="label">Palette</div>
+    <div class="content">
+      <mat-select [value]="colorPaletteId" (selectionChange)="updateColorPalette($event)"
+        data-cy="marker-color-palette">
+        <mat-select-trigger>
+          <span class="palette-preview" [style.background]="colorPaletteBackground"></span>
+          {{ colorPaletteId | titlecase }}
+        </mat-select-trigger>
+        <mat-option *ngFor="let palette of colorPalettes" [value]="palette.id">
+          <span class="palette-preview" [style.background]="getPaletteBackground(palette)"></span>
+          {{ palette.id | titlecase }}
+        </mat-option>
+      </mat-select>
+    </div>
+  </li>
+  <li class="option" *ngIf="canConfigureColorByParameter && colorMode === 'parameter' && colorProperty !== null">
+    <div class="label">Range</div>
+    <div class="content range-content">
+        <label>Min:
+        <input #colorMinInput matInput type="number" step="any" [value]="colorMinValue"
+          (input)="updateParameterRangeModified('color', colorMinInput, colorMaxInput)" data-cy="marker-color-min">
+        <button mat-icon-button class="range-reset" matTooltip="Reset minimum" aria-label="Reset color minimum"
+          (click)="resetParameterRange('color', 'minValue', colorMinInput, colorMaxInput)"
+          data-cy="marker-color-min-reset">
+          <mat-icon>refresh</mat-icon>
+        </button>
+      </label>
+        <label>Max:
+        <input #colorMaxInput matInput type="number" step="any" [value]="colorMaxValue"
+          (input)="updateParameterRangeModified('color', colorMinInput, colorMaxInput)" data-cy="marker-color-max">
+        <button mat-icon-button class="range-reset" matTooltip="Reset maximum" aria-label="Reset color maximum"
+          (click)="resetParameterRange('color', 'maxValue', colorMinInput, colorMaxInput)"
+          data-cy="marker-color-max-reset">
+          <mat-icon>refresh</mat-icon>
+        </button>
+        </label>
+        <button *ngIf="colorRangeModified" mat-icon-button class="range-apply" matTooltip="Apply range"
+          aria-label="Apply color range"
+          (click)="applyParameterRange('color', colorMinInput, colorMaxInput)" data-cy="marker-color-range-apply">
+          <mat-icon>check</mat-icon>
+        </button>
     </div>
   </li>
   <li class="option" *ngIf="tools.colorOpacity">
@@ -167,7 +209,7 @@
   </li>
   <ng-container *ngIf="canConfigureSizeByParameter && sizeMode === 'parameter'">
     <li class="option">
-      <div class="label">Parameter</div>
+      <div class="label">Field</div>
       <div class="content">
         <mat-select placeholder="Select property" [value]="sizeProperty" (selectionChange)="updateSizeProperty($event)"
           data-cy="marker-size-property">
@@ -184,6 +226,34 @@
           [value]="markerSizeScale" [min]="minMarkerSizeScale" [max]="maxMarkerSizeScale" [step]="5" [thumbLabel]="true"
           [displayWith]="formatMarkerSizeScale" data-cy="marker-size-scale">
         </mat-slider>
+      </div>
+    </li>
+    <li class="option" *ngIf="sizeProperty !== null">
+      <div class="label">Range</div>
+      <div class="content range-content">
+        <label>Min:
+          <input #sizeMinInput matInput type="number" step="any" [value]="sizeMinValue"
+            (input)="updateParameterRangeModified('size', sizeMinInput, sizeMaxInput)" data-cy="marker-size-min">
+          <button mat-icon-button class="range-reset" matTooltip="Reset minimum" aria-label="Reset size minimum"
+            (click)="resetParameterRange('size', 'minValue', sizeMinInput, sizeMaxInput)"
+            data-cy="marker-size-min-reset">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </label>
+        <label>Max:
+          <input #sizeMaxInput matInput type="number" step="any" [value]="sizeMaxValue"
+            (input)="updateParameterRangeModified('size', sizeMinInput, sizeMaxInput)" data-cy="marker-size-max">
+          <button mat-icon-button class="range-reset" matTooltip="Reset maximum" aria-label="Reset size maximum"
+            (click)="resetParameterRange('size', 'maxValue', sizeMinInput, sizeMaxInput)"
+            data-cy="marker-size-max-reset">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </label>
+        <button *ngIf="sizeRangeModified" mat-icon-button class="range-apply" matTooltip="Apply range"
+          aria-label="Apply size range"
+          (click)="applyParameterRange('size', sizeMinInput, sizeMaxInput)" data-cy="marker-size-range-apply">
+          <mat-icon>check</mat-icon>
+        </button>
       </div>
     </li>
   </ng-container>

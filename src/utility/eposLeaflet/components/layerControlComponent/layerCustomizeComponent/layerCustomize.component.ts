@@ -8,7 +8,8 @@ import { Stylable } from 'utility/styler/stylable.interface';
 import { defaultMarkerIcons, FaMarkerOption } from 'utility/styler/styler';
 import { MapLayer } from '../../layers/mapLayer.abstract';
 import {
-  GeoJsonLayer, GeoJsonMarkerParameterStyle, MarkerStyleMode, NumericGeoJsonProperty
+  GeoJsonLayer, GeoJsonMarkerColorPalette, GeoJsonMarkerParameterStyle, MarkerStyleMode,
+  NumericGeoJsonProperty
 } from '../../layers/public_api';
 import { ExternalTileServiceLayer } from '../../layers/externalTileServiceLayer';
 import { ExternalVisualisationSource, MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
@@ -118,9 +119,25 @@ export class LayerCustomizeComponent implements OnInit {
 
   public colorProperty: string | null = null;
 
+  public colorPaletteId: string | null = null;
+
+  public colorMinValue: number | null = null;
+
+  public colorMaxValue: number | null = null;
+
+  public colorRangeModified = false;
+
   public sizeMode: MarkerStyleMode = 'fixed';
 
   public sizeProperty: string | null = null;
+
+  public sizeMinValue: number | null = null;
+
+  public sizeMaxValue: number | null = null;
+
+  public sizeRangeModified = false;
+
+  public colorPalettes = GeoJsonLayer.MARKER_COLOR_PALETTES;
 
   public markerSizeScale = 100;
 
@@ -220,8 +237,15 @@ export class LayerCustomizeComponent implements OnInit {
       const parameterStyle = this.layer.getMarkerParameterStyle();
       this.colorMode = parameterStyle.color.mode;
       this.colorProperty = parameterStyle.color.property;
+      this.colorPaletteId = parameterStyle.color.paletteId;
+      const colorRange = this.getParameterRange(parameterStyle, 'color');
+      this.colorMinValue = colorRange.min;
+      this.colorMaxValue = colorRange.max;
       this.sizeMode = parameterStyle.size.mode;
       this.sizeProperty = parameterStyle.size.property;
+      const sizeRange = this.getParameterRange(parameterStyle, 'size');
+      this.sizeMinValue = sizeRange.min;
+      this.sizeMaxValue = sizeRange.max;
       this.initializeMarkerSizeScale(parameterStyle.size.minPx, parameterStyle.size.maxPx);
       this.updatePalettePreview();
     }
@@ -419,34 +443,116 @@ export class LayerCustomizeComponent implements OnInit {
   }
 
   public updateColorMode(event: MatSelectChange): void {
+    this.colorRangeModified = false;
     this.colorMode = event.value as MarkerStyleMode;
     const style = this.getParameterStyle();
     style.color.mode = this.colorMode;
     if (this.colorMode === 'parameter') {
       style.color.paletteId = this.getAutomaticPaletteId();
+      if (style.color.minValue == null || style.color.maxValue == null) {
+        this.setParameterRangeFromProperty(style, 'color');
+      }
     }
     this.applyParameterStyle(style);
   }
 
   public updateColorProperty(event: MatSelectChange): void {
+    this.colorRangeModified = false;
     this.colorProperty = event.value as string;
     const style = this.getParameterStyle();
     style.color.property = this.colorProperty;
+    this.setParameterRangeFromProperty(style, 'color');
+    this.applyParameterStyle(style);
+  }
+
+  public updateColorPalette(event: MatSelectChange): void {
+    const style = this.getParameterStyle();
+    style.color.paletteId = event.value as string;
     this.applyParameterStyle(style);
   }
 
   public updateSizeMode(event: MatSelectChange): void {
+    this.sizeRangeModified = false;
     this.sizeMode = event.value as MarkerStyleMode;
     const style = this.getParameterStyle();
     style.size.mode = this.sizeMode;
+    if (this.sizeMode === 'parameter' && (style.size.minValue == null || style.size.maxValue == null)) {
+      this.setParameterRangeFromProperty(style, 'size');
+    }
     this.applyParameterStyle(style);
   }
 
   public updateSizeProperty(event: MatSelectChange): void {
+    this.sizeRangeModified = false;
     this.sizeProperty = event.value as string;
     const style = this.getParameterStyle();
     style.size.property = this.sizeProperty;
+    this.setParameterRangeFromProperty(style, 'size');
     this.applyParameterStyle(style);
+  }
+
+  public updateParameterRangeModified(
+    type: 'color' | 'size',
+    minInput: HTMLInputElement,
+    maxInput: HTMLInputElement,
+  ): void {
+    const currentMin = type === 'color' ? this.colorMinValue : this.sizeMinValue;
+    const currentMax = type === 'color' ? this.colorMaxValue : this.sizeMaxValue;
+    this.setParameterRangeModified(
+      type,
+      minInput.valueAsNumber !== currentMin || maxInput.valueAsNumber !== currentMax,
+    );
+  }
+
+  public applyParameterRange(
+    type: 'color' | 'size',
+    minInput: HTMLInputElement,
+    maxInput: HTMLInputElement,
+  ): void {
+    const style = this.getParameterStyle();
+    const config = style[type];
+    const currentRange = this.getParameterRange(style, type);
+    const minValue = minInput.valueAsNumber;
+    const maxValue = maxInput.valueAsNumber;
+    if (!Number.isFinite(minValue) || !Number.isFinite(maxValue) || minValue > maxValue) {
+      this.syncParameterRangeInputs(type, minInput, maxInput);
+      this.setParameterRangeModified(type, false);
+      return;
+    }
+    if (minValue === currentRange.min && maxValue === currentRange.max) {
+      this.setParameterRangeModified(type, false);
+      return;
+    }
+    config.minValue = minValue;
+    config.maxValue = maxValue;
+    this.applyParameterStyle(style);
+    this.setParameterRangeModified(type, false);
+  }
+
+  public resetParameterRange(
+    type: 'color' | 'size',
+    bound: 'minValue' | 'maxValue',
+    minInput: HTMLInputElement,
+    maxInput: HTMLInputElement,
+  ): void {
+    const style = this.getParameterStyle();
+    const config = style[type];
+    const property = this.numericMarkerProperties.find(item => item.name === config.property);
+    if (property == null) {
+      return;
+    }
+    config[bound] = bound === 'minValue' ? property.min : property.max;
+    if (config.minValue != null && config.maxValue != null && config.minValue > config.maxValue) {
+      config.minValue = property.min;
+      config.maxValue = property.max;
+    }
+    this.applyParameterStyle(style);
+    this.syncParameterRangeInputs(type, minInput, maxInput);
+    this.setParameterRangeModified(type, false);
+  }
+
+  public getPaletteBackground(palette: GeoJsonMarkerColorPalette): string {
+    return this.createPaletteBackground(palette);
   }
 
   public updateMarkerSizeScale(event: MatSliderChange): void {
@@ -557,8 +663,8 @@ export class LayerCustomizeComponent implements OnInit {
     return this.layer instanceof GeoJsonLayer
       ? this.layer.getMarkerParameterStyle()
       : {
-        color: { mode: 'fixed', property: null, paletteId: null },
-        size: { mode: 'fixed', property: null, minPx: 10, maxPx: 70 },
+        color: { mode: 'fixed', property: null, paletteId: null, minValue: null, maxValue: null },
+        size: { mode: 'fixed', property: null, minValue: null, maxValue: null, minPx: 10, maxPx: 70 },
       };
   }
 
@@ -569,10 +675,56 @@ export class LayerCustomizeComponent implements OnInit {
     this.layer.setMarkerParameterStyle(style);
     this.colorMode = style.color.mode;
     this.colorProperty = style.color.property;
+    this.colorPaletteId = style.color.paletteId;
+    const colorRange = this.getParameterRange(style, 'color');
+    this.colorMinValue = colorRange.min;
+    this.colorMaxValue = colorRange.max;
     this.sizeMode = style.size.mode;
     this.sizeProperty = style.size.property;
+    const sizeRange = this.getParameterRange(style, 'size');
+    this.sizeMinValue = sizeRange.min;
+    this.sizeMaxValue = sizeRange.max;
     this.updatePalettePreview();
     void this.redrawLayer().then(() => this.layersService.layerChange(this.layer));
+  }
+
+  private setParameterRangeFromProperty(
+    style: GeoJsonMarkerParameterStyle,
+    type: 'color' | 'size',
+  ): void {
+    const property = this.numericMarkerProperties.find(item => item.name === style[type].property);
+    style[type].minValue = property?.min ?? null;
+    style[type].maxValue = property?.max ?? null;
+  }
+
+  private getParameterRange(
+    style: GeoJsonMarkerParameterStyle,
+    type: 'color' | 'size',
+  ): { min: number | null; max: number | null } {
+    const property = this.numericMarkerProperties.find(item => item.name === style[type].property);
+    return {
+      min: style[type].minValue ?? property?.min ?? null,
+      max: style[type].maxValue ?? property?.max ?? null,
+    };
+  }
+
+  private setParameterRangeModified(type: 'color' | 'size', modified: boolean): void {
+    if (type === 'color') {
+      this.colorRangeModified = modified;
+    } else {
+      this.sizeRangeModified = modified;
+    }
+  }
+
+  private syncParameterRangeInputs(
+    type: 'color' | 'size',
+    minInput: HTMLInputElement,
+    maxInput: HTMLInputElement,
+  ): void {
+    const minValue = type === 'color' ? this.colorMinValue : this.sizeMinValue;
+    const maxValue = type === 'color' ? this.colorMaxValue : this.sizeMaxValue;
+    minInput.value = minValue == null ? '' : String(minValue);
+    maxInput.value = maxValue == null ? '' : String(maxValue);
   }
 
   private initializeMarkerSizeScale(minPx: number, maxPx: number): void {
@@ -611,11 +763,13 @@ export class LayerCustomizeComponent implements OnInit {
       return;
     }
     const palette = this.layer.getMarkerColorPalette();
-    this.colorPaletteBackground = palette == null
-      ? ''
-      : `linear-gradient(to right, ${palette.colors.map((color, index) => {
-        return `${color} ${(index / (palette.colors.length - 1)) * 100}%`;
-      }).join(', ')})`;
+    this.colorPaletteBackground = palette == null ? '' : this.createPaletteBackground(palette);
+  }
+
+  private createPaletteBackground(palette: GeoJsonMarkerColorPalette): string {
+    return `linear-gradient(to right, ${palette.colors.map((color, index) => {
+      return `${color} ${(index / (palette.colors.length - 1)) * 100}%`;
+    }).join(', ')})`;
   }
 
   /**

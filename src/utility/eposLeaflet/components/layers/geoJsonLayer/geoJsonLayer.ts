@@ -27,10 +27,14 @@ export interface GeoJsonMarkerParameterStyle {
     mode: MarkerStyleMode;
     property: string | null;
     paletteId: string | null;
+    minValue: number | null;
+    maxValue: number | null;
   };
   size: {
     mode: MarkerStyleMode;
     property: string | null;
+    minValue: number | null;
+    maxValue: number | null;
     minPx: number;
     maxPx: number;
   };
@@ -39,6 +43,7 @@ export interface GeoJsonMarkerParameterStyle {
 export interface ResolvedGeoJsonMarkerStyle {
   color?: string;
   size?: number;
+  outOfRange: boolean;
 }
 
 export interface GeoJsonMarkerColorPalette {
@@ -134,6 +139,8 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
 
   public static readonly MARKER_COLOR_PALETTES = D3_MARKER_COLOR_PALETTES;
 
+  private static readonly OUT_OF_RANGE_MARKER_COLOR = '#9e9e9e';
+
   /** The `protected geoJsonData: GeoJsonObject;` is declaring a protected property named `geoJsonData`
   of type `GeoJsonObject`. This property is used to store the GeoJSON data that will be displayed on
   the map layer. The `GeoJsonObject` type represents a valid GeoJSON object, which can be a feature,
@@ -171,8 +178,8 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
   protected tooltipFunction: (feature: Feature<GeometryObject, Record<string, unknown>>) => string;
 
   private markerParameterStyle: GeoJsonMarkerParameterStyle = {
-    color: { mode: 'fixed', property: null, paletteId: null },
-    size: { mode: 'fixed', property: null, minPx: 10, maxPx: 50 },
+    color: { mode: 'fixed', property: null, paletteId: null, minValue: null, maxValue: null },
+    size: { mode: 'fixed', property: null, minValue: null, maxValue: null, minPx: 10, maxPx: 50 },
   };
 
   private numericMarkerProperties = new Array<NumericGeoJsonProperty>();
@@ -340,7 +347,7 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
   public resolveMarkerParameterStyle(
     feature: Feature<Point, Record<string, unknown>>,
   ): ResolvedGeoJsonMarkerStyle {
-    const resolved: ResolvedGeoJsonMarkerStyle = {};
+    const resolved: ResolvedGeoJsonMarkerStyle = { outOfRange: false };
     const colorConfig = this.markerParameterStyle.color;
     const colorProperty = colorConfig.property == null
       ? null
@@ -348,10 +355,14 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
     if (colorConfig.mode === 'parameter' && colorProperty != null) {
       const value = this.toFiniteNumber(feature.properties?.[colorProperty.name]);
       if (value != null) {
+        const range = this.getMarkerValueRange(colorConfig, colorProperty);
+        resolved.outOfRange = value < range.min || value > range.max;
         resolved.color = this.interpolateMarkerColor(
           colorConfig.paletteId,
-          this.normalizeMarkerValue(value, colorProperty.min, colorProperty.max),
+          this.normalizeMarkerValue(value, range.min, range.max),
         );
+      } else {
+        resolved.outOfRange = true;
       }
     }
 
@@ -362,9 +373,16 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
     if (sizeConfig.mode === 'parameter' && sizeProperty != null) {
       const value = this.toFiniteNumber(feature.properties?.[sizeProperty.name]);
       if (value != null) {
-        const normalized = this.normalizeMarkerValue(value, sizeProperty.min, sizeProperty.max);
+        const range = this.getMarkerValueRange(sizeConfig, sizeProperty);
+        resolved.outOfRange = resolved.outOfRange || value < range.min || value > range.max;
+        const normalized = this.normalizeMarkerValue(value, range.min, range.max);
         resolved.size = sizeConfig.minPx + normalized * (sizeConfig.maxPx - sizeConfig.minPx);
+      } else {
+        resolved.outOfRange = true;
       }
+    }
+    if (resolved.outOfRange) {
+      resolved.color = GeoJsonLayer.OUT_OF_RANGE_MARKER_COLOR;
     }
     return resolved;
   }
@@ -376,17 +394,18 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
       : this.numericMarkerProperties.find(property => property.name === colorConfig.property);
     const palette = this.getMarkerColorPalette();
     if (colorConfig.mode === 'parameter' && colorProperty != null && palette != null) {
+      const range = this.getMarkerValueRange(colorConfig, colorProperty);
       const gradient = document.createElement('span');
       gradient.style.display = 'inline-block';
       gradient.style.width = '70px';
       gradient.style.height = '12px';
       gradient.style.border = '1px solid #777';
-      gradient.style.background = colorProperty.min === colorProperty.max
+      gradient.style.background = range.min === range.max
         ? this.interpolateMarkerColor(palette.id, 0.5)
         : `linear-gradient(to right, ${this.getPaletteGradientStops(palette).join(', ')})`;
-      const colorRange = colorProperty.min === colorProperty.max
-        ? this.formatLegendNumber(colorProperty.min)
-        : `${this.formatLegendNumber(colorProperty.min)} – ${this.formatLegendNumber(colorProperty.max)}`;
+      const colorRange = range.min === range.max
+        ? this.formatLegendNumber(range.min)
+        : `${this.formatLegendNumber(range.min)} – ${this.formatLegendNumber(range.max)}`;
       legend.addLegendItem(new ElementLegendItem(
         `Color · ${colorProperty.name}: ${colorRange}`,
         gradient,
@@ -398,9 +417,10 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
       ? null
       : this.numericMarkerProperties.find(property => property.name === sizeConfig.property);
     if (sizeConfig.mode === 'parameter' && sizeProperty != null) {
-      const normalizedValues = sizeProperty.min === sizeProperty.max ? [0.5] : [0, 0.5, 1];
+      const range = this.getMarkerValueRange(sizeConfig, sizeProperty);
+      const normalizedValues = range.min === range.max ? [0.5] : [0, 0.5, 1];
       normalizedValues.forEach(normalized => {
-        const value = sizeProperty.min + normalized * (sizeProperty.max - sizeProperty.min);
+        const value = range.min + normalized * (range.max - range.min);
         const previewSize = 6 + normalized * 14;
         const marker = document.createElement('span');
         marker.style.display = 'inline-block';
@@ -414,6 +434,16 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
           marker,
         ));
       });
+    }
+
+    if (this.getPointFeatures(this.geoJsonData).some(feature => this.resolveMarkerParameterStyle(feature).outOfRange)) {
+      const marker = document.createElement('span');
+      marker.style.display = 'inline-block';
+      marker.style.width = '12px';
+      marker.style.height = '12px';
+      marker.style.border = '1px solid #777';
+      marker.style.backgroundColor = GeoJsonLayer.OUT_OF_RANGE_MARKER_COLOR;
+      legend.addLegendItem(new ElementLegendItem('Out of range / no numeric value', marker));
     }
   }
 
@@ -875,6 +905,17 @@ export class GeoJsonLayer extends MapLayer implements LayerWithMarkers {
       return 0.5;
     }
     return Math.max(0, Math.min(1, (value - min) / (max - min)));
+  }
+
+  private getMarkerValueRange(
+    config: { minValue: number | null; maxValue: number | null },
+    property: NumericGeoJsonProperty,
+  ): { min: number; max: number } {
+    const min = config.minValue ?? property.min;
+    const max = config.maxValue ?? property.max;
+    return Number.isFinite(min) && Number.isFinite(max) && min <= max
+      ? { min, max }
+      : { min: property.min, max: property.max };
   }
 
   private interpolateMarkerColor(paletteId: string | null, normalized: number): string {
