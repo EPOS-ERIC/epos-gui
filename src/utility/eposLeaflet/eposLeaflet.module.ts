@@ -22,12 +22,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { BaseLayerSelectionComponent }
   from './components/layerControlComponent/baseLayerSelectionComponent/baseLayerSelection.component';
 import { LightboxModule } from 'ngx-lightbox';
-import { BasemapSelectorOptionsComponent } from './components/layerControlComponent/basemapSelectorOptionsComponent/basemapSelectorOptions.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +37,6 @@ import { BasemapSelectorOptionsComponent } from './components/layerControlCompon
     LayerCustomizeComponent,
     LayerTabsControlComponent,
     BaseLayerSelectionComponent,
-    BasemapSelectorOptionsComponent,
   ],
   imports: [
     CommonModule,
@@ -59,7 +56,6 @@ import { BasemapSelectorOptionsComponent } from './components/layerControlCompon
     MccColorPickerModule,
     MatButtonModule,
     MatRadioModule,
-    MatCheckboxModule,
     LightboxModule,
   ],
   exports: [
