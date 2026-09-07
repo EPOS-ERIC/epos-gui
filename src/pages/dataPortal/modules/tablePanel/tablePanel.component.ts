@@ -132,7 +132,7 @@ export class TablePanelComponent implements OnInit {
 
       this.mapInteractionService.externalVisualisationSources.subscribe(sources => {
         this.externalSources = Array.from(sources.values()).filter(source => source.type === 'geojson');
-        this.updateCounter();
+        this.updateTableCounter();
       }),
 
       this.panelsEvent.invokeTablePanelToggle.subscribe((id: string) => {
@@ -251,8 +251,12 @@ export class TablePanelComponent implements OnInit {
       }, 100);
     }
 
-    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length);
+    this.updateTableCounter();
 
+  }
+
+  private updateTableCounter(): void {
+    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length + this.externalSources.length + (this.paleolatitudeResults.length > 0 ? 1 : 0));
   }
 
   private ensureReloadFuncSet(configurables: Array<DataConfigurableDataSearchI>, context: string): void {

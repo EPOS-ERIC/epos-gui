@@ -487,7 +487,7 @@ export class GraphPanelComponent implements OnInit {
     if (this.highlightedPaleolatitudeId === id) {
       this.highlightedPaleolatitudeId = null;
     }
-    const configurable = Array.from(this.currentTraces.keys()).find((item) => item.id === id);
+    const configurable = Array.from(this.currentTraces.keys()).find((item): item is DataConfigurableDataSearch => !this.isExternalSource(item) && item.id === id);
     const trace = configurable == null ? null : this.currentTraces.get(configurable)?.[0] ?? null;
     if (trace != null) {
       this.traceSelector.setTraceSelector(id, trace.id, false);
