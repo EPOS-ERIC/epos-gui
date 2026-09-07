@@ -60,9 +60,6 @@ export class EposLeafletComponent implements OnInit, AfterViewInit {
 
   @ViewChild('mapElement', { static: true }) protected mapElement: ElementRef<HTMLElement>;
 
-  public readonly self = this;
-
-
   public leafletMapObj: L.Map;
   /**
    * The `showLoader` property is a boolean flag that determines whether a loading spinner is displayed. It should not
@@ -633,7 +630,7 @@ export class EposLeafletComponent implements OnInit, AfterViewInit {
     this.layerControlOpened.next(false);
 
     // change custom marker icon color
-    this.leafletMapObj.getContainer()!.querySelector('#custom-layer-control')?.classList.remove('control-expanded');
+    this.leafletMapObj.getContainer()!.querySelector('#custom-layer-control')!.classList.remove('control-expanded');
   }
 
   public selectRowOnTablePanel(id: string, feature: string): void {
