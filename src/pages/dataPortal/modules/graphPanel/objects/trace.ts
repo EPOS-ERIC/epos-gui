@@ -26,6 +26,10 @@ export type ModePlotly =
 export class Trace implements Stylable {
   public yAxis: null | YAxis;
 
+  public axisGroup: null | string = null;
+
+  public persistSelection = true;
+
   public yErrorMaxValues: Array<string> | null = null;
 
   public yErrorMinValues: Array<string> | null = null;
@@ -98,4 +102,3 @@ export class Trace implements Stylable {
     return new YAxis(this.yUnit, label);
   }
 }
-

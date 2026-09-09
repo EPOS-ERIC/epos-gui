@@ -51,7 +51,7 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="columnIndex < 2 && isMappable" mwlResizable
           [enableGhostResize]="false" scope="col" (resizeEnd)="onResizeEnd($event, label)" (click)="selectedRow = null">
           <span *ngIf="columnIndex > 1 || !isMappable">{{ label }}</span>
-          <i *ngIf="columnIndex === 1 && isMappable && dataType !== 1 && (paleolatitudeResults === undefined || paleolatitudeResults === null)"
+          <i *ngIf="columnIndex === 1 && isMappable && dataType !== 1 && (interactiveSources === undefined || interactiveSources === null)"
             class="fas fa-eye{{ someOnMapHide && !toggleOnMapDisabled ? '-slash' : '' }} action {{ toggleOnMapDisabled ? 'disabled' : '' }}"
             aria-hidden="true"
             [matTooltip]="'Toggle all data on map (' + dataSource.filteredData.length + ')' + toggleOnMapDisabledMessage"

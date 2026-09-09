@@ -1,8 +1,13 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from 'api/api.service';
+import { NotificationService } from 'components/notification/notification.service';
+import { InteractiveVisualisationService } from 'pages/dataPortal/services/interactiveVisualisation.service';
+import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
 import { DataConfigurableDataSearchI } from 'utility/configurablesDataSearch/dataConfigurableDataSearchI.interface';
-import { PaleolatitudePoint, PaleolatitudeResponse, PALEOLATITUDE_API_URL } from '../objects/paleolatitude.interface';
+import { DataSearchConfigurablesServiceResource } from '../../dataPanel/services/dataSearchConfigurables.service';
+import { PaleolatitudePoint, PaleolatitudeResponse, PALEOLATITUDE_API_URL, PALEOLATITUDE_CONFIG_ID, PALEOLATITUDE_TRACE_ID } from '../objects/paleolatitude.interface';
 import { Trace } from '../objects/trace';
+import { YAxisDisplayType } from '../objects/yAxisDisplayType.enum';
 
 export interface PaleolatitudeGraphRequest {
   normalizedLon: number;
@@ -21,7 +26,93 @@ export class PaleolatitudeGraphService {
 
   constructor(
     private readonly apiService: ApiService,
+    private readonly configurables: DataSearchConfigurablesServiceResource,
+    private readonly interactiveVisualisations: InteractiveVisualisationService,
+    private readonly notificationService: NotificationService,
   ) {
+  }
+
+  public supports(configurables: Array<DataConfigurableI>): boolean {
+    return this.getConfigurable(configurables) != null;
+  }
+
+  public async request(id: string, lat: number, lon: number): Promise<void> {
+    const request = this.createRequest(lat, lon, this.configurables.getAll());
+    if (request == null) {
+      this.interactiveVisualisations.removeSource(id);
+      this.sendWarning(id);
+      return;
+    }
+
+    const serviceName = this.getConfigurable(this.configurables.getAll())?.name ?? 'Paleolatitude';
+    const pendingName = `Paleolatitude (${request.normalizedLon.toFixed(4)}, ${lat.toFixed(4)})`;
+    this.interactiveVisualisations.setSource({
+      kind: 'interactive',
+      id,
+      name: pendingName,
+      groupId: PALEOLATITUDE_CONFIG_ID,
+      traces: null,
+    });
+    this.interactiveVisualisations.viewSourceOnGraph(id);
+
+    try {
+      const result = await this.executeRequest(request, id, `${PALEOLATITUDE_TRACE_ID}-${id}`);
+      if (this.interactiveVisualisations.getSource(id) == null) {
+        return;
+      }
+      if (result.traces.length === 0) {
+        this.interactiveVisualisations.removeSource(id);
+        this.sendWarning(id);
+        return;
+      }
+
+      const plateLabel = result.response.plate?.name != null ? ` - ${result.response.plate.name}` : '';
+      const resultName = `Paleolatitude${plateLabel} (${request.normalizedLon.toFixed(4)}, ${lat.toFixed(4)})`;
+      result.traces.forEach((trace: Trace) => {
+        trace.axisGroup = PALEOLATITUDE_CONFIG_ID;
+        trace.persistSelection = false;
+      });
+      const resultDetails = {
+        id,
+        name: resultName,
+        selectedLat: lat,
+        selectedLon: request.normalizedLon,
+        plateId: result.response.plate?.id,
+        plateName: result.response.plate?.name,
+      };
+      this.interactiveVisualisations.setSource({
+        kind: 'interactive',
+        id,
+        name: resultName,
+        groupId: PALEOLATITUDE_CONFIG_ID,
+        traces: result.traces,
+        table: {
+          groupId: PALEOLATITUDE_CONFIG_ID,
+          groupName: serviceName,
+          rows: (result.response.paleolatitude ?? []).map((point: PaleolatitudePoint) => ({
+            ...resultDetails,
+            ...point,
+          })),
+          isMappable: true,
+        },
+        autoSelect: true,
+        preferredDisplayType: YAxisDisplayType.OVERLAY,
+        metadata: resultDetails,
+      });
+    } catch {
+      if (this.interactiveVisualisations.getSource(id) != null) {
+        this.interactiveVisualisations.removeSource(id);
+        this.sendWarning(id);
+      }
+    }
+  }
+
+  public remove(id: string): void {
+    this.interactiveVisualisations.removeSource(id);
+  }
+
+  public clear(): void {
+    this.interactiveVisualisations.clearSources(PALEOLATITUDE_CONFIG_ID);
   }
 
   public createRequest(
@@ -58,9 +149,7 @@ export class PaleolatitudeGraphService {
   private getFilters(
     configurables: Array<DataConfigurableDataSearchI>,
   ): null | { age: string; minage: string; maxAge: string; model: string } {
-    const configurable = configurables.find((item: DataConfigurableDataSearchI) => {
-      return item.getDistributionDetails().getKeywords().some(keyword => keyword.trim().toLowerCase() === 'eposdynamic');
-    });
+    const configurable = this.getConfigurable(configurables);
     const parameterValues = configurable?.getNewParameterValues();
     const normalizeName = (name: string): string => name.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
     const getValue = (name: string): string | undefined => parameterValues?.find(parameter => {
@@ -107,5 +196,21 @@ export class PaleolatitudeGraphService {
 
   private normalizeLongitude(lon: number): number {
     return ((((lon + 180) % 360) + 360) % 360) - 180;
+  }
+
+  private getConfigurable(configurables: Array<DataConfigurableI>): DataConfigurableI | undefined {
+    return configurables.find((item: DataConfigurableI) => {
+      return item.getDistributionDetails().getKeywords().some(keyword => keyword.trim().toLowerCase() === 'eposdynamic');
+    });
+  }
+
+  private sendWarning(id: string): void {
+    this.notificationService.sendDistributionNotification({
+      id,
+      title: 'Warning',
+      message: NotificationService.MESSAGE_NO_DATA,
+      type: NotificationService.TYPE_WARNING as string,
+      showAgain: false,
+    });
   }
 }

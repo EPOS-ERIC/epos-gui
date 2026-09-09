@@ -19,7 +19,7 @@ import { DataSearchConfigurablesService } from 'pages/dataPortal/services/dataSe
 import { DataSearchConfigurablesServiceSoftware } from '../softwarePanel/services/dataSearchConfigurables.service';
 import { CONTEXT_FACILITY, CONTEXT_RESOURCE, CONTEXT_SOFTWARE } from 'api/api.service.factory';
 import { MapLayer } from 'utility/eposLeaflet/eposLeaflet';
-import { PaleolatitudeResult } from '../graphPanel/objects/paleolatitude.interface';
+import { InteractiveVisualisationService, InteractiveVisualisationSource, InteractiveVisualisationTableGroup } from 'pages/dataPortal/services/interactiveVisualisation.service';
 
 
 @Unsubscriber('subscriptions')
@@ -38,8 +38,7 @@ export class TablePanelComponent implements OnInit {
 
   public currentDataConfigurables = new Array<DataConfigurableI>();
   public externalSources = new Array<ExternalVisualisationSource>();
-  public paleolatitudeResults = new Array<PaleolatitudeResult>();
-  public paleolatitudeServiceName = 'Paleolatitude';
+  public interactiveTableGroups = new Array<InteractiveVisualisationTableGroup>();
 
   public showSpinner = false;
   public selectedIndex = 0;
@@ -64,16 +63,13 @@ export class TablePanelComponent implements OnInit {
     private readonly notificationService: NotificationService,
     private readonly parser: Papa,
     private readonly mapInteractionService: MapInteractionService,
-    private readonly localStoragePersister: LocalStoragePersister
+    private readonly localStoragePersister: LocalStoragePersister,
+    private readonly interactiveVisualisations: InteractiveVisualisationService,
 
   ) { }
 
   public ngOnInit(): void {
     this.initSubscriptions();
-    this.paleolatitudeResults = this.panelsEvent.getPaleolatitudeResults();
-    if (this.paleolatitudeResults.length > 0) {
-      this.selectedIndex = this.currentDataConfigurables.length;
-    }
     this.updateTableCounter();
   }
 
@@ -135,6 +131,10 @@ export class TablePanelComponent implements OnInit {
         this.updateTableCounter();
       }),
 
+      this.interactiveVisualisations.sourcesObs.subscribe(sources => {
+        this.updateInteractiveTableGroups(sources);
+      }),
+
       this.panelsEvent.invokeTablePanelToggle.subscribe((id: string) => {
         const configurableIndex = this.currentDataConfigurables.findIndex(tab => tab.id === id);
         const externalIndex = this.externalSources.findIndex(source => source.id === id);
@@ -143,30 +143,6 @@ export class TablePanelComponent implements OnInit {
           : this.currentDataConfigurables.length + externalIndex;
       }),
 
-      this.panelsEvent.paleolatitudeResultObs.subscribe((result: PaleolatitudeResult) => {
-        const existingIndex = this.paleolatitudeResults.findIndex((item: PaleolatitudeResult) => item.id === result.id);
-        if (existingIndex === -1) {
-          this.paleolatitudeResults = [...this.paleolatitudeResults, result];
-          this.selectedIndex = this.currentDataConfigurables.length;
-        } else {
-          this.paleolatitudeResults = this.paleolatitudeResults.map((item: PaleolatitudeResult, index: number) => {
-            return index === existingIndex ? result : item;
-          });
-        }
-        this.updateTableCounter();
-      }),
-
-      this.panelsEvent.clearPaleolatitudeObs.subscribe(() => {
-        this.paleolatitudeResults = [];
-        this.selectedIndex = Math.min(this.selectedIndex, Math.max(this.currentDataConfigurables.length - 1, 0));
-        this.updateTableCounter();
-      }),
-
-      this.panelsEvent.removePaleolatitudeObs.subscribe((id: string) => {
-        this.paleolatitudeResults = this.paleolatitudeResults.filter((result: PaleolatitudeResult) => result.id !== id);
-        this.selectedIndex = Math.min(this.selectedIndex, Math.max(this.currentDataConfigurables.length - 1, 0));
-        this.updateTableCounter();
-      }),
     );
   }
 
@@ -179,13 +155,6 @@ export class TablePanelComponent implements OnInit {
     this.ensureReloadFuncSet(allConfigurables, context);
 
     if (allConfigurables !== null) {
-
-      if (context === CONTEXT_RESOURCE) {
-        const paleolatitudeConfigurable = allConfigurables.find((configurable: DataConfigurableI) => {
-          return configurable.getDistributionDetails().getKeywords().some(keyword => keyword.trim().toLowerCase() === 'eposdynamic');
-        });
-        this.paleolatitudeServiceName = paleolatitudeConfigurable?.name ?? this.paleolatitudeServiceName;
-      }
 
       // set context. TODO: move it on dataConfigurables creation logic
       allConfigurables.map(conf => {
@@ -240,7 +209,7 @@ export class TablePanelComponent implements OnInit {
       });
 
       setTimeout(() => {
-        if (configurables.getSelected() !== null && this.paleolatitudeResults.length === 0) {
+        if (configurables.getSelected() !== null && this.interactiveTableGroups.length === 0) {
           // index to selected item
           this.selectedIndex = this.currentDataConfigurables.findIndex((thisConfig: DataConfigurableI) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -256,7 +225,37 @@ export class TablePanelComponent implements OnInit {
   }
 
   private updateTableCounter(): void {
-    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length + this.externalSources.length + (this.paleolatitudeResults.length > 0 ? 1 : 0));
+    this.resultPanelService.setCounterTable(
+      this.currentDataConfigurables.length + this.externalSources.length + this.interactiveTableGroups.length
+    );
+  }
+
+  private updateInteractiveTableGroups(sources: Map<string, InteractiveVisualisationSource>): void {
+    const previousSourceIds = new Set(this.interactiveTableGroups.flatMap(group => group.sources.map(source => source.id)));
+    const groups = new Map<string, InteractiveVisualisationTableGroup>();
+    Array.from(sources.values()).forEach((source: InteractiveVisualisationSource) => {
+      if (source.table == null) {
+        return;
+      }
+      const group = groups.get(source.table.groupId) ?? {
+        id: source.table.groupId,
+        name: source.table.groupName,
+        sources: [],
+      };
+      group.sources.push(source);
+      groups.set(group.id, group);
+    });
+    this.interactiveTableGroups = Array.from(groups.values());
+
+    const addedSource = Array.from(sources.values()).find(source => source.table != null && !previousSourceIds.has(source.id));
+    if (addedSource?.table != null) {
+      const groupIndex = this.interactiveTableGroups.findIndex(group => group.id === addedSource.table!.groupId);
+      this.selectedIndex = this.currentDataConfigurables.length + this.externalSources.length + groupIndex;
+    } else {
+      const tabCount = this.currentDataConfigurables.length + this.externalSources.length + this.interactiveTableGroups.length;
+      this.selectedIndex = Math.min(this.selectedIndex, Math.max(tabCount - 1, 0));
+    }
+    this.updateTableCounter();
   }
 
   private ensureReloadFuncSet(configurables: Array<DataConfigurableDataSearchI>, context: string): void {

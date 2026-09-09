@@ -1,5 +1,4 @@
 import { DialogService } from 'components/dialog/dialog.service';
-import { PanelsEmitterService } from 'services/panelsEventEmitter.service';
 import * as L from 'leaflet';
 import { MapLayer } from '../../layers/mapLayer.abstract';
 import { EposLeafletComponent } from '../../eposLeaflet.component';
@@ -7,6 +6,8 @@ import { Stylable } from 'utility/styler/stylable.interface';
 import { Style } from 'utility/styler/style';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { PALEOLATITUDE_CONFIG_ID } from 'pages/dataPortal/modules/graphPanel/objects/paleolatitude.interface';
+import { PaleolatitudeGraphService } from 'pages/dataPortal/modules/graphPanel/services/paleolatitudeGraph.service';
+import { InteractiveVisualisationService } from 'pages/dataPortal/services/interactiveVisualisation.service';
 import { FeatureDisplayItem } from '../../featureDisplay/featureDisplayItem';
 import { MoveMethod } from '../../moveMethod.enum';
 
@@ -114,10 +115,11 @@ export class PaleolatitudeControl {
 
   constructor(
     private dialogService: DialogService,
-    private panelsEvent: PanelsEmitterService,
+    private paleolatitudeService: PaleolatitudeGraphService,
+    private interactiveVisualisations: InteractiveVisualisationService,
   ) {
     this.locationLayer = new PaleolatitudeMarkerLayer(
-      (id: null | string) => this.panelsEvent.setPaleolatitudeMarkerHover(id),
+      (id: null | string) => this.interactiveVisualisations.setHighlightedSource(id),
       (id: string, lat: number, lon: number) => this.showMarkerPopup(id, lat, lon),
     );
     this.locationClickHandler = (event: Event) => this.addLocationMarker(event as MouseEvent);
@@ -128,16 +130,13 @@ export class PaleolatitudeControl {
     this.eposLeaflet = eposLeaflet;
     this.map = eposLeaflet.getLeafletObject();
     this.subscriptions.push(
-      this.panelsEvent.paleolatitudeMarkerColorObs.subscribe(({ id, color }) => {
+      this.interactiveVisualisations.sourceStyleObs.subscribe(({ id, color }) => {
         this.locationLayer.setMarkerColor(id, color);
       }),
-      this.panelsEvent.removePaleolatitudeMarkerObs.subscribe((id: string) => {
+      this.interactiveVisualisations.sourceRemovedObs.subscribe((id: string) => {
         this.locationLayer.removeMarker(id);
       }),
-      this.panelsEvent.removePaleolatitudeObs.subscribe((id: string) => {
-        this.locationLayer.removeMarker(id);
-      }),
-      this.panelsEvent.viewPaleolatitudeOnMapObs.subscribe((id: string) => {
+      this.interactiveVisualisations.viewSourceOnMapObs.subscribe((id: string) => {
         this.viewMarkerOnMap(id);
       }),
     );
@@ -184,14 +183,14 @@ export class PaleolatitudeControl {
     this.map.getContainer().removeEventListener('dblclick', this.locationClickHandler, true);
     document.removeEventListener('keydown', this.keydownHandler);
     this.clearMarkers();
-    this.panelsEvent.clearPaleolatitude();
+    this.paleolatitudeService.clear();
   }
 
   private handleKeydown(event: KeyboardEvent): void {
     if (event.key === 'Escape') {
       event.preventDefault();
       this.clearMarkers();
-      this.panelsEvent.clearPaleolatitude();
+      this.paleolatitudeService.clear();
     }
   }
 
@@ -208,7 +207,7 @@ export class PaleolatitudeControl {
     const normalizedLon = this.normalizeLongitude(latLng.lng);
     const markerId = `${PALEOLATITUDE_CONFIG_ID}-${++this.paleolatitudeMarkerId}`;
     this.locationLayer.addMarker(markerId, latLng, normalizedLon);
-    this.panelsEvent.setPaleolatitudeRequest(markerId, latLng.lat, normalizedLon);
+    void this.paleolatitudeService.request(markerId, latLng.lat, normalizedLon);
     if (!this.locationLayerAdded) {
       this.locationLayerAdded = true;
       this.eposLeaflet.addLayer(this.locationLayer);
@@ -228,15 +227,15 @@ export class PaleolatitudeControl {
   }
 
   private showMarkerPopup(id: string, lat: number, lon: number): void {
-    const result = this.panelsEvent.getPaleolatitudeResults().find((item) => item.id === id);
-    const title = result?.plateName == null ? 'Paleolatitude' : `Paleolatitude - ${result.plateName}`;
+    const plateName = this.interactiveVisualisations.getSource(id)?.metadata?.plateName;
+    const title = typeof plateName !== 'string' ? 'Paleolatitude' : `Paleolatitude - ${plateName}`;
     const content = document.createElement('div');
     const heading = document.createElement('h5');
     heading.className = 'popup-title';
     heading.textContent = title;
     content.append(heading);
     content.append(this.createPopupAction('View on Graph', 'fas fa-chart-line', () => {
-      this.panelsEvent.viewPaleolatitudeOnGraph(id);
+      this.interactiveVisualisations.viewSourceOnGraph(id);
     }));
 
     const table = document.createElement('table');
@@ -247,7 +246,7 @@ export class PaleolatitudeControl {
     );
     content.append(table);
     const removeMarkerAction = this.createPopupAction('Remove marker', 'fas fa-trash-alt', () => {
-      this.panelsEvent.removePaleolatitude(id);
+      this.paleolatitudeService.remove(id);
       this.map.closePopup();
     });
     removeMarkerAction.style.margin = '8px auto';

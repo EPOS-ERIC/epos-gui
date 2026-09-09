@@ -36,7 +36,8 @@ export class GraphDisplayComponent {
   private currentYAxes = new Array<YAxis>();
   /** The currently selected {@link YAxisDisplayType} value. */
   private _selectedDisplayType = YAxisDisplayType.STACK;
-  private _highlightedPaleolatitudeId: null | string = null;
+  private _highlightedSourceId: null | string = null;
+  private _isXAxisReversed = false;
 
   /** Minimum height of a y-axis */
   private readonly MIN_SINGLE_AXIS_HEIGHT = 125;
@@ -60,9 +61,26 @@ export class GraphDisplayComponent {
   }
 
   @Input()
-  set highlightedPaleolatitudeId(id: null | string) {
-    this._highlightedPaleolatitudeId = id;
+  set highlightedSourceId(id: null | string) {
+    this._highlightedSourceId = id;
     this.refreshGraph();
+  }
+
+  @Input()
+  set isXAxisReversed(isXAxisReversed: boolean) {
+    const currentRange = this.layout.xaxis?.range;
+    this._isXAxisReversed = isXAxisReversed;
+    this.refreshGraph();
+    if (currentRange?.[0] != null && currentRange[1] != null) {
+      this.layout = {
+        ...this.layout,
+        xaxis: {
+          ...this.layout.xaxis,
+          autorange: false,
+          range: [currentRange[1], currentRange[0]],
+        },
+      };
+    }
   }
 
   /**
@@ -115,6 +133,9 @@ export class GraphDisplayComponent {
         t: 40,  //  might need more when there's a title
         pad: 4
       },
+      xaxis: {
+        autorange: this._isXAxisReversed ? 'reversed' : true,
+      },
     };
 
     switch (this._selectedDisplayType) {
@@ -135,6 +156,7 @@ export class GraphDisplayComponent {
         returnObject = {
           ...returnObject,
           xaxis: {
+            autorange: this._isXAxisReversed ? 'reversed' : true,
             domain: [leftYAxisWidth, 1 - rightYAxisWidth],
           }
         };
@@ -228,7 +250,7 @@ export class GraphDisplayComponent {
       this.data = this.currentTraces
         .flatMap((trace: Trace) => {
           const plotlyTrace = trace.getPlotlyTrace();
-          if (plotlyTrace != null && trace.originatingConfigurableId === this._highlightedPaleolatitudeId) {
+          if (plotlyTrace != null && trace.originatingConfigurableId === this._highlightedSourceId) {
             return [this.createGlowTrace(plotlyTrace), plotlyTrace];
           }
           return [plotlyTrace];

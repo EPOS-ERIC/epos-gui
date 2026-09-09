@@ -49,6 +49,8 @@ import { WmsCrsNotifierService } from 'utility/eposLeaflet/services/wms-crs-noti
 import { DataSearchConfigurablesServiceSoftware } from '../softwarePanel/services/dataSearchConfigurables.service';
 import { MeasureDistanceControl } from 'utility/eposLeaflet/components/controls/measureDistanceControl/measureDistanceControl';
 import { PaleolatitudeControl } from 'utility/eposLeaflet/components/controls/paleolatitudeControl/paleolatitudeControl';
+import { PaleolatitudeGraphService } from '../graphPanel/services/paleolatitudeGraph.service';
+import { InteractiveVisualisationService } from 'pages/dataPortal/services/interactiveVisualisation.service';
 import { HttpClient } from '@angular/common/http';
 import { WmtsTileJSON as TileJSON } from 'api/webApi/data/wmtsTileJSON.interface';
 import { WMTSFeatureIdentifier } from 'utility/maplayers/wmtsFeatureIdentifier';
@@ -118,6 +120,8 @@ export class MapComponent implements OnInit {
     private readonly mapInteractionService: MapInteractionService,
     private readonly layersService: LayersService,
     private readonly panelsEvent: PanelsEmitterService,
+    private readonly paleolatitudeService: PaleolatitudeGraphService,
+    private readonly interactiveVisualisations: InteractiveVisualisationService,
     private readonly localStoragePersister: LocalStoragePersister,
     private readonly wmsCheck: WmsCrsCheckService,
     private readonly wmsNotify: WmsCrsNotifierService,
@@ -274,7 +278,11 @@ export class MapComponent implements OnInit {
     const customLayerControl = new CustomLayerControl(this.injector).setPosition('topright');
     const exportMapAsImage = new ExportMapAsImage(this.injector, this.componentFactoryResolver, this.viewContainerRef, this.exportMapAsImageService, this.dialogService);
     this.measureControlInstance = new MeasureDistanceControl(this.dialogService);
-    this.paleolatitudeControlInstance = new PaleolatitudeControl(this.dialogService, this.panelsEvent).addTo(this.eposLeaflet);
+    this.paleolatitudeControlInstance = new PaleolatitudeControl(
+      this.dialogService,
+      this.paleolatitudeService,
+      this.interactiveVisualisations,
+    ).addTo(this.eposLeaflet);
     const scaleControl = L.control.scale({ metric: true, imperial: false, maxWidth: 200 }).setPosition('bottomright');
     const resetZoomControl = new ResetZoomControl(this.layersService).setPosition('topright');
 
@@ -332,9 +340,7 @@ export class MapComponent implements OnInit {
   private configurablesExecute(dataConfigurables: Array<DataConfigurableI>, context: string) {
 
     if (context === CONTEXT_RESOURCE) {
-      this.paleolatitudeControlInstance?.setEnabled(dataConfigurables.some((configurable: DataConfigurableI) => {
-        return configurable.getDistributionDetails().getKeywords().some(keyword => keyword.trim().toLowerCase() === 'eposdynamic');
-      }));
+      this.paleolatitudeControlInstance?.setEnabled(this.paleolatitudeService.supports(dataConfigurables));
     }
 
     // set context. TODO: move it on dataConfigurables creation logic
