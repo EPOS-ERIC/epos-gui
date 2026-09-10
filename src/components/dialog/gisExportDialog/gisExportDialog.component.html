@@ -1,0 +1,102 @@
+<app-base-dialog [data]="data" title="Export to GIS format" [closingFunction]="cancel.bind(this)">
+  <ng-container class="content">
+    <div class="gis-export" data-cy="gis-export-dialog">
+      <p class="description">
+        Select the currently loaded vector data to use in QGIS, ArcGIS, or another GIS application.
+      </p>
+
+      <section *ngIf="snapshot.vectorLayers.length > 0">
+        <div class="section-title">
+          <h2>Vector layers <span>(exportable)</span></h2>
+          <mat-checkbox
+            [checked]="allSelected"
+            [indeterminate]="someSelected"
+            [disabled]="exporting"
+            (change)="toggleAll($event.checked)"
+            aria-label="Select all vector layers">
+            Select all
+          </mat-checkbox>
+        </div>
+
+        <div class="layer-table" role="table" aria-label="Exportable vector layers">
+          <div class="layer-row header-row" role="row">
+            <span role="columnheader">Include</span>
+            <span role="columnheader">Layer</span>
+            <span role="columnheader">Type</span>
+            <span role="columnheader">Loaded features</span>
+          </div>
+          <div class="layer-row" role="row" *ngFor="let layer of snapshot.vectorLayers; trackBy: trackById">
+            <mat-checkbox
+              [(ngModel)]="layer.selected"
+              [disabled]="exporting"
+              [attr.aria-label]="'Include ' + layer.name"
+              data-cy="gis-layer-checkbox">
+            </mat-checkbox>
+            <strong title="{{ layer.name }}">{{ layer.name }}</strong>
+            <span>{{ layer.type }}</span>
+            <span>{{ layer.featureCount | number }}</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="info-message" *ngIf="snapshot.vectorLayers.length === 0">
+        No loaded vector layers are available for GIS export.
+      </div>
+
+      <section *ngIf="snapshot.mapServices.length > 0">
+        <div class="section-title">
+          <h2>Map services <span>(not exportable as vector data)</span></h2>
+        </div>
+        <div class="service-row" *ngFor="let service of snapshot.mapServices; trackBy: trackById">
+          <div class="service-details">
+            <strong>{{ service.name }}</strong>
+            <span>{{ service.type }}</span>
+            <code title="{{ service.url }}">{{ service.url || 'Service URL unavailable' }}</code>
+          </div>
+          <button
+            mat-stroked-button
+            type="button"
+            [disabled]="service.url === '' || exporting"
+            (click)="copyServiceUrl(service)"
+            [attr.aria-label]="'Copy URL for ' + service.name">
+            <mat-icon aria-hidden="true">content_copy</mat-icon>
+            {{ copiedServiceId === service.id ? 'Copied' : 'Copy URL' }}
+          </button>
+        </div>
+        <div class="info-message">
+          WMS and WMTS layers remain map services. Use their URL to add them directly in your GIS application.
+        </div>
+      </section>
+
+      <section *ngIf="snapshot.unsupportedLayers.length > 0">
+        <div class="section-title">
+          <h2>Other layers <span>(not exportable)</span></h2>
+        </div>
+        <div class="unsupported-row" *ngFor="let layer of snapshot.unsupportedLayers; trackBy: trackById">
+          <strong>{{ layer.name }}</strong>
+          <span>{{ layer.reason }}</span>
+        </div>
+      </section>
+
+      <div class="export-error" role="alert" *ngIf="exportError !== ''">{{ exportError }}</div>
+
+      <div class="footer">
+        <span>{{ selectedLayers.length }} vector layer(s) selected</span>
+        <div class="buttons-wrapper">
+          <button mat-flat-button type="button" [disabled]="exporting" (click)="cancel()">Cancel</button>
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            [disabled]="selectedLayers.length === 0 || exporting"
+            (click)="exportSelected()"
+            data-cy="gis-export-button">
+            <mat-progress-spinner *ngIf="exporting" diameter="20" mode="indeterminate"></mat-progress-spinner>
+            <mat-icon *ngIf="!exporting" aria-hidden="true">download</mat-icon>
+            {{ exporting ? 'Creating GeoPackage…' : 'Export GeoPackage (.gpkg)' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</app-base-dialog>

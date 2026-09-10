@@ -33,6 +33,8 @@ import { NewFeaturesService } from './newFeatureDialog/newFeatures.service';
 import { MetaDataStatusDialogComponent } from './metaDataStatusDialog/metaDataStatusDialog.component';
 import { CrsIncompatDataIn, CrsIncompatDialogComponent, WmsCrsIncompat } from './crsIncompatDialog/crsIncompatDialog.component';
 import { environment } from 'environments/environment';
+import { GisExportDialogComponent, GisExportDialogDataIn } from './gisExportDialog/gisExportDialog.component';
+import { MapLayer } from 'utility/eposLeaflet/eposLeaflet';
 
 
 /**
@@ -592,6 +594,17 @@ export class DialogService extends BaseDialogService {
       { items, title, closable },
       { width }
     ).then(data => data != null);
+  }
+
+  public openGisExportDialog(layers: Array<MapLayer>): Promise<null | DialogData<GisExportDialogDataIn>> {
+    return this.openDialog<GisExportDialogDataIn>(
+      'gisExportDialog',
+      GisExportDialogComponent,
+      'no-resize',
+      true,
+      { layers },
+      { width: '820px' }
+    );
   }
 
   /**

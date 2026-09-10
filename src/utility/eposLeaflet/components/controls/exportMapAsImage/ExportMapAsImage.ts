@@ -72,22 +72,67 @@ export class ExportMapAsImage extends AbstractControl {
 
 
   public onAdd(map: L.Map): HTMLElement {
-    const controlContainer: HTMLElement = this.getControlContainerForActionOnly(
+    const content = L.DomUtil.create('div', 'export-format-menu');
+    const pngButton = this.createExportOption('PNG', 'fa-regular fa-image', 'export-png-option');
+    const gisButton = this.createExportOption('GIS (GeoPackage)', 'fa-solid fa-layer-group', 'export-gis-option');
+
+    pngButton.addEventListener('click', (event: MouseEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.closeMenu();
+      void this.exportPng(map);
+    });
+    gisButton.addEventListener('click', (event: MouseEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.closeMenu();
+      void this.dialogService.openGisExportDialog(this.eposLeaflet.getLayers());
+    });
+    content.appendChild(pngButton);
+    content.appendChild(gisButton);
+
+    const controlContainer: HTMLElement = this.getControlContainer(
       'export-map-image-control',
       'fa fa-download',
-      'Export map as image',
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => {
-        const confirmed = await this.confrimDownloadImagesLegends();
-        if (confirmed !== true) { return; }
-
-        this.exportMapAsImageService.triggerDownloadLegends();
-        this.exportMapAsImageService.removeMapControls();
-        await this.exportMapImage(map);
-      }
+      'Export map',
+      content
     );
 
+    controlContainer.querySelector('.icon-wrapper')?.setAttribute('data-cy', 'map-export-menu-button');
+
     return controlContainer;
+  }
+
+  private createExportOption(label: string, iconClasses: string, dataCy: string): HTMLButtonElement {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.classList.add('export-format-option');
+    button.setAttribute('data-cy', dataCy);
+
+    const icon = document.createElement('i');
+    iconClasses.split(' ').forEach(cssClass => icon.classList.add(cssClass));
+    icon.setAttribute('aria-hidden', 'true');
+    button.appendChild(icon);
+
+    const text = document.createElement('span');
+    text.textContent = label;
+    button.appendChild(text);
+    return button;
+  }
+
+  private closeMenu(): void {
+    this.getContainer()?.querySelector('.icon-wrapper')?.dispatchEvent(new Event('close'));
+  }
+
+  private async exportPng(map: L.Map): Promise<void> {
+    const confirmed = await this.confrimDownloadImagesLegends();
+    if (confirmed !== true) {
+      return;
+    }
+
+    this.exportMapAsImageService.triggerDownloadLegends();
+    this.exportMapAsImageService.removeMapControls();
+    await this.exportMapImage(map);
   }
 
   private async confrimDownloadImagesLegends(): Promise<boolean> {

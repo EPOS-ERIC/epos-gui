@@ -93,6 +93,8 @@ export class WmtsTileLayer extends TileLayer {
 
   protected getCapabilitiesXML: JQuery<XMLDocument>;
   protected getCapabilitiesPromise: null | Promise<JQuery<XMLDocument>>;
+  private serviceUrlRetriever?: () => Promise<null | string>;
+  private serviceUrlPromise?: Promise<string>;
 
   constructor(id: string, name?: string, pane?: string) {
     super(id, name);
@@ -116,6 +118,27 @@ export class WmtsTileLayer extends TileLayer {
   public setGetCapabilitiesXml(xml: JQuery<XMLDocument>): this {
     this.getCapabilitiesXML = xml;
     return this;
+  }
+
+  public setServiceUrlRetriever(retriever: () => Promise<null | string>): this {
+    this.serviceUrlRetriever = retriever;
+    this.serviceUrlPromise = undefined;
+    return this;
+  }
+
+  public getServiceUrl(): Promise<string> {
+    const fallbackUrl = this.options.get<string>('customURLTemplate') || this.url;
+
+    if (this.serviceUrlRetriever == null) {
+      return Promise.resolve(fallbackUrl);
+    }
+    if (this.serviceUrlPromise == null) {
+      this.serviceUrlPromise = this.serviceUrlRetriever()
+        .then(url => url?.trim() || fallbackUrl)
+        .catch(() => fallbackUrl);
+    }
+
+    return this.serviceUrlPromise;
   }
 
   public getLeafletLayer(http: HttpClient): Promise<null | L.Layer> {
