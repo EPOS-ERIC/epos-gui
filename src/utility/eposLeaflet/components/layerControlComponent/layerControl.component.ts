@@ -33,6 +33,7 @@ import { FaMarker } from '../marker/faMarker/faMarker';
 import { defaultMarkerIcons } from 'utility/styler/styler';
 import { Stylable } from 'utility/styler/stylable.interface';
 import { GeoJSONMapLayer } from 'utility/maplayers/geoJSONMapLayer';
+import { EposLeafletComponent } from '../eposLeaflet.component';
 import { distance } from '@turf/turf';
 
 type WmsCrsRow = { layerName: string; crs: string; status: boolean };
@@ -74,6 +75,8 @@ export class LayerControlComponent implements OnInit {
   private static readonly EXTERNAL_WFS_FEATURE_LIMIT = 3000;
 
   @Output() externalLayerAdd = new EventEmitter<MapLayer>();
+
+  @Input() eposLeaflet!: EposLeafletComponent;
 
   public selectedBaseLayerVal = '';
 

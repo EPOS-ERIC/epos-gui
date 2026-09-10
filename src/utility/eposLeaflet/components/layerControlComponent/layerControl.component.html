@@ -69,6 +69,11 @@
 
     </mat-expansion-panel>
 
+    <app-basemap-selector-options
+      [crsCode]="currentCRS"
+      [eposLeaflet]="eposLeaflet">
+    </app-basemap-selector-options>
+
     <div class="external-layer-control">
       <button *ngIf="!externalLayerFormOpened" mat-stroked-button color="primary" (click)="toggleExternalLayerForm()"
         data-cy="add-external-layer-button">

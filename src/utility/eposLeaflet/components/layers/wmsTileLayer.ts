@@ -114,23 +114,29 @@ import * as L from 'leaflet';
    /**
     * @returns promise of jQuery object of xml response
     */
-   public refreshGetCapabilitiesXml(
-     http: HttpClient,
-     additionalParams = new Map<string, string>(),
-   ): Promise<JQuery<XMLDocument>> {
+    public refreshGetCapabilitiesXml(
+      http: HttpClient,
+      additionalParams = new Map<string, string>(),
+    ): Promise<JQuery<XMLDocument>> {
      // defaults to 1.1.1 as leaflet appears to.
      const version: string = this.options.get('version') ?? '1.1.1';
 
      // set defaults
-     const params = new Map<string, string>([
-       ['service', 'WMS'],
-       ['request', 'GetCapabilities'],
-       ['version', version],
-     ]);
-     // set any additional values (allows overriding)
-     additionalParams.forEach((value: string, key: string) => {
-       params.set(key, value);
-     });
+      const params = new Map<string, string>([
+        ['service', 'WMS'],
+        ['request', 'GetCapabilities'],
+        ['version', version],
+      ]);
+
+      const token = this.options.get('token');
+      if (token != null && String(token).trim() !== '') {
+        params.set('token', String(token));
+      }
+
+      // set any additional values (allows overriding)
+      additionalParams.forEach((value: string, key: string) => {
+        params.set(key, value);
+      });
 
      const url =
        this.url +
