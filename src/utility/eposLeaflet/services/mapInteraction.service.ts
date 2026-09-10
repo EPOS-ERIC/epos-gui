@@ -9,6 +9,7 @@ import { LocalStoragePersister } from 'services/model/persisters/localStoragePer
 import { LocalStorageVariables } from 'services/model/persisters/localStorageVariables.enum';
 import { WMTSLayerTableData } from '../eposLeaflet';
 import { FeatureCollection } from 'geojson';
+import { RadiusSelection, SpatialSelectionMode } from '../components/radiusSelection';
 
 export interface ExternalVisualisationSource {
   id: string;
@@ -30,6 +31,7 @@ export class MapInteractionService {
   static initialZoom = 4;
 
   public readonly startBBox = new Accessor<boolean>(false);
+  public readonly spatialDrawMode = new Accessor<SpatialSelectionMode>('bbox');
   public readonly centerMapBBox = new Accessor<BoundingBox>(SimpleBoundingBox.makeUnbounded());
   public readonly editableSpatialRange = new Accessor<BoundingBox>(SimpleBoundingBox.makeUnbounded());
   public readonly spatialRange = new Accessor<BoundingBox>(SimpleBoundingBox.makeUnbounded());
@@ -48,11 +50,13 @@ export class MapInteractionService {
 
   public readonly bboxContext = new Accessor<string | null>(null);
 
-
   // Wmts Layer Storage
   public  wmtsLayerStorage = new BehaviorSubject<null | Map<string, WMTSLayerTableData>>(null);
 
   public externalVisualisationSources = new BehaviorSubject<Map<string, ExternalVisualisationSource>>(new Map());
+
+  private readonly radiusSelections = new Map<string, RadiusSelection>();
+  private readonly editableRadiusSelections = new Map<string, RadiusSelection>();
 
   /**
    * The constructor function takes in a LoadingService and a LocalStoragePersister as parameters.
@@ -83,8 +87,71 @@ export class MapInteractionService {
    */
   public setBoundingBoxSpatialRangeFromControl(bbox: BoundingBox, force = false): void {
     if (bbox.isBounded() || force) {
+      const context = bbox.getId() ?? this.bboxContext.get();
+      const radiusSelection = context === null ? null : this.getRadiusSelection(context);
+      if (context !== null && (radiusSelection === null || !radiusSelection.matchesBounds(bbox))) {
+        this.clearRadiusSelection(context);
+      }
       this.spatialRange.set(bbox);
     }
+  }
+
+  public setRadiusSelection(selection: RadiusSelection): void {
+    this.radiusSelections.set(selection.context, selection);
+    this.localStoragePersister.set(
+      LocalStorageVariables.LS_CONFIGURABLES,
+      JSON.stringify([selection.latitude, selection.longitude, selection.radiusKm]),
+      false,
+      LocalStorageVariables.LS_RADIUS_SELECTION + selection.context,
+    );
+  }
+
+  public getRadiusSelection(context: string): RadiusSelection | null {
+    const selection = this.radiusSelections.get(context);
+    if (selection !== undefined) {
+      return selection;
+    }
+
+    const persistedSelection = this.localStoragePersister.getValue(
+      LocalStorageVariables.LS_CONFIGURABLES,
+      LocalStorageVariables.LS_RADIUS_SELECTION + context,
+    );
+    if (typeof persistedSelection !== 'string') {
+      return null;
+    }
+
+    try {
+      const [latitude, longitude, radiusKm]: unknown[] = JSON.parse(persistedSelection) as unknown[];
+      const restoredSelection = RadiusSelection.make(context, Number(latitude), Number(longitude), Number(radiusKm));
+      if (restoredSelection !== null) {
+        this.radiusSelections.set(context, restoredSelection);
+      }
+      return restoredSelection;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  public clearRadiusSelection(context: string): void {
+    this.radiusSelections.delete(context);
+    this.localStoragePersister.set(
+      LocalStorageVariables.LS_CONFIGURABLES,
+      null,
+      false,
+      LocalStorageVariables.LS_RADIUS_SELECTION + context,
+    );
+  }
+
+  public setEditableRadiusSelection(selection: RadiusSelection): void {
+    this.editableRadiusSelections.set(selection.context, selection);
+  }
+
+  public getEditableRadiusSelection(context: string): RadiusSelection | null {
+    return this.editableRadiusSelections.get(context) ?? null;
+  }
+
+  public clearEditableRadiusSelection(context: string): void {
+    this.editableRadiusSelections.delete(context);
   }
 
   // WMTS Layer Storage
@@ -115,6 +182,8 @@ export class MapInteractionService {
    */
   public resetAll(): void {
     const resetBbox = SimpleBoundingBox.makeUnbounded();
+    this.radiusSelections.clear();
+    this.editableRadiusSelections.clear();
     this.startBBox.set(false);
     this.editableSpatialRange.set(resetBbox);
     this.spatialRange.set(resetBbox);

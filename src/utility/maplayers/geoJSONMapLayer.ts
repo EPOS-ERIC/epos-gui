@@ -8,11 +8,13 @@ import { Stylable } from 'utility/styler/stylable.interface';
 import { GeoJSONHelper } from './geoJSONHelper';
 import { Injector } from '@angular/core';
 import { Feature, GeoJsonObject, GeoJsonProperties, GeometryObject, Point } from 'geojson';
-import { FeatureCollection } from '@turf/turf';
+import { distance, FeatureCollection } from '@turf/turf';
 import { PopupProperty } from './popupProperty';
 import { JsonMapLayer, Marker } from './jsonMapLayer';
 import { JsonHelper } from './jsonHelper';
 import { HttpClient } from '@angular/common/http';
+import { DataConfigurable } from 'utility/configurables/dataConfigurable.abstract';
+import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 
 
 export class GeoJSONMapLayer extends JsonMapLayer {
@@ -25,6 +27,7 @@ export class GeoJSONMapLayer extends JsonMapLayer {
   public dataAsFC: FeatureCollection;
 
   private markerOverrideValue: null | string = null;
+  private readonly mapInteractionService: MapInteractionService;
 
   constructor(
     injector: Injector,
@@ -38,6 +41,7 @@ export class GeoJSONMapLayer extends JsonMapLayer {
         GeoJSONHelper.getPopupContentFromProperties(feature.properties, name),
   ) {
     super(injector, id, name, stylable);
+    this.mapInteractionService = injector.get<MapInteractionService>(MapInteractionService);
     this.markerLayer.options.set('pane', this.id);
 
     this.setPreLayerAddFunction(() => {
@@ -45,7 +49,7 @@ export class GeoJSONMapLayer extends JsonMapLayer {
       return getDataFunction()
         .then((data: GeoJsonObject) => {
 
-          const vectorData = this.filterOutImageLayers(data);
+          const vectorData = this.filterRadiusPoints(this.filterOutImageLayers(data));
           if (this.hasVectorData(vectorData)) {
             this.setLayerClickFeatureItemGenerator(
               new GeoJsonLayerFeatureItemGenerator(
@@ -175,6 +179,33 @@ export class GeoJSONMapLayer extends JsonMapLayer {
       const featureCollection = data as FeatureCollection;
       featureCollection.features = featureCollection.features.filter(feature => null != feature.geometry);
     }
+    return data;
+  }
+
+  private filterRadiusPoints(data: GeoJsonObject): GeoJsonObject {
+    if (data.type !== 'FeatureCollection' || !(this.stylable instanceof DataConfigurable)) {
+      return data;
+    }
+
+    const radiusSelection = this.mapInteractionService.getRadiusSelection(this.stylable.context);
+    if (radiusSelection === null) {
+      return data;
+    }
+
+    const featureCollection = data as FeatureCollection;
+    featureCollection.features = featureCollection.features.filter(feature => {
+      if (feature.geometry?.type !== 'Point') {
+        return true;
+      }
+
+      const [longitude, latitude] = (feature.geometry as Point).coordinates;
+      return Number.isFinite(longitude) && Number.isFinite(latitude)
+        && distance(
+          [longitude, latitude],
+          [radiusSelection.longitude, radiusSelection.latitude],
+          { units: 'kilometers' }
+        ) <= radiusSelection.radiusKm;
+    });
     return data;
   }
 
