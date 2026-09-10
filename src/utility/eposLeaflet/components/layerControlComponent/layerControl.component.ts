@@ -33,6 +33,8 @@ import { FaMarker } from '../marker/faMarker/faMarker';
 import { defaultMarkerIcons } from 'utility/styler/styler';
 import { Stylable } from 'utility/styler/stylable.interface';
 import { GeoJSONMapLayer } from 'utility/maplayers/geoJSONMapLayer';
+import { EposLeafletComponent } from '../eposLeaflet.component';
+import { distance } from '@turf/turf';
 
 type WmsCrsRow = { layerName: string; crs: string; status: boolean };
 type ExternalLayerType = 'geojson' | 'covjson' | 'wms' | 'wmts' | 'wfs';
@@ -73,6 +75,8 @@ export class LayerControlComponent implements OnInit {
   private static readonly EXTERNAL_WFS_FEATURE_LIMIT = 3000;
 
   @Output() externalLayerAdd = new EventEmitter<MapLayer>();
+
+  @Input() eposLeaflet!: EposLeafletComponent;
 
   public selectedBaseLayerVal = '';
 
@@ -125,6 +129,8 @@ export class LayerControlComponent implements OnInit {
   private externalLayerNames = new Set<string>();
 
   private externalLayerStorageRecords = new Map<string, PersistedExternalLayer>();
+
+  private externalVectorLayers = new Map<string, { layer: GeoJsonLayer; data: GeoJsonObject }>();
 
   private externalLayerStorageWarningShown = false;
 
@@ -208,6 +214,12 @@ export class LayerControlComponent implements OnInit {
         this.mapInteractionService.retainExternalVisualisationSources(
           layers.filter(layer => layer.id.startsWith('external-layer-')).map(layer => layer.id)
         );
+        const layerIds = new Set(layers.map(layer => layer.id));
+        this.externalVectorLayers.forEach((_value, id) => {
+          if (!layerIds.has(id)) {
+            this.externalVectorLayers.delete(id);
+          }
+        });
 
         // Trigger (lazy) compatibility checks for any new/updated layer
         for (const layer of this.orderedLayers) {
@@ -220,6 +232,10 @@ export class LayerControlComponent implements OnInit {
         if (basemap) {
           this.applyBaseLayerState(basemap);
         }
+      }),
+
+      this.mapInteractionService.spatialRange.observable.subscribe(() => {
+        this.redrawExternalVectorLayers();
       })
     );
 
@@ -590,13 +606,14 @@ export class LayerControlComponent implements OnInit {
       new Style(color.slice(1), color.slice(1), id, 1, 0.2, 3, '', 20, Style.ZINDEX_TOP, !hidden)
     );
     const hasEposStyle = type !== 'covjson' && this.hasEposGeoJsonStyle(data);
+    const sourceData = hasEposStyle ? data : featureCollection;
     const layer = hasEposStyle
       ? new GeoJSONMapLayer(
         this.injector,
         id,
         name,
         stylable,
-        () => Promise.resolve(data),
+        () => Promise.resolve(this.filterExternalRadiusPoints(sourceData)),
         { maxZoom: this._map.getMaxZoom() },
         feature => GeoJSONHelper.getExternalPopupContentFromProperties(
           feature.properties,
@@ -608,7 +625,7 @@ export class LayerControlComponent implements OnInit {
       : new GeoJsonLayer(id, name);
 
     if (!hasEposStyle) {
-      layer.setGeoJsonData(featureCollection)
+      layer.setGeoJsonData(this.filterExternalRadiusPoints(sourceData))
         .setStylingFunction(() => ({
           color: layer.options.customLayerOptionColor.get() ?? color,
           fillColor: layer.options.customLayerOptionFillColor.get() ?? color,
@@ -690,6 +707,7 @@ export class LayerControlComponent implements OnInit {
       sourceUrl: storageRecord?.sourceUrl ?? storageRecord?.url,
       layerName: storageRecord?.layerName,
     });
+    this.externalVectorLayers.set(id, { layer, data: sourceData });
     layer.hidden.set(hidden);
     this.externalLayerAdd.emit(layer);
     if (type !== 'covjson' && this.toFeatureCollection(data).features.some(
@@ -721,6 +739,44 @@ export class LayerControlComponent implements OnInit {
     if (storageRecord != null) {
       this.registerPersistedExternalLayer(layer.id, storageRecord, persistStorageRecord);
     }
+  }
+
+  private filterExternalRadiusPoints(data: GeoJsonObject): GeoJsonObject {
+    if (data.type !== 'FeatureCollection') {
+      return data;
+    }
+    const bbox = this.mapInteractionService.spatialRange.get();
+    const context = bbox.getId() ?? this.mapInteractionService.bboxContext.get();
+    const radiusSelection = context === null ? null : this.mapInteractionService.getRadiusSelection(context);
+    if (radiusSelection === null || !radiusSelection.matchesBounds(bbox)) {
+      return data;
+    }
+
+    const featureCollection = data as FeatureCollection;
+    return {
+      ...featureCollection,
+      features: featureCollection.features.filter(feature => {
+        if (feature.geometry?.type !== 'Point') {
+          return true;
+        }
+        const [longitude, latitude] = (feature.geometry as Point).coordinates;
+        return Number.isFinite(longitude) && Number.isFinite(latitude)
+          && distance(
+            [longitude, latitude],
+            [radiusSelection.longitude, radiusSelection.latitude],
+            { units: 'kilometers' }
+          ) <= radiusSelection.radiusKm;
+      }),
+    } as FeatureCollection;
+  }
+
+  private redrawExternalVectorLayers(): void {
+    this.externalVectorLayers.forEach(({ layer, data }) => {
+      if (!(layer instanceof GeoJSONMapLayer)) {
+        layer.setGeoJsonData(this.filterExternalRadiusPoints(data));
+      }
+      void layer.getEposLeaflet().redrawLayer(layer);
+    });
   }
 
   private createExternalFeatureCollection(data: GeoJsonObject, id: string): FeatureCollection {

@@ -185,9 +185,6 @@ export class BaseResultsPanelComponent implements OnInit, AfterContentInit {
     // reset pagination after each search
     this.resetPagination();
 
-    // remove old selected service
-    this.configurables.setSelected(null, true);
-
     this.panelsEvent.dataPanelToggle();
 
     setTimeout(() => {

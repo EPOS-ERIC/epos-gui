@@ -10,6 +10,7 @@ import {
   FeatureDisplayItem,
   CrsPreset,
   WmtsTileLayer,
+  RadiusSelection,
 } from 'utility/eposLeaflet/eposLeaflet';
 import { OnAttachDetach } from 'decorators/onAttachDetach.decorator';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -92,6 +93,7 @@ export class MapComponent implements OnInit {
   private readonly defaultBboxStyleSecond = { color: '#ffff00', fillColor: '#ffff00', weight: 3, opacity: 1, fillOpacity: 0.2, enable: true };
 
   private bboxContext: string | null = null;
+  private readonly editableRadiusPreviews = new Map<string, L.Circle>();
   private controls: L.Control[] = [];
 
   private readonly crsPresets = new Map<string, CrsPreset>([
@@ -443,7 +445,7 @@ export class MapComponent implements OnInit {
 
       this.mapInteractionService.startBBox.observable.subscribe((val: boolean) => {
         if (val) {
-          this.bboxControl.startDraw();
+          this.bboxControl.startDraw(this.mapInteractionService.spatialDrawMode.get());
           this.eposLeaflet.showPaneById('overlayPane');
         } else {
           this.bboxControl.stopDraw();
@@ -458,7 +460,22 @@ export class MapComponent implements OnInit {
           // only if changed
           if (previousBbox !== newBounds) {
             previousBbox = newBounds;
-            const newBox = this.normalizeBbox(newBounds);
+            let newBox = this.normalizeBbox(newBounds);
+            const drawnRadius = this.bboxControl.getDrawnRadius();
+            if (drawnRadius === null) {
+              this.mapInteractionService.clearRadiusSelection(this.bboxContext);
+            } else {
+              const radiusSelection = RadiusSelection.make(
+                this.bboxContext,
+                drawnRadius.latitude,
+                drawnRadius.longitude,
+                drawnRadius.radiusKm,
+              );
+              if (radiusSelection !== null) {
+                this.mapInteractionService.setRadiusSelection(radiusSelection);
+                newBox = radiusSelection.bbox;
+              }
+            }
             this.mapInteractionService.mapBBox.set(newBox);
 
             // check for WMTS layers: using this subscription in order to filter WMTS correctly (removing and readding the main Container WmtsTileLayer)
@@ -507,6 +524,9 @@ export class MapComponent implements OnInit {
       this.mapInteractionService.spatialRange.observable.subscribe((bbox: BoundingBox) => {
 
         if (!bbox.isBounded()) {
+          if (bbox.getId() !== undefined) {
+            this.mapInteractionService.clearRadiusSelection(bbox.getId());
+          }
           if (this.bboxControl) {
             this.bboxControl.clearBoundingBox();
           }
@@ -524,8 +544,11 @@ export class MapComponent implements OnInit {
             style = JSON.stringify(styleMap.get(bbox.getId() + MapLayer.BBOX_LAYER_ID));
           }
 
+          const radiusSelection = bbox.getId() === undefined
+            ? null
+            : this.mapInteractionService.getRadiusSelection(bbox.getId());
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-          this.addBox(bbox, MapLayer.BBOX_LAYER_ID, JSON.parse(style));
+          this.addBox(bbox, MapLayer.BBOX_LAYER_ID, JSON.parse(style), radiusSelection);
 
           // hide overlayPane (leaflet interactive)
           this.eposLeaflet.hidePaneById('overlayPane');
@@ -585,7 +608,18 @@ export class MapComponent implements OnInit {
 
       /* Editing spatial bounding box. */
       this.mapInteractionService.editableSpatialRange.observable.subscribe((bbox: BoundingBox) => {
-        this.addBox(bbox, MapLayer.BBOX_EDITABLE_LAYER_ID, this.defaultEditBboxStyle);
+        const context = bbox.getId();
+        const radiusSelection = context === undefined
+          ? null
+          : this.mapInteractionService.getEditableRadiusSelection(context);
+        if (radiusSelection !== null && radiusSelection.matchesBounds(bbox)) {
+          this.updateEditableRadiusPreview(radiusSelection);
+          return;
+        }
+        if (context !== undefined) {
+          this.removeEditableRadiusPreview(context);
+        }
+        this.addBox(bbox, MapLayer.BBOX_EDITABLE_LAYER_ID, this.defaultEditBboxStyle, radiusSelection);
       }),
 
       this.layersService.layerChangeSourceObs.subscribe((layer: MapLayer) => {
@@ -901,7 +935,48 @@ export class MapComponent implements OnInit {
     }
   }
 
-  private addBox(bbox: BoundingBox, type: string, style: Record<string, unknown>): void {
+  private updateEditableRadiusPreview(selection: RadiusSelection): void {
+    const existingPreview = this.editableRadiusPreviews.get(selection.context);
+    if (existingPreview !== undefined) {
+      existingPreview.setLatLng([selection.latitude, selection.longitude]);
+      existingPreview.setRadius(selection.radiusKm * 1000);
+      return;
+    }
+
+    this.eposLeaflet.removeLayerById(selection.context + MapLayer.BBOX_EDITABLE_LAYER_ID);
+    const map = this.eposLeaflet.leafletMapObj;
+    const paneId = selection.context + MapLayer.BBOX_EDITABLE_LAYER_ID + '-preview';
+    if (map.getPane(paneId) === undefined) {
+      const pane = map.createPane(paneId);
+      pane.style.zIndex = '650';
+      pane.style.pointerEvents = 'none';
+    }
+    const preview = L.circle([selection.latitude, selection.longitude], {
+      radius: selection.radiusKm * 1000,
+      color: this.defaultEditBboxStyle.color,
+      weight: this.defaultEditBboxStyle.weight,
+      opacity: this.defaultEditBboxStyle.opacity,
+      fillOpacity: this.defaultEditBboxStyle.fillOpacity,
+      interactive: false,
+      pane: paneId,
+    }).addTo(map);
+    this.editableRadiusPreviews.set(selection.context, preview);
+  }
+
+  private removeEditableRadiusPreview(context: string): void {
+    const preview = this.editableRadiusPreviews.get(context);
+    if (preview !== undefined) {
+      preview.remove();
+      this.editableRadiusPreviews.delete(context);
+    }
+  }
+
+  private addBox(
+    bbox: BoundingBox,
+    type: string,
+    style: Record<string, unknown>,
+    radiusSelection: RadiusSelection | null = null,
+  ): void {
 
     let id = type;
 
@@ -915,8 +990,9 @@ export class MapComponent implements OnInit {
     if (!bbox.isBounded()) {
       this.eposLeaflet.removeLayerById(id);
     } else {
-      const latlngs = this.getBboxLatLngs(bbox);
-      const geo = L.polygon(latlngs).toGeoJSON();
+      const geo = radiusSelection !== null && radiusSelection.matchesBounds(bbox)
+        ? radiusSelection.geometry
+        : L.polygon(this.getBboxLatLngs(bbox)).toGeoJSON();
 
       if (style.color === null) {
         style = this.defaultBboxStyle;
@@ -1114,6 +1190,8 @@ export class MapComponent implements OnInit {
       this.destroySubscriptions();
       this.controls.forEach(control => control.remove());
       this.controls = [];
+      this.editableRadiusPreviews.forEach(preview => preview.remove());
+      this.editableRadiusPreviews.clear();
 
       this.mapInteractionService.startBBox.set(false);
       if (this.bboxControl) {

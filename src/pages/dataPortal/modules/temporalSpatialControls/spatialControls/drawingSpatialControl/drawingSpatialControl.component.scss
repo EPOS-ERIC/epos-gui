@@ -1,1 +1,15 @@
 @import 'src/sassFramework/variables.scss';
+
+.split-button {
+  display: flex;
+
+  .draw-button {
+    border-radius: 4px 0 0 4px;
+  }
+
+  .menu-button {
+    min-width: 20px;
+    padding: 0 5px;
+    border-radius: 0 4px 4px 0;
+  }
+}

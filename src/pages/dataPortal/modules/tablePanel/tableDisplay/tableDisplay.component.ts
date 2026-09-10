@@ -8,7 +8,8 @@ import { GeoJSONHelper } from 'utility/maplayers/geoJSONHelper';
 import { PopupPropertyType, PopupProperty } from 'utility/maplayers/popupProperty';
 import { DistributionFormatType } from 'api/webApi/data/distributionFormatType';
 import moment from 'moment-es6';
-import { FeatureCollection } from 'geojson';
+import { FeatureCollection, Point } from 'geojson';
+import { distance } from '@turf/turf';
 import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
 import { AuthenticatedClickService } from 'services/authenticatedClick.service';
 import { PanelsEmitterService } from 'services/panelsEventEmitter.service';
@@ -612,7 +613,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
     if (this.dataType === TableDataType.FEATURE_COLLECTION) {
       const tableMap = GeoJSONHelper.getTableObjectsFromProperties(
         this.sourceId,
-        this.data.features,
+        this.filterRadiusPoints(this.data.features),
         this.externalSource == null ? undefined : feature => String(feature.id),
       );
 
@@ -765,6 +766,31 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
     };
 
     this.exportData.next(data);
+  }
+
+  private filterRadiusPoints(features: FeatureCollection['features']): FeatureCollection['features'] {
+    if (this.externalSource != null || this.dataConfigurable == null) {
+      return features;
+    }
+
+    const radiusSelection = this.mapInteractionService.getRadiusSelection(this.dataConfigurable.context);
+    if (radiusSelection === null) {
+      return features;
+    }
+
+    return features.filter(feature => {
+      if (feature.geometry?.type !== 'Point') {
+        return true;
+      }
+
+      const [longitude, latitude] = (feature.geometry as Point).coordinates;
+      return Number.isFinite(longitude) && Number.isFinite(latitude)
+        && distance(
+          [longitude, latitude],
+          [radiusSelection.longitude, radiusSelection.latitude],
+          { units: 'kilometers' }
+        ) <= radiusSelection.radiusKm;
+    });
   }
 
   /**

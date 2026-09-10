@@ -1,6 +1,13 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [1.0.60] - 2026-09-07
+- Feature: Added external layers by URL, supporting GeoJSON, CovJSON, WMS and WFS sources.
+- Feature: Added display of external GeoJSON data in the table and external CovJSON data in the graph.
+- Feature: Added GeoJSON point styling by numeric field, including marker size scaling, color palettes and configurable min/max ranges.
+- Chore: Updated project dependencies 
+- Minor fixes and improvements
+
 ## [1.0.59] - 2026-08-10
 - Fix: Table mixing values
 - Cite the source of a definition (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20301)

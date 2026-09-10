@@ -58,6 +58,7 @@
           *ngIf="locationRadioSelect === locationRadioSelectTypeCoordinates"
           class="flex-grow"
           [context]="context"
+          [radiusEnabled]="true"
           [bbox]="bBoxFromModel"
           (setBBox)="setBBoxFromControl($event)"
           (setEditableBBox)="setEditableBBoxFromControl($event)"

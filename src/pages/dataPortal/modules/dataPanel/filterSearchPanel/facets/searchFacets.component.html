@@ -27,6 +27,7 @@
       <app-spatial-controls
         *ngIf="locationRadioSelect === locationRadioSelectTypeCoordinates"
         class="flex-grow"
+        [radiusEnabled]="true"
         [bbox]="bBoxFromModel"
         (setBBox)="setBBoxFromControl($event)"
         (setEditableBBox)="setEditableBBoxFromControl($event)"
