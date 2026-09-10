@@ -88,6 +88,13 @@ export class WmsFeatureDisplayItemGenerator implements FeatureDisplayItemGenerat
     if (null != eposLeaflet) {
       const bounds = eposLeaflet.getMapExtent();
       const mapSize = eposLeaflet.getMapSize();
+      const mapCrsCode = eposLeaflet.getLeafletObject().options.crs?.code;
+      const requestCrs =
+        layer.options.get('customRequestCRS')
+        ?? layer.options.get('wmsCrs')
+        ?? layer.options.get('crs')
+        ?? mapCrsCode
+        ?? 'CRS:84';
 
       const parameters = new Map<string, null | string>();
       parameters.set('request', 'GetFeatureInfo');
@@ -100,11 +107,12 @@ export class WmsFeatureDisplayItemGenerator implements FeatureDisplayItemGenerat
       parameters.set('layers', layer.options.get('layers'));
       parameters.set('query_layers', layer.options.get('layers'));
       parameters.set('styles', layer.options.get('styles') ? layer.options.get('styles') : null);
-      parameters.set('crs', layer.options.get('crs') ? layer.options.get('crs') : 'CRS:84');
+      parameters.set('crs', String(requestCrs));
       parameters.set('bbox', bounds.asArray().reverse().join(','));
       parameters.set('width', mapSize.widthPx.toString());
       parameters.set('height', mapSize.heightPx.toString());
       parameters.set('feature_count', layer.options.get('feature_count') ? layer.options.get('feature_count') : null);
+      parameters.set('token', layer.options.get('token') ? layer.options.get('token') : null);
       // parameters.set('info_format', (layer.options.get('info_format')) ? layer.options.get('info_format') : 'application/geojson');
 
       if (null != overrideParamsFunction) {
