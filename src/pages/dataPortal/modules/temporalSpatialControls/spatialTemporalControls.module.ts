@@ -10,11 +10,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { RadiusSpatialControlComponent } from './spatialControls/radiusSpatialControl/radiusSpatialControl.component';
 
 
 
 @NgModule({
-  declarations: [SpatialControlsComponent, SimpleSpatialControlComponent, TemporalControlsComponent, DrawingSpatialControlComponent],
+  declarations: [SpatialControlsComponent, SimpleSpatialControlComponent, RadiusSpatialControlComponent, TemporalControlsComponent, DrawingSpatialControlComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -22,7 +24,8 @@ import { MatInputModule } from '@angular/material/input';
     MatTooltipModule,
     MatRadioModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatMenuModule
   ],
   exports: [
     SpatialControlsComponent, SimpleSpatialControlComponent, TemporalControlsComponent, DrawingSpatialControlComponent

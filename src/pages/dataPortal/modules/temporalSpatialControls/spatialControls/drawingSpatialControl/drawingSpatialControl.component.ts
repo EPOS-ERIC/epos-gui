@@ -1,11 +1,12 @@
 import {
-  Component, OnInit,
+  Component, EventEmitter, Input, OnInit, Output,
 } from '@angular/core';
 import { OnAttachDetach } from 'decorators/onAttachDetach.decorator';
 import { Unsubscriber } from 'decorators/unsubscriber.decorator';
 import { MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
 import { Subscription } from 'rxjs';
 import { BoundingBox } from 'utility/eposLeaflet/eposLeaflet';
+import { SpatialSelectionMode } from 'utility/eposLeaflet/components/radiusSelection';
 
 @OnAttachDetach('onAttachComponents')
 @Unsubscriber('subscriptions')
@@ -15,6 +16,10 @@ import { BoundingBox } from 'utility/eposLeaflet/eposLeaflet';
   styleUrls: ['./drawingSpatialControl.component.scss']
 })
 export class DrawingSpatialControlComponent implements OnInit {
+
+  @Input() mode: SpatialSelectionMode = 'bbox';
+  @Input() radiusEnabled = false;
+  @Output() modeChange = new EventEmitter<SpatialSelectionMode>();
 
   public drawingBbox = false;
 
@@ -43,7 +48,26 @@ export class DrawingSpatialControlComponent implements OnInit {
    */
   public startDrawExtent(): void {
     this.drawingBbox = !this.drawingBbox;
+    this.mapInteractionService.spatialDrawMode.set(this.mode);
     this.mapInteractionService.startBBox.set(this.drawingBbox);
+  }
+
+  public selectMode(mode: SpatialSelectionMode): void {
+    if (this.drawingBbox && this.mode === mode) {
+      return;
+    }
+    const restartDelay = this.drawingBbox && this.mode === 'bbox' ? 500 : 0;
+    if (this.drawingBbox) {
+      this.drawingBbox = false;
+      this.mapInteractionService.startBBox.set(false);
+    }
+    this.mode = mode;
+    this.modeChange.emit(mode);
+    if (restartDelay > 0) {
+      setTimeout(() => this.startDrawExtent(), restartDelay);
+    } else {
+      this.startDrawExtent();
+    }
   }
 
 }

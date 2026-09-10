@@ -42,6 +42,7 @@ export enum LocalStorageVariables {
   LS_DATA_DISCOVER_RESPONSE = 'dataDiscoverResponse',
   LS_DATA_SEARCH_CONFIGURABLES = 'dataSearchConfigurables',
   LS_DATA_SEARCH_BOUNDS = 'dataSearchBounds',
+  LS_RADIUS_SELECTION = 'radiusSelection',
   LS_DATA_SEARCH_TEMPORAL_RANGE = 'dataSearchTemporalRange',
   LS_DATA_SEARCH_TEMPORAL_RANGE_RADIO_FILTER = 'dataSearchTemporalRangeRadioFilter',
   LS_DATA_SEARCH_KEYWORDS = 'dataSearchKeywords',

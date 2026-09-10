@@ -9,6 +9,6 @@ export * from './components/marker/public_api';
 export * from './components/moveMethod.enum';
 export * from './components/layers/public_api';
 export * from './components/boundingBox';
+export * from './components/radiusSelection';
 export * from './components/layerClickManager/layerClickManager';
 export * from './eposLeaflet.module';
-
