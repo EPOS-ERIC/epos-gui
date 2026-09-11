@@ -19,6 +19,7 @@ import { DataSearchConfigurablesService } from 'pages/dataPortal/services/dataSe
 import { DataSearchConfigurablesServiceSoftware } from '../softwarePanel/services/dataSearchConfigurables.service';
 import { CONTEXT_FACILITY, CONTEXT_RESOURCE, CONTEXT_SOFTWARE } from 'api/api.service.factory';
 import { MapLayer } from 'utility/eposLeaflet/eposLeaflet';
+import { InteractiveVisualisationService, InteractiveVisualisationSource, InteractiveVisualisationTableGroup } from 'pages/dataPortal/services/interactiveVisualisation.service';
 
 
 @Unsubscriber('subscriptions')
@@ -37,6 +38,7 @@ export class TablePanelComponent implements OnInit {
 
   public currentDataConfigurables = new Array<DataConfigurableI>();
   public externalSources = new Array<ExternalVisualisationSource>();
+  public interactiveTableGroups = new Array<InteractiveVisualisationTableGroup>();
 
   public showSpinner = false;
   public selectedIndex = 0;
@@ -61,12 +63,14 @@ export class TablePanelComponent implements OnInit {
     private readonly notificationService: NotificationService,
     private readonly parser: Papa,
     private readonly mapInteractionService: MapInteractionService,
-    private readonly localStoragePersister: LocalStoragePersister
+    private readonly localStoragePersister: LocalStoragePersister,
+    private readonly interactiveVisualisations: InteractiveVisualisationService,
 
   ) { }
 
   public ngOnInit(): void {
     this.initSubscriptions();
+    this.updateTableCounter();
   }
 
   public closeNav(): void {
@@ -124,7 +128,11 @@ export class TablePanelComponent implements OnInit {
 
       this.mapInteractionService.externalVisualisationSources.subscribe(sources => {
         this.externalSources = Array.from(sources.values()).filter(source => source.type === 'geojson');
-        this.updateCounter();
+        this.updateTableCounter();
+      }),
+
+      this.interactiveVisualisations.sourcesObs.subscribe(sources => {
+        this.updateInteractiveTableGroups(sources);
       }),
 
       this.panelsEvent.invokeTablePanelToggle.subscribe((id: string) => {
@@ -134,6 +142,7 @@ export class TablePanelComponent implements OnInit {
           ? configurableIndex
           : this.currentDataConfigurables.length + externalIndex;
       }),
+
     );
   }
 
@@ -200,7 +209,7 @@ export class TablePanelComponent implements OnInit {
       });
 
       setTimeout(() => {
-        if (configurables.getSelected() !== null) {
+        if (configurables.getSelected() !== null && this.interactiveTableGroups.length === 0) {
           // index to selected item
           this.selectedIndex = this.currentDataConfigurables.findIndex((thisConfig: DataConfigurableI) => {
             // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -211,12 +220,42 @@ export class TablePanelComponent implements OnInit {
       }, 100);
     }
 
-    this.updateCounter();
+    this.updateTableCounter();
 
   }
 
-  private updateCounter(): void {
-    this.resultPanelService.setCounterTable(this.currentDataConfigurables.length + this.externalSources.length);
+  private updateTableCounter(): void {
+    this.resultPanelService.setCounterTable(
+      this.currentDataConfigurables.length + this.externalSources.length + this.interactiveTableGroups.length
+    );
+  }
+
+  private updateInteractiveTableGroups(sources: Map<string, InteractiveVisualisationSource>): void {
+    const previousSourceIds = new Set(this.interactiveTableGroups.flatMap(group => group.sources.map(source => source.id)));
+    const groups = new Map<string, InteractiveVisualisationTableGroup>();
+    Array.from(sources.values()).forEach((source: InteractiveVisualisationSource) => {
+      if (source.table == null) {
+        return;
+      }
+      const group = groups.get(source.table.groupId) ?? {
+        id: source.table.groupId,
+        name: source.table.groupName,
+        sources: [],
+      };
+      group.sources.push(source);
+      groups.set(group.id, group);
+    });
+    this.interactiveTableGroups = Array.from(groups.values());
+
+    const addedSource = Array.from(sources.values()).find(source => source.table != null && !previousSourceIds.has(source.id));
+    if (addedSource?.table != null) {
+      const groupIndex = this.interactiveTableGroups.findIndex(group => group.id === addedSource.table!.groupId);
+      this.selectedIndex = this.currentDataConfigurables.length + this.externalSources.length + groupIndex;
+    } else {
+      const tabCount = this.currentDataConfigurables.length + this.externalSources.length + this.interactiveTableGroups.length;
+      this.selectedIndex = Math.min(this.selectedIndex, Math.max(tabCount - 1, 0));
+    }
+    this.updateTableCounter();
   }
 
   private ensureReloadFuncSet(configurables: Array<DataConfigurableDataSearchI>, context: string): void {

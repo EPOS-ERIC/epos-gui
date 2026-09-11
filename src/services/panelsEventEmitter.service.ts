@@ -33,7 +33,6 @@ export class PanelsEmitterService {
   private timeSeriesPopupLayerIdUrlSrc = new Subject<[string, string | null]>();
   // eslint-disable-next-line @typescript-eslint/member-ordering
   public timeSeriesPopupLayerIdUrlObs = this.timeSeriesPopupLayerIdUrlSrc.asObservable();
-
   constructor(
     private readonly localStoragePersister: LocalStoragePersister,
   ) { }
@@ -150,4 +149,5 @@ export class PanelsEmitterService {
     this.timeSeriesPopupLayerIdUrlSrc.next([layerId, url]);
     this.localStoragePersister.set(LocalStorageVariables.LS_CONFIGURABLES, layerId, false, LocalStorageVariables.LS_TS_POPUP_LAYER_ID);
   }
+
 }
