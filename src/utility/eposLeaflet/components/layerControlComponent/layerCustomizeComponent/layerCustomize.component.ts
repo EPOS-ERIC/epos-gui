@@ -111,6 +111,8 @@ export class LayerCustomizeComponent implements OnInit {
 
   public isExternalPointGeoJsonLayer = false;
 
+  public isUnstyledPointGeoJsonLayer = false;
+
   public isParameterStylingAvailable = false;
 
   public numericMarkerProperties = new Array<NumericGeoJsonProperty>();
@@ -229,6 +231,9 @@ export class LayerCustomizeComponent implements OnInit {
       && this.layer instanceof GeoJsonLayer
       && this.mapInteractionService.externalVisualisationSources.value.get(this.layer.id)?.type === 'geojson'
       && this.hasPointGeometry(this.layer.getGeoJsonData());
+    this.isUnstyledPointGeoJsonLayer = this.layer instanceof GeoJSONMapLayer
+      && this.markerType === MapLayer.MARKERTYPE_POINT
+      && this.hasPointGeometry(this.layer.getGeoJsonData());
     this.isParameterStylingAvailable = this.layer instanceof GeoJsonLayer
       && !(this.layer instanceof CovJSONMapLayer)
       && this.hasPointGeometry(this.layer.getGeoJsonData());
@@ -249,7 +254,7 @@ export class LayerCustomizeComponent implements OnInit {
       this.initializeMarkerSizeScale(parameterStyle.size.minPx, parameterStyle.size.maxPx);
       this.updatePalettePreview();
     }
-    if (this.isExternalPointGeoJsonLayer) {
+    if (this.isExternalPointGeoJsonLayer || this.isUnstyledPointGeoJsonLayer) {
       if (!this.markerValue) {
         this.markerValue = defaultMarkerIcons[0].value.join(' ');
         this.layer.options.customLayerOptionMarkerValue.set(this.markerValue);
@@ -419,7 +424,8 @@ export class LayerCustomizeComponent implements OnInit {
    * emitted when the value of a MatSlider component changes.
    */
   updateSize(event: MatSliderChange): void {
-    if (this.isExternalPointGeoJsonLayer && this.layer instanceof GeoJSONMapLayer && event.value != null) {
+    if ((this.isExternalPointGeoJsonLayer || this.isUnstyledPointGeoJsonLayer)
+      && this.layer instanceof GeoJSONMapLayer && event.value != null) {
       const style = this.stylable?.getStyle();
       style?.setMarkerIconSize(event.value);
       if (style != null) {
@@ -631,7 +637,8 @@ export class LayerCustomizeComponent implements OnInit {
     if (markerValue == null) {
       return;
     }
-    if (this.isExternalPointGeoJsonLayer && this.layer instanceof GeoJSONMapLayer) {
+    if ((this.isExternalPointGeoJsonLayer || this.isUnstyledPointGeoJsonLayer)
+      && this.layer instanceof GeoJSONMapLayer) {
       this.markerType = MapLayer.MARKERTYPE_FA;
       this.selectedMarkerIcon = markerValue;
       this.layer.setMarkerOverride(markerValue);
@@ -907,7 +914,7 @@ export class LayerCustomizeComponent implements OnInit {
           colorOpacity: true,
           fillColorOpacity: true,
           weight: true,
-          changeMarker: this.isExternalPointGeoJsonLayer ? 'font' : '',
+          changeMarker: this.isExternalPointGeoJsonLayer || this.isUnstyledPointGeoJsonLayer ? 'font' : '',
           size: this.isParameterStylingAvailable,
           cluster: true,
         };
