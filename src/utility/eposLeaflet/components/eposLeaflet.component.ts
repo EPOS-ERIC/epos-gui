@@ -41,7 +41,8 @@ export type CrsPreset = {
     './controls/drawBBoxControl/drawBBoxControl.scss',
     './controls/customLayerControl/customLayerControl.scss',
     './controls/searchControl/searchControl.scss',
-    './controls/measureDistanceControl/measureDistanceControl.scss'
+    './controls/measureDistanceControl/measureDistanceControl.scss',
+    './controls/exportMapAsImage/exportMapAsImage.scss'
   ],
 })
 export class EposLeafletComponent implements OnInit, AfterViewInit {

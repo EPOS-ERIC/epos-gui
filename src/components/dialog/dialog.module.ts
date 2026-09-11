@@ -67,6 +67,7 @@ import { MatomoStatsDialogComponent } from 'components/dialog/matomoStatsDialog/
 import { ScientificExamplesDialogComponent } from './scientificExamplesDialog/scientificExamplesDialog.component';
 import { CrsIncompatDialogComponent } from './crsIncompatDialog/crsIncompatDialog.component';
 import { MetaDataStatusDialogComponent } from './metaDataStatusDialog/metaDataStatusDialog.component';
+import { GisExportDialogComponent } from './gisExportDialog/gisExportDialog.component';
 
 
 /**
@@ -103,7 +104,8 @@ import { MetaDataStatusDialogComponent } from './metaDataStatusDialog/metaDataSt
     SwitchItemConfirmationDialogComponent,
     MatomoStatsDialogComponent,
     CrsIncompatDialogComponent,
-    MetaDataStatusDialogComponent
+    MetaDataStatusDialogComponent,
+    GisExportDialogComponent
   ],
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   imports: [

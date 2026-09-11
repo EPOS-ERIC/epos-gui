@@ -1,0 +1,39 @@
+:host ::ng-deep {
+  #export-map-image-control {
+    .control-content {
+      min-width: 165px;
+      padding: 4px;
+    }
+
+    .export-format-menu {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .export-format-option {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 8px 10px;
+      border: 0;
+      border-radius: 3px;
+      color: #333333;
+      background: #ffffff;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+
+      &:hover,
+      &:focus-visible {
+        background: #eeeeee;
+        outline: none;
+      }
+
+      i {
+        width: 16px;
+        text-align: center;
+      }
+    }
+  }
+}
