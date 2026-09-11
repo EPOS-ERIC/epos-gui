@@ -94,7 +94,7 @@ export class ExportMapAsImage extends AbstractControl {
     const controlContainer: HTMLElement = this.getControlContainer(
       'export-map-image-control',
       'fa fa-download',
-      'Export map',
+      'Export Map Layers',
       content
     );
 
