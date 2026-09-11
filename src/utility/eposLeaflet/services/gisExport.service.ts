@@ -3,7 +3,7 @@ import { Feature, FeatureCollection, GeoJsonObject, Geometry, GeometryCollection
 import { saveAs } from 'file-saver';
 import { CovJSONMapLayer } from 'utility/maplayers/covJSONMapLayer';
 import { GeoJSONHelper } from 'utility/maplayers/geoJSONHelper';
-import { GeoJsonLayer, MapLayer, WmsTileLayer, WmtsTileLayer } from '../eposLeaflet';
+import { EsriBaseLayer, GeoJsonLayer, MapLayer, WmsTileLayer, WmtsTileLayer } from '../eposLeaflet';
 
 export interface GisVectorLayer {
   id: string;
@@ -131,7 +131,7 @@ export class GisExportService {
       if (layer.visibleOnLayerControl.get()) {
         snapshot.unsupportedLayers.push({
           id: layer.id,
-          name: layer.name,
+          name: layer instanceof EsriBaseLayer ? 'Basemap' : layer.name,
           reason: 'Not available for GIS export',
         });
       }

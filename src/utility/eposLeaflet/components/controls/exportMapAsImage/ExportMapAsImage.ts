@@ -73,8 +73,8 @@ export class ExportMapAsImage extends AbstractControl {
 
   public onAdd(map: L.Map): HTMLElement {
     const content = L.DomUtil.create('div', 'export-format-menu');
-    const pngButton = this.createExportOption('PNG', 'fa-regular fa-image', 'export-png-option');
-    const gisButton = this.createExportOption('GIS (GeoPackage)', 'fa-solid fa-layer-group', 'export-gis-option');
+    const pngButton = this.createExportOption('Export as image', 'fa-regular fa-image', 'export-png-option');
+    const gisButton = this.createExportOption('Export to GIS (geopackage)', 'fa-solid fa-layer-group', 'export-gis-option');
 
     pngButton.addEventListener('click', (event: MouseEvent) => {
       event.preventDefault();
