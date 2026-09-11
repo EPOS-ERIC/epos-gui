@@ -157,7 +157,7 @@ export class GeoJSONMapLayer extends JsonMapLayer {
         clustering: this.getStylableClustering(this.stylable) ?? false,
       };
       const markerValueKey = 'fontawesome_class';
-      markerOverride[markerValueKey] = this.markerOverrideValue;
+      markerOverride[markerValueKey] = this.stylable.getStyle()?.getMarkerValue() || this.markerOverrideValue;
       const parameterStyle = this.resolveMarkerParameterStyle(geoJsonPoint);
       return this.createLeafletMarker(
         this.stylable,
@@ -278,7 +278,12 @@ export class GeoJSONMapLayer extends JsonMapLayer {
         this.options.customLayerOptionHasMarker.set(true);
         switch (featureType.toLowerCase()) {
           case ('point'): {
-            this.options.customLayerOptionMarkerType.set(MapLayer.MARKERTYPE_POINT);
+            if (this.markerOverrideValue == null && this.stylesMasterMap.size === 0) {
+              this.markerOverrideValue = this.stylable.getStyle()?.getMarkerValue() || null;
+            }
+            this.options.customLayerOptionMarkerType.set(
+              this.markerOverrideValue == null ? MapLayer.MARKERTYPE_POINT : MapLayer.MARKERTYPE_FA
+            );
             break;
           }
           case ('linestring'):
