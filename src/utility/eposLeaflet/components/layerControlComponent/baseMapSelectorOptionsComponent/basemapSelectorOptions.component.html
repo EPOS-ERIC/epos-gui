@@ -26,7 +26,7 @@
 
         <div class="option-body" [class.option-disabled]="!isCrsSupported(option)">
           <div class="option-slider-box">
-            <span class="slider-label">Transparency</span>
+            <span class="slider-label">Opacity</span>
             <mat-slider [value]="getOpacity(option)" [min]="0" [max]="1" [step]="0.01"
               [disabled]="!isCrsSupported(option)" (input)="updateOpacity($event, option)">
             </mat-slider>
