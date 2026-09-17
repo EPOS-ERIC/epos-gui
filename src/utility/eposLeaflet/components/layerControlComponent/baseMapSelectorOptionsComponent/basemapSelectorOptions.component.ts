@@ -148,8 +148,6 @@ export class BasemapSelectorOptionsComponent implements OnChanges {
       layer.options.set('customRequestCRS', requestCrs);
     }
 
-    layer.options.set('token', option.token);
-
     layer.options.set('transparent', true);
 
     return layer;
