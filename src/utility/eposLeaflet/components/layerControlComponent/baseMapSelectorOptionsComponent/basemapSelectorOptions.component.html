@@ -46,6 +46,20 @@
               More Details
             </a>
           </div>
+
+          <mat-accordion class="legend-accordion">
+            <mat-expansion-panel class="legend-panel" [expanded]="false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>Legend</mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <ng-template matExpansionPanelContent>
+                <div class="legend-content">
+                  <img [src]="getLegendUrl(option)" [alt]="option.name + ' legend'">
+                </div>
+              </ng-template>
+            </mat-expansion-panel>
+          </mat-accordion>
         </div>
         <div class="footer-eurbmap">
           <p>© EuroGeographics 2026</p>
