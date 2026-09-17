@@ -108,7 +108,7 @@ export class BasemapSelectorOptionsComponent implements OnChanges {
   }
 
   private createLayer(option: EuroGeographicsMapOption): WmsTileLayer {
-    const parsedUrl = new URL(option.wmsUrl);
+    const parsedUrl = new URL(option.wmsUrl, document.baseURI);
     const serviceUrl = `${parsedUrl.origin}${parsedUrl.pathname}`;
 
     const layer = new WmsTileLayer(this.getLayerId(option), option.name)
@@ -147,8 +147,6 @@ export class BasemapSelectorOptionsComponent implements OnChanges {
     if (requestCrs != null && requestCrs !== '') {
       layer.options.set('customRequestCRS', requestCrs);
     }
-
-    layer.options.set('token', option.token);
 
     layer.options.set('transparent', true);
 
