@@ -108,7 +108,7 @@ export class BasemapSelectorOptionsComponent implements OnChanges {
   }
 
   private createLayer(option: EuroGeographicsMapOption): WmsTileLayer {
-    const parsedUrl = new URL(option.wmsUrl, window.location.origin);
+    const parsedUrl = new URL(option.wmsUrl, document.baseURI);
     const serviceUrl = `${parsedUrl.origin}${parsedUrl.pathname}`;
 
     const layer = new WmsTileLayer(this.getLayerId(option), option.name)

@@ -8,7 +8,7 @@ export type EuroGeographicsMapOption = {
   };
 
   const DEFAULT_BBOX = '10.1919994354248,-49.8610000610352,75.8440017700195,41.7430000305176';
-  const COMMON_WMS_PREFIX = `/api/v1/layers/eurogeographics/maps?service=WMS&version=1.3.0&request=GetMap&crs=EPSG%3A3857&format=image%2Fpng&styles=default&width=800&height=600&bbox=${DEFAULT_BBOX}`;
+  const COMMON_WMS_PREFIX = `api/v1/layers/eurogeographics/maps?service=WMS&version=1.3.0&request=GetMap&crs=EPSG%3A3857&format=image%2Fpng&styles=default&width=800&height=600&bbox=${DEFAULT_BBOX}`;
 
   export const euroGeographicsMapOptions: EuroGeographicsMapOption[] = [
     {
@@ -62,7 +62,7 @@ export type EuroGeographicsMapOption = {
     {
       id: 'pan-european-imagery',
       name: 'Pan European Imagery',
-      wmsUrl: `/api/v1/layers/eurogeographics/pan-european-imagery?service=WMS&version=1.3.0&request=GetMap&layers=meta&styles=default&crs=EPSG%3A3857&width=800&height=600&format=image%2Fpng&bbox=${DEFAULT_BBOX}`,
+      wmsUrl: `api/v1/layers/eurogeographics/pan-european-imagery?service=WMS&version=1.3.0&request=GetMap&layers=meta&styles=default&crs=EPSG%3A3857&width=800&height=600&format=image%2Fpng&bbox=${DEFAULT_BBOX}`,
       datasetUrl: 'https://www.mapsforeurope.org/datasets/pan-european-imagery',
       thumbnailSource: 'assets/img/baseLayerEuroGeographics/EuroPanEuropeanImagery.png',
       supportedCRS: ['EPSG:3857'],
