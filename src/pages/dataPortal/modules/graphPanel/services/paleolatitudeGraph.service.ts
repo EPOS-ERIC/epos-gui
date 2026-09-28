@@ -19,6 +19,8 @@ export interface PaleolatitudeGraphData {
   traces: Array<Trace>;
 }
 
+const PALEOLATITUDE_PATH_PARAMETER_NAMES = ['lat', 'lon', 'age', 'minage', 'maxage', 'model'];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -167,10 +169,8 @@ export class PaleolatitudeGraphService {
     parameterValues.set('lon', encodeURIComponent(String(lon)));
 
     if (!endpoint.includes('{')) {
-      const parameterNames = configurable.getParameterDefinitions().getParameters()
-        .map(parameter => this.normalizeParameterName(parameter.name));
-      const values = parameterNames.map(name => parameterValues.get(name));
-      if (values.length === 0 || values.some(value => value == null)) {
+      const values = PALEOLATITUDE_PATH_PARAMETER_NAMES.map(name => parameterValues.get(name));
+      if (values.some(value => value == null)) {
         return null;
       }
 
