@@ -166,6 +166,17 @@ export class PaleolatitudeGraphService {
     parameterValues.set('lat', encodeURIComponent(String(lat)));
     parameterValues.set('lon', encodeURIComponent(String(lon)));
 
+    if (!endpoint.includes('{')) {
+      const parameterNames = configurable.getParameterDefinitions().getParameters()
+        .map(parameter => this.normalizeParameterName(parameter.name));
+      const values = parameterNames.map(name => parameterValues.get(name));
+      if (values.length === 0 || values.some(value => value == null)) {
+        return null;
+      }
+
+      return `${endpoint.replace(/\/+$/, '')}/${values.join('/')}`;
+    }
+
     let hasAllValues = true;
     const url = endpoint.replace(/\{([^}]+)\}/g, (placeholder: string, name: string): string => {
       const value = parameterValues.get(this.normalizeParameterName(name));
