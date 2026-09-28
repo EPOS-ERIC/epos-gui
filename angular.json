@@ -45,6 +45,16 @@
               "src/assets",
               "src/silent-token-refresh.html",
               {
+                "glob": "sql-wasm.wasm",
+                "input": "node_modules/@ngageoint/geopackage/dist",
+                "output": "assets/geopackage"
+              },
+              {
+                "glob": "geopackage.min.js",
+                "input": "node_modules/@ngageoint/geopackage/dist",
+                "output": "assets/geopackage"
+              },
+              {
                 "glob": "**/*",
                 "input": "./docs",
                 "output": "/docs/"

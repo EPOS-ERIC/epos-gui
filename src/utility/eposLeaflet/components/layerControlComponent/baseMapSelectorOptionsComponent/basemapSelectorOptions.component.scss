@@ -206,3 +206,38 @@
     width: 140px;
   }
 }
+
+.legend-accordion {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.legend-panel {
+  box-shadow: none;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+
+  mat-expansion-panel-header {
+    height: 40px;
+    padding: 0 12px;
+  }
+
+  mat-panel-title {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
+.legend-content {
+  max-height: min(40vh, 360px);
+  overflow: auto;
+  padding-top: 4px;
+  text-align: center;
+
+  img {
+    display: inline-block;
+    max-width: 100%;
+    max-height: none;
+    height: auto;
+  }
+}

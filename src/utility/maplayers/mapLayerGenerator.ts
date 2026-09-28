@@ -1,4 +1,4 @@
-import { MapLayer, EposLeafletComponent } from 'utility/eposLeaflet/eposLeaflet';
+import { MapLayer, EposLeafletComponent, WmsTileLayer, WmtsTileLayer } from 'utility/eposLeaflet/eposLeaflet';
 import { ExecutionService } from 'services/execution.service';
 import * as GeoJSON from 'geojson/../geojson';
 import { DistributionFormatType } from 'api/webApi/data/distributionFormatType';
@@ -19,6 +19,7 @@ import { Feature } from 'geojson';
 import L from 'leaflet';
 import { DataSearchConfigurablesServiceResource } from 'pages/dataPortal/modules/dataPanel/services/dataSearchConfigurables.service';
 import { DataSearchConfigurablesServiceRegistry } from 'pages/dataPortal/modules/registryPanel/services/dataSearchConfigurables.service';
+import { DataConfigurableDataSearch } from 'utility/configurablesDataSearch/dataConfigurableDataSearch';
 
 /** The `MapLayerGenerator` class is responsible for generating map layers based on configurable data
 and map configurations. */
@@ -113,22 +114,36 @@ export class MapLayerGenerator {
         ])):
           allLayers.push(...this.createGeoJSONLayers(dataConfigurable, mapConfig, factory, format));
           break;
-        case (DistributionFormatType.is(formatString, DistributionFormatType.APP_OGC_WMS)):
-          allLayers.push(...this.fromConfigurable.createMapLayersFrom(
+        case (DistributionFormatType.is(formatString, DistributionFormatType.APP_OGC_WMS)): {
+          const wmsLayers = this.fromConfigurable.createMapLayersFrom(
             dataConfigurable,
             mapConfig,
             factory,
             () => Promise.resolve(this.executionService.getExecuteUrl(format)),
-          ));
+          );
+          wmsLayers.forEach(layer => {
+            if (layer instanceof WmsTileLayer && dataConfigurable instanceof DataConfigurableDataSearch) {
+              layer.setServiceUrlRetriever(() => dataConfigurable.getOriginatorUrl());
+            }
+          });
+          allLayers.push(...wmsLayers);
           break;
-        case (DistributionFormatType.is(formatString, DistributionFormatType.APP_OGC_WMTS)):
-          allLayers.push(...this.fromConfigurable.createMapLayersFrom(
+        }
+        case (DistributionFormatType.is(formatString, DistributionFormatType.APP_OGC_WMTS)): {
+          const wmtsLayers = this.fromConfigurable.createMapLayersFrom(
             dataConfigurable,
             mapConfig,
             factory,
             () => Promise.resolve(this.executionService.getExecuteUrl(format)),
-          ));
+          );
+          wmtsLayers.forEach(layer => {
+            if (layer instanceof WmtsTileLayer && dataConfigurable instanceof DataConfigurableDataSearch) {
+              layer.setServiceUrlRetriever(() => dataConfigurable.getOriginatorUrl());
+            }
+          });
+          allLayers.push(...wmtsLayers);
           break;
+        }
       }
     }
 

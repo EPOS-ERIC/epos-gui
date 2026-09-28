@@ -70,6 +70,30 @@ export class BasemapSelectorOptionsComponent implements OnChanges {
     return this.opacityByOptionId.get(option.id) ?? 1;
   }
 
+  public getLegendUrl(option: EuroGeographicsMapOption): string {
+    const legendUrl = new URL(option.wmsUrl, document.baseURI);
+    const layerName = legendUrl.searchParams.get('layers');
+    const styleName = legendUrl.searchParams.get('styles');
+
+    legendUrl.searchParams.set('request', 'GetLegendGraphic');
+    legendUrl.searchParams.set('format', 'image/png');
+
+    if (layerName != null) {
+      legendUrl.searchParams.delete('layers');
+      legendUrl.searchParams.set('layer', layerName);
+    }
+    if (styleName != null) {
+      legendUrl.searchParams.delete('styles');
+      legendUrl.searchParams.set('style', styleName);
+    }
+
+    ['bbox', 'crs', 'height', 'transparent', 'width'].forEach(parameter => {
+      legendUrl.searchParams.delete(parameter);
+    });
+
+    return legendUrl.toString();
+  }
+
   public dropEuroGeographicsOptions(event: CdkDragDrop<EuroGeographicsMapOption[]>): void {
     if (event.previousIndex === event.currentIndex) {
       return;
@@ -108,7 +132,7 @@ export class BasemapSelectorOptionsComponent implements OnChanges {
   }
 
   private createLayer(option: EuroGeographicsMapOption): WmsTileLayer {
-    const parsedUrl = new URL(option.wmsUrl);
+    const parsedUrl = new URL(option.wmsUrl, document.baseURI);
     const serviceUrl = `${parsedUrl.origin}${parsedUrl.pathname}`;
 
     const layer = new WmsTileLayer(this.getLayerId(option), option.name)
@@ -147,8 +171,6 @@ export class BasemapSelectorOptionsComponent implements OnChanges {
     if (requestCrs != null && requestCrs !== '') {
       layer.options.set('customRequestCRS', requestCrs);
     }
-
-    layer.options.set('token', option.token);
 
     layer.options.set('transparent', true);
 

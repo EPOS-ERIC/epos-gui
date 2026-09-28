@@ -1,0 +1,172 @@
+@import 'src/sassFramework/variables.scss';
+
+:host {
+  ::ng-deep app-base-dialog .mat-dialog-content {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .gis-export {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: min(760px, 80vw);
+  }
+
+  .description,
+  h2 {
+    margin: 0;
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  h2 {
+    color: $color-primary;
+    font-size: 15px;
+    text-transform: uppercase;
+
+    span {
+      color: #666666;
+      font-size: 12px;
+      font-weight: normal;
+      text-transform: none;
+    }
+  }
+
+  .layer-table {
+    border: 1px solid $color-borders;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .layer-row {
+    display: grid;
+    grid-template-columns: 70px minmax(180px, 2fr) minmax(130px, 1fr) 120px;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 10px;
+    border-top: 1px solid $color-borders;
+
+    &:first-child {
+      border-top: 0;
+    }
+
+    strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .header-row {
+    min-height: 34px;
+    color: #555555;
+    background: whitesmoke;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .service-row,
+  .unsupported-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid $color-borders;
+    border-radius: 4px;
+  }
+
+  .service-details {
+    display: grid;
+    grid-template-columns: minmax(140px, 1fr) 60px minmax(220px, 2fr);
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+
+    code {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .unsupported-row span {
+    color: #666666;
+  }
+
+  .info-message {
+    padding: 10px;
+    border: 1px solid #b8ccdc;
+    border-radius: 4px;
+    background: #eef6fc;
+  }
+
+  .export-error {
+    padding: 10px;
+    border: 1px solid #d99494;
+    border-radius: 4px;
+    color: #8b1a1a;
+    background: #fff2f2;
+  }
+
+  .footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 0 5px;
+    border-top: 1px solid $color-borders;
+    background: white;
+  }
+
+  .buttons-wrapper {
+    gap: 10px;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .gis-export {
+      width: 85vw;
+    }
+
+    .layer-row {
+      grid-template-columns: 55px minmax(120px, 2fr) minmax(100px, 1fr) 90px;
+    }
+
+    .service-details {
+      grid-template-columns: 1fr;
+      gap: 3px;
+    }
+
+    .footer {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+}
