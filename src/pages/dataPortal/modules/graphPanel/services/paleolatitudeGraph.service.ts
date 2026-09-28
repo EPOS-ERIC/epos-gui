@@ -5,7 +5,7 @@ import { InteractiveVisualisationService } from 'pages/dataPortal/services/inter
 import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
 import { DataConfigurableDataSearchI } from 'utility/configurablesDataSearch/dataConfigurableDataSearchI.interface';
 import { DataSearchConfigurablesServiceResource } from '../../dataPanel/services/dataSearchConfigurables.service';
-import { PaleolatitudePoint, PaleolatitudeResponse, PALEOLATITUDE_API_URL, PALEOLATITUDE_CONFIG_ID, PALEOLATITUDE_TRACE_ID } from '../objects/paleolatitude.interface';
+import { PaleolatitudePoint, PaleolatitudeResponse, PALEOLATITUDE_CONFIG_ID, PALEOLATITUDE_TRACE_ID } from '../objects/paleolatitude.interface';
 import { Trace } from '../objects/trace';
 import { YAxisDisplayType } from '../objects/yAxisDisplayType.enum';
 
@@ -120,15 +120,20 @@ export class PaleolatitudeGraphService {
     lon: number,
     configurables: Array<DataConfigurableDataSearchI>,
   ): null | PaleolatitudeGraphRequest {
-    const filters = this.getFilters(configurables);
-    if (filters == null) {
+    const configurable = this.getConfigurable(configurables);
+    if (configurable == null) {
       return null;
     }
 
     const normalizedLon = this.normalizeLongitude(lon);
+    const url = this.createUrl(configurable, lat, normalizedLon);
+    if (url == null) {
+      return null;
+    }
+
     return {
       normalizedLon,
-      url: `${PALEOLATITUDE_API_URL}/${lat}/${normalizedLon}/${encodeURIComponent(filters.age)}/${encodeURIComponent(filters.minage)}/${encodeURIComponent(filters.maxAge)}/${encodeURIComponent(filters.model)}/website`,
+      url,
     };
   }
 
@@ -146,25 +151,32 @@ export class PaleolatitudeGraphService {
     };
   }
 
-  private getFilters(
-    configurables: Array<DataConfigurableDataSearchI>,
-  ): null | { age: string; minage: string; maxAge: string; model: string } {
-    const configurable = this.getConfigurable(configurables);
-    const parameterValues = configurable?.getNewParameterValues();
-    const normalizeName = (name: string): string => name.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-    const getValue = (name: string): string | undefined => parameterValues?.find(parameter => {
-      return normalizeName(parameter.name) === normalizeName(name);
-    })?.value;
-    const age = getValue('age');
-    const minage = getValue('minage');
-    const maxAge = getValue('max_age');
-    const model = getValue('model');
-
-    if (age == null || minage == null || maxAge == null || model == null) {
+  private createUrl(configurable: DataConfigurableI, lat: number, lon: number): null | string {
+    const endpoint = configurable.getDistributionDetails().getWebServiceEndpoint();
+    if (endpoint.trim() === '') {
       return null;
     }
 
-    return { age, minage, maxAge, model };
+    const parameterValues = new Map<string, string>(
+      configurable.getNewParameterValues().map((parameter): [string, string] => [
+        this.normalizeParameterName(parameter.name),
+        encodeURIComponent(parameter.value),
+      ]),
+    );
+    parameterValues.set('lat', encodeURIComponent(String(lat)));
+    parameterValues.set('lon', encodeURIComponent(String(lon)));
+
+    let hasAllValues = true;
+    const url = endpoint.replace(/\{([^}]+)\}/g, (placeholder: string, name: string): string => {
+      const value = parameterValues.get(this.normalizeParameterName(name));
+      if (value == null) {
+        hasAllValues = false;
+        return placeholder;
+      }
+      return value;
+    });
+
+    return hasAllValues ? url : null;
   }
 
   private createTrace(response: PaleolatitudeResponse, configurableId: string, traceId: string): Array<Trace> {
@@ -196,6 +208,10 @@ export class PaleolatitudeGraphService {
 
   private normalizeLongitude(lon: number): number {
     return ((((lon + 180) % 360) + 360) % 360) - 180;
+  }
+
+  private normalizeParameterName(name: string): string {
+    return name.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
   private getConfigurable(configurables: Array<DataConfigurableI>): DataConfigurableI | undefined {

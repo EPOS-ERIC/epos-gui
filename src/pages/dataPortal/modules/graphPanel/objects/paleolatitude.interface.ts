@@ -17,4 +17,3 @@ export interface PaleolatitudeResponse {
 
 export const PALEOLATITUDE_CONFIG_ID = 'paleolatitude-map-tool';
 export const PALEOLATITUDE_TRACE_ID = 'paleolatitude-map-tool-trace';
-export const PALEOLATITUDE_API_URL = 'https://paleolatitude.org/api/paleolatitude';
