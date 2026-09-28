@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, AfterViewInit, HostListener, ElementRef, Renderer2, Output, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit, HostListener, ElementRef, Renderer2, Output, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -26,6 +26,7 @@ import { CONTEXT_RESOURCE } from 'api/api.service.factory';
 import { CONTEXT_FACILITY } from 'api/api.service.factory';
 import { CONTEXT_SOFTWARE } from 'api/api.service.factory';
 import { WMTSLayerTableData } from 'utility/eposLeaflet/eposLeaflet';
+import { InteractiveVisualisationService, InteractiveVisualisationSource } from 'pages/dataPortal/services/interactiveVisualisation.service';
 
 /** The above code is defining an interface called `TableExportObject` in TypeScript. This interface is
 used to define the structure and properties of an object that can be exported from a table. */
@@ -54,9 +55,10 @@ export enum TableDataType {
   templateUrl: './tableDisplay.component.html',
   styleUrls: ['./tableDisplay.component.scss']
 })
-export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
+export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
   @Input() dataConfigurable: DataConfigurableI;
   @Input() externalSource: ExternalVisualisationSource | null = null;
+  @Input() interactiveSources: Array<InteractiveVisualisationSource>;
   @Input() onDialogComponent: boolean = false;
 
   @Output() exportData = new Subject<TableExportObject>();
@@ -73,6 +75,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public tableHeaders: Array<string>;
   public customHeaders: Array<string>;
+  public tableName: string;
   public dataSource = new MatTableDataSource<Array<null | PopupProperty>>([]);
 
   // flag to establish if data are of type FeatureCollection or WMTS
@@ -117,6 +120,8 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private imageOverlay = false;
 
+  private interactiveRows = new Array<Array<PopupProperty>>();
+
   constructor(
     private readonly executionService: ExecutionService,
     private readonly authentificationClickService: AuthenticatedClickService,
@@ -126,15 +131,16 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     private readonly notificationService: NotificationService,
     private readonly configurables: DataSearchConfigurablesServiceResource,
     private readonly localStoragePersister: LocalStoragePersister,
+    private readonly interactiveVisualisations: InteractiveVisualisationService,
   ) {
   }
 
   public get sourceId(): string {
-    return this.externalSource?.id ?? this.dataConfigurable.id;
+    return this.externalSource?.id ?? this.dataConfigurable?.id ?? this.interactiveSources?.[0]?.groupId ?? '';
   }
 
   public get sourceName(): string {
-    return this.externalSource?.name ?? this.dataConfigurable.name;
+    return this.externalSource?.name ?? this.dataConfigurable?.name ?? this.tableName;
   }
 
   public get sourceContext(): string {
@@ -202,6 +208,12 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     this.checkRowInPage();
 
     this.showSpinner = true;
+    this.tableName = this.interactiveSources?.[0]?.table?.groupName ?? this.externalSource?.name ?? this.dataConfigurable?.name ?? 'Data';
+
+    if (this.interactiveSources != null) {
+      this.initializeInteractiveTable();
+      return;
+    }
 
     // check if mappable
     this.isMappable = this.externalSource != null ? true : this.dataConfigurable.isMappable;
@@ -220,72 +232,72 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       const distributionFormat = this.dataConfigurable.getDistributionDetails().getTabularableFormats()[0];
 
-    // check if it's a WMTS Distribution (this is needed also because a table format is returned from dist. execution but only needs to be shown when clicking on the "Donwnload" button of the card, NOT executed here on Table)
-    const isWmts = this.dataConfigurable.getDistributionDetails().getFormats().find((frmt) => frmt.getFormat() === 'application/vnd.ogc.wmts_xml');
-    if (isWmts != null) {
-      this.mapInteractionService.getWmtsLayersMapStorageObs().subscribe((infoFromWMTS: null | Map<string, WMTSLayerTableData>) => {
-        if (infoFromWMTS != null && infoFromWMTS.size > 0 && (infoFromWMTS.values().next().value as WMTSLayerTableData).originatorConfig === this.dataConfigurable.id) {
-          this.dataType = TableDataType.WMTS;
-          // clone the map to avoid reference issues (e.g. when cleaning 'this.infoFromWMTS' i MUST not clean the original map)
-          const infoFilteredClone = new Map(
-            [...infoFromWMTS].filter(([k, v]) => v.originatorConfig === this.dataConfigurable.id)
-          );
-          this.infoFromWMTS = infoFilteredClone;
+      // check if it's a WMTS Distribution (this is needed also because a table format is returned from dist. execution but only needs to be shown when clicking on the "Donwnload" button of the card, NOT executed here on Table)
+      const isWmts = this.dataConfigurable.getDistributionDetails().getFormats().find((frmt) => frmt.getFormat() === 'application/vnd.ogc.wmts_xml');
+      if (isWmts != null) {
+        this.mapInteractionService.getWmtsLayersMapStorageObs().subscribe((infoFromWMTS: null | Map<string, WMTSLayerTableData>) => {
+          if (infoFromWMTS != null && infoFromWMTS.size > 0 && (infoFromWMTS.values().next().value as WMTSLayerTableData).originatorConfig === this.dataConfigurable.id) {
+            this.dataType = TableDataType.WMTS;
+            // clone the map to avoid reference issues (e.g. when cleaning 'this.infoFromWMTS' i MUST not clean the original map)
+            const infoFilteredClone = new Map(
+              [...infoFromWMTS].filter(([k, v]) => v.originatorConfig === this.dataConfigurable.id)
+            );
+            this.infoFromWMTS = infoFilteredClone;
 
-          this.setTableHeaders(this.infoFromWMTS as Map<string, WMTSLayerTableData>); // <<< -------
-          this.updateTable(this.customHeaders);
-          this.showSpinner = false;
-        }
-        else {
-          this.showSpinner = false;
-        }
-      });
-    }
-    // FeatureCollection
-    else {
-      this.dataType = TableDataType.FEATURE_COLLECTION;
-
-      void this.executionService.executeDistributionFormat(
-        this.dataConfigurable.getDistributionDetails(),
-        distributionFormat,
-        this.dataConfigurable.getParameterDefinitions(),
-        this.dataConfigurable.currentParamValues.slice()
-      ).then((data: unknown) => {
-
-        if (null == data || JSON.stringify(data) === '{}') {
-          this.createEmptyTable();
-        } else {
-          switch (true) {
-            // eslint-disable-next-line max-len
-            case (DistributionFormatType.in(distributionFormat.getFormat(), [DistributionFormatType.APP_EPOS_GEOJSON, DistributionFormatType.APP_EPOS_TABLE_GEOJSON])):
-              this.data = data as FeatureCollection;
-              this.setTableHeaders(this.data);
-              this.updateTable(this.customHeaders);
-
-              // no data
-              if (this.data.features.length === 0 && this.configurables.getSelected()?.id === this.dataConfigurable.id) {
-                this.notificationService.sendDistributionNotification({
-                  id: this.dataConfigurable.id,
-                  title: 'Warning',
-                  message: NotificationService.MESSAGE_NO_DATA,
-                  type: NotificationService.TYPE_WARNING as string,
-                  showAgain: false,
-                });
-              }
-
-              // check if imageOverlay
-              this.imageOverlay = this.hasImageOverlay();
-
-              break;
+            this.setTableHeaders(this.infoFromWMTS as Map<string, WMTSLayerTableData>); // <<< -------
+            this.updateTable(this.customHeaders);
+            this.showSpinner = false;
           }
-        }
-      })
-        .catch((e) => {
-        }).finally(() => {
-          this.showSpinner = false;
-          this.refreshHiddenRowOnTable(1000);
+          else {
+            this.showSpinner = false;
+          }
         });
-    }
+      }
+      // FeatureCollection
+      else {
+        this.dataType = TableDataType.FEATURE_COLLECTION;
+
+        void this.executionService.executeDistributionFormat(
+          this.dataConfigurable.getDistributionDetails(),
+          distributionFormat,
+          this.dataConfigurable.getParameterDefinitions(),
+          this.dataConfigurable.currentParamValues.slice()
+        ).then((data: unknown) => {
+
+          if (null == data || JSON.stringify(data) === '{}') {
+            this.createEmptyTable();
+          } else {
+            switch (true) {
+              // eslint-disable-next-line max-len
+              case (DistributionFormatType.in(distributionFormat.getFormat(), [DistributionFormatType.APP_EPOS_GEOJSON, DistributionFormatType.APP_EPOS_TABLE_GEOJSON])):
+                this.data = data as FeatureCollection;
+                this.setTableHeaders(this.data);
+                this.updateTable(this.customHeaders);
+
+                // no data
+                if (this.data.features.length === 0 && this.configurables.getSelected()?.id === this.dataConfigurable.id) {
+                  this.notificationService.sendDistributionNotification({
+                    id: this.dataConfigurable.id,
+                    title: 'Warning',
+                    message: NotificationService.MESSAGE_NO_DATA,
+                    type: NotificationService.TYPE_WARNING as string,
+                    showAgain: false,
+                  });
+                }
+
+                // check if imageOverlay
+                this.imageOverlay = this.hasImageOverlay();
+
+                break;
+            }
+          }
+        })
+          .catch((e) => {
+          }).finally(() => {
+            this.showSpinner = false;
+            this.refreshHiddenRowOnTable(1000);
+          });
+      }
 
     }
 
@@ -349,8 +361,16 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (!changes.interactiveSources?.firstChange && this.matPaginator != null) {
+      this.initializeInteractiveTable();
+    }
+  }
+
   public ngOnDestroy(): void {
-    this.removeLayerIdFromHiddenMarkerOnLocalStorage(this.sourceId);
+    if (this.dataConfigurable != null) {
+      this.removeLayerIdFromHiddenMarkerOnLocalStorage(this.dataConfigurable.id);
+    }
   }
 
   /**
@@ -428,6 +448,10 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public showOnMap(element: Array<PopupProperty>, propertyId: string): void {
     if (this.isMappable) {
+      if (this.interactiveSources != null) {
+        this.interactiveVisualisations.viewSourceOnMap(propertyId);
+        return;
+      }
       const latlongProp = element.filter((val: PopupProperty) => val.name === this.pointsOnMapHeader);
 
       const coordinates = this.getCoordinateByProperty(latlongProp[0]);
@@ -581,6 +605,11 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public updateTable(headers: Array<string>): void {
 
+    if (this.interactiveSources != null) {
+      this.updateInteractiveTable(headers);
+      return;
+    }
+
     if (this.dataType === TableDataType.FEATURE_COLLECTION) {
       const tableMap = GeoJSONHelper.getTableObjectsFromProperties(
         this.sourceId,
@@ -715,7 +744,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    */
   public handleSelectionChange(event: MatSelectChange): void {
     this.getActiveColumnCount(event.value, true);
-    this.refreshHiddenRowOnTable(200);
+    if (this.interactiveSources == null) {
+      this.refreshHiddenRowOnTable(200);
+    }
   }
 
   /**
@@ -729,7 +760,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
       data: this.dataSource.filteredData.map((popupPropAr: Array<PopupProperty>) => popupPropAr.filter((popupProp: PopupProperty) => {
         return !this.headersToRemove.includes(popupProp.name);
-      }).map((popupProp: PopupProperty) => popupProp.valuesConcatString)
+      }).map((popupProp: PopupProperty) => this.interactiveSources != null ? popupProp.values.toString() : popupProp.valuesConcatString)
       ) as Array<Array<string>>,
       fileName: this.sourceName,
     };
@@ -830,6 +861,50 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.activeColumnCount.next(copy.length);
     }
+  }
+
+  private initializeInteractiveTable(): void {
+    this.isMappable = this.interactiveSources.some(source => source.table?.isMappable === true);
+    this.dataType = TableDataType.FEATURE_COLLECTION;
+    if (!this.headersToRemove.includes(this.showOnMapHeader)) {
+      this.headersToRemove.push(this.showOnMapHeader);
+    }
+    this.interactiveRows = this.interactiveSources.flatMap((source: InteractiveVisualisationSource) => {
+      return (source.table?.rows ?? []).map(row => {
+        return [new PopupProperty(this.showOnMapHeader, [source.id])].concat(Object.entries(row).map(([name, value]) => {
+          return new PopupProperty(this.formatInteractiveHeader(name), [this.getInteractivePropertyValue(value)]);
+        }));
+      });
+    });
+    this.tableHeaders = Array.from(new Set(this.interactiveRows.flatMap(row => row.map(property => property.name))));
+    this.customHeaders = this.tableHeaders.slice();
+    this.totalColumnCount = this.tableHeaders.length;
+    this.updateInteractiveTable(this.customHeaders);
+    this.showSpinner = false;
+  }
+
+  private updateInteractiveTable(headers: Array<string>): void {
+    this.customHeaders = headers;
+    this.dataSource.data = this.interactiveRows.map((row: Array<PopupProperty>) => headers.map((header: string) => {
+      return row.find((property: PopupProperty) => property.name === header) ?? new PopupProperty(header, ['']);
+    }));
+    this.maxPageNumber = Math.ceil(this.dataSource.data.length / this.matPaginator.pageSize);
+    this.getActiveColumnCount(this.dataSource.data[0], false);
+  }
+
+  private formatInteractiveHeader(name: string): string {
+    return name
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .replace(/[_-]+/g, ' ')
+      .replace(/\b\w/g, character => character.toUpperCase());
+  }
+
+  private getInteractivePropertyValue(value: unknown): number | boolean | string {
+    if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'string') {
+      return value;
+    }
+
+    return value == null ? '' : String(value);
   }
 
   private createEmptyTable() {

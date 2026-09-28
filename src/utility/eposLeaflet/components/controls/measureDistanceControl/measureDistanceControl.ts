@@ -182,14 +182,13 @@ export class MeasureDistanceControl extends L.Control {
     `;
 
     return this.dialogService.openConfirmationDialog(
-      message,      // messageHtml
-      true,        // closable
-      'Got It',     // confirmButtonHtml
-      'confirm',    // confirmButtonCssClass (valore di default)
+      message, // messageHtml
+      true, // closable
+      'Got It', // confirmButtonHtml
+      'confirm', // confirmButtonCssClass (valore di default)
     );
   }
 }
-
 
 // Type declarations for leaflet-ruler (unchanged)
 declare module 'leaflet' {

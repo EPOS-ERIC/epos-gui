@@ -18,8 +18,9 @@ import { NotificationService } from 'components/notification/notification.servic
 import { DataConfigurableDataSearchI } from 'utility/configurablesDataSearch/dataConfigurableDataSearchI.interface';
 import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
 import { ExternalVisualisationSource, MapInteractionService } from 'utility/eposLeaflet/services/mapInteraction.service';
+import { InteractiveVisualisationService, InteractiveVisualisationSource } from 'pages/dataPortal/services/interactiveVisualisation.service';
 
-export type TraceSource = DataConfigurableDataSearch | ExternalVisualisationSource;
+export type TraceSource = DataConfigurableDataSearch | ExternalVisualisationSource | InteractiveVisualisationSource;
 
 /**
  * Wrapper for the visualization graphing functionality.
@@ -49,6 +50,7 @@ export class GraphPanelComponent implements OnInit {
   public currentTraces = new Map<TraceSource, null | Array<Trace>>();
   /** The {@link Trace}s that have been selected in the {@link TraceSelector} component. */
   public selectedTraces = new Array<Trace>();
+  public highlightedSourceId: null | string = null;
   /** Whether the loading spinner should show */
   public loading = false;
 
@@ -58,6 +60,7 @@ export class GraphPanelComponent implements OnInit {
   public readonly DISPLAY_TYPES = YAxisDisplayType;
   /** The currently selected {@link YAxisDisplayType} value. */
   public selectedDisplayType = YAxisDisplayType.STACK;
+  public isXAxisReversed = false;
 
   /** Variable for keeping track of subscriptions, which are cleaned up by Unsubscriber */
   private readonly subscriptions: Array<Subscription> = new Array<Subscription>();
@@ -73,7 +76,8 @@ export class GraphPanelComponent implements OnInit {
     private readonly apiService: ApiService,
     private readonly traceSelector: TraceSelectorService,
     private readonly cd: ChangeDetectorRef,
-    private readonly mapInteractionService: MapInteractionService
+    private readonly mapInteractionService: MapInteractionService,
+    private readonly interactiveVisualisations: InteractiveVisualisationService,
   ) {
   }
 
@@ -90,6 +94,7 @@ export class GraphPanelComponent implements OnInit {
    */
   public setSelectedTraces(traces: Array<Trace>): void {
     this.selectedTraces = traces;
+    this.updateInteractiveSourceStyles();
   }
 
   public setLoading(loading: boolean): void {
@@ -103,6 +108,10 @@ export class GraphPanelComponent implements OnInit {
    */
   public setDisplayType(changeEvent: MatButtonToggleChange): void {
     this.selectedDisplayType = changeEvent.value as YAxisDisplayType;
+  }
+
+  public toggleXAxisDirection(): void {
+    this.isXAxisReversed = !this.isXAxisReversed;
   }
 
   /**
@@ -133,7 +142,7 @@ export class GraphPanelComponent implements OnInit {
 
           // remove the configurables that have been remove in the interface
           Array.from(this.currentTraces.keys()).forEach((thisConfig: TraceSource) => {
-            if (!this.isExternalSource(thisConfig) && !graphableConfigurables.includes(thisConfig)) {
+            if (!this.isExternalSource(thisConfig) && !this.isInteractiveSource(thisConfig) && !graphableConfigurables.includes(thisConfig)) {
               this.currentTraces.delete(thisConfig);
             }
           });
@@ -190,9 +199,9 @@ export class GraphPanelComponent implements OnInit {
 
         // if at this point configurable is 'null' and we are triggering Graph execution from a WMTS sub-layer, assign the 'originatorConfigurable' as Config
         const wmtsLayerStorage = this.mapInteractionService.wmtsLayerStorage.value;
-        if(thisConfig == null && wmtsLayerStorage && wmtsLayerStorage.has(id)){
+        if (thisConfig == null && wmtsLayerStorage && wmtsLayerStorage.has(id)) {
           const originatorConfig = wmtsLayerStorage.get(id)?.originatorConfig;
-          if(originatorConfig != null){
+          if (originatorConfig != null) {
             thisConfig = this.configurables.get(originatorConfig);
           }
         }
@@ -211,7 +220,7 @@ export class GraphPanelComponent implements OnInit {
               this.currentTraces.set(thisConfig as DataConfigurableDataSearch, traces);
               this.triggerChangedTraces();
 
-              this.resultPanelService.setCounterGraph(graphableConfigurables.length + this.getExternalGraphSourceCount() + 1);
+              this.updateCounter(graphableConfigurables.length + 1);
 
               this.panelsEvent.graphPanelOpen(id, false);
 
@@ -221,8 +230,17 @@ export class GraphPanelComponent implements OnInit {
           });
         } else {
           this.currentTraces.delete(thisConfig as DataConfigurableDataSearch);
-          this.resultPanelService.setCounterGraph(Math.max(0, graphableConfigurables.length + this.getExternalGraphSourceCount() - 1));
+          this.updateCounter(Math.max(0, graphableConfigurables.length - 1));
         }
+      }),
+      this.interactiveVisualisations.sourcesObs.subscribe(sources => {
+        this.updateInteractiveSources(sources);
+      }),
+      this.interactiveVisualisations.highlightedSourceObs.subscribe((id: null | string) => {
+        this.highlightedSourceId = id;
+      }),
+      this.interactiveVisualisations.viewSourceOnGraphObs.subscribe((id: string) => {
+        this.viewInteractiveSourceOnGraph(id);
       }),
     );
   }
@@ -253,7 +271,8 @@ export class GraphPanelComponent implements OnInit {
    * {@link TraceSelector} and {@link GraphDisplay} components;
    */
   private triggerChangedTraces(): void {
-    const newMap = new Map<TraceSource, Array<Trace>>();
+    const newMap = new Map<TraceSource, null | Array<Trace>>();
+    this.loading = false;
     Array.from(this.currentTraces.keys()).forEach((configurable: TraceSource) => {
       this.loading = (this.loading || (null == this.currentTraces.get(configurable)));
       newMap.set(configurable, this.currentTraces.get(configurable)!);
@@ -270,9 +289,69 @@ export class GraphPanelComponent implements OnInit {
     return source.id.startsWith('external-layer-');
   }
 
+  private isInteractiveSource(source: TraceSource): source is InteractiveVisualisationSource {
+    return (source as InteractiveVisualisationSource).kind === 'interactive';
+  }
+
+  private updateInteractiveSources(sources: Map<string, InteractiveVisualisationSource>): void {
+    Array.from(this.currentTraces.keys())
+      .filter((source: TraceSource) => this.isInteractiveSource(source) && !sources.has(source.id))
+      .forEach((source: TraceSource) => {
+        this.currentTraces.get(source)?.forEach((trace: Trace) => {
+          this.traceSelector.setTraceSelector(source.id, trace.id, false);
+        });
+        this.currentTraces.delete(source);
+      });
+
+    sources.forEach((source: InteractiveVisualisationSource) => {
+      const currentSource = Array.from(this.currentTraces.keys()).find((item: TraceSource) => {
+        return this.isInteractiveSource(item) && item.id === source.id;
+      });
+      const sourceBecameReady = currentSource == null || this.currentTraces.get(currentSource) == null;
+      if (currentSource != null) {
+        this.currentTraces.delete(currentSource);
+      }
+      this.currentTraces.set(source, source.traces);
+
+      if (source.traces != null && sourceBecameReady) {
+        this.selectedDisplayType = source.preferredDisplayType ?? this.selectedDisplayType;
+        if (source.autoSelect && source.traces.length > 0) {
+          setTimeout(() => {
+            this.traceSelector.setTraceSelector(source.id, source.traces![0].id, true);
+          }, 100);
+        }
+      }
+    });
+
+    this.triggerChangedTraces();
+    this.updateCounter();
+  }
+
+  private updateInteractiveSourceStyles(): void {
+    this.interactiveVisualisations.getSources().forEach((source: InteractiveVisualisationSource) => {
+      const trace = this.selectedTraces.find((selectedTrace: Trace) => {
+        return selectedTrace.originatingConfigurableId === source.id;
+      });
+      this.interactiveVisualisations.setSourceStyle(source.id, trace?.getStyle()?.getColor1String() ?? null);
+    });
+  }
+
+  private viewInteractiveSourceOnGraph(id: string): void {
+    const source = Array.from(this.currentTraces.keys()).find((item: TraceSource) => {
+      return this.isInteractiveSource(item) && item.id === id;
+    });
+    const trace = source == null ? null : this.currentTraces.get(source)?.[0] ?? null;
+    if (trace != null && !this.selectedTraces.some((selectedTrace: Trace) => selectedTrace.id === trace.id)) {
+      this.traceSelector.setTraceSelector(id, trace.id, true);
+    }
+    this.panelsEvent.graphPanelOpen(id, false);
+  }
+
   private updateCounter(internalCount?: number): void {
     const graphableCount = internalCount ?? this.configurables.getAll().filter(config => config.isGraphable).length;
-    this.resultPanelService.setCounterGraph(graphableCount + this.getExternalGraphSourceCount());
+    this.resultPanelService.setCounterGraph(
+      graphableCount + this.getExternalGraphSourceCount() + this.interactiveVisualisations.getSources().length
+    );
   }
 
   /**

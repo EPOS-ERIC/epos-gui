@@ -36,6 +36,8 @@ export class GraphDisplayComponent {
   private currentYAxes = new Array<YAxis>();
   /** The currently selected {@link YAxisDisplayType} value. */
   private _selectedDisplayType = YAxisDisplayType.STACK;
+  private _highlightedSourceId: null | string = null;
+  private _isXAxisReversed = false;
 
   /** Minimum height of a y-axis */
   private readonly MIN_SINGLE_AXIS_HEIGHT = 125;
@@ -56,6 +58,29 @@ export class GraphDisplayComponent {
     this._selectedDisplayType = displayType;
     this.refreshGraph();
 
+  }
+
+  @Input()
+  set highlightedSourceId(id: null | string) {
+    this._highlightedSourceId = id;
+    this.refreshGraph();
+  }
+
+  @Input()
+  set isXAxisReversed(isXAxisReversed: boolean) {
+    const currentRange = this.layout.xaxis?.range;
+    this._isXAxisReversed = isXAxisReversed;
+    this.refreshGraph();
+    if (currentRange?.[0] != null && currentRange[1] != null) {
+      this.layout = {
+        ...this.layout,
+        xaxis: {
+          ...this.layout.xaxis,
+          autorange: false,
+          range: [currentRange[1], currentRange[0]],
+        },
+      };
+    }
   }
 
   /**
@@ -108,6 +133,9 @@ export class GraphDisplayComponent {
         t: 40,  //  might need more when there's a title
         pad: 4
       },
+      xaxis: {
+        autorange: this._isXAxisReversed ? 'reversed' : true,
+      },
     };
 
     switch (this._selectedDisplayType) {
@@ -128,6 +156,7 @@ export class GraphDisplayComponent {
         returnObject = {
           ...returnObject,
           xaxis: {
+            autorange: this._isXAxisReversed ? 'reversed' : true,
             domain: [leftYAxisWidth, 1 - rightYAxisWidth],
           }
         };
@@ -219,9 +248,37 @@ export class GraphDisplayComponent {
   private refreshGraph(): void {
       this.resolveYAxisChanges();
       this.data = this.currentTraces
-        .map(trace => trace.getPlotlyTrace())
-        .filter(trace => (null != trace)) as Array<Trace>;
+        .flatMap((trace: Trace) => {
+          const plotlyTrace = trace.getPlotlyTrace();
+          if (plotlyTrace != null && trace.originatingConfigurableId === this._highlightedSourceId) {
+            return [this.createGlowTrace(plotlyTrace), plotlyTrace];
+          }
+          return [plotlyTrace];
+        })
+        .filter(trace => (null != trace)) as Array<Data>;
       this.layout = this.getLayoutObject();
     }
-}
 
+  private createGlowTrace(plotlyTrace: Data): Data {
+    const source = plotlyTrace as unknown as {
+      line?: { color?: string };
+      x?: unknown;
+      y?: unknown;
+      yaxis?: string;
+    };
+    return {
+      x: source.x,
+      y: source.y,
+      yaxis: source.yaxis,
+      type: 'scatter',
+      mode: 'lines',
+      line: {
+        color: source.line?.color,
+        width: 10,
+      },
+      opacity: 0.25,
+      hoverinfo: 'skip',
+      showlegend: false,
+    } as Data;
+  }
+}
