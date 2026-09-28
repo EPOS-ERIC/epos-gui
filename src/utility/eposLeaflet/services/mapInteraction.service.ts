@@ -57,6 +57,8 @@ export class MapInteractionService {
 
   private readonly radiusSelections = new Map<string, RadiusSelection>();
   private readonly editableRadiusSelections = new Map<string, RadiusSelection>();
+  private readonly pendingWmtsLayerToggles = new Map<string, () => void>();
+  private readonly wmtsLayerVisibility = new BehaviorSubject<Map<string, boolean>>(new Map());
 
   /**
    * The constructor function takes in a LoadingService and a LocalStoragePersister as parameters.
@@ -159,7 +161,58 @@ export class MapInteractionService {
     return this.wmtsLayerStorage.asObservable();
   }
   public setWmtsLayersMapStorage(layerMapStructure: null | Map<string, WMTSLayerTableData>): void {
+    const visibility = new Map(this.wmtsLayerVisibility.value);
+    if (layerMapStructure === null) {
+      visibility.clear();
+    } else {
+      layerMapStructure.forEach((layer) => {
+        if (!visibility.has(layer.tableRowPropertyId)) {
+          visibility.set(layer.tableRowPropertyId, layer.isDefaultLayer);
+        }
+      });
+    }
+    this.wmtsLayerVisibility.next(visibility);
     this.wmtsLayerStorage.next(layerMapStructure);
+  }
+
+  public getWmtsLayerVisibilityObs(): Observable<Map<string, boolean>> {
+    return this.wmtsLayerVisibility.asObservable();
+  }
+
+  public isWmtsLayerVisible(propertyId: string): boolean {
+    return this.wmtsLayerVisibility.value.get(propertyId) ?? false;
+  }
+
+  public setWmtsLayerVisibility(propertyId: string, visible: boolean): void {
+    const visibility = new Map(this.wmtsLayerVisibility.value);
+    visibility.set(propertyId, visible);
+    this.wmtsLayerVisibility.next(visibility);
+  }
+
+  public setWmtsLayersVisibility(propertyIds: Array<string>, visible: boolean): void {
+    const visibility = new Map(this.wmtsLayerVisibility.value);
+    propertyIds.forEach((propertyId) => visibility.set(propertyId, visible));
+    this.wmtsLayerVisibility.next(visibility);
+  }
+
+  public toggleWmtsLayer(propertyId: string, show: boolean): Promise<void> {
+    const layerId = propertyId.split('#')[0];
+    if (this.wmtsLayerStorage.value?.has(layerId) !== true) {
+      return Promise.resolve();
+    }
+
+    return new Promise<void>((resolve) => {
+      this.pendingWmtsLayerToggles.set(layerId, resolve);
+      this.toggleFeature(layerId, propertyId, show, false);
+    });
+  }
+
+  public completeWmtsLayerToggle(layerId: string): void {
+    const complete = this.pendingWmtsLayerToggles.get(layerId);
+    if (complete !== undefined) {
+      this.pendingWmtsLayerToggles.delete(layerId);
+      complete();
+    }
   }
 
   public setExternalVisualisationSource(source: ExternalVisualisationSource): void {

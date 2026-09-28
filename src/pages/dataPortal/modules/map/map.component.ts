@@ -710,6 +710,7 @@ export class MapComponent implements OnInit {
             if (mainLayer != null) {
               mainLayer.hidden.set(false);
             }
+            this.mapInteractionService.completeWmtsLayerToggle(customId);
             return;
           }
 
@@ -760,12 +761,15 @@ export class MapComponent implements OnInit {
                 newWmtsTileLayer.visibleOnLayerControl.set(false);
 
                 this.eposLeaflet.addLayer(newWmtsTileLayer);
+                this.mapInteractionService.completeWmtsLayerToggle(customId);
               } else {
                 console.error('TileJSON response does not contain valid tiles URL');
+                this.mapInteractionService.completeWmtsLayerToggle(customId);
               }
             })
             .catch((e) => {
               console.error('Error fetching TileJSON: ', e);
+              this.mapInteractionService.completeWmtsLayerToggle(customId);
             });
         }
         // Disabling WMTS Layer
@@ -783,6 +787,7 @@ export class MapComponent implements OnInit {
           else {
             this.eposLeaflet.removeLayerById(customId);
           }
+          this.mapInteractionService.completeWmtsLayerToggle(customId);
         }
         else {
           if (propertyId !== null && propertyId !== undefined) {
