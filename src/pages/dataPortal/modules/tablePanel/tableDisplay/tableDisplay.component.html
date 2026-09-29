@@ -52,11 +52,11 @@
           (click)="selectedRow = null">
           <span *ngIf="columnIndex > 1 || !isMappable">{{ label }}</span>
           <i
-            *ngIf="columnIndex === 1 && isMappable && dataType !== 1"
-            class="fas fa-eye{{ someOnMapHide && !toggleOnMapDisabled ? '-slash' : '' }} action {{ toggleOnMapDisabled ? 'disabled' : '' }}"
+            *ngIf="columnIndex === 1 && isMappable"
+            class="fas fa-eye{{ someOnMapHide && !toggleOnMapDisabled ? '-slash' : '' }} action {{ toggleOnMapDisabled || wmtsBulkToggleInProgress ? 'disabled' : '' }}"
             aria-hidden="true"
             [matTooltip]="'Toggle all data on map (' + dataSource.filteredData.length + ')' + toggleOnMapDisabledMessage"
-            (click)="!toggleOnMapDisabled ? toggleAllMapFeature() : false"></i>
+            (click)="!toggleOnMapDisabled && !wmtsBulkToggleInProgress ? toggleAllMapFeature() : false"></i>
         </th>
 
         <td

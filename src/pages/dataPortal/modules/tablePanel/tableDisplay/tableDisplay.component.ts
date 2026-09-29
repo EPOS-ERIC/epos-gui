@@ -100,6 +100,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   public toggleOnMapDisabledMessage = '';
   public toggleOnMapSelected: { [key: string]: boolean } = {};
   public someOnMapHide = false;
+  public wmtsBulkToggleInProgress = false;
 
   // Wmts
   public infoFromWMTS: null | Map<string, WMTSLayerTableData> = null;
@@ -220,72 +221,72 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       const distributionFormat = this.dataConfigurable.getDistributionDetails().getTabularableFormats()[0];
 
-    // check if it's a WMTS Distribution (this is needed also because a table format is returned from dist. execution but only needs to be shown when clicking on the "Donwnload" button of the card, NOT executed here on Table)
-    const isWmts = this.dataConfigurable.getDistributionDetails().getFormats().find((frmt) => frmt.getFormat() === 'application/vnd.ogc.wmts_xml');
-    if (isWmts != null) {
-      this.mapInteractionService.getWmtsLayersMapStorageObs().subscribe((infoFromWMTS: null | Map<string, WMTSLayerTableData>) => {
-        if (infoFromWMTS != null && infoFromWMTS.size > 0 && (infoFromWMTS.values().next().value as WMTSLayerTableData).originatorConfig === this.dataConfigurable.id) {
-          this.dataType = TableDataType.WMTS;
-          // clone the map to avoid reference issues (e.g. when cleaning 'this.infoFromWMTS' i MUST not clean the original map)
-          const infoFilteredClone = new Map(
-            [...infoFromWMTS].filter(([k, v]) => v.originatorConfig === this.dataConfigurable.id)
-          );
-          this.infoFromWMTS = infoFilteredClone;
+      // check if it's a WMTS Distribution (this is needed also because a table format is returned from dist. execution but only needs to be shown when clicking on the "Donwnload" button of the card, NOT executed here on Table)
+      const isWmts = this.dataConfigurable.getDistributionDetails().getFormats().find((frmt) => frmt.getFormat() === 'application/vnd.ogc.wmts_xml');
+      if (isWmts != null) {
+        this.mapInteractionService.getWmtsLayersMapStorageObs().subscribe((infoFromWMTS: null | Map<string, WMTSLayerTableData>) => {
+          if (infoFromWMTS != null && infoFromWMTS.size > 0 && (infoFromWMTS.values().next().value as WMTSLayerTableData).originatorConfig === this.dataConfigurable.id) {
+            this.dataType = TableDataType.WMTS;
+            // clone the map to avoid reference issues (e.g. when cleaning 'this.infoFromWMTS' i MUST not clean the original map)
+            const infoFilteredClone = new Map(
+              [...infoFromWMTS].filter(([k, v]) => v.originatorConfig === this.dataConfigurable.id)
+            );
+            this.infoFromWMTS = infoFilteredClone;
 
-          this.setTableHeaders(this.infoFromWMTS as Map<string, WMTSLayerTableData>); // <<< -------
-          this.updateTable(this.customHeaders);
-          this.showSpinner = false;
-        }
-        else {
-          this.showSpinner = false;
-        }
-      });
-    }
-    // FeatureCollection
-    else {
-      this.dataType = TableDataType.FEATURE_COLLECTION;
-
-      void this.executionService.executeDistributionFormat(
-        this.dataConfigurable.getDistributionDetails(),
-        distributionFormat,
-        this.dataConfigurable.getParameterDefinitions(),
-        this.dataConfigurable.currentParamValues.slice()
-      ).then((data: unknown) => {
-
-        if (null == data || JSON.stringify(data) === '{}') {
-          this.createEmptyTable();
-        } else {
-          switch (true) {
-            // eslint-disable-next-line max-len
-            case (DistributionFormatType.in(distributionFormat.getFormat(), [DistributionFormatType.APP_EPOS_GEOJSON, DistributionFormatType.APP_EPOS_TABLE_GEOJSON])):
-              this.data = data as FeatureCollection;
-              this.setTableHeaders(this.data);
-              this.updateTable(this.customHeaders);
-
-              // no data
-              if (this.data.features.length === 0 && this.configurables.getSelected()?.id === this.dataConfigurable.id) {
-                this.notificationService.sendDistributionNotification({
-                  id: this.dataConfigurable.id,
-                  title: 'Warning',
-                  message: NotificationService.MESSAGE_NO_DATA,
-                  type: NotificationService.TYPE_WARNING as string,
-                  showAgain: false,
-                });
-              }
-
-              // check if imageOverlay
-              this.imageOverlay = this.hasImageOverlay();
-
-              break;
+            this.setTableHeaders(this.infoFromWMTS as Map<string, WMTSLayerTableData>); // <<< -------
+            this.updateTable(this.customHeaders);
+            this.showSpinner = false;
           }
-        }
-      })
-        .catch((e) => {
-        }).finally(() => {
-          this.showSpinner = false;
-          this.refreshHiddenRowOnTable(1000);
+          else {
+            this.showSpinner = false;
+          }
         });
-    }
+      }
+      // FeatureCollection
+      else {
+        this.dataType = TableDataType.FEATURE_COLLECTION;
+
+        void this.executionService.executeDistributionFormat(
+          this.dataConfigurable.getDistributionDetails(),
+          distributionFormat,
+          this.dataConfigurable.getParameterDefinitions(),
+          this.dataConfigurable.currentParamValues.slice()
+        ).then((data: unknown) => {
+
+          if (null == data || JSON.stringify(data) === '{}') {
+            this.createEmptyTable();
+          } else {
+            switch (true) {
+              // eslint-disable-next-line max-len
+              case (DistributionFormatType.in(distributionFormat.getFormat(), [DistributionFormatType.APP_EPOS_GEOJSON, DistributionFormatType.APP_EPOS_TABLE_GEOJSON])):
+                this.data = data as FeatureCollection;
+                this.setTableHeaders(this.data);
+                this.updateTable(this.customHeaders);
+
+                // no data
+                if (this.data.features.length === 0 && this.configurables.getSelected()?.id === this.dataConfigurable.id) {
+                  this.notificationService.sendDistributionNotification({
+                    id: this.dataConfigurable.id,
+                    title: 'Warning',
+                    message: NotificationService.MESSAGE_NO_DATA,
+                    type: NotificationService.TYPE_WARNING as string,
+                    showAgain: false,
+                  });
+                }
+
+                // check if imageOverlay
+                this.imageOverlay = this.hasImageOverlay();
+
+                break;
+            }
+          }
+        })
+          .catch((e) => {
+          }).finally(() => {
+            this.showSpinner = false;
+            this.refreshHiddenRowOnTable(1000);
+          });
+      }
 
     }
 
@@ -339,6 +340,18 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       }),
       this.mapInteractionService.toggleOnMapDisabled.subscribe(value => {
         this.toggleOnMapDisabled = value;
+      }),
+
+      this.mapInteractionService.getWmtsLayerVisibilityObs().subscribe((visibility) => {
+        if (this.dataType === TableDataType.WMTS) {
+          Object.keys(this.toggleOnMapSelected).forEach((propertyId) => {
+            const visible = visibility.get(propertyId);
+            if (visible !== undefined) {
+              this.toggleOnMapSelected[propertyId] = visible;
+            }
+          });
+          this.checkSomeOnMapHide();
+        }
       }),
 
       // useful for aligning the behaviors between the table in the popup and the table in the sidenav
@@ -398,6 +411,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   public toggleMapFeature(element: Array<PopupProperty>, checked: boolean, checkSomeOnMapHideFunc = true): void {
     const featureIndex = this.getPropertyIdFromArrayPopupProperty(element);
     this.toggleOnMapSelected[featureIndex] = checked;
+    if (this.dataType === TableDataType.WMTS) {
+      this.mapInteractionService.setWmtsLayerVisibility(featureIndex, checked);
+    }
 
     this.refreshHiddenMarkerOnLocalStorage(featureIndex, checked);
 
@@ -412,6 +428,11 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    * toggleMapFeature function for each item, and then checks if some features are hidden on the map.
    */
   public toggleAllMapFeature(): void {
+    if (this.dataType === TableDataType.WMTS) {
+      this.toggleAllWmtsLayers();
+      return;
+    }
+
     this.dataSource.filteredData.map((_ap: Array<PopupProperty>) => {
       this.toggleMapFeature(_ap, this.someOnMapHide, false);
     });
@@ -685,13 +706,8 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
             // Declaring PROPERTY_ID for the row: this is a value which is NOT shown in the table (not in 'customHeaders', 'tableHeaders' nor 'columnsCount') !
             layerArr.push(new PopupProperty(PopupProperty.PROPERTY_ID, [layer.tableRowPropertyId])); // Hello, hello my friend ... MUST BE EQUAL TO THE toggleOnMapHeader !!!!!
 
-            if (layer.isDefaultLayer) {
-              this.toggleOnMapSelected[layer.tableRowPropertyId] = true;
-            }
-            else {
-              this.toggleOnMapSelected[layer.tableRowPropertyId] = false;
-              this.refreshHiddenMarkerOnLocalStorage(layer.tableRowPropertyId, false);
-            }
+            this.toggleOnMapSelected[layer.tableRowPropertyId] =
+              this.mapInteractionService.isWmtsLayerVisible(layer.tableRowPropertyId);
 
             popupPropertiesArray.push(layerArr);
           });
@@ -702,6 +718,12 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
         this.maxPageNumber = Math.ceil(this.dataSource.data.length / this.matPaginator.pageSize);
         this.getActiveColumnCount(this.dataSource.data[0], false);
         this.showSpinner = false;
+
+        const inactiveLayers = popupPropertiesArray.filter((layer) => {
+          const propertyId = this.getPropertyIdFromArrayPopupProperty(layer);
+          return !this.mapInteractionService.isWmtsLayerVisible(propertyId);
+        });
+        this.activateWmtsLayers(inactiveLayers);
         /* this.infoFromWMTS.clear(); */
       }
     }
@@ -735,6 +757,59 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     this.exportData.next(data);
+  }
+
+  private toggleAllWmtsLayers(): void {
+    const show = this.someOnMapHide;
+    const layers = this.dataSource.filteredData.slice() as Array<Array<PopupProperty>>;
+    const layerIds = layers.map((layer) => this.getPropertyIdFromArrayPopupProperty(layer));
+
+    this.wmtsBulkToggleInProgress = true;
+    layerIds.forEach((layerId) => {
+      this.toggleOnMapSelected[layerId] = show;
+    });
+    this.mapInteractionService.setWmtsLayersVisibility(layerIds, show);
+    this.checkSomeOnMapHide();
+
+    void this.toggleWmtsLayersWithConcurrency(layers, show)
+      .finally(() => {
+        this.wmtsBulkToggleInProgress = false;
+      });
+  }
+
+  private activateWmtsLayers(layers: Array<Array<PopupProperty>>): void {
+    if (layers.length === 0) {
+      return;
+    }
+
+    const layerIds = layers.map((layer) => this.getPropertyIdFromArrayPopupProperty(layer));
+    this.wmtsBulkToggleInProgress = true;
+    layerIds.forEach((layerId) => {
+      this.toggleOnMapSelected[layerId] = true;
+    });
+    this.mapInteractionService.setWmtsLayersVisibility(layerIds, true);
+
+    void this.toggleWmtsLayersWithConcurrency(layers, true)
+      .finally(() => {
+        this.wmtsBulkToggleInProgress = false;
+      });
+  }
+
+  private async toggleWmtsLayersWithConcurrency(layers: Array<Array<PopupProperty>>, show: boolean): Promise<void> {
+    const maxConcurrentLoads = 1500;
+    let nextLayerIndex = 0;
+
+    const toggleNextLayer = async (): Promise<void> => {
+      while (nextLayerIndex < layers.length) {
+        const layer = layers[nextLayerIndex++];
+        const layerId = this.getPropertyIdFromArrayPopupProperty(layer);
+        await this.mapInteractionService.toggleWmtsLayer(layerId, show);
+      }
+    };
+
+    await Promise.all(
+      Array.from({ length: Math.min(maxConcurrentLoads, layers.length) }, () => toggleNextLayer())
+    );
   }
 
   private filterRadiusPoints(features: FeatureCollection['features']): FeatureCollection['features'] {
@@ -793,6 +868,10 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
    * property based on the retrieved data.
    */
   private refreshIconOnTableFromLocalStorage(): void {
+    if (this.dataType === TableDataType.WMTS) {
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const dataSearchToggleOnMap: Array<string> = JSON.parse(this.localStoragePersister.getValue(LocalStorageVariables.LS_CONFIGURABLES, LocalStorageVariables.LS_TOGGLE_ON_MAP) as string || '[]');
 
