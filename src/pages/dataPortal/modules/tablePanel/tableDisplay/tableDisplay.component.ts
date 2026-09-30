@@ -26,6 +26,8 @@ import { CONTEXT_RESOURCE } from 'api/api.service.factory';
 import { CONTEXT_FACILITY } from 'api/api.service.factory';
 import { CONTEXT_SOFTWARE } from 'api/api.service.factory';
 import { WMTSLayerTableData } from 'utility/eposLeaflet/eposLeaflet';
+import { ObjectHelper } from 'utility/maplayers/objectHelper';
+import { JsonHelper } from 'utility/maplayers/jsonHelper';
 
 /** The above code is defining an interface called `TableExportObject` in TypeScript. This interface is
 used to define the structure and properties of an object that can be exported from a table. */
@@ -87,6 +89,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
   public showOnMapHeader = PopupProperty.SHOW_ON_MAP;
   public propertyIdHeader = PopupProperty.PROPERTY_ID;
   public toggleOnMapHeader = PopupProperty.TOGGLE_ON_MAP;
+  public downloadHeader = 'Product Download';
   public imagesHeader = PopupProperty.IMAGES;
   public isMappable = true;
   public pageNumber = 1;
@@ -104,6 +107,8 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Wmts
   public infoFromWMTS: null | Map<string, WMTSLayerTableData> = null;
+
+  private wmtsDownloadLinksPromise: Promise<Array<PopupProperty>> | null = null;
 
   /** Variable for keeping track of subscriptions, which are cleaned up by Unsubscriber */
   private readonly subscriptions: Array<Subscription> = new Array<Subscription>();
@@ -462,6 +467,30 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  public downloadWmtsLayer(event: MouseEvent, layerIdentifierValue: string | number | boolean): void {
+    event.stopPropagation();
+    const layerIdentifier = String(layerIdentifierValue);
+    this.notificationService.sendNotification('Starting download', 'x', NotificationService.TYPE_SUCCESS);
+
+    void this.getWmtsDownloadLinks()
+      .then((links) => {
+        const matchingLink = links.find((link) => {
+          const fileName = link.authenticatedDownloadFileName || link.name;
+          return this.normalizeWmtsDownloadIdentifier(fileName) ===
+            this.normalizeWmtsDownloadIdentifier(layerIdentifier);
+        });
+
+        if (matchingLink !== undefined) {
+          GeoJSONHelper.popupClick(event, this.executionService, this.authentificationClickService, matchingLink);
+        } else {
+          this.notificationService.sendErrorNotification(`No downloadable file found for layer ${layerIdentifier}.`);
+        }
+      })
+      .catch(() => {
+        this.notificationService.sendErrorNotification(`Unable to retrieve the downloadable file for layer ${layerIdentifier}.`);
+      });
+  }
+
   /**
    * The `expandRow` function is used to expand or collapse a row in a table, based on the provided index
    * and element data.
@@ -702,6 +731,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
               else {
                 layerArr.push(new PopupProperty('metadataUrl', ['--']));
               }
+            }
+            if (this.customHeaders.includes(this.downloadHeader)) {
+              layerArr.push(new PopupProperty(this.downloadHeader, [layer.layerIdentifier]));
             }
             // Declaring PROPERTY_ID for the row: this is a value which is NOT shown in the table (not in 'customHeaders', 'tableHeaders' nor 'columnsCount') !
             layerArr.push(new PopupProperty(PopupProperty.PROPERTY_ID, [layer.tableRowPropertyId])); // Hello, hello my friend ... MUST BE EQUAL TO THE toggleOnMapHeader !!!!!
@@ -991,6 +1023,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
                 break;
               case 'metadataurl':
                 correctNamingHeaders.push('Metadata URL');
+                correctNamingHeaders.push(this.downloadHeader);
                 break;
             }
           }
@@ -1014,6 +1047,47 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }
 
+  }
+
+  private getWmtsDownloadLinks(): Promise<Array<PopupProperty>> {
+    if (this.wmtsDownloadLinksPromise === null) {
+      const distributionFormat = this.dataConfigurable.getDistributionDetails().getTabularableFormats()[0];
+
+      this.wmtsDownloadLinksPromise = this.executionService.executeDistributionFormat(
+        this.dataConfigurable.getDistributionDetails(),
+        distributionFormat,
+        this.dataConfigurable.getParameterDefinitions(),
+        this.dataConfigurable.currentParamValues.slice()
+      ).then((data: unknown) => {
+        if (!DistributionFormatType.in(
+          distributionFormat.getFormat(),
+          [DistributionFormatType.APP_EPOS_GEOJSON, DistributionFormatType.APP_EPOS_TABLE_GEOJSON]
+        )) {
+          return [];
+        }
+
+        const links: Array<PopupProperty> = [];
+        (data as FeatureCollection).features.forEach((feature) => {
+          const externalLinks = ObjectHelper.getObjectArray<Record<string, unknown>>(
+            (feature.properties ?? {}) as Record<string, unknown>,
+            GeoJSONHelper.EXTERNAL_LINK_ATTR
+          );
+          links.push(...JsonHelper.createExternalLinksAsHTMLProperties(externalLinks, true, true));
+        });
+
+        return links;
+      }).catch((error: unknown) => {
+        this.wmtsDownloadLinksPromise = null;
+        throw error;
+      });
+    }
+
+    return this.wmtsDownloadLinksPromise;
+  }
+
+  private normalizeWmtsDownloadIdentifier(value: string): string {
+    const fileName = value.substring(value.lastIndexOf('/') + 1).trim().replace(/\.zip$/i, '');
+    return fileName.substring(fileName.lastIndexOf(':') + 1).trim().toLowerCase();
   }
 
   private checkRowInPage(): void {
