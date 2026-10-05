@@ -27,6 +27,8 @@ import { CONTEXT_FACILITY } from 'api/api.service.factory';
 import { CONTEXT_SOFTWARE } from 'api/api.service.factory';
 import { WMTSLayerTableData } from 'utility/eposLeaflet/eposLeaflet';
 import { InteractiveVisualisationService, InteractiveVisualisationSource } from 'pages/dataPortal/services/interactiveVisualisation.service';
+import { ObjectHelper } from 'utility/maplayers/objectHelper';
+import { JsonHelper } from 'utility/maplayers/jsonHelper';
 
 /** The above code is defining an interface called `TableExportObject` in TypeScript. This interface is
 used to define the structure and properties of an object that can be exported from a table. */
@@ -90,6 +92,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
   public showOnMapHeader = PopupProperty.SHOW_ON_MAP;
   public propertyIdHeader = PopupProperty.PROPERTY_ID;
   public toggleOnMapHeader = PopupProperty.TOGGLE_ON_MAP;
+  public downloadHeader = 'Product Download';
   public imagesHeader = PopupProperty.IMAGES;
   public isMappable = true;
   public pageNumber = 1;
@@ -103,9 +106,12 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
   public toggleOnMapDisabledMessage = '';
   public toggleOnMapSelected: { [key: string]: boolean } = {};
   public someOnMapHide = false;
+  public wmtsBulkToggleInProgress = false;
 
   // Wmts
   public infoFromWMTS: null | Map<string, WMTSLayerTableData> = null;
+
+  private wmtsDownloadLinksPromise: Promise<Array<PopupProperty>> | null = null;
 
   /** Variable for keeping track of subscriptions, which are cleaned up by Unsubscriber */
   private readonly subscriptions: Array<Subscription> = new Array<Subscription>();
@@ -353,6 +359,18 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
         this.toggleOnMapDisabled = value;
       }),
 
+      this.mapInteractionService.getWmtsLayerVisibilityObs().subscribe((visibility) => {
+        if (this.dataType === TableDataType.WMTS) {
+          Object.keys(this.toggleOnMapSelected).forEach((propertyId) => {
+            const visible = visibility.get(propertyId);
+            if (visible !== undefined) {
+              this.toggleOnMapSelected[propertyId] = visible;
+            }
+          });
+          this.checkSomeOnMapHide();
+        }
+      }),
+
       // useful for aligning the behaviors between the table in the popup and the table in the sidenav
       this.mapInteractionService.featureOnlayerToggle.subscribe((featureOnLayer: Map<string, Array<number> | string | boolean>) => {
         this.refreshIconOnTableFromLocalStorage();
@@ -418,6 +436,9 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
   public toggleMapFeature(element: Array<PopupProperty>, checked: boolean, checkSomeOnMapHideFunc = true): void {
     const featureIndex = this.getPropertyIdFromArrayPopupProperty(element);
     this.toggleOnMapSelected[featureIndex] = checked;
+    if (this.dataType === TableDataType.WMTS) {
+      this.mapInteractionService.setWmtsLayerVisibility(featureIndex, checked);
+    }
 
     this.refreshHiddenMarkerOnLocalStorage(featureIndex, checked);
 
@@ -432,6 +453,11 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
    * toggleMapFeature function for each item, and then checks if some features are hidden on the map.
    */
   public toggleAllMapFeature(): void {
+    if (this.dataType === TableDataType.WMTS) {
+      this.toggleAllWmtsLayers();
+      return;
+    }
+
     this.dataSource.filteredData.map((_ap: Array<PopupProperty>) => {
       this.toggleMapFeature(_ap, this.someOnMapHide, false);
     });
@@ -463,6 +489,30 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
       }
 
     }
+  }
+
+  public downloadWmtsLayer(event: MouseEvent, layerIdentifierValue: string | number | boolean): void {
+    event.stopPropagation();
+    const layerIdentifier = String(layerIdentifierValue);
+    this.notificationService.sendNotification('Starting download', 'x', NotificationService.TYPE_SUCCESS);
+
+    void this.getWmtsDownloadLinks()
+      .then((links) => {
+        const matchingLink = links.find((link) => {
+          const fileName = link.authenticatedDownloadFileName || link.name;
+          return this.normalizeWmtsDownloadIdentifier(fileName) ===
+            this.normalizeWmtsDownloadIdentifier(layerIdentifier);
+        });
+
+        if (matchingLink !== undefined) {
+          GeoJSONHelper.popupClick(event, this.executionService, this.authentificationClickService, matchingLink);
+        } else {
+          this.notificationService.sendErrorNotification(`No downloadable file found for layer ${layerIdentifier}.`);
+        }
+      })
+      .catch(() => {
+        this.notificationService.sendErrorNotification(`Unable to retrieve the downloadable file for layer ${layerIdentifier}.`);
+      });
   }
 
   /**
@@ -711,16 +761,14 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
                 layerArr.push(new PopupProperty('metadataUrl', ['--']));
               }
             }
+            if (this.customHeaders.includes(this.downloadHeader)) {
+              layerArr.push(new PopupProperty(this.downloadHeader, [layer.layerIdentifier]));
+            }
             // Declaring PROPERTY_ID for the row: this is a value which is NOT shown in the table (not in 'customHeaders', 'tableHeaders' nor 'columnsCount') !
             layerArr.push(new PopupProperty(PopupProperty.PROPERTY_ID, [layer.tableRowPropertyId])); // Hello, hello my friend ... MUST BE EQUAL TO THE toggleOnMapHeader !!!!!
 
-            if (layer.isDefaultLayer) {
-              this.toggleOnMapSelected[layer.tableRowPropertyId] = true;
-            }
-            else {
-              this.toggleOnMapSelected[layer.tableRowPropertyId] = false;
-              this.refreshHiddenMarkerOnLocalStorage(layer.tableRowPropertyId, false);
-            }
+            this.toggleOnMapSelected[layer.tableRowPropertyId] =
+              this.mapInteractionService.isWmtsLayerVisible(layer.tableRowPropertyId);
 
             popupPropertiesArray.push(layerArr);
           });
@@ -731,6 +779,12 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
         this.maxPageNumber = Math.ceil(this.dataSource.data.length / this.matPaginator.pageSize);
         this.getActiveColumnCount(this.dataSource.data[0], false);
         this.showSpinner = false;
+
+        const inactiveLayers = popupPropertiesArray.filter((layer) => {
+          const propertyId = this.getPropertyIdFromArrayPopupProperty(layer);
+          return !this.mapInteractionService.isWmtsLayerVisible(propertyId);
+        });
+        this.activateWmtsLayers(inactiveLayers);
         /* this.infoFromWMTS.clear(); */
       }
     }
@@ -766,6 +820,59 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
     };
 
     this.exportData.next(data);
+  }
+
+  private toggleAllWmtsLayers(): void {
+    const show = this.someOnMapHide;
+    const layers = this.dataSource.filteredData.slice() as Array<Array<PopupProperty>>;
+    const layerIds = layers.map((layer) => this.getPropertyIdFromArrayPopupProperty(layer));
+
+    this.wmtsBulkToggleInProgress = true;
+    layerIds.forEach((layerId) => {
+      this.toggleOnMapSelected[layerId] = show;
+    });
+    this.mapInteractionService.setWmtsLayersVisibility(layerIds, show);
+    this.checkSomeOnMapHide();
+
+    void this.toggleWmtsLayersWithConcurrency(layers, show)
+      .finally(() => {
+        this.wmtsBulkToggleInProgress = false;
+      });
+  }
+
+  private activateWmtsLayers(layers: Array<Array<PopupProperty>>): void {
+    if (layers.length === 0) {
+      return;
+    }
+
+    const layerIds = layers.map((layer) => this.getPropertyIdFromArrayPopupProperty(layer));
+    this.wmtsBulkToggleInProgress = true;
+    layerIds.forEach((layerId) => {
+      this.toggleOnMapSelected[layerId] = true;
+    });
+    this.mapInteractionService.setWmtsLayersVisibility(layerIds, true);
+
+    void this.toggleWmtsLayersWithConcurrency(layers, true)
+      .finally(() => {
+        this.wmtsBulkToggleInProgress = false;
+      });
+  }
+
+  private async toggleWmtsLayersWithConcurrency(layers: Array<Array<PopupProperty>>, show: boolean): Promise<void> {
+    const maxConcurrentLoads = 1500;
+    let nextLayerIndex = 0;
+
+    const toggleNextLayer = async (): Promise<void> => {
+      while (nextLayerIndex < layers.length) {
+        const layer = layers[nextLayerIndex++];
+        const layerId = this.getPropertyIdFromArrayPopupProperty(layer);
+        await this.mapInteractionService.toggleWmtsLayer(layerId, show);
+      }
+    };
+
+    await Promise.all(
+      Array.from({ length: Math.min(maxConcurrentLoads, layers.length) }, () => toggleNextLayer())
+    );
   }
 
   private filterRadiusPoints(features: FeatureCollection['features']): FeatureCollection['features'] {
@@ -824,6 +931,10 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
    * property based on the retrieved data.
    */
   private refreshIconOnTableFromLocalStorage(): void {
+    if (this.dataType === TableDataType.WMTS) {
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const dataSearchToggleOnMap: Array<string> = JSON.parse(this.localStoragePersister.getValue(LocalStorageVariables.LS_CONFIGURABLES, LocalStorageVariables.LS_TOGGLE_ON_MAP) as string || '[]');
 
@@ -987,6 +1098,7 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
                 break;
               case 'metadataurl':
                 correctNamingHeaders.push('Metadata URL');
+                correctNamingHeaders.push(this.downloadHeader);
                 break;
             }
           }
@@ -1010,6 +1122,47 @@ export class TableDisplayComponent implements OnInit, AfterViewInit, OnDestroy, 
       }
     }
 
+  }
+
+  private getWmtsDownloadLinks(): Promise<Array<PopupProperty>> {
+    if (this.wmtsDownloadLinksPromise === null) {
+      const distributionFormat = this.dataConfigurable.getDistributionDetails().getTabularableFormats()[0];
+
+      this.wmtsDownloadLinksPromise = this.executionService.executeDistributionFormat(
+        this.dataConfigurable.getDistributionDetails(),
+        distributionFormat,
+        this.dataConfigurable.getParameterDefinitions(),
+        this.dataConfigurable.currentParamValues.slice()
+      ).then((data: unknown) => {
+        if (!DistributionFormatType.in(
+          distributionFormat.getFormat(),
+          [DistributionFormatType.APP_EPOS_GEOJSON, DistributionFormatType.APP_EPOS_TABLE_GEOJSON]
+        )) {
+          return [];
+        }
+
+        const links: Array<PopupProperty> = [];
+        (data as FeatureCollection).features.forEach((feature) => {
+          const externalLinks = ObjectHelper.getObjectArray<Record<string, unknown>>(
+            (feature.properties ?? {}) as Record<string, unknown>,
+            GeoJSONHelper.EXTERNAL_LINK_ATTR
+          );
+          links.push(...JsonHelper.createExternalLinksAsHTMLProperties(externalLinks, true, true));
+        });
+
+        return links;
+      }).catch((error: unknown) => {
+        this.wmtsDownloadLinksPromise = null;
+        throw error;
+      });
+    }
+
+    return this.wmtsDownloadLinksPromise;
+  }
+
+  private normalizeWmtsDownloadIdentifier(value: string): string {
+    const fileName = value.substring(value.lastIndexOf('/') + 1).trim().replace(/\.zip$/i, '');
+    return fileName.substring(fileName.lastIndexOf(':') + 1).trim().toLowerCase();
   }
 
   private checkRowInPage(): void {

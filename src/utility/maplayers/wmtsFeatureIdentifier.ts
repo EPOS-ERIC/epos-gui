@@ -1,4 +1,4 @@
-import { JsonFeatureIdentifier, WmtsFeatureDisplayItemGenerator, WmtsFeatureFormat, WmtsTileLayer } from 'utility/eposLeaflet/eposLeaflet';
+import { JsonFeatureIdentifier, WMTSParameter, WmtsFeatureDisplayItemGenerator, WmtsFeatureFormat, WmtsTileLayer } from 'utility/eposLeaflet/eposLeaflet';
 
 /** The `WMTSFeatureIdentifier` class is a TypeScript class that extends `WmsFeatureDisplayItemGenerator`
 and is used to identify and display features on a WMTS tile layer. */
@@ -53,8 +53,13 @@ export class WMTSFeatureIdentifier extends WmtsFeatureDisplayItemGenerator {
    */
   protected featurePropertiesToMap(feature: Record<string, unknown>): Map<string, string> {
     const layerId = this.layer.id;
+    const layerIdentifier = this.layer.options.get<string>(WMTSParameter.LAYER);
     const responsePropertiesObj = feature.properties as Record<string, unknown>;
     const returnMap = new Map<string, string>();
+
+    if (layerIdentifier) {
+      returnMap.set('Layer', layerIdentifier);
+    }
 
     // response keys array
     const respPropArray = Object.keys(responsePropertiesObj);

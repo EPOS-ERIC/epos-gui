@@ -51,11 +51,11 @@
         <th mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="columnIndex < 2 && isMappable" mwlResizable
           [enableGhostResize]="false" scope="col" (resizeEnd)="onResizeEnd($event, label)" (click)="selectedRow = null">
           <span *ngIf="columnIndex > 1 || !isMappable">{{ label }}</span>
-          <i *ngIf="columnIndex === 1 && isMappable && dataType !== 1 && (interactiveSources === undefined || interactiveSources === null)"
-            class="fas fa-eye{{ someOnMapHide && !toggleOnMapDisabled ? '-slash' : '' }} action {{ toggleOnMapDisabled ? 'disabled' : '' }}"
+          <i *ngIf="columnIndex === 1 && isMappable && (interactiveSources === undefined || interactiveSources === null)"
+            class="fas fa-eye{{ someOnMapHide && !toggleOnMapDisabled ? '-slash' : '' }} action {{ toggleOnMapDisabled || wmtsBulkToggleInProgress ? 'disabled' : '' }}"
             aria-hidden="true"
             [matTooltip]="'Toggle all data on map (' + dataSource.filteredData.length + ')' + toggleOnMapDisabledMessage"
-            (click)="!toggleOnMapDisabled ? toggleAllMapFeature() : false"></i>
+            (click)="!toggleOnMapDisabled && !wmtsBulkToggleInProgress ? toggleAllMapFeature() : false"></i>
         </th>
 
         <td mat-cell class="normal-row" *matCellDef="let rowData; let rowIndex = index"
@@ -77,6 +77,12 @@
                 aria-hidden="true" [matTooltip]="'Toggle data on map' + toggleOnMapDisabledMessage"
                 (click)="!toggleOnMapDisabled ? toggleMapFeature(rowData, !toggleOnMapSelected[rowData[columnIndex].valuesConcatString]) : false"
                 data-cy="table-component-toggle-data-on-map"></i>
+            </ng-container>
+
+            <!-- download WMTS layer -->
+            <ng-container *ngSwitchCase="downloadHeader">
+              <mat-icon class="action" matTooltip="Download"
+                (click)="downloadWmtsLayer($event, rowData[columnIndex].values[0])">download</mat-icon>
             </ng-container>
 
             <!--default case when there are no matches -->
