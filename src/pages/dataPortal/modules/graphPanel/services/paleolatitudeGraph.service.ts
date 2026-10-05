@@ -227,7 +227,7 @@ export class PaleolatitudeGraphService {
 
   private getConfigurable(configurables: Array<DataConfigurableI>): DataConfigurableI | undefined {
     return configurables.find((item: DataConfigurableI) => {
-      return item.getDistributionDetails().getKeywords().some(keyword => keyword.trim().toLowerCase() === 'pointlick');
+      return item.getDistributionDetails().getKeywords().some(keyword => keyword.trim().toLowerCase() === 'pointclick');
     });
   }
 
