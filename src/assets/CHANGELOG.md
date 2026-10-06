@@ -1,6 +1,14 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [1.0.61] - 2026-10-07
+- Feature: Added the Euro Geographic basemaps 
+- Feature: WMTS now loads all layer when service is opened, added download column in its table, added layer name in popup (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20335)
+- Feature: Added Paleolatitude interactive mode (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20599)
+- Chore: Update version number
+- Minor fixes and improvements
+
 ## [1.0.60] - 2026-09-07
 - Feature: Added external layers by URL, supporting GeoJSON, CovJSON, WMS and WFS sources.
 - Feature: Added display of external GeoJSON data in the table and external CovJSON data in the graph.
