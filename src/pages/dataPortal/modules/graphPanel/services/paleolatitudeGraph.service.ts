@@ -145,7 +145,7 @@ export class PaleolatitudeGraphService {
     traceId: string,
   ): Promise<PaleolatitudeGraphData> {
     const data = await this.apiService.executeUrl(request.url);
-    const response = JSON.parse(await data.text()) as PaleolatitudeResponse;
+    const response = this.toPaleolatitudeResponse(JSON.parse(await data.text()) as unknown);
 
     return {
       response,
@@ -198,6 +198,56 @@ export class PaleolatitudeGraphService {
     }
 
     return [trace];
+  }
+
+  private toPaleolatitudeResponse(data: unknown): PaleolatitudeResponse {
+    if (!this.isRecord(data)) {
+      return {};
+    }
+
+    const ages = this.getNumberArray(data, ['domain', 'axes', 't', 'values']);
+    const latitudes = this.getNumberArray(data, ['ranges', 'lat', 'values']);
+    if (ages == null || latitudes == null) {
+      return data as PaleolatitudeResponse;
+    }
+
+    const lowerBounds = this.getNumberArray(data, ['ranges', 'lowerbound', 'values']);
+    const upperBounds = this.getNumberArray(data, ['ranges', 'upperbound', 'values']);
+    const paleolatitude = ages.map((age, index): null | PaleolatitudePoint => {
+      const lat = latitudes[index];
+      if (age == null || lat == null) {
+        return null;
+      }
+
+      const lowerbound = lowerBounds?.[index];
+      const upperbound = upperBounds?.[index];
+      return {
+        age,
+        lat,
+        ...(lowerbound == null || upperbound == null ? {} : { lowerbound, upperbound }),
+      };
+    }).filter((point): point is PaleolatitudePoint => point != null);
+
+    return { paleolatitude };
+  }
+
+  private getNumberArray(data: Record<string, unknown>, path: Array<string>): null | Array<null | number> {
+    let value: unknown = data;
+    for (const key of path) {
+      if (!this.isRecord(value)) {
+        return null;
+      }
+      value = value[key];
+    }
+
+    if (!Array.isArray(value)) {
+      return null;
+    }
+    return value.map(item => typeof item === 'number' && Number.isFinite(item) ? item : null);
+  }
+
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value != null && !Array.isArray(value);
   }
 
   private normalizeLongitude(lon: number): number {
