@@ -260,7 +260,12 @@ export class PaleolatitudeGraphService {
     if (!Array.isArray(value)) {
       return null;
     }
-    return value.map(item => typeof item === 'number' && Number.isFinite(item) ? item : null);
+    return value.map(item => {
+      const numberValue = typeof item === 'number'
+        ? item
+        : typeof item === 'string' && item.trim() !== '' ? Number(item) : Number.NaN;
+      return Number.isFinite(numberValue) ? numberValue : null;
+    });
   }
 
   private isRecord(value: unknown): value is Record<string, unknown> {
