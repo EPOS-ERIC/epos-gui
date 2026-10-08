@@ -123,6 +123,7 @@ export class GraphDisplayComponent {
    * object using the {@link #__selectedDisplayType}, {@link #currentYAxes} and {@link #currentTraces}.
    */
   private getLayoutObject(): Partial<Layout> {
+    const xAxisTitle = this.currentTraces.find(trace => trace.xAxisTitle != null)?.xAxisTitle ?? '';
     let returnObject: Partial<Layout> = {
       autosize: true,
       height: this.getWrapperHeight(),
@@ -134,6 +135,9 @@ export class GraphDisplayComponent {
         pad: 4
       },
       xaxis: {
+        title: {
+          text: xAxisTitle,
+        },
         autorange: this._isXAxisReversed ? 'reversed' : true,
       },
     };
@@ -156,6 +160,9 @@ export class GraphDisplayComponent {
         returnObject = {
           ...returnObject,
           xaxis: {
+            title: {
+              text: xAxisTitle,
+            },
             autorange: this._isXAxisReversed ? 'reversed' : true,
             domain: [leftYAxisWidth, 1 - rightYAxisWidth],
           }

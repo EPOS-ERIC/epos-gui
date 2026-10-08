@@ -190,6 +190,7 @@ export class PaleolatitudeGraphService {
       points.map((point: PaleolatitudePoint) => String(point.lat)),
       points.map((point: PaleolatitudePoint) => String(point.age)),
       'lines+markers',
+      response.xAxisTitle,
     );
 
     if (points.every((point: PaleolatitudePoint) => typeof point.lowerbound === 'number' && typeof point.upperbound === 'number')) {
@@ -228,7 +229,23 @@ export class PaleolatitudeGraphService {
       };
     }).filter((point): point is PaleolatitudePoint => point != null);
 
-    return { paleolatitude };
+    const label = this.getString(data, ['domain', 'axes', 't', 'label', 'en']) ?? 't';
+    const unit = this.getString(data, ['domain', 'axes', 't', 'unit', 'symbol']) ?? '';
+    return {
+      paleolatitude,
+      xAxisTitle: unit === '' ? label : `${label} (${unit})`,
+    };
+  }
+
+  private getString(data: Record<string, unknown>, path: Array<string>): string | null {
+    let value: unknown = data;
+    for (const key of path) {
+      if (!this.isRecord(value)) {
+        return null;
+      }
+      value = value[key];
+    }
+    return typeof value === 'string' ? value : null;
   }
 
   private getNumberArray(data: Record<string, unknown>, path: Array<string>): null | Array<null | number> {
