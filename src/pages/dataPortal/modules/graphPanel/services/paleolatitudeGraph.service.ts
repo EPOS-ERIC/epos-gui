@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from 'api/api.service';
+import { DistributionFormatType } from 'api/webApi/data/distributionFormatType';
+import { ParameterValue } from 'api/webApi/data/parameterValue.interface';
 import { NotificationService } from 'components/notification/notification.service';
 import { InteractiveVisualisationService } from 'pages/dataPortal/services/interactiveVisualisation.service';
 import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
@@ -18,8 +20,6 @@ export interface PaleolatitudeGraphData {
   response: PaleolatitudeResponse;
   traces: Array<Trace>;
 }
-
-const PALEOLATITUDE_PATH_PARAMETER_NAMES = ['lat', 'lon', 'age', 'minage', 'maxage', 'model'];
 
 @Injectable({
   providedIn: 'root',
@@ -154,40 +154,23 @@ export class PaleolatitudeGraphService {
   }
 
   private createUrl(configurable: DataConfigurableI, lat: number, lon: number): null | string {
-    const endpoint = configurable.getDistributionDetails().getWebServiceEndpoint();
-    if (endpoint.trim() === '') {
+    const format = configurable.getDistributionDetails().getFormats().find(item => {
+      return item.getFormat() === DistributionFormatType.APP_EPOS_GRAPH_COV_JSON;
+    });
+    if (format == null) {
       return null;
     }
 
-    const parameterValues = new Map<string, string>(
-      configurable.getNewParameterValues().map((parameter): [string, string] => [
-        this.normalizeParameterName(parameter.name),
-        encodeURIComponent(parameter.value),
-      ]),
-    );
-    parameterValues.set('lat', encodeURIComponent(String(lat)));
-    parameterValues.set('lon', encodeURIComponent(String(lon)));
-
-    if (!endpoint.includes('{')) {
-      const values = PALEOLATITUDE_PATH_PARAMETER_NAMES.map(name => parameterValues.get(name));
-      if (values.some(value => value == null)) {
-        return null;
-      }
-
-      return `${endpoint.replace(/\/+$/, '')}/${values.join('/')}`;
-    }
-
-    let hasAllValues = true;
-    const url = endpoint.replace(/\{([^}]+)\}/g, (placeholder: string, name: string): string => {
-      const value = parameterValues.get(this.normalizeParameterName(name));
-      if (value == null) {
-        hasAllValues = false;
-        return placeholder;
-      }
-      return value;
+    const parameterValues: Array<ParameterValue> = configurable.getNewParameterValues().filter(parameter => {
+      const name = this.normalizeParameterName(parameter.name);
+      return name !== 'lat' && name !== 'lon';
     });
+    parameterValues.push(
+      { name: 'lat', value: String(lat) },
+      { name: 'lon', value: String(lon) },
+    );
 
-    return hasAllValues ? url : null;
+    return this.apiService.getExecuteUrl(format, parameterValues);
   }
 
   private createTrace(response: PaleolatitudeResponse, configurableId: string, traceId: string): Array<Trace> {
