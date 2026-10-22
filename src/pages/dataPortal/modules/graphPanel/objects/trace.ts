@@ -49,6 +49,7 @@ export class Trace implements Stylable {
     public readonly yValues: Array<string>,
     public readonly xValues: Array<string>,
     public readonly mode?: ModePlotly,
+    public readonly xAxisTitle?: string,
   ) {}
 
   public setStyle(style: null | Style): void {

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from 'api/api.service';
+import { DistributionFormatType } from 'api/webApi/data/distributionFormatType';
+import { ParameterValue } from 'api/webApi/data/parameterValue.interface';
 import { NotificationService } from 'components/notification/notification.service';
 import { InteractiveVisualisationService } from 'pages/dataPortal/services/interactiveVisualisation.service';
 import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
@@ -18,8 +20,6 @@ export interface PaleolatitudeGraphData {
   response: PaleolatitudeResponse;
   traces: Array<Trace>;
 }
-
-const PALEOLATITUDE_PATH_PARAMETER_NAMES = ['lat', 'lon', 'age', 'minage', 'maxage', 'model'];
 
 @Injectable({
   providedIn: 'root',
@@ -145,7 +145,7 @@ export class PaleolatitudeGraphService {
     traceId: string,
   ): Promise<PaleolatitudeGraphData> {
     const data = await this.apiService.executeUrl(request.url);
-    const response = JSON.parse(await data.text()) as PaleolatitudeResponse;
+    const response = this.toPaleolatitudeResponse(JSON.parse(await data.text()) as unknown);
 
     return {
       response,
@@ -154,40 +154,23 @@ export class PaleolatitudeGraphService {
   }
 
   private createUrl(configurable: DataConfigurableI, lat: number, lon: number): null | string {
-    const endpoint = configurable.getDistributionDetails().getWebServiceEndpoint();
-    if (endpoint.trim() === '') {
+    const format = configurable.getDistributionDetails().getFormats().find(item => {
+      return item.getFormat() === DistributionFormatType.APP_EPOS_GRAPH_COV_JSON;
+    });
+    if (format == null) {
       return null;
     }
 
-    const parameterValues = new Map<string, string>(
-      configurable.getNewParameterValues().map((parameter): [string, string] => [
-        this.normalizeParameterName(parameter.name),
-        encodeURIComponent(parameter.value),
-      ]),
-    );
-    parameterValues.set('lat', encodeURIComponent(String(lat)));
-    parameterValues.set('lon', encodeURIComponent(String(lon)));
-
-    if (!endpoint.includes('{')) {
-      const values = PALEOLATITUDE_PATH_PARAMETER_NAMES.map(name => parameterValues.get(name));
-      if (values.some(value => value == null)) {
-        return null;
-      }
-
-      return `${endpoint.replace(/\/+$/, '')}/${values.join('/')}`;
-    }
-
-    let hasAllValues = true;
-    const url = endpoint.replace(/\{([^}]+)\}/g, (placeholder: string, name: string): string => {
-      const value = parameterValues.get(this.normalizeParameterName(name));
-      if (value == null) {
-        hasAllValues = false;
-        return placeholder;
-      }
-      return value;
+    const parameterValues: Array<ParameterValue> = configurable.getNewParameterValues().filter(parameter => {
+      const name = this.normalizeParameterName(parameter.name);
+      return name !== 'lat' && name !== 'lon';
     });
+    parameterValues.push(
+      { name: 'lat', value: String(lat) },
+      { name: 'lon', value: String(lon) },
+    );
 
-    return hasAllValues ? url : null;
+    return this.apiService.getExecuteUrl(format, parameterValues);
   }
 
   private createTrace(response: PaleolatitudeResponse, configurableId: string, traceId: string): Array<Trace> {
@@ -207,6 +190,7 @@ export class PaleolatitudeGraphService {
       points.map((point: PaleolatitudePoint) => String(point.lat)),
       points.map((point: PaleolatitudePoint) => String(point.age)),
       'lines+markers',
+      response.xAxisTitle,
     );
 
     if (points.every((point: PaleolatitudePoint) => typeof point.lowerbound === 'number' && typeof point.upperbound === 'number')) {
@@ -215,6 +199,77 @@ export class PaleolatitudeGraphService {
     }
 
     return [trace];
+  }
+
+  private toPaleolatitudeResponse(data: unknown): PaleolatitudeResponse {
+    if (!this.isRecord(data)) {
+      return {};
+    }
+
+    const ages = this.getNumberArray(data, ['domain', 'axes', 't', 'values']);
+    const latitudes = this.getNumberArray(data, ['ranges', 'lat', 'values']);
+    if (ages == null || latitudes == null) {
+      return data as PaleolatitudeResponse;
+    }
+
+    const lowerBounds = this.getNumberArray(data, ['ranges', 'lowerbound', 'values']);
+    const upperBounds = this.getNumberArray(data, ['ranges', 'upperbound', 'values']);
+    const paleolatitude = ages.map((age, index): null | PaleolatitudePoint => {
+      const lat = latitudes[index];
+      if (age == null || lat == null) {
+        return null;
+      }
+
+      const lowerbound = lowerBounds?.[index];
+      const upperbound = upperBounds?.[index];
+      return {
+        age,
+        lat,
+        ...(lowerbound == null || upperbound == null ? {} : { lowerbound, upperbound }),
+      };
+    }).filter((point): point is PaleolatitudePoint => point != null);
+
+    const label = this.getString(data, ['domain', 'axes', 't', 'label', 'en']) ?? 't';
+    const unit = this.getString(data, ['domain', 'axes', 't', 'unit', 'symbol']) ?? '';
+    return {
+      paleolatitude,
+      xAxisTitle: unit === '' ? label : `${label} (${unit})`,
+    };
+  }
+
+  private getString(data: Record<string, unknown>, path: Array<string>): string | null {
+    let value: unknown = data;
+    for (const key of path) {
+      if (!this.isRecord(value)) {
+        return null;
+      }
+      value = value[key];
+    }
+    return typeof value === 'string' ? value : null;
+  }
+
+  private getNumberArray(data: Record<string, unknown>, path: Array<string>): null | Array<null | number> {
+    let value: unknown = data;
+    for (const key of path) {
+      if (!this.isRecord(value)) {
+        return null;
+      }
+      value = value[key];
+    }
+
+    if (!Array.isArray(value)) {
+      return null;
+    }
+    return value.map(item => {
+      const numberValue = typeof item === 'number'
+        ? item
+        : typeof item === 'string' && item.trim() !== '' ? Number(item) : Number.NaN;
+      return Number.isFinite(numberValue) ? numberValue : null;
+    });
+  }
+
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value != null && !Array.isArray(value);
   }
 
   private normalizeLongitude(lon: number): number {

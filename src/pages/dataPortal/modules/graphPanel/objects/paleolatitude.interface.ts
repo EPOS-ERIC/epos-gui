@@ -11,6 +11,7 @@ export interface PaleolatitudeResponse {
     name: string;
   };
   paleolatitude?: Array<PaleolatitudePoint>;
+  xAxisTitle?: string;
   error?: string;
   message?: string;
 }
