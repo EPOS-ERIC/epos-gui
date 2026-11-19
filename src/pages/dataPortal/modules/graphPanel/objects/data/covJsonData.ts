@@ -52,7 +52,9 @@ export class CovJsonData {
             yUnitLabel = this.getDataValue<string>(data, ['parameters', key, 'observedProperty', 'label', 'en'], true);
           }
           const yValues = this.getAxisValues(this.getDataValue(data, ['ranges', key]));
-          const xValues = this.getAxisValues(this.getDataValue(data, ['domain', 'axes', 't']));
+          const xAxis = this.getDataValue<Record<string, unknown>>(data, ['domain', 'axes', 't']);
+          const xValues = this.getAxisValues(xAxis);
+          const xAxisTitle = this.getAxisTitle(xAxis);
           if (paramId === (TraceDataTypes.ERROR_MAX as string)) {
             errorMax = this.getAxisValues(this.getDataValue(data, ['ranges', key]));
           }
@@ -60,7 +62,7 @@ export class CovJsonData {
             errorMin = this.getAxisValues(this.getDataValue(data, ['ranges', key]));
           }
           if (type !== null) {
-            const trace = new Trace(this.dataConfigurableId, key + this.dataConfigurableId, type, name, description, yUnit, yUnitLabel, yValues, xValues ,mode);
+            const trace = new Trace(this.dataConfigurableId, key + this.dataConfigurableId, type, name, description, yUnit, yUnitLabel, yValues, xValues ,mode, xAxisTitle);
             if (key !== (TraceDataTypes.ERROR_MIN as string) && key !== (TraceDataTypes.ERROR_MAX as string)) {
               this._traces.push(trace);
             }
@@ -103,7 +105,9 @@ export class CovJsonData {
           } */
 
           const yValues = ccParamYValues; // this.getAxisValues(this.getDataValue(data, ['coverages', key, 'ranges', key, 'values']));
-          const xValues = this.getAxisValues(this.getDataValue(data, ['coverages', key, 'domain', 'axes', 't']));
+          const xAxis = this.getDataValue<Record<string, unknown>>(data, ['coverages', key, 'domain', 'axes', 't']);
+          const xValues = this.getAxisValues(xAxis);
+          const xAxisTitle = this.getAxisTitle(xAxis);
 
           if (null != type) {
             this._traces.push(
@@ -119,6 +123,8 @@ export class CovJsonData {
                 yValues,
                 xValues,
                 // mode,
+                undefined,
+                xAxisTitle,
               ),
             );
           }
@@ -141,6 +147,7 @@ export class CovJsonData {
       rawErrorTrace.yValues,
       rawErrorTrace.xValues,
       rawErrorTrace.mode,
+      rawErrorTrace.xAxisTitle,
     );
     errorTrace.yErrorMinValues = errorMin;
     errorTrace.yErrorMaxValues = errorMax;
@@ -176,6 +183,14 @@ export class CovJsonData {
       console.warn('CovJSON data: problem proceessing axis values', valuesObject);
     }
     return axisValues;
+  }
+
+  private getAxisTitle(axis: Record<string, unknown>): string {
+    const labelObject = axis.label as Record<string, unknown> | undefined;
+    const unitObject = axis.unit as Record<string, unknown> | undefined;
+    const label = typeof labelObject?.en === 'string' ? labelObject.en : 't';
+    const unit = typeof unitObject?.symbol === 'string' ? unitObject.symbol : '';
+    return unit === '' ? label : `${label} (${unit})`;
   }
 
   private temporalValuesFromDateStrings(startString: string, stopString: string, count: number): Array<string> {

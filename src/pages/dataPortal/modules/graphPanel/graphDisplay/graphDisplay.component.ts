@@ -123,6 +123,10 @@ export class GraphDisplayComponent {
    * object using the {@link #__selectedDisplayType}, {@link #currentYAxes} and {@link #currentTraces}.
    */
   private getLayoutObject(): Partial<Layout> {
+    const xAxisTitle = this.currentTraces.find(trace => trace.xAxisTitle != null)?.xAxisTitle ?? '';
+    const isXAxisReversed = this._isXAxisReversed !== this.currentTraces.some(trace => {
+      return trace.xAxisTitle != null && this.isXAxisDescending(trace.xValues);
+    });
     let returnObject: Partial<Layout> = {
       autosize: true,
       height: this.getWrapperHeight(),
@@ -134,7 +138,10 @@ export class GraphDisplayComponent {
         pad: 4
       },
       xaxis: {
-        autorange: this._isXAxisReversed ? 'reversed' : true,
+        title: {
+          text: xAxisTitle,
+        },
+        autorange: isXAxisReversed ? 'reversed' : true,
       },
     };
 
@@ -156,7 +163,10 @@ export class GraphDisplayComponent {
         returnObject = {
           ...returnObject,
           xaxis: {
-            autorange: this._isXAxisReversed ? 'reversed' : true,
+            title: {
+              text: xAxisTitle,
+            },
+            autorange: isXAxisReversed ? 'reversed' : true,
             domain: [leftYAxisWidth, 1 - rightYAxisWidth],
           }
         };
@@ -280,5 +290,23 @@ export class GraphDisplayComponent {
       hoverinfo: 'skip',
       showlegend: false,
     } as Data;
+  }
+
+  private isXAxisDescending(values: Array<string>): boolean {
+    if (values.length < 2) {
+      return false;
+    }
+    const first = this.toXAxisValue(values[0]);
+    const last = this.toXAxisValue(values[values.length - 1]);
+    return first != null && last != null && first > last;
+  }
+
+  private toXAxisValue(value: string): number | null {
+    const numericValue = Number(value);
+    if (Number.isFinite(numericValue)) {
+      return numericValue;
+    }
+    const dateValue = Date.parse(value);
+    return Number.isNaN(dateValue) ? null : dateValue;
   }
 }

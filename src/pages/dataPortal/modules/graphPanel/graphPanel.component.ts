@@ -137,7 +137,7 @@ export class GraphPanelComponent implements OnInit {
 
         if (dataConfigurables != null) {
           const graphableConfigurables = dataConfigurables.filter((thisConfig: DataConfigurable) => {
-            return thisConfig.isGraphable;
+            return this.isGraphableConfigurable(thisConfig);
           });
 
           // remove the configurables that have been remove in the interface
@@ -208,7 +208,7 @@ export class GraphPanelComponent implements OnInit {
 
         // eslint-disable-next-line @typescript-eslint/no-shadow
         const graphableConfigurables = this.configurables.getAll().filter((thisConfig) => {
-          return thisConfig.isGraphable;
+          return this.isGraphableConfigurable(thisConfig);
         });
 
         if (url !== null) {
@@ -348,10 +348,15 @@ export class GraphPanelComponent implements OnInit {
   }
 
   private updateCounter(internalCount?: number): void {
-    const graphableCount = internalCount ?? this.configurables.getAll().filter(config => config.isGraphable).length;
+    const graphableCount = internalCount ?? this.configurables.getAll().filter(config => this.isGraphableConfigurable(config)).length;
     this.resultPanelService.setCounterGraph(
       graphableCount + this.getExternalGraphSourceCount() + this.interactiveVisualisations.getSources().length
     );
+  }
+
+  private isGraphableConfigurable(configurable: DataConfigurableI): boolean {
+    return configurable.isGraphable
+      && !configurable.getDistributionDetails().getKeywords().some(keyword => keyword.trim().toLowerCase() === 'pointclick');
   }
 
   /**
