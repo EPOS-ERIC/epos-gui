@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { ApiService } from 'api/api.service';
 import { DistributionFormatType } from 'api/webApi/data/distributionFormatType';
 import { ParameterValue } from 'api/webApi/data/parameterValue.interface';
@@ -7,17 +9,19 @@ import { InteractiveVisualisationService } from 'pages/dataPortal/services/inter
 import { DataConfigurableI } from 'utility/configurables/dataConfigurableI.interface';
 import { DataConfigurableDataSearchI } from 'utility/configurablesDataSearch/dataConfigurableDataSearchI.interface';
 import { DataSearchConfigurablesServiceResource } from '../../dataPanel/services/dataSearchConfigurables.service';
-import { PaleolatitudePoint, PaleolatitudeResponse, PALEOLATITUDE_CONFIG_ID, PALEOLATITUDE_TRACE_ID } from '../objects/paleolatitude.interface';
+import { PALEOLATITUDE_CONFIG_ID } from '../objects/paleolatitude.interface';
+import { CovJsonData } from '../objects/data/covJsonData';
 import { Trace } from '../objects/trace';
 import { YAxisDisplayType } from '../objects/yAxisDisplayType.enum';
 
 export interface PaleolatitudeGraphRequest {
   normalizedLon: number;
   url: string;
+  serviceId: string;
+  serviceName: string;
 }
 
 export interface PaleolatitudeGraphData {
-  response: PaleolatitudeResponse;
   traces: Array<Trace>;
 }
 
@@ -31,6 +35,7 @@ export class PaleolatitudeGraphService {
     private readonly configurables: DataSearchConfigurablesServiceResource,
     private readonly interactiveVisualisations: InteractiveVisualisationService,
     private readonly notificationService: NotificationService,
+    private readonly http: HttpClient,
   ) {
   }
 
@@ -46,19 +51,27 @@ export class PaleolatitudeGraphService {
       return;
     }
 
-    const serviceName = this.getConfigurable(this.configurables.getAll())?.name ?? 'Paleolatitude';
-    const pendingName = `Paleolatitude (${request.normalizedLon.toFixed(4)}, ${lat.toFixed(4)})`;
+    const resultName = `${request.serviceName} (${request.normalizedLon.toFixed(4)}, ${lat.toFixed(4)})`;
+    const resultDetails = {
+      id,
+      name: resultName,
+      serviceId: request.serviceId,
+      serviceName: request.serviceName,
+      selectedLat: lat,
+      selectedLon: request.normalizedLon,
+    };
     this.interactiveVisualisations.setSource({
       kind: 'interactive',
       id,
-      name: pendingName,
+      name: resultName,
       groupId: PALEOLATITUDE_CONFIG_ID,
       traces: null,
+      metadata: resultDetails,
     });
     this.interactiveVisualisations.viewSourceOnGraph(id);
 
     try {
-      const result = await this.executeRequest(request, id, `${PALEOLATITUDE_TRACE_ID}-${id}`);
+      const result = await this.executeRequest(request, id);
       if (this.interactiveVisualisations.getSource(id) == null) {
         return;
       }
@@ -68,20 +81,10 @@ export class PaleolatitudeGraphService {
         return;
       }
 
-      const plateLabel = result.response.plate?.name != null ? ` - ${result.response.plate.name}` : '';
-      const resultName = `Paleolatitude${plateLabel} (${request.normalizedLon.toFixed(4)}, ${lat.toFixed(4)})`;
       result.traces.forEach((trace: Trace) => {
-        trace.axisGroup = PALEOLATITUDE_CONFIG_ID;
+        trace.axisGroup = JSON.stringify([request.serviceId, trace.name, trace.yUnit]);
         trace.persistSelection = false;
       });
-      const resultDetails = {
-        id,
-        name: resultName,
-        selectedLat: lat,
-        selectedLon: request.normalizedLon,
-        plateId: result.response.plate?.id,
-        plateName: result.response.plate?.name,
-      };
       this.interactiveVisualisations.setSource({
         kind: 'interactive',
         id,
@@ -90,11 +93,14 @@ export class PaleolatitudeGraphService {
         traces: result.traces,
         table: {
           groupId: PALEOLATITUDE_CONFIG_ID,
-          groupName: serviceName,
-          rows: (result.response.paleolatitude ?? []).map((point: PaleolatitudePoint) => ({
+          groupName: request.serviceName,
+          rows: result.traces.flatMap((trace: Trace) => trace.yValues.map((value, index) => ({
             ...resultDetails,
-            ...point,
-          })),
+            parameter: trace.name,
+            t: trace.xValues[index],
+            value,
+            unit: trace.yUnit,
+          }))),
           isMappable: true,
         },
         autoSelect: true,
@@ -136,20 +142,82 @@ export class PaleolatitudeGraphService {
     return {
       normalizedLon,
       url,
+      serviceId: configurable.id,
+      serviceName: configurable.name,
     };
   }
 
   public async executeRequest(
     request: PaleolatitudeGraphRequest,
     configurableId: string,
-    traceId: string,
   ): Promise<PaleolatitudeGraphData> {
-    const data = await this.apiService.executeUrl(request.url);
-    const response = this.toPaleolatitudeResponse(JSON.parse(await data.text()) as unknown);
+    const data = await firstValueFrom(this.http.get(request.url, { responseType: 'blob' }));
+    const response: unknown = JSON.parse(await data.text());
+    if (!this.isRecord(response) || (response.type != null && response.type !== 'Coverage')
+      || response.error != null || response.message != null
+      || !this.isRecord(response.parameters) || !this.isRecord(response.ranges)
+      || !this.isRecord(response.domain) || !this.isRecord(response.domain.axes)
+      || !this.isRecord(response.domain.axes.t)) {
+      return { traces: [] };
+    }
+
+    const parameters = Object.fromEntries(Object.entries(response.parameters).filter(([key]) => {
+      return key !== 'lowerbound' && key !== 'upperbound';
+    }).map(([key, parameter]) => {
+      if (!this.isRecord(parameter)) {
+        return [key, parameter];
+      }
+      if (parameter.type === 'ParameterGroup' && Array.isArray(parameter.members)
+        && parameter.members.some(member => member === 'lowerbound' || member === 'upperbound')) {
+        return [key, { ...parameter, members: [] }];
+      }
+      const observedProperty = this.isRecord(parameter.observedProperty) ? parameter.observedProperty : {};
+      const label = this.isRecord(observedProperty.label) ? observedProperty.label : {};
+      const description = this.isRecord(parameter.description) ? parameter.description : {};
+      return [key, {
+        ...parameter,
+        description: { en: typeof description.en === 'string' ? description.en : '' },
+        observedProperty: {
+          ...observedProperty,
+          label: { en: typeof label.en === 'string' ? label.en : key },
+        },
+      }];
+    }));
+
+    const parser = new CovJsonData(configurableId);
+    const traces = parser.createTraces({ ...response, parameters }).filter(trace => {
+      return trace.xValues.length > 0 && trace.xValues.length === trace.yValues.length;
+    });
+    const lowerBounds = this.isRecord(response.ranges.lowerbound)
+      ? parser.getAxisValues(response.ranges.lowerbound).map(value => value.trim() === '' ? Number.NaN : Number(value)) : [];
+    const upperBounds = this.isRecord(response.ranges.upperbound)
+      ? parser.getAxisValues(response.ranges.upperbound).map(value => value.trim() === '' ? Number.NaN : Number(value)) : [];
 
     return {
-      response,
-      traces: this.createTrace(response, configurableId, traceId),
+      traces: traces.map(trace => {
+        const result = new Trace(
+          trace.originatingConfigurableId,
+          trace.id,
+          trace.type,
+          trace.name,
+          trace.description,
+          trace.yUnit,
+          trace.yUnitLabel,
+          trace.yValues,
+          trace.xValues,
+          'lines+markers',
+          trace.xAxisTitle,
+        );
+        result.yErrorMinValues = trace.yErrorMinValues;
+        result.yErrorMaxValues = trace.yErrorMaxValues;
+        if (traces.length === 1 && lowerBounds.length === trace.yValues.length && upperBounds.length === trace.yValues.length
+          && lowerBounds.every(Number.isFinite) && upperBounds.every(Number.isFinite)
+          && trace.yValues.every(value => value.trim() !== '' && Number.isFinite(Number(value)))) {
+          result.yErrorMinValues = trace.yValues.map((value, index) => String(Math.max(Number(value) - lowerBounds[index], 0)));
+          result.yErrorMaxValues = trace.yValues.map((value, index) => String(Math.max(upperBounds[index] - Number(value), 0)));
+        }
+        return result;
+      }),
     };
   }
 
@@ -171,101 +239,6 @@ export class PaleolatitudeGraphService {
     );
 
     return this.apiService.getExecuteUrl(format, parameterValues);
-  }
-
-  private createTrace(response: PaleolatitudeResponse, configurableId: string, traceId: string): Array<Trace> {
-    const points = response.paleolatitude ?? [];
-    if (points.length === 0 || response.error != null || response.message != null) {
-      return [];
-    }
-
-    const trace = new Trace(
-      configurableId,
-      traceId,
-      'scatter',
-      'Paleolatitude',
-      'Paleolatitude from selected map point',
-      'deg',
-      'Paleolatitude',
-      points.map((point: PaleolatitudePoint) => String(point.lat)),
-      points.map((point: PaleolatitudePoint) => String(point.age)),
-      'lines+markers',
-      response.xAxisTitle,
-    );
-
-    if (points.every((point: PaleolatitudePoint) => typeof point.lowerbound === 'number' && typeof point.upperbound === 'number')) {
-      trace.yErrorMinValues = points.map((point: PaleolatitudePoint) => String(Math.max(point.lat - point.lowerbound!, 0)));
-      trace.yErrorMaxValues = points.map((point: PaleolatitudePoint) => String(Math.max(point.upperbound! - point.lat, 0)));
-    }
-
-    return [trace];
-  }
-
-  private toPaleolatitudeResponse(data: unknown): PaleolatitudeResponse {
-    if (!this.isRecord(data)) {
-      return {};
-    }
-
-    const ages = this.getNumberArray(data, ['domain', 'axes', 't', 'values']);
-    const latitudes = this.getNumberArray(data, ['ranges', 'lat', 'values']);
-    if (ages == null || latitudes == null) {
-      return data as PaleolatitudeResponse;
-    }
-
-    const lowerBounds = this.getNumberArray(data, ['ranges', 'lowerbound', 'values']);
-    const upperBounds = this.getNumberArray(data, ['ranges', 'upperbound', 'values']);
-    const paleolatitude = ages.map((age, index): null | PaleolatitudePoint => {
-      const lat = latitudes[index];
-      if (age == null || lat == null) {
-        return null;
-      }
-
-      const lowerbound = lowerBounds?.[index];
-      const upperbound = upperBounds?.[index];
-      return {
-        age,
-        lat,
-        ...(lowerbound == null || upperbound == null ? {} : { lowerbound, upperbound }),
-      };
-    }).filter((point): point is PaleolatitudePoint => point != null);
-
-    const label = this.getString(data, ['domain', 'axes', 't', 'label', 'en']) ?? 't';
-    const unit = this.getString(data, ['domain', 'axes', 't', 'unit', 'symbol']) ?? '';
-    return {
-      paleolatitude,
-      xAxisTitle: unit === '' ? label : `${label} (${unit})`,
-    };
-  }
-
-  private getString(data: Record<string, unknown>, path: Array<string>): string | null {
-    let value: unknown = data;
-    for (const key of path) {
-      if (!this.isRecord(value)) {
-        return null;
-      }
-      value = value[key];
-    }
-    return typeof value === 'string' ? value : null;
-  }
-
-  private getNumberArray(data: Record<string, unknown>, path: Array<string>): null | Array<null | number> {
-    let value: unknown = data;
-    for (const key of path) {
-      if (!this.isRecord(value)) {
-        return null;
-      }
-      value = value[key];
-    }
-
-    if (!Array.isArray(value)) {
-      return null;
-    }
-    return value.map(item => {
-      const numberValue = typeof item === 'number'
-        ? item
-        : typeof item === 'string' && item.trim() !== '' ? Number(item) : Number.NaN;
-      return Number.isFinite(numberValue) ? numberValue : null;
-    });
   }
 
   private isRecord(value: unknown): value is Record<string, unknown> {

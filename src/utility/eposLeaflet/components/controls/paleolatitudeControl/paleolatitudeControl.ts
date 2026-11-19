@@ -22,7 +22,7 @@ class PaleolatitudeMarkerLayer extends MapLayer {
     private readonly onMarkerHover: (id: null | string) => void,
     private readonly onMarkerClick: (id: string, lat: number, lon: number) => void,
   ) {
-    super(PALEOLATITUDE_MARKERS_LAYER_ID, 'Paleolatitude markers');
+    super(PALEOLATITUDE_MARKERS_LAYER_ID, 'Point selection markers');
     this.options.pane.set(this.id);
     this.options.customLayerOptionOpacity.set(1);
     this.options.customLayerOptionMarkerType.set(MapLayer.MARKERTYPE_RAW);
@@ -227,8 +227,8 @@ export class PaleolatitudeControl {
   }
 
   private showMarkerPopup(id: string, lat: number, lon: number): void {
-    const plateName = this.interactiveVisualisations.getSource(id)?.metadata?.plateName;
-    const title = typeof plateName !== 'string' ? 'Paleolatitude' : `Paleolatitude - ${plateName}`;
+    const serviceName = this.interactiveVisualisations.getSource(id)?.metadata?.serviceName;
+    const title = typeof serviceName === 'string' ? serviceName : 'Point selection';
     const content = document.createElement('div');
     const heading = document.createElement('h5');
     heading.className = 'popup-title';
