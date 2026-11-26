@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.62] - 2026-26-11
+- fix: dynamic mode
+- minor fixes and improvements
+
 ## [1.0.61] - 2026-10-07
 - Feature: Added the Euro Geographic basemaps 
 - Feature: WMTS now loads all layer when service is opened, added download column in its table, added layer name in popup (related issue: https://epos-ci.brgm.fr/epos-public/issuetracker/-/work_items/20335)
